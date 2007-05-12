@@ -141,6 +141,10 @@
     <delete dir="${spi.output.dir}"/>
   </target>
   
+  <target name="clobber" depends="clean" description="Cleans up all generated files.">
+    <delete dir="${basedir}/thirdparty"/>
+  </target>
+  
   <target name="main" description="Executes the default target (most)." depends="most"/>
   
   <target name="most" description="Builds almost everything." depends="spi-jars"/>

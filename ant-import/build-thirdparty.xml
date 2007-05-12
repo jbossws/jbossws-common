@@ -44,6 +44,7 @@
     <get src="${jboss.repository}/jboss/common-core/${jboss-common-core}/lib/jboss-common-core-sources.jar" dest="${spi.thirdparty.dir}/jboss-common-core-sources.jar" usetimestamp="true" verbose="true"/>
     <get src="${jboss.repository}/jboss/common-logging-log4j/${jboss-common-logging-log4j}/lib/jboss-logging-log4j.jar" dest="${spi.thirdparty.dir}/jboss-logging-log4j.jar" usetimestamp="true" verbose="true"/>
     <get src="${jboss.repository}/jboss/common-logging-spi/${jboss-common-logging-spi}/lib/jboss-logging-spi.jar" dest="${spi.thirdparty.dir}/jboss-logging-spi.jar" usetimestamp="true" verbose="true"/>
+    <get src="${jboss.repository}/jboss/jboss-javaee/${jboss-javaee}/lib/jboss-javaee.jar" dest="${spi.thirdparty.dir}/jboss-javaee.jar" usetimestamp="true" verbose="true"/>
     <get src="${jboss.repository}/jboss/jbossxb/${jboss-jbossxb}/lib/jboss-xml-binding.jar" dest="${spi.thirdparty.dir}/jboss-xml-binding.jar" usetimestamp="true" verbose="true"/>
     <get src="${jboss.repository}/jboss/jbossxb/${jboss-jbossxb}/lib/jboss-xml-binding-sources.jar" dest="${spi.thirdparty.dir}/jboss-xml-binding-sources.jar" usetimestamp="true" verbose="true"/>
     <get src="${jboss.repository}/jboss/microcontainer/${jboss-microcontainer}/lib/jboss-container.jar" dest="${spi.thirdparty.dir}/jboss-container.jar" usetimestamp="true" verbose="true"/>
@@ -53,6 +54,7 @@
     <get src="${jboss.repository}/jboss/microcontainer/${jboss-microcontainer}/lib/jboss-deployers-src.zip" dest="${spi.thirdparty.dir}/jboss-deployers-src.zip" usetimestamp="true" verbose="true"/>
     <get src="${jboss.repository}/jboss/microcontainer/${jboss-microcontainer}/lib/jboss-microcontainer.jar" dest="${spi.thirdparty.dir}/jboss-microcontainer.jar" usetimestamp="true" verbose="true"/>
     <get src="${jboss.repository}/jboss/microcontainer/${jboss-microcontainer}/lib/jboss-microcontainer-src.zip" dest="${spi.thirdparty.dir}/jboss-microcontainer-src.zip" usetimestamp="true" verbose="true"/>
+    <get src="${jboss.repository}/junit/${junit}/lib/junit.jar" dest="${spi.thirdparty.dir}/junit.jar" usetimestamp="true" verbose="true"/>
     <get src="${jboss.repository}/sun-jaxws/${sun-jaxws}/lib/jaxws-api.jar" dest="${spi.thirdparty.dir}/jaxws-api.jar" usetimestamp="true" verbose="true"/> 
     <get src="${jboss.repository}/sun-jaxws/${sun-jaxws}/lib/jsr181-api.jar" dest="${spi.thirdparty.dir}/jsr181-api.jar" usetimestamp="true" verbose="true"/> 
     <get src="${jboss.repository}/sun-servlet/${sun-servlet}/lib/servlet-api.jar" dest="${spi.thirdparty.dir}/servlet-api.jar" usetimestamp="true" verbose="true"/>
@@ -67,6 +69,7 @@
       <pathelement location="${spi.thirdparty.dir}/jboss-common-core.jar"/>
       <pathelement location="${spi.thirdparty.dir}/jboss-dependency.jar"/>
       <pathelement location="${spi.thirdparty.dir}/jboss-logging-spi.jar"/>
+      <pathelement location="${spi.thirdparty.dir}/jboss-javaee.jar"/>
       <pathelement location="${spi.thirdparty.dir}/jboss-microcontainer.jar"/>
       <pathelement location="${spi.thirdparty.dir}/jboss-xml-binding.jar"/>
       <pathelement location="${spi.thirdparty.dir}/jaxws-api.jar"/>
