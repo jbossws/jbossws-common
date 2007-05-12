@@ -23,19 +23,20 @@
   <target name="spi-thirdparty-init" depends="prepare">
     
     <property name="spi.thirdparty.dir" value="${spi.dir}/thirdparty"/>
-    <checksum file="${build.dir}/version.properties" fileext=".md5" verifyproperty="checksum.ok"/>
+    <checksum file="${build.dir}/version.properties" fileext=".md5" verifyproperty="spi.checksum.ok"/>
     <condition property="spi.force.thirdparty">
       <or>
         <not>
           <available file="${spi.thirdparty.dir}" type="dir"/>
         </not>
-        <isfalse value="${checksum.ok}"/>
+        <isfalse value="${spi.checksum.ok}"/>
         <isset property="force.thirdparty.get"/>
       </or>
     </condition>
+    <echo message="checksum.ok = ${spi.checksum.ok}"/>
   </target>
   
-  <target name="spi-thirdparty-get" if="spi.force.thirdparty" 
+  <target name="spi-thirdparty-get" depends="spi-thirdparty-init" if="spi.force.thirdparty" 
     description="Gets the thirdparty libraries">
 
     <mkdir dir="${spi.thirdparty.dir}"/>
