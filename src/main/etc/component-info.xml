@@ -1,0 +1,16 @@
+<project name="jboss/jbossws-spi">
+  
+  <component id="jboss/jbossws-spi" 
+    description="JBossWS SPI"
+    version="@repository.id@" 
+    licenseType="lgpl">
+    
+    <artifact id="jbossws-spi.jar"/>
+
+    <export>
+      <include input="jbossws-spi.jar"/>
+    </export>
+    
+  </component>
+  
+</project>

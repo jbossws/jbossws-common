@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ====================================================================== -->
+<!--                                                                        -->
+<!--  JBoss, the OpenSource J2EE webOS                                      -->
+<!--                                                                        -->
+<!--  Distributable under LGPL license.                                     -->
+<!--  See terms of license at http://www.gnu.org.                           -->
+<!--                                                                        -->
+<!-- ====================================================================== -->
+
+<!-- $Id$ -->
+
+<project>
+
+  <!-- Release to jboss.local.repository -->
+  <target name="release" depends="spi-jars" 
+    description="Release to jboss.local.repository">
+
+    <!-- jboss/jbossws-spi -->
+    <property name="jboss.repository.dir" value="${jboss.local.repository}/jboss"/>
+    <mkdir dir="${jboss.repository.dir}/jbossws/${repository.id}/lib"/>
+    <copy todir="${jboss.repository.dir}/jbossws-spi/${repository.id}/lib" overwrite="true">
+      <fileset dir="${spi.output.lib.dir}">
+        <include name="jbossws-spi.jar"/>
+        <include name="jbossws-spi-src.zip"/>
+      </fileset>
+    </copy>
+    <copy tofile="${jboss.repository.dir}/jbossws-spi/${repository.id}/component-info.xml" file="${spi.etc.dir}/component-info.xml" filtering="true" overwrite="true">
+      <filterset>
+        <filtersfile file="${basedir}/version.properties"/>
+      </filterset>
+    </copy>
+    
+  </target>
+
+</project>

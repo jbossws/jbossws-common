@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ====================================================================== -->
+<!--                                                                        -->
+<!--  JBoss, the OpenSource J2EE webOS                                      -->
+<!--                                                                        -->
+<!--  Distributable under LGPL license.                                     -->
+<!--  See terms of license at http://www.gnu.org.                           -->
+<!--                                                                        -->
+<!-- ====================================================================== -->
+
+<!-- $Id$ -->
+
+<project>
+
+  <!-- ========= -->
+  <!-- Libraries -->
+  <!-- ========= -->
+
+  <target name="thirdparty" depends="prepare,thirdparty-get,spi-classpath">
+  </target>
+  
+  <target name="thirdparty-get" if="force.thirdparty.get" 
+    description="Gets the thirdparty libraries">
+
+    <mkdir dir="${thirdparty.dir}"/>
+    <get src="${jboss.repository}/jboss/common-core/${jboss-common-core}/lib/jboss-common-core.jar" dest="${thirdparty.dir}/jboss-common-core.jar" usetimestamp="true" verbose="true"/>
+    <get src="${jboss.repository}/jboss/common-core/${jboss-common-core}/lib/jboss-common-core-sources.jar" dest="${thirdparty.dir}/jboss-common-core-sources.jar" usetimestamp="true" verbose="true"/>
+    <get src="${jboss.repository}/jboss/common-logging-log4j/${jboss-common-logging-log4j}/lib/jboss-logging-log4j.jar" dest="${thirdparty.dir}/jboss-logging-log4j.jar" usetimestamp="true" verbose="true"/>
+    <get src="${jboss.repository}/jboss/common-logging-spi/${jboss-common-logging-spi}/lib/jboss-logging-spi.jar" dest="${thirdparty.dir}/jboss-logging-spi.jar" usetimestamp="true" verbose="true"/>
+    <get src="${jboss.repository}/jboss/jbossxb/${jboss-jbossxb}/lib/jboss-xml-binding.jar" dest="${thirdparty.dir}/jboss-xml-binding.jar" usetimestamp="true" verbose="true"/>
+    <get src="${jboss.repository}/jboss/jbossxb/${jboss-jbossxb}/lib/jboss-xml-binding-sources.jar" dest="${thirdparty.dir}/jboss-xml-binding-sources.jar" usetimestamp="true" verbose="true"/>
+    <get src="${jboss.repository}/jboss/microcontainer/${jboss-microcontainer}/lib/jboss-container.jar" dest="${thirdparty.dir}/jboss-container.jar" usetimestamp="true" verbose="true"/>
+    <get src="${jboss.repository}/jboss/microcontainer/${jboss-microcontainer}/lib/jboss-dependency.jar" dest="${thirdparty.dir}/jboss-dependency.jar" usetimestamp="true" verbose="true"/>
+    <get src="${jboss.repository}/jboss/microcontainer/${jboss-microcontainer}/lib/jboss-dependency-src.zip" dest="${thirdparty.dir}/jboss-dependency-src.zip" usetimestamp="true" verbose="true"/>
+    <get src="${jboss.repository}/jboss/microcontainer/${jboss-microcontainer}/lib/jboss-deployers.jar" dest="${thirdparty.dir}/jboss-deployers.jar" usetimestamp="true" verbose="true"/>
+    <get src="${jboss.repository}/jboss/microcontainer/${jboss-microcontainer}/lib/jboss-deployers-src.zip" dest="${thirdparty.dir}/jboss-deployers-src.zip" usetimestamp="true" verbose="true"/>
+    <get src="${jboss.repository}/jboss/microcontainer/${jboss-microcontainer}/lib/jboss-microcontainer.jar" dest="${thirdparty.dir}/jboss-microcontainer.jar" usetimestamp="true" verbose="true"/>
+    <get src="${jboss.repository}/jboss/microcontainer/${jboss-microcontainer}/lib/jboss-microcontainer-src.zip" dest="${thirdparty.dir}/jboss-microcontainer-src.zip" usetimestamp="true" verbose="true"/>
+    <get src="${jboss.repository}/sun-jaxws/${sun-jaxws}/lib/jaxws-api.jar" dest="${thirdparty.dir}/jaxws-api.jar" usetimestamp="true" verbose="true"/> 
+    <get src="${jboss.repository}/sun-jaxws/${sun-jaxws}/lib/jsr181-api.jar" dest="${thirdparty.dir}/jsr181-api.jar" usetimestamp="true" verbose="true"/> 
+    <get src="${jboss.repository}/sun-servlet/${sun-servlet}/lib/servlet-api.jar" dest="${thirdparty.dir}/servlet-api.jar" usetimestamp="true" verbose="true"/>
+  </target>
+  
+  <target name="spi-classpath" >
+    
+    <!-- The compile classpath for jbossws spi -->
+    <path id="spi.classpath">
+      <pathelement location="${thirdparty.dir}/jboss-common-core.jar"/>
+      <pathelement location="${thirdparty.dir}/jboss-dependency.jar"/>
+      <pathelement location="${thirdparty.dir}/jboss-logging-spi.jar"/>
+      <pathelement location="${thirdparty.dir}/jboss-microcontainer.jar"/>
+      <pathelement location="${thirdparty.dir}/jboss-xml-binding.jar"/>
+      <pathelement location="${thirdparty.dir}/jaxws-api.jar"/>
+      <pathelement location="${thirdparty.dir}/jsr181-api.jar"/>
+      <pathelement location="${thirdparty.dir}/servlet-api.jar"/>
+    </path>
+
+  </target>
+
+</project>

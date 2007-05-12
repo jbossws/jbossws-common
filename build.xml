@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ====================================================================== -->
+<!--                                                                        -->
+<!--  JBoss, the OpenSource J2EE webOS                                      -->
+<!--                                                                        -->
+<!--  Distributable under LGPL license.                                     -->
+<!--  See terms of license at http://www.gnu.org.                           -->
+<!--                                                                        -->
+<!-- ====================================================================== -->
+
+<!-- $Id$ -->
+
+<project default="main" basedir="../jbossws-spi">
+  
+  <import file="${basedir}/../build/ant-import/build-setup.xml"/>
+  
+  <import file="${spi.dir}/ant-import/build-release.xml"/>
+  <import file="${spi.dir}/ant-import/build-thirdparty.xml"/>
+  
+  <!-- ================================================================== -->
+  <!-- Setup                                                              -->
+  <!-- ================================================================== -->
+  
+  <property name="spi.src.dir" value="${spi.dir}/src/main"/>
+  <property name="spi.etc.dir" value="${spi.src.dir}/etc"/>
+  <property name="spi.java.dir" value="${spi.src.dir}/java"/>
+  <property name="spi.resources.dir" value="${spi.src.dir}/resources"/>
+  <property name="spi.output.dir" value="${spi.dir}/output"/>
+  <property name="spi.output.apidocs.dir" value="${spi.output.dir}/apidocs"/>
+  <property name="spi.output.etc.dir" value="${spi.output.dir}/etc"/>
+  <property name="spi.output.classes.dir" value="${spi.output.dir}/classes"/>
+  <property name="spi.output.lib.dir" value="${spi.output.dir}/lib"/>
+  
+  <!-- ================================================================== -->
+  <!-- Initialization                                                     -->
+  <!-- ================================================================== -->
+  
+  <target name="spi-init" depends="prepare,thirdparty">
+  </target>
+  
+  <!-- ================================================================== -->
+  <!-- Compile                                                            -->
+  <!-- ================================================================== -->
+  
+  <!--
+  | Compile everything.
+  |
+  | This target should depend on other compile-* targets for each
+  | different type of compile that needs to be performed, short of
+  | documentation compiles.
+  -->
+  
+  <target name="spi-compile" depends="spi-init,spi-classpath,spi-compile-classes,spi-compile-etc" 
+    description="Compile all source files."/>
+  
+  <!-- Compile java sources -->
+  <target name="spi-compile-classes" depends="spi-init">
+  
+    <!-- Compile spi classes with jdk1.5 -->
+    <mkdir dir="${spi.output.classes.dir}"/>
+    <javac srcdir="${spi.java.dir}" sourcepath="" destdir="${spi.output.classes.dir}" encoding="utf-8" debug="${javac.debug}" verbose="${javac.verbose}"
+      deprecation="${javac.deprecation}" failonerror="${javac.fail.onerror}" source="1.5" target="1.5">
+      <include name="org/jboss/ws/**"/>
+      <classpath refid="spi.classpath"/>
+    </javac>
+  </target>
+  
+  <!-- Compile etc files (manifests and such) -->
+  <target name="spi-compile-etc" depends="spi-init">
+    <mkdir dir="${spi.output.etc.dir}"/>
+    <copy todir="${spi.output.etc.dir}" filtering="yes" overwrite="yes">
+      <fileset dir="${spi.etc.dir}">
+        <include name="component-info.xml"/>
+        <include name="default.mf"/>
+  	  </fileset>
+      <filterset>
+        <filter token="java.vm.version" value="${java.vm.version}"/>
+        <filter token="java.vm.vendor" value="${java.vm.vendor}"/>
+        <filter token="build.id" value="${build.id}"/>
+        <filter token="implementation.version" value="jbossws-spi-${version.id}"/>
+        <filtersfile file="${build.dir}/version.properties"/>
+        <filtersfile file="${basedir}/version.properties"/>
+      </filterset>
+    </copy>
+  </target>
+  
+  <!-- ================================================================== -->
+  <!-- Archives                                                           -->
+  <!-- ================================================================== -->
+  
+  <!--
+  | Build all jar files.
+  -->
+  <target name="spi-jars" depends="spi-compile,spi-module-jars" description="Builds all jar files.">
+  </target>
+  
+  <!--
+  |  Build all jar files.
+  -->
+  <target name="spi-module-jars">
+    
+    <!-- Build jbossws-spi.jar -->
+    <mkdir dir="${spi.output.lib.dir}"/>
+    <jar jarfile="${spi.output.lib.dir}/jbossws-spi.jar" manifest="${spi.output.etc.dir}/default.mf">
+      <fileset dir="${spi.output.classes.dir}">
+        <include name="org/jboss/ws/**"/>
+      </fileset>
+    </jar>
+    
+    <!-- Build jbossws-spi-src.zip -->
+    <zip zipfile="${spi.output.lib.dir}/jbossws-spi-src.zip" >
+      <fileset dir="${spi.java.dir}"/>
+    </zip>
+    
+  </target>
+  
+  <!-- ================================================================== -->
+  <!-- Documentation                                                      -->
+  <!-- ================================================================== -->
+
+   <!-- Generate the JavaDoc -->
+   <target name="spi-javadoc" depends="spi-init" description="Generate the Javadoc">
+
+      <mkdir dir="${spi.output.apidocs.dir}"/>
+      <javadoc destdir="${spi.output.apidocs.dir}" author="true" version="true" use="true" windowtitle="JBossWS API">
+         <classpath refid="spi.classpath"/>
+         <packageset dir="${spi.java.dir}" defaultexcludes="yes">
+            <include name="org/jboss/ws/**"/>
+         </packageset>
+         <doctitle><![CDATA[<h1>JBossWS</h1>]]></doctitle>
+         <tag name="todo" scope="all" description="To do:"/>
+         <group title="Core" packages="org.jboss.ws.spi*"/>
+         <group title="Metadata" packages="org.jboss.ws.metadata*"/>
+         <group title="spi" packages="org.jboss.ws.spi*"/>
+         <group title="Extensions" packages="org.jboss.ws.extensions*"/>
+         <group title="Tools" packages="org.jboss.ws.tools*"/>
+      </javadoc>
+   </target>
+  
+  <target name="clean" depends="prepare" description="Cleans up most generated files.">
+    <delete dir="${spi.output.dir}"/>
+  </target>
+  
+  <target name="main" description="Executes the default target (most)." depends="most"/>
+  
+  <target name="most" description="Builds almost everything." depends="spi-jars"/>
+  
+  <target name="all" description="Create a distribution zip file" depends="main">
+  </target>
+  
+</project>
