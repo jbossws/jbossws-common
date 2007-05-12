@@ -36,7 +36,7 @@
   <!-- Initialization                                                     -->
   <!-- ================================================================== -->
   
-  <target name="spi-init" depends="prepare,thirdparty">
+  <target name="spi-init" depends="prepare,spi-thirdparty">
   </target>
   
   <!-- ================================================================== -->
@@ -51,7 +51,7 @@
   | documentation compiles.
   -->
   
-  <target name="spi-compile" depends="spi-init,spi-classpath,spi-compile-classes,spi-compile-etc" 
+  <target name="spi-compile" depends="spi-init,spi-compile-classes,spi-compile-etc" 
     description="Compile all source files."/>
   
   <!-- Compile java sources -->
@@ -62,7 +62,7 @@
     <javac srcdir="${spi.java.dir}" sourcepath="" destdir="${spi.output.classes.dir}" encoding="utf-8" debug="${javac.debug}" verbose="${javac.verbose}"
       deprecation="${javac.deprecation}" failonerror="${javac.fail.onerror}" source="1.5" target="1.5">
       <include name="org/jboss/ws/**"/>
-      <classpath refid="spi.classpath"/>
+      <classpath refid="spi.thirdparty.classpath"/>
     </javac>
   </target>
   
@@ -80,7 +80,6 @@
         <filter token="build.id" value="${build.id}"/>
         <filter token="implementation.version" value="jbossws-spi-${version.id}"/>
         <filtersfile file="${build.dir}/version.properties"/>
-        <filtersfile file="${basedir}/version.properties"/>
       </filterset>
     </copy>
   </target>
