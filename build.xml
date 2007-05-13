@@ -11,9 +11,9 @@
 
 <!-- $Id$ -->
 
-<project default="main" basedir="../jbossws-spi">
+<project default="main" basedir="../..">
   
-  <import file="${basedir}/../build/ant-import/build-setup.xml"/>
+  <import file="${basedir}/build/ant-import/build-setup.xml"/>
   
   <import file="${spi.dir}/ant-import/build-release.xml"/>
   <import file="${spi.dir}/ant-import/build-thirdparty.xml"/>
@@ -36,7 +36,7 @@
   <!-- Initialization                                                     -->
   <!-- ================================================================== -->
   
-  <target name="spi-init" depends="prepare,spi-thirdparty">
+  <target name="init" depends="prepare,thirdparty-classpath">
   </target>
   
   <!-- ================================================================== -->
@@ -51,23 +51,23 @@
   | documentation compiles.
   -->
   
-  <target name="spi-compile" depends="spi-init,spi-compile-classes,spi-compile-etc" 
+  <target name="compile" depends="init,compile-classes,compile-etc" 
     description="Compile all source files."/>
   
   <!-- Compile java sources -->
-  <target name="spi-compile-classes" depends="spi-init">
+  <target name="compile-classes" depends="init">
   
     <!-- Compile spi classes with jdk1.5 -->
     <mkdir dir="${spi.output.classes.dir}"/>
     <javac srcdir="${spi.java.dir}" sourcepath="" destdir="${spi.output.classes.dir}" encoding="utf-8" debug="${javac.debug}" verbose="${javac.verbose}"
       deprecation="${javac.deprecation}" failonerror="${javac.fail.onerror}" source="1.5" target="1.5">
       <include name="org/jboss/ws/**"/>
-      <classpath refid="spi.thirdparty.classpath"/>
+      <classpath refid="thirdparty.classpath"/>
     </javac>
   </target>
   
   <!-- Compile etc files (manifests and such) -->
-  <target name="spi-compile-etc" depends="spi-init">
+  <target name="compile-etc" depends="init">
     <mkdir dir="${spi.output.etc.dir}"/>
     <copy todir="${spi.output.etc.dir}" filtering="yes" overwrite="yes">
       <fileset dir="${spi.etc.dir}">
@@ -80,7 +80,7 @@
         <filter token="java.vm.version" value="${java.vm.version}"/>
         <filter token="java.vm.vendor" value="${java.vm.vendor}"/>
         <filter token="build.id" value="${build.id}"/>
-        <filter token="implementation.version" value="jbossws-spi-${version.id}"/>
+        <filter token="implementation.version" value="jbossws-${version.id}"/>
         <filtersfile file="${build.dir}/version.properties"/>
       </filterset>
     </copy>
@@ -93,13 +93,13 @@
   <!--
   | Build all jar files.
   -->
-  <target name="spi-jars" depends="spi-compile,spi-module-jars" description="Builds all jar files.">
+  <target name="jars" depends="compile,module-jars" description="Builds all jar files.">
   </target>
   
   <!--
   |  Build all jar files.
   -->
-  <target name="spi-module-jars">
+  <target name="module-jars">
     
     <!-- Build jbossws-spi.jar -->
     <mkdir dir="${spi.output.lib.dir}"/>
@@ -109,8 +109,8 @@
       </fileset>
     </jar>
     
-    <!-- Build jbossws-spi-src.zip -->
-    <zip zipfile="${spi.output.lib.dir}/jbossws-spi-src.zip" >
+    <!-- Build jbossws-src.zip -->
+    <zip zipfile="${spi.output.lib.dir}/jbossws-src.zip" >
       <fileset dir="${spi.java.dir}"/>
     </zip>
     
@@ -121,7 +121,7 @@
   <!-- ================================================================== -->
 
    <!-- Generate the JavaDoc -->
-   <target name="spi-javadoc" depends="spi-init" description="Generate the Javadoc">
+   <target name="javadoc" depends="init" description="Generate the Javadoc">
 
       <mkdir dir="${spi.output.apidocs.dir}"/>
       <javadoc destdir="${spi.output.apidocs.dir}" author="true" version="true" use="true" windowtitle="JBossWS API">
@@ -144,12 +144,12 @@
   </target>
   
   <target name="clobber" depends="clean" description="Cleans up all generated files.">
-    <delete dir="${basedir}/thirdparty"/>
+    <delete dir="${spi.dir}/thirdparty"/>
   </target>
   
   <target name="main" description="Executes the default target (most)." depends="most"/>
   
-  <target name="most" description="Builds almost everything." depends="spi-jars"/>
+  <target name="most" description="Builds almost everything." depends="jars"/>
   
   <target name="all" description="Create a distribution zip file" depends="main">
   </target>

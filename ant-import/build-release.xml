@@ -14,7 +14,7 @@
 <project>
 
   <!-- Release to jboss.local.repository -->
-  <target name="release" depends="spi-jars" 
+  <target name="release" depends="jars" 
     description="Release to jboss.local.repository">
 
     <!-- jboss/jbossws-spi -->
@@ -28,7 +28,7 @@
     </copy>
     <copy tofile="${jboss.repository.dir}/jbossws-spi/${repository.id}/component-info.xml" file="${spi.etc.dir}/component-info.xml" filtering="true" overwrite="true">
       <filterset>
-        <filtersfile file="${basedir}/version.properties"/>
+        <filtersfile file="${spi.dir}/version.properties"/>
       </filterset>
     </copy>
     
