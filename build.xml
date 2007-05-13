@@ -72,6 +72,8 @@
     <copy todir="${spi.output.etc.dir}" filtering="yes" overwrite="yes">
       <fileset dir="${spi.etc.dir}">
         <include name="component-info.xml"/>
+  	  </fileset>
+      <fileset dir="${build.dir}/etc">
         <include name="default.mf"/>
   	  </fileset>
       <filterset>
