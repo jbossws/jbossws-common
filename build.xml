@@ -69,7 +69,7 @@
   <!-- Compile etc files (manifests and such) -->
   <target name="compile-etc" depends="init">
     <mkdir dir="${spi.output.etc.dir}"/>
-    <copy todir="${spi.output.etc.dir}" filtering="yes" overwrite="yes">
+    <copy todir="${spi.output.etc.dir}" filtering="yes">
       <fileset dir="${spi.etc.dir}">
         <include name="component-info.xml"/>
   	  </fileset>

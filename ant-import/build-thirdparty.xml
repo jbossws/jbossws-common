@@ -52,6 +52,7 @@
     <get src="${jboss.repository}/jboss/microcontainer/${jboss-microcontainer}/lib/jboss-microcontainer.jar" dest="${thirdparty.dir}/jboss-microcontainer.jar" usetimestamp="true" verbose="true"/>
     <get src="${jboss.repository}/jboss/microcontainer/${jboss-microcontainer}/lib/jboss-microcontainer-src.zip" dest="${thirdparty.dir}/jboss-microcontainer-src.zip" usetimestamp="true" verbose="true"/>
     <get src="${jboss.repository}/junit/${junit}/lib/junit.jar" dest="${thirdparty.dir}/junit.jar" usetimestamp="true" verbose="true"/>
+    <get src="${jboss.repository}/sun-jaf/${sun-jaf}/lib/activation.jar" dest="${thirdparty.dir}/activation.jar" usetimestamp="true" verbose="true"/>
     <get src="${jboss.repository}/sun-jaxws/${sun-jaxws}/lib/jaxws-api.jar" dest="${thirdparty.dir}/jaxws-api.jar" usetimestamp="true" verbose="true"/> 
     <get src="${jboss.repository}/sun-jaxws/${sun-jaxws}/lib/jsr181-api.jar" dest="${thirdparty.dir}/jsr181-api.jar" usetimestamp="true" verbose="true"/> 
     <get src="${jboss.repository}/sun-servlet/${sun-servlet}/lib/servlet-api.jar" dest="${thirdparty.dir}/servlet-api.jar" usetimestamp="true" verbose="true"/>
@@ -63,6 +64,7 @@
     
     <!-- The compile classpath for jbossws spi -->
     <path id="thirdparty.classpath">
+      <pathelement location="${thirdparty.dir}/activation.jar"/>
       <pathelement location="${thirdparty.dir}/jboss-common-core.jar"/>
       <pathelement location="${thirdparty.dir}/jboss-dependency.jar"/>
       <pathelement location="${thirdparty.dir}/jboss-logging-spi.jar"/>
