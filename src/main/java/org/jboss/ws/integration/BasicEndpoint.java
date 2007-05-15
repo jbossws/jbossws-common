@@ -79,10 +79,8 @@ public class BasicEndpoint implements Endpoint
    private LifecycleHandler lifecycleHandler;
    private Map<Class, Object> metaData = new HashMap<Class, Object>();
 
-   public BasicEndpoint(Service service, Class impl)
+   public BasicEndpoint()
    {
-      this.service = service;
-      this.endpointImpl = impl;
       this.state = EndpointState.UNDEFINED;
    }
 

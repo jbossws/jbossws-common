@@ -68,7 +68,7 @@ import org.jboss.ws.integration.Service;
  * @author Thomas.Diesler@jboss.com
  * @since 20-Apr-2007 
  */
-public class BasicDeploymentImpl implements Deployment
+public class BasicDeployment implements Deployment
 {
    // The context for this deployment dep
    private DeploymentContext context;
@@ -81,7 +81,7 @@ public class BasicDeploymentImpl implements Deployment
    // The deployment class loader
    private ClassLoader classLoader;
 
-   public BasicDeploymentImpl()
+   public BasicDeployment()
    {
       context = new BasicDeploymentContext();
       service = new BasicService(this);
@@ -98,9 +98,9 @@ public class BasicDeploymentImpl implements Deployment
       this.context = context;
    }
 
-   public void setClassLoader(ClassLoader loader)
+   public void setClassLoader(ClassLoader classLoader)
    {
-      this.classLoader = loader;
+      this.classLoader = classLoader;
    }
    
    public ClassLoader getClassLoader()

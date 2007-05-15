@@ -72,23 +72,23 @@ import org.jboss.ws.integration.deployment.Deployment;
  */
 public class BasicService implements Service
 {
-   private Deployment unit;
+   private Deployment dep;
    private List<Endpoint> endpoints = new LinkedList<Endpoint>();
 
-   public BasicService(Deployment unit)
+   public BasicService(Deployment dep)
    {
-      this.unit = unit;
-      this.unit.setService(this);
+      this.dep = dep;
+      this.dep.setService(this);
    }
 
    public Deployment getDeployment()
    {
-      return unit;
+      return dep;
    }
 
-   public void setDeployment(Deployment unit)
+   public void setDeployment(Deployment dep)
    {
-      this.unit = unit;
+      this.dep = dep;
    }
    
    public void addEndpoint(Endpoint endpoint)
