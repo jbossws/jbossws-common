@@ -57,10 +57,12 @@ package org.jboss.ws.integration.invocation;
 
 //$Id$
 
+import java.lang.reflect.Method;
+
 import org.jboss.ws.integration.Endpoint;
 
 /**
- * A general endpoint invoker.
+ * A general ep invoker.
  * 
  * @author Thomas.Diesler@jboss.com
  * @since 20-Apr-2007 
@@ -68,8 +70,20 @@ import org.jboss.ws.integration.Endpoint;
 public interface InvocationHandler
 {
    /** Initialize the invocation handler */
-   void init(Endpoint endpoint);
+   void create(Endpoint ep);
    
-   /** Invoke the the service endpoint */
-   void invoke(InvocationContext reqContext) throws Exception;
+   /** Initialize the invocation handler */
+   void start(Endpoint ep);
+   
+   /** Get an instance of the target bean */
+   Object getTargetBean(Endpoint ep) throws InstantiationException, IllegalAccessException;
+   
+   /** Invoke the the service ep */
+   Object invoke(Endpoint ep, Object targetBean, Method method, Object[] args, InvocationContext invContext) throws Exception;
+   
+   /** Initialize the invocation handler */
+   void stop(Endpoint ep);
+   
+   /** Initialize the invocation handler */
+   void destroy(Endpoint ep);
 }

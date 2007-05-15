@@ -44,7 +44,7 @@ public class BasicLifecycleHandler implements LifecycleHandler
 
       // Initialize the invoker
       InvocationHandler invoker = endpoint.getInvocationHandler();
-      invoker.init(endpoint);
+      invoker.create(endpoint);
 
       endpoint.setState(EndpointState.CREATED);
    }

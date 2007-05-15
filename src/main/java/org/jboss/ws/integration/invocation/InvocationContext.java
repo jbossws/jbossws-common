@@ -55,6 +55,8 @@
  */
 package org.jboss.ws.integration.invocation;
 
+import javax.xml.ws.handler.MessageContext;
+
 //$Id$
 
 /**
@@ -65,4 +67,6 @@ package org.jboss.ws.integration.invocation;
  */
 public interface InvocationContext
 {
+   /** Get the message context */
+   MessageContext getMessageContext();
 }
