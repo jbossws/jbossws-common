@@ -25,7 +25,6 @@ package org.jboss.ws.integration;
 
 import org.jboss.logging.Logger;
 import org.jboss.ws.integration.Endpoint.EndpointState;
-import org.jboss.ws.integration.invocation.InvocationHandler;
 
 /**
  * A basic lifecycle handler
@@ -38,42 +37,47 @@ public class BasicLifecycleHandler implements LifecycleHandler
    // provide logging
    protected final Logger log = Logger.getLogger(getClass());
 
-   public void create(Endpoint endpoint)
+   public void create(Endpoint ep)
    {
-      log.debug("Create: " + endpoint.getName());
+      log.debug("Create: " + ep.getName());
 
-      // Initialize the invoker
-      InvocationHandler invoker = endpoint.getInvocationHandler();
-      invoker.create(endpoint);
+      ep.getInvocationHandler().create(ep);
 
-      endpoint.setState(EndpointState.CREATED);
+      ep.setState(EndpointState.CREATED);
    }
 
-   public void start(Endpoint endpoint)
+   public void start(Endpoint ep)
    {
-      log.debug("Start: " + endpoint.getName());
+      log.debug("Start: " + ep.getName());
 
-      EndpointState state = endpoint.getState();
+      EndpointState state = ep.getState();
       if (state == EndpointState.UNDEFINED || state == EndpointState.DESTROYED)
          throw new IllegalStateException("Cannot start endpoint in state: " + state);
 
-      endpoint.setState(EndpointState.STARTED);
+      ep.getInvocationHandler().start(ep);
+
+      ep.setState(EndpointState.STARTED);
    }
 
-   public void stop(Endpoint endpoint)
+   public void stop(Endpoint ep)
    {
-      log.debug("Stop: " + endpoint.getName());
+      log.debug("Stop: " + ep.getName());
 
-      EndpointState state = endpoint.getState();
+      EndpointState state = ep.getState();
       if (state != EndpointState.STARTED)
          throw new IllegalStateException("Cannot stop endpoint in state: " + state);
 
-      endpoint.setState(EndpointState.STOPED);
+      ep.getInvocationHandler().stop(ep);
+
+      ep.setState(EndpointState.STOPED);
    }
 
-   public void destroy(Endpoint endpoint)
+   public void destroy(Endpoint ep)
    {
-      log.debug("Destroy: " + endpoint.getName());
-      endpoint.setState(EndpointState.DESTROYED);
+      log.debug("Destroy: " + ep.getName());
+
+      ep.getInvocationHandler().destroy(ep);
+
+      ep.setState(EndpointState.DESTROYED);
    }
 }

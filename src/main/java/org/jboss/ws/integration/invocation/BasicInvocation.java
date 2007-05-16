@@ -55,30 +55,60 @@
  */
 package org.jboss.ws.integration.invocation;
 
+import java.lang.reflect.Method;
+
 //$Id$
 
-import org.jboss.ws.integration.Endpoint;
-
 /**
- * A general ep invoker.
+ * A general endpoint invocation.
  * 
  * @author Thomas.Diesler@jboss.com
  * @since 20-Apr-2007 
  */
-public interface InvocationHandler
+public class BasicInvocation implements Invocation
 {
-   /** Create the invocation handler */
-   void create(Endpoint ep);
+   private InvocationContext invocationContext;
+   private Method javaMethod;
+   private Object[] args;
+   private Object returnValue;
 
-   /** Start the invocation handler */
-   void start(Endpoint ep);
+   public InvocationContext getInvocationContext()
+   {
+      return invocationContext;
+   }
 
-   /** Invoke the the service endpoint */
-   void invoke(Endpoint ep, Invocation inv) throws Exception;
+   public void setInvocationContext(InvocationContext invocationContext)
+   {
+      this.invocationContext = invocationContext;
+   }
 
-   /** Stop the invocation handler */
-   void stop(Endpoint ep);
+   public Method getJavaMethod()
+   {
+      return javaMethod;
+   }
 
-   /** Destroy the invocation handler */
-   void destroy(Endpoint ep);
+   public void setJavaMethod(Method javaMethod)
+   {
+      this.javaMethod = javaMethod;
+   }
+
+   public Object[] getArgs()
+   {
+      return args;
+   }
+
+   public void setArgs(Object[] args)
+   {
+      this.args = args;
+   }
+
+   public Object getReturn()
+   {
+      return returnValue;
+   }
+
+   public void setReturn(Object returnValue)
+   {
+      this.returnValue = returnValue;
+   }
 }
