@@ -19,37 +19,62 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.ws.integration.deployment;
+package org.jboss.ws.integration.invocation;
+
+import java.lang.reflect.Method;
 
 //$Id$
 
-import org.jboss.logging.Logger;
-
 /**
- * An abstract deployer that does nothing.
- * Overwrite the deployer methods appropriately. 
+ * A general endpoint invocation.
  * 
  * @author Thomas.Diesler@jboss.com
  * @since 20-Apr-2007 
  */
-public abstract class AbstractDeployer implements Deployer
+public class BasicEndpointInvocation implements EndpointInvocation
 {
-   // provide logging
-   protected final Logger log = Logger.getLogger(getClass());
-   
-   public void create(Deployment dep)
+   private InvocationContext invocationContext;
+   private Method javaMethod;
+   private Object[] args;
+   private Object returnValue;
+
+   public InvocationContext getInvocationContext()
    {
+      return invocationContext;
    }
 
-   public void destroy(Deployment dep)
+   public void setInvocationContext(InvocationContext invocationContext)
    {
+      this.invocationContext = invocationContext;
    }
 
-   public void start(Deployment dep)
+   public Method getJavaMethod()
    {
+      return javaMethod;
    }
 
-   public void stop(Deployment dep)
+   public void setJavaMethod(Method javaMethod)
    {
+      this.javaMethod = javaMethod;
+   }
+
+   public Object[] getArgs()
+   {
+      return args;
+   }
+
+   public void setArgs(Object[] args)
+   {
+      this.args = args;
+   }
+
+   public Object getReturnValue()
+   {
+      return returnValue;
+   }
+
+   public void setReturnValue(Object returnValue)
+   {
+      this.returnValue = returnValue;
    }
 }

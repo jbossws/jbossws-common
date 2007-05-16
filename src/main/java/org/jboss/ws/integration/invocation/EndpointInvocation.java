@@ -19,37 +19,33 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.ws.integration.deployment;
+package org.jboss.ws.integration.invocation;
+
+import java.lang.reflect.Method;
 
 //$Id$
 
-import org.jboss.logging.Logger;
-
 /**
- * An abstract deployer that does nothing.
- * Overwrite the deployer methods appropriately. 
+ * A general endpoint invocation.
  * 
  * @author Thomas.Diesler@jboss.com
  * @since 20-Apr-2007 
  */
-public abstract class AbstractDeployer implements Deployer
+public interface EndpointInvocation
 {
-   // provide logging
-   protected final Logger log = Logger.getLogger(getClass());
+   InvocationContext getInvocationContext();
    
-   public void create(Deployment dep)
-   {
-   }
-
-   public void destroy(Deployment dep)
-   {
-   }
-
-   public void start(Deployment dep)
-   {
-   }
-
-   public void stop(Deployment dep)
-   {
-   }
+   void setInvocationContext(InvocationContext context);
+   
+   Method getJavaMethod();
+   
+   void setJavaMethod(Method method);
+   
+   Object[] getArgs();
+   
+   void setArgs(Object[] args);
+   
+   Object getReturnValue();
+   
+   void setReturnValue(Object ret);
 }
