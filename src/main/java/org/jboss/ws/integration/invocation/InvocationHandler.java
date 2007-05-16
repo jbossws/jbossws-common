@@ -59,6 +59,8 @@ package org.jboss.ws.integration.invocation;
 
 import java.lang.reflect.Method;
 
+import javax.xml.ws.WebServiceContext;
+
 import org.jboss.ws.integration.Endpoint;
 
 /**
@@ -69,21 +71,21 @@ import org.jboss.ws.integration.Endpoint;
  */
 public interface InvocationHandler
 {
-   /** Initialize the invocation handler */
+   /** Create the invocation handler */
    void create(Endpoint ep);
    
-   /** Initialize the invocation handler */
+   /** Start the invocation handler */
    void start(Endpoint ep);
    
    /** Get an instance of the target bean */
    Object getTargetBean(Endpoint ep) throws InstantiationException, IllegalAccessException;
    
    /** Invoke the the service ep */
-   Object invoke(Endpoint ep, Object targetBean, Method method, Object[] args, InvocationContext invContext) throws Exception;
+   Object invoke(Endpoint ep, Object targetBean, Method method, Object[] args, InvocationContext context) throws Exception;
    
-   /** Initialize the invocation handler */
+   /** Stop the invocation handler */
    void stop(Endpoint ep);
    
-   /** Initialize the invocation handler */
+   /** Destroy the invocation handler */
    void destroy(Endpoint ep);
 }

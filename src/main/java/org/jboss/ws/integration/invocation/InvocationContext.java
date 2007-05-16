@@ -55,8 +55,6 @@
  */
 package org.jboss.ws.integration.invocation;
 
-import javax.xml.ws.handler.MessageContext;
-
 //$Id$
 
 /**
@@ -67,6 +65,12 @@ import javax.xml.ws.handler.MessageContext;
  */
 public interface InvocationContext
 {
-   /** Get the message context */
-   MessageContext getMessageContext();
+   /** Add arbitrary attachments */
+   <T> T addAttachment(Class<T> key, Object value);
+
+   /** Get arbitrary attachments */
+   <T> T getAttachment(Class<T> key);
+
+   /** Remove arbitrary attachments */
+   <T> T removeAttachment(Class<T> key);
 }

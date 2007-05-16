@@ -16,5 +16,7 @@
 	<classpathentry kind="lib" path="thirdparty/servlet-api.jar"/>
 	<classpathentry kind="lib" path="thirdparty/junit.jar"/>
 	<classpathentry kind="lib" path="thirdparty/activation.jar"/>
+	<classpathentry kind="lib" path="thirdparty/jboss-javaee.jar"/>
+	<classpathentry kind="lib" path="thirdparty/jaxrpc-api.jar"/>
 	<classpathentry kind="output" path="output-eclipse"/>
 </classpath>

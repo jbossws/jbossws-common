@@ -55,6 +55,7 @@
     <get src="${jboss.repository}/sun-jaf/${sun-jaf}/lib/activation.jar" dest="${thirdparty.dir}/activation.jar" usetimestamp="true" verbose="true"/>
     <get src="${jboss.repository}/sun-jaxws/${sun-jaxws}/lib/jaxws-api.jar" dest="${thirdparty.dir}/jaxws-api.jar" usetimestamp="true" verbose="true"/> 
     <get src="${jboss.repository}/sun-jaxws/${sun-jaxws}/lib/jsr181-api.jar" dest="${thirdparty.dir}/jsr181-api.jar" usetimestamp="true" verbose="true"/> 
+    <get src="${jboss.repository}/sun-jaxrpc/${sun-jaxrpc}/lib/jaxrpc-api.jar" dest="${thirdparty.dir}/jaxrpc-api.jar" usetimestamp="true" verbose="true"/> 
     <get src="${jboss.repository}/sun-servlet/${sun-servlet}/lib/servlet-api.jar" dest="${thirdparty.dir}/servlet-api.jar" usetimestamp="true" verbose="true"/>
     
     <checksum file="${build.dir}/version.properties" fileext=".md5"/>
@@ -72,6 +73,7 @@
       <pathelement location="${thirdparty.dir}/jboss-microcontainer.jar"/>
       <pathelement location="${thirdparty.dir}/jboss-xml-binding.jar"/>
       <pathelement location="${thirdparty.dir}/jaxws-api.jar"/>
+      <pathelement location="${thirdparty.dir}/jaxrpc-api.jar"/>
       <pathelement location="${thirdparty.dir}/jsr181-api.jar"/>
       <pathelement location="${thirdparty.dir}/servlet-api.jar"/>
     </path>

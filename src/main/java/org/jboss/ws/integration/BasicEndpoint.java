@@ -154,17 +154,17 @@ public class BasicEndpoint implements Endpoint
       this.invocationHandler = handler;
    }
 
-   public <T> T addMetaData(Class<T> key, Object value)
+   public <T> T addAttachment(Class<T> key, Object value)
    {
       return (T)metaData.put(key, value);
    }
 
-   public <T> T getMetaData(Class<T> key)
+   public <T> T getAttachment(Class<T> key)
    {
       return (T)metaData.get(key);
    }
 
-   public <T> T removeMetaData(Class<T> key)
+   public <T> T removeAttachment(Class<T> key)
    {
       return (T)metaData.get(key);
    }

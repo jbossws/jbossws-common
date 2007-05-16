@@ -53,79 +53,33 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.jboss.ws.integration;
+package org.jboss.ws.integration.invocation;
 
-import javax.management.ObjectName;
-
-import org.jboss.ws.integration.invocation.InvocationHandler;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * A general JAXWS endpoint.
+ * A basic invocation context.
  * 
  * @author Thomas.Diesler@jboss.com
  * @since 20-Apr-2007 
  */
-public interface Endpoint
+public class BasicInvocationContext implements InvocationContext
 {
-   static final String SEPID_DOMAIN = "jboss.ws";
-   static final String SEPID_PROPERTY_CONTEXT = "context";
-   static final String SEPID_PROPERTY_ENDPOINT = "endpoint";
+   private Map<Class, Object> attachments = new HashMap<Class, Object>();
 
-   static final String SEPID_DOMAIN_ENDPOINT = SEPID_DOMAIN + "." + SEPID_PROPERTY_ENDPOINT;
-
-   public enum EndpointState
+   public <T> T addAttachment(Class<T> key, Object value)
    {
-      UNDEFINED, CREATED, STARTED, STOPED, DESTROYED
-   };
+      return (T)attachments.put(key, value);
+   }
 
-   /** Get the service this endpoint belongs to */
-   Service getService();
+   public <T> T getAttachment(Class<T> key)
+   {
+      return (T)attachments.get(key);
+   }
 
-   /** Set the service this endpoint belongs to */
-   void setService(Service service);
-
-   /** Get the unique identifier for this endpoint */
-   ObjectName getName();
-
-   /** Set the unique identifier for this endpoint */
-   void setName(ObjectName epName);
-
-   /** Get the current state for this endpoint */
-   EndpointState getState();
-
-   /** Set the current state for this endpoint */
-   void setState(EndpointState state);
-
-   /** Get the endpoint implementation bean */
-   Class getEndpointImpl();
-
-   /** Set the endpoint implementation bean */
-   void setEndpointImpl(Class epImpl);
-
-   /** Set the request handler for this endpoint */
-   void setRequestHandler(RequestHandler handler);
-
-   /** Get the request handler for this endpoint */
-   RequestHandler getRequestHandler();
-
-   /** Get the lifecycle handler for this endpoint */
-   LifecycleHandler getLifecycleHandler();
-
-   /** Set the lifecycle handler for this endpoint */
-   void setLifecycleHandler(LifecycleHandler handler);
-
-   /** Get the endpoint bean invoker */
-   InvocationHandler getInvocationHandler();
-
-   /** Set the endpoint bean invoker */
-   void setInvocationHandler(InvocationHandler invoker);
-
-   /** Add arbitrary attachments */
-   <T> T addAttachment(Class<T> key, Object value);
-
-   /** Get arbitrary attachments */
-   <T> T getAttachment(Class<T> key);
-
-   /** Remove arbitrary attachments */
-   <T> T removeAttachment(Class<T> key);
+   public <T> T removeAttachment(Class<T> key)
+   {
+      return (T)attachments.get(key);
+   }
 }
