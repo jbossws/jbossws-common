@@ -97,10 +97,10 @@ public interface Endpoint
    void setState(EndpointState state);
 
    /** Get the endpoint implementation bean */
-   Class getEndpointImpl();
+   Class getTargetBean();
 
    /** Set the endpoint implementation bean */
-   void setEndpointImpl(Class epImpl);
+   void setTargetBean(Class epImpl);
 
    /** Set the request handler for this endpoint */
    void setRequestHandler(RequestHandler handler);

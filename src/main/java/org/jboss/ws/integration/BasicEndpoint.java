@@ -72,7 +72,7 @@ public class BasicEndpoint implements Endpoint
 {
    private Service service;
    private ObjectName name;
-   private Class endpointImpl;
+   private Class targetBean;
    private EndpointState state;
    private RequestHandler requestHandler;
    private InvocationHandler invocationHandler;
@@ -94,14 +94,14 @@ public class BasicEndpoint implements Endpoint
       this.service = service;
    }
 
-   public Class getEndpointImpl()
+   public Class getTargetBean()
    {
-      return endpointImpl;
+      return targetBean;
    }
 
-   public void setEndpointImpl(Class endpointImpl)
+   public void setTargetBean(Class targetBean)
    {
-      this.endpointImpl = endpointImpl;
+      this.targetBean = targetBean;
    }
 
    public EndpointState getState()
