@@ -108,7 +108,7 @@ public class ServiceEndpointPublisher
       }
    }
 
-   public RewriteResults rewriteWebXml(InputStream source, File dest, ClassLoader loader) throws Exception
+   private RewriteResults rewriteWebXml(InputStream source, File dest, ClassLoader loader) throws Exception
    {
       if (dest == null)
       {
