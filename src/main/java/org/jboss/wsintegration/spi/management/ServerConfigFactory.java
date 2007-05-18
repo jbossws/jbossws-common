@@ -21,9 +21,9 @@
  */
 package org.jboss.wsintegration.spi.management;
 
-import org.jboss.wsintegration.spi.utils.KernelLocator;
 import org.jboss.kernel.spi.registry.KernelRegistry;
 import org.jboss.logging.Logger;
+import org.jboss.ws.integration.KernelLocator;
 
 // $Id$
 

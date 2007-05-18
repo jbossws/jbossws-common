@@ -23,10 +23,14 @@ package org.jboss.ws.integration;
 
 // $Id$
 
+import java.io.Serializable;
 
 /**
- * @deprecated
+ * A marker for all <service-ref> related objects.
+ * 
+ * @author Thomas.Diesler@jboss.org
+ * @since 08-Mar-2007
  */
-public abstract class ServiceRefElement extends org.jboss.wsintegration.spi.serviceref.ServiceRefElement 
+public abstract class ServiceRefElement implements Serializable
 {
 }

@@ -21,9 +21,10 @@
 */
 package org.jboss.wsintegration.spi.metadata.j2ee.serviceref;
 
+import org.jboss.ws.integration.ServiceRefElement;
+
 // $Id$
 
-import org.jboss.wsintegration.spi.serviceref.ServiceRefElement;
 
 /**
  * @author Thomas.Diesler@jboss.org

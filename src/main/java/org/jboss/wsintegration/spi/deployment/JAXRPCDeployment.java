@@ -24,8 +24,7 @@ package org.jboss.wsintegration.spi.deployment;
 import java.io.InputStream;
 import java.net.URL;
 
-import javax.xml.ws.WebServiceException;
-
+import org.jboss.ws.integration.UnifiedVirtualFile;
 import org.jboss.wsintegration.spi.deployment.Deployment.DeploymentType;
 import org.jboss.wsintegration.spi.metadata.webservices.WebservicesFactory;
 import org.jboss.wsintegration.spi.metadata.webservices.WebservicesMetaData;

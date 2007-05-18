@@ -5,10 +5,10 @@
     version="@repository.id@" 
     licenseType="lgpl">
     
-    <artifact id="jbossws-spi.jar"/>
+    <artifact id="jbossws-integration.jar"/>
 
     <export>
-      <include input="jbossws-spi.jar"/>
+      <include input="jbossws-integration.jar"/>
     </export>
     
   </component>

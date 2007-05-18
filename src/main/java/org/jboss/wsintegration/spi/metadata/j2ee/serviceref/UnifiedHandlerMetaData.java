@@ -30,7 +30,7 @@ import java.util.Set;
 
 import javax.xml.namespace.QName;
 
-import org.jboss.wsintegration.spi.serviceref.ServiceRefElement;
+import org.jboss.ws.integration.ServiceRefElement;
 import org.w3c.dom.Element;
 
 /** The unified metdata data for a handler element

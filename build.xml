@@ -102,9 +102,9 @@
   -->
   <target name="module-jars">
     
-    <!-- Build jbossws-spi.jar -->
+    <!-- Build jbossws-integration.jar -->
     <mkdir dir="${spi.output.lib.dir}"/>
-    <jar jarfile="${spi.output.lib.dir}/jbossws-spi.jar" manifest="${spi.output.etc.dir}/default.mf">
+    <jar jarfile="${spi.output.lib.dir}/jbossws-integration.jar" manifest="${spi.output.etc.dir}/default.mf">
       <fileset dir="${spi.output.classes.dir}">
         <include name="org/jboss/wsintegration/spi/**"/>
         <include name="org/jboss/ws/integration/**"/>
@@ -112,7 +112,7 @@
     </jar>
     
     <!-- Build jbossws-src.zip -->
-    <zip zipfile="${spi.output.lib.dir}/jbossws-src.zip" >
+    <zip zipfile="${spi.output.lib.dir}/jbossws-integration-src.zip" >
       <fileset dir="${spi.java.dir}"/>
     </zip>
     

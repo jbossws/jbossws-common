@@ -28,7 +28,7 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import org.jboss.wsintegration.spi.serviceref.ServiceRefElement;
+import org.jboss.ws.integration.ServiceRefElement;
 import org.w3c.dom.Element;
 
 /** The metdata data from service-ref/port-component-ref element in web.xml, ejb-jar.xml, and application-client.xml.

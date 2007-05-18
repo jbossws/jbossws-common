@@ -23,10 +23,25 @@ package org.jboss.ws.integration;
 
 //$Id$
 
+import org.jboss.kernel.Kernel;
 
 /**
- * @deprecated
+ * Locate the single instance of the kernel 
+ * 
+ * @author Thomas.Diesler@jboss.org
+ * @since 12-May-2006
  */
-public class KernelLocator extends org.jboss.wsintegration.spi.utils.KernelLocator
+public class KernelLocator 
 {
+   private static Kernel kernel;
+
+   public static Kernel getKernel()
+   {
+      return KernelLocator.kernel;
+   }
+
+   public void setKernel(Kernel kernel)
+   {
+      KernelLocator.kernel = kernel;
+   }
 }

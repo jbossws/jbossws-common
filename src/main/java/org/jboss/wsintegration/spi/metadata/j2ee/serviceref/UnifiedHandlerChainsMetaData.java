@@ -26,8 +26,8 @@ package org.jboss.wsintegration.spi.metadata.j2ee.serviceref;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jboss.ws.integration.ServiceRefElement;
 import org.jboss.wsintegration.spi.metadata.j2ee.serviceref.UnifiedHandlerMetaData.HandlerType;
-import org.jboss.wsintegration.spi.serviceref.ServiceRefElement;
 
 /** The unified metdata data for a handler chains element
  * 

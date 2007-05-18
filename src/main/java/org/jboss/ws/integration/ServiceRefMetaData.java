@@ -23,9 +23,33 @@ package org.jboss.ws.integration;
 
 // $Id$
 
+import java.io.Serializable;
+
+import org.w3c.dom.Element;
+
 /**
- * @deprecated
+ * An abstract service-ref meta data object.
+ * 
+ * @author Thomas.Diesler@jboss.org
+ * @since 08-Mar-2007
  */
-public abstract class ServiceRefMetaData extends org.jboss.wsintegration.spi.serviceref.ServiceRefMetaData
+public abstract class ServiceRefMetaData extends ServiceRefElement implements Serializable
 {
+   public abstract String getServiceRefName();
+
+   public abstract void setServiceRefName(String name);
+
+   public abstract Object getAnnotatedElement();
+
+   public abstract void setAnnotatedElement(Object anElement);
+
+   public abstract boolean isProcessed();
+
+   public abstract void setProcessed(boolean flag);
+
+   public abstract void importStandardXml(Element element);
+
+   public abstract void importJBossXml(Element element);
+
+   public abstract void merge(ServiceRefMetaData targetRef);
 }

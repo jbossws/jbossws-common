@@ -26,7 +26,7 @@ package org.jboss.wsintegration.spi.management;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.registry.KernelRegistry;
 import org.jboss.kernel.spi.registry.KernelRegistryEntry;
-import org.jboss.wsintegration.spi.utils.KernelLocator;
+import org.jboss.ws.integration.KernelLocator;
 
 /**
  * Get the endpoint registry from the kernel

@@ -19,7 +19,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.wsintegration.spi.deployment;
+package org.jboss.ws.integration;
 
 // $Id$
 
@@ -28,6 +28,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+
+import org.jboss.ws.integration.UnifiedVirtualFile;
 
 /**
  * The default file adapter loads resources through an associated classloader.

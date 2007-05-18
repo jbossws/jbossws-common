@@ -33,8 +33,8 @@ import javax.xml.namespace.QName;
 import javax.xml.ws.WebServiceException;
 
 import org.jboss.logging.Logger;
-import org.jboss.wsintegration.spi.deployment.UnifiedVirtualFile;
-import org.jboss.wsintegration.spi.serviceref.ServiceRefMetaData;
+import org.jboss.ws.integration.ServiceRefMetaData;
+import org.jboss.ws.integration.UnifiedVirtualFile;
 import org.w3c.dom.Element;
 
 /**
@@ -100,7 +100,6 @@ public class UnifiedServiceRefMetaData extends ServiceRefMetaData
    {
    }
 
-   @Override
    public void merge(ServiceRefMetaData sref)
    {
       UnifiedServiceRefMetaData sourceRef = (UnifiedServiceRefMetaData)sref;

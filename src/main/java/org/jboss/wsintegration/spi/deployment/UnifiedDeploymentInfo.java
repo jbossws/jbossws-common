@@ -31,6 +31,7 @@ import java.util.Map;
 
 import javax.management.ObjectName;
 
+import org.jboss.ws.integration.UnifiedVirtualFile;
 import org.jboss.wsintegration.spi.deployment.Deployment.DeploymentType;
 
 /**
