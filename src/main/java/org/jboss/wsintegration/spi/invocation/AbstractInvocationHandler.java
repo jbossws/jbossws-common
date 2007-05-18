@@ -39,7 +39,7 @@ import org.jboss.wsintegration.spi.utils.JavaUtils;
  * @author Thomas.Diesler@jboss.org
  * @since 25-Apr-2007
  */
-public abstract class AbstractInvocationHandler implements InvocationHandler
+public abstract class AbstractInvocationHandler extends BasicInvocationHandler
 {
    // provide logging
    private static final Logger log = Logger.getLogger(AbstractInvocationHandler.class);

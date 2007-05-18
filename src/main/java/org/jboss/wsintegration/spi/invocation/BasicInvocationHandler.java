@@ -26,28 +26,31 @@ package org.jboss.wsintegration.spi.invocation;
 import org.jboss.wsintegration.spi.deployment.Endpoint;
 
 /**
- * A general endpoint invocation handler.
+ * A basic endpoint invocation handler.
  * 
  * @author Thomas.Diesler@jboss.com
  * @since 20-Apr-2007 
  */
-public interface InvocationHandler
+public abstract class BasicInvocationHandler implements InvocationHandler
 {
-   /** Create the default invokation object */
-   EndpointInvocation createInvocation();
-   
-   /** Create the invocation handler */
-   void create(Endpoint ep);
+   public EndpointInvocation createInvocation()
+   {
+      return new BasicEndpointInvocation();
+   }
 
-   /** Start the invocation handler */
-   void start(Endpoint ep);
+   public void create(Endpoint ep)
+   {
+   }
 
-   /** Invoke the the service endpoint */
-   void invoke(Endpoint ep, Object beanInstance, EndpointInvocation inv) throws Exception;
+   public void start(Endpoint ep)
+   {
+   }
 
-   /** Stop the invocation handler */
-   void stop(Endpoint ep);
+   public void stop(Endpoint ep)
+   {
+   }
 
-   /** Destroy the invocation handler */
-   void destroy(Endpoint ep);
+   public void destroy(Endpoint ep)
+   {
+   }
 }

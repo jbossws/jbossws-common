@@ -25,8 +25,6 @@ package org.jboss.wsintegration.spi.invocation;
 
 import java.lang.reflect.Method;
 
-import javax.xml.rpc.server.ServiceLifecycle;
-import javax.xml.rpc.server.ServletEndpointContext;
 import javax.xml.ws.WebServiceContext;
 
 import org.jboss.wsintegration.spi.deployment.Endpoint;
@@ -39,48 +37,30 @@ import org.jboss.wsintegration.spi.deployment.Endpoint;
  */
 public class InvocationHandlerJSE extends AbstractInvocationHandler
 {
-   protected Object getTargetBean(Endpoint ep) throws InstantiationException, IllegalAccessException
+   protected Object getBeanInstance(Endpoint ep) throws InstantiationException, IllegalAccessException
    {
       Class epImpl = ep.getTargetBean();
       Object targetBean = epImpl.newInstance();
       return targetBean;
    }
 
-   public void invoke(Endpoint ep, EndpointInvocation epInv) throws Exception
+   public void invoke(Endpoint ep, Object beanInstance, EndpointInvocation epInv) throws Exception
    {
       try
       {
-         Object targetBean = getTargetBean(ep);
-         
+         if (beanInstance == null)
+            beanInstance = getBeanInstance(ep);
+
          InvocationContext invContext = epInv.getInvocationContext();
          WebServiceContext wsContext = invContext.getAttachment(WebServiceContext.class);
          if (wsContext != null)
          {
-            new WebServiceContextInjector().injectContext(targetBean, (WebServiceContext)wsContext);
+            new WebServiceContextInjector().injectContext(beanInstance, (WebServiceContext)wsContext);
          }
 
-         if (targetBean instanceof ServiceLifecycle)
-         {
-            ServletEndpointContext sepContext = invContext.getAttachment(ServletEndpointContext.class);
-            if (sepContext == null)
-               throw new IllegalStateException("Cannot obtain ServletEndpointContext");
-
-            ((ServiceLifecycle)targetBean).init(sepContext);
-         }
-
-         try
-         {
-            Method method = getImplMethod(ep.getTargetBean(), epInv.getJavaMethod());
-            Object retObj = method.invoke(targetBean, epInv.getArgs());
-            epInv.setReturnValue(retObj);
-         }
-         finally
-         {
-            if (targetBean instanceof ServiceLifecycle)
-            {
-               ((ServiceLifecycle)targetBean).destroy();
-            }
-         }
+         Method method = getImplMethod(beanInstance.getClass(), epInv.getJavaMethod());
+         Object retObj = method.invoke(beanInstance, epInv.getArgs());
+         epInv.setReturnValue(retObj);
       }
       catch (Exception e)
       {

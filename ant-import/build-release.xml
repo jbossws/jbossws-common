@@ -22,7 +22,7 @@
     <mkdir dir="${jboss.repository.dir}/jbossws/${repository.id}/lib"/>
     <copy todir="${jboss.repository.dir}/jbossws-spi/${repository.id}/lib" overwrite="true">
       <fileset dir="${spi.output.lib.dir}">
-        <include name="jbossws-integration.jar"/>
+        <include name="jbossws-spi.jar"/>
         <include name="jbossws-integration-src.zip"/>
       </fileset>
     </copy>

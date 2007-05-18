@@ -37,6 +37,11 @@ public class BasicEndpointInvocation implements EndpointInvocation
    private Method javaMethod;
    private Object[] args;
    private Object returnValue;
+   
+   public BasicEndpointInvocation()
+   {
+      this.invocationContext = new BasicInvocationContext();
+   }
 
    public InvocationContext getInvocationContext()
    {
