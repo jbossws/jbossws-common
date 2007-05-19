@@ -47,4 +47,10 @@ public interface Service
    
    /** Get the list of endpoints */
    List<Endpoint> getEndpoints();
+   
+   /** Get the context root for this service */
+   String getContextRoot();
+   
+   /** Set the context root for this service */
+   void setContextRoot(String contextRoot);
 }

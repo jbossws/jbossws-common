@@ -1,6 +1,7 @@
 package org.jboss.wsf.spi.deployment;
 
-import org.w3c.dom.Element;
+import org.dom4j.Element;
+
 
 public interface SecurityRolesHandler
 {

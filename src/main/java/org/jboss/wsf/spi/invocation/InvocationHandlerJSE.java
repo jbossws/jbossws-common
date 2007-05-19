@@ -39,7 +39,7 @@ public class InvocationHandlerJSE extends AbstractInvocationHandler
 {
    protected Object getBeanInstance(Endpoint ep) throws InstantiationException, IllegalAccessException
    {
-      Class epImpl = ep.getTargetBean();
+      Class epImpl = ep.getTargetBeanClass();
       Object targetBean = epImpl.newInstance();
       return targetBean;
    }

@@ -18,5 +18,6 @@
 	<classpathentry kind="lib" path="thirdparty/activation.jar"/>
 	<classpathentry kind="lib" path="thirdparty/jboss-javaee.jar"/>
 	<classpathentry kind="lib" path="thirdparty/jaxrpc-api.jar"/>
+	<classpathentry kind="lib" path="thirdparty/dom4j.jar"/>
 	<classpathentry kind="output" path="output-eclipse"/>
 </classpath>

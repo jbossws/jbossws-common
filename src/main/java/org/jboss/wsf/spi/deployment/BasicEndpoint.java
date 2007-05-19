@@ -23,6 +23,7 @@ package org.jboss.wsf.spi.deployment;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import javax.management.ObjectName;
 
@@ -39,12 +40,15 @@ public class BasicEndpoint implements Endpoint
 {
    private Service service;
    private ObjectName name;
-   private Class targetBean;
+   private String shortName;
+   private String urlPattern;
+   private String targetBean;
    private EndpointState state;
    private RequestHandler requestHandler;
    private InvocationHandler invocationHandler;
    private LifecycleHandler lifecycleHandler;
-   private Map<Class, Object> metaData = new HashMap<Class, Object>();
+   private Map<Class, Object> attachments = new HashMap<Class, Object>();
+   private Map<String, Object> properties = new HashMap<String, Object>();
 
    public BasicEndpoint()
    {
@@ -61,14 +65,64 @@ public class BasicEndpoint implements Endpoint
       this.service = service;
    }
 
-   public Class getTargetBean()
+   public String getTargetBean()
    {
       return targetBean;
    }
 
-   public void setTargetBean(Class targetBean)
+   public void setTargetBean(String targetBean)
    {
       this.targetBean = targetBean;
+   }
+
+   public Class getTargetBeanClass() 
+   {
+      if (targetBean == null)
+         throw new IllegalStateException("Target bean not set");
+      
+      ClassLoader classLoader = service.getDeployment().getClassLoader();
+      if (classLoader == null)
+         throw new IllegalStateException("Deployment classloader not set");
+         
+      Class beanClass;
+      try
+      {
+         beanClass = classLoader.loadClass(targetBean);
+      }
+      catch (ClassNotFoundException ex)
+      {
+         throw new WSDeploymentException(ex);
+      }
+      return beanClass;
+   }
+   public ObjectName getName()
+   {
+      return name;
+   }
+
+   public void setName(ObjectName name)
+   {
+      this.name = name;
+   }
+
+   public String getShortName()
+   {
+      return shortName;
+   }
+
+   public void setShortName(String shortName)
+   {
+      this.shortName = shortName;
+   }
+
+   public String getURLPattern()
+   {
+      return urlPattern;
+   }
+
+   public void setURLPattern(String urlPattern)
+   {
+      this.urlPattern = urlPattern;
    }
 
    public EndpointState getState()
@@ -79,16 +133,6 @@ public class BasicEndpoint implements Endpoint
    public void setState(EndpointState state)
    {
       this.state = state;
-   }
-
-   public ObjectName getName()
-   {
-      return name;
-   }
-
-   public void setName(ObjectName name)
-   {
-      this.name = name;
    }
 
    public RequestHandler getRequestHandler()
@@ -123,16 +167,36 @@ public class BasicEndpoint implements Endpoint
 
    public <T> T addAttachment(Class<T> key, Object value)
    {
-      return (T)metaData.put(key, value);
+      return (T)attachments.put(key, value);
    }
 
    public <T> T getAttachment(Class<T> key)
    {
-      return (T)metaData.get(key);
+      return (T)attachments.get(key);
    }
 
    public <T> T removeAttachment(Class<T> key)
    {
-      return (T)metaData.get(key);
+      return (T)attachments.get(key);
+   }
+   
+   public Set<String> getProperties()
+   {
+      return properties.keySet();
+   }
+
+   public Object getProperty(String key)
+   {
+      return properties.get(key);
+   }
+
+   public void removeProperty(String key)
+   {
+      properties.remove(key);
+   }
+
+   public void setProperty(String key, Object value)
+   {
+      properties.put(key, value);
    }
 }

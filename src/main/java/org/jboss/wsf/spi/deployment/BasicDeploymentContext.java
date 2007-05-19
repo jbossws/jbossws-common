@@ -25,6 +25,7 @@ package org.jboss.wsf.spi.deployment;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * A general web service deployment context. 
@@ -35,6 +36,7 @@ import java.util.Map;
 public class BasicDeploymentContext implements DeploymentContext
 {
    private Map<Class, Object> attachments = new HashMap<Class, Object>();
+   private Map<String, Object> properties = new HashMap<String, Object>();
    
    public <T> T getAttachment(Class<T> clazz)
    {
@@ -44,5 +46,30 @@ public class BasicDeploymentContext implements DeploymentContext
    public <T> T addAttachment(Class<T> clazz, Object obj)
    {
       return (T)attachments.put(clazz, obj);
+   }
+
+   public <T> T removeAttachment(Class<T> key)
+   {
+      return (T)attachments.remove(key);
+   }
+   
+   public Set<String> getProperties()
+   {
+      return properties.keySet();
+   }
+
+   public Object getProperty(String key)
+   {
+      return properties.get(key);
+   }
+
+   public void removeProperty(String key)
+   {
+      properties.remove(key);
+   }
+
+   public void setProperty(String key, Object value)
+   {
+      properties.put(key, value);
    }
 }

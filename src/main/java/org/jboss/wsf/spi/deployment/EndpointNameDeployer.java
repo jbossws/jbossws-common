@@ -21,30 +21,30 @@
  */
 package org.jboss.wsf.spi.deployment;
 
-// $Id$
+//$Id$
 
-import java.util.Set;
+import org.jboss.wsf.spi.utils.ObjectNameFactory;
 
-public interface DeploymentContext
+/**
+ * A deployer that assigns the complete name to the Endpoint 
+ *
+ * @author Thomas.Diesler@jboss.org
+ * @since 25-Apr-2007
+ */
+public class EndpointNameDeployer extends AbstractDeployer
 {
-   /** Add arbitrary attachments */
-   <T> T addAttachment(Class<T> key, Object value);
-   
-   /** Get arbitrary attachments */
-   <T> T getAttachment(Class<T> key);
-   
-   /** Remove arbitrary attachments */
-   <T> T removeAttachment(Class<T> key);
+   @Override
+   public void create(Deployment dep)
+   {
+      String contextRoot = dep.getService().getContextRoot();
 
-   /** Get an context property */
-   Object getProperty(String key);
-   
-   /** Set an context property */
-   void setProperty(String key, Object value);
-   
-   /** Remove an context property */
-   void removeProperty(String key);
-   
-   /** Get the set of context property names */
-   Set<String> getProperties();
+      for (Endpoint ep : dep.getService().getEndpoints())
+      {
+         StringBuilder name = new StringBuilder(Endpoint.SEPID_DOMAIN + ":");
+         name.append(Endpoint.SEPID_PROPERTY_CONTEXT + "=" + contextRoot + ",");
+         name.append(Endpoint.SEPID_PROPERTY_ENDPOINT + "=" + ep.getShortName());
+
+         ep.setName(ObjectNameFactory.create(name.toString()));
+      }
+   }
 }

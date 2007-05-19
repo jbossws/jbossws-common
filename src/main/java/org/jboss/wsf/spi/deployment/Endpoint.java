@@ -21,6 +21,10 @@
  */
 package org.jboss.wsf.spi.deployment;
 
+// $Id$
+
+import java.util.Set;
+
 import javax.management.ObjectName;
 
 import org.jboss.wsf.spi.invocation.InvocationHandler;
@@ -57,6 +61,12 @@ public interface Endpoint
    /** Set the unique identifier for this endpoint */
    void setName(ObjectName epName);
 
+   /** Get the short name for this endpoint */
+   String getShortName();
+   
+   /** Set the short name for this endpoint */
+   void setShortName(String shortName);
+   
    /** Get the current state for this endpoint */
    EndpointState getState();
 
@@ -64,10 +74,19 @@ public interface Endpoint
    void setState(EndpointState state);
 
    /** Get the endpoint implementation bean */
-   Class getTargetBean();
+   String getTargetBean();
 
    /** Set the endpoint implementation bean */
-   void setTargetBean(Class epImpl);
+   void setTargetBean(String epImpl);
+   
+   /** Use the deployment classloader to load the bean */
+   Class getTargetBeanClass();
+   
+   /** Get the URL pattern for this endpoint */
+   String getURLPattern();
+   
+   /** Set the URL pattern for this endpoint */
+   void setURLPattern(String urlPattern);
 
    /** Set the request handler for this endpoint */
    void setRequestHandler(RequestHandler handler);
@@ -92,7 +111,19 @@ public interface Endpoint
 
    /** Get arbitrary attachments */
    <T> T getAttachment(Class<T> key);
-
+   
    /** Remove arbitrary attachments */
    <T> T removeAttachment(Class<T> key);
+
+   /** Get an endpoint property */
+   Object getProperty(String key);
+   
+   /** Set an endpoint property */
+   void setProperty(String key, Object value);
+   
+   /** Remove an endpoint property */
+   void removeProperty(String key);
+   
+   /** Get the set of endpoint property names */
+   Set<String> getProperties();
 }

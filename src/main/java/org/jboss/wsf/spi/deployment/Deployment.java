@@ -21,6 +21,7 @@
  */
 package org.jboss.wsf.spi.deployment;
 
+
 // $Id$
 
 
@@ -44,23 +45,33 @@ public interface Deployment
       UNDEFINED, CREATED, STARTED, STOPED, DESTROYED
    };
    
+   /** Get the class loader for this deployment */
    ClassLoader getClassLoader();
    
+   /** Set the class loader for this deployment */
    void setClassLoader(ClassLoader loader);
    
+   /** Get the deployment context */
    DeploymentContext getContext();
    
+   /** Set the deployment context */
    void setContext(DeploymentContext context);
    
+   /** Get the deployment type */
    DeploymentType getType();
    
+   /** Set the deployment type */
    void setType(DeploymentType type);
    
+   /** Get the current deployment state */
    DeploymentState getState();
    
+   /** Set the current deployment state */
    void setState(DeploymentState type);
 
+   /** Get the service assiated with this deployment */
    Service getService();
 
+   /** Set the service assiated with this deployment */
    void setService(Service service);
 }

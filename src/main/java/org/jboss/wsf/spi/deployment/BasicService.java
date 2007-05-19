@@ -39,6 +39,7 @@ public class BasicService implements Service
 {
    private Deployment dep;
    private List<Endpoint> endpoints = new LinkedList<Endpoint>();
+   private String contextRoot;
 
    public BasicService(Deployment dep)
    {
@@ -64,5 +65,15 @@ public class BasicService implements Service
    public List<Endpoint> getEndpoints()
    {
       return endpoints;
+   }
+
+   public String getContextRoot()
+   {
+      return contextRoot;
+   }
+
+   public void setContextRoot(String contextRoot)
+   {
+      this.contextRoot = contextRoot;
    }
 }
