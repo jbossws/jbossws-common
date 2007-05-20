@@ -40,7 +40,8 @@ public class ContextRootDeployer extends AbstractDeployer
       String contextRoot = null;
       
       // #1 Use the explicit context root from the web meta data
-      UnifiedWebMetaData webMetaData = dep.getContext().getAttachment(UnifiedWebMetaData.class);
+      UnifiedDeploymentInfo udi = dep.getContext().getAttachment(UnifiedDeploymentInfo.class);
+      UnifiedWebMetaData webMetaData = udi.getAttachment(UnifiedWebMetaData.class);
       if (webMetaData != null)
          contextRoot = webMetaData.getContextRoot();
 
@@ -64,7 +65,6 @@ public class ContextRootDeployer extends AbstractDeployer
       // #3 Use the implicit context root derived from the deployment name
       if (contextRoot == null)
       {
-         UnifiedDeploymentInfo udi = dep.getContext().getAttachment(UnifiedDeploymentInfo.class);
          String name = udi.simpleName;
          contextRoot = name.substring(0, name.length() - 4);
          if (udi.parent != null)

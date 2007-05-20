@@ -6,7 +6,7 @@
 	<classpathentry kind="lib" path="thirdparty/jboss-common-core.jar"/>
 	<classpathentry kind="lib" path="thirdparty/jboss-container.jar"/>
 	<classpathentry kind="lib" path="thirdparty/jboss-dependency.jar"/>
-	<classpathentry kind="lib" path="thirdparty/jboss-deployers.jar"/>
+	<classpathentry kind="lib" path="thirdparty/jboss-deployers.jar" sourcepath="thirdparty/jboss-deployers-src.zip"/>
 	<classpathentry kind="lib" path="thirdparty/jboss-logging-log4j.jar"/>
 	<classpathentry kind="lib" path="thirdparty/jboss-logging-spi.jar"/>
 	<classpathentry kind="lib" path="thirdparty/jboss-microcontainer.jar"/>

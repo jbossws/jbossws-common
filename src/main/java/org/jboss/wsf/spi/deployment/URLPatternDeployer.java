@@ -49,7 +49,8 @@ public class URLPatternDeployer extends AbstractDeployer
       String urlPattern = null;
 
       // #1 For JSE lookup the url-pattern from the servlet mappings 
-      UnifiedWebMetaData webMetaData = dep.getContext().getAttachment(UnifiedWebMetaData.class);
+      UnifiedDeploymentInfo udi = dep.getContext().getAttachment(UnifiedDeploymentInfo.class);
+      UnifiedWebMetaData webMetaData = udi.getAttachment(UnifiedWebMetaData.class);
       if (webMetaData != null)
       {
          String epName = ep.getShortName();

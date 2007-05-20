@@ -37,7 +37,6 @@ import java.io.Writer;
 import javax.activation.DataHandler;
 import javax.xml.ws.WebServiceException;
 
-import org.jboss.logging.Logger;
 import org.jboss.wsf.spi.management.ServerConfig;
 import org.jboss.wsf.spi.management.ServerConfigFactory;
 
@@ -48,8 +47,6 @@ import org.jboss.wsf.spi.management.ServerConfigFactory;
  */
 public final class IOUtils
 {
-   private static Logger log = Logger.getLogger(IOUtils.class);
-
    // Hide the constructor
    private IOUtils()
    {
@@ -86,12 +83,12 @@ public final class IOUtils
          r = reader.read(bytes);
       }
    }
-   
+
    public static byte[] convertToBytes(DataHandler dh)
    {
       try
       {
-         ByteArrayOutputStream buffOS= new ByteArrayOutputStream();
+         ByteArrayOutputStream buffOS = new ByteArrayOutputStream();
          dh.writeTo(buffOS);
          return buffOS.toByteArray();
       }
@@ -123,12 +120,12 @@ public final class IOUtils
    public static File createTempDirectory() throws IOException
    {
       File tmpdir = null;
-      
+
       try
       {
          ServerConfigFactory factory = ServerConfigFactory.getInstance();
          ServerConfig config = factory.getServerConfig();
-      
+
          tmpdir = new File(config.getServerTempDir().getCanonicalPath() + "/jbossws");
          tmpdir.mkdirs();
       }
@@ -136,7 +133,7 @@ public final class IOUtils
       {
          // Use the Java temp directory if there is no server config (the client)
       }
-      
+
       return tmpdir;
    }
 }
