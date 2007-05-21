@@ -21,6 +21,8 @@
  */
 package org.jboss.wsf.spi.deployment;
 
+import org.jboss.ws.integration.UnifiedVirtualFile;
+
 //$Id$
 
 
@@ -36,6 +38,8 @@ public class BasicDeployment implements Deployment
 {
    // The context for this deployment dep
    private DeploymentContext context;
+   // The root file for this deployment
+   private UnifiedVirtualFile rootFile;
    // A deployment has one service
    private Service service;
    // The type of this deployment
@@ -60,6 +64,16 @@ public class BasicDeployment implements Deployment
    public void setContext(DeploymentContext context)
    {
       this.context = context;
+   }
+
+   public UnifiedVirtualFile getRootFile()
+   {
+      return rootFile;
+   }
+
+   public void setRootFile(UnifiedVirtualFile rootFile)
+   {
+      this.rootFile = rootFile;
    }
 
    public void setClassLoader(ClassLoader classLoader)

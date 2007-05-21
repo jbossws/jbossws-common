@@ -21,6 +21,8 @@
  */
 package org.jboss.wsf.spi.deployment;
 
+import org.jboss.ws.integration.UnifiedVirtualFile;
+
 
 // $Id$
 
@@ -44,6 +46,12 @@ public interface Deployment
    {
       UNDEFINED, CREATED, STARTED, STOPED, DESTROYED
    };
+   
+   /** Get the root file for this deployment */
+   UnifiedVirtualFile getRootFile();
+   
+   /** Set the root file for this deployment */
+   void setRootFile(UnifiedVirtualFile root);
    
    /** Get the class loader for this deployment */
    ClassLoader getClassLoader();
