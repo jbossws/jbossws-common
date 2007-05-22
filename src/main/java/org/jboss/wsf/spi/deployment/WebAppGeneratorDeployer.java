@@ -37,6 +37,7 @@ import org.dom4j.io.XMLWriter;
 import org.jboss.wsf.spi.annotation.WebContext;
 import org.jboss.wsf.spi.management.ServerConfig;
 import org.jboss.wsf.spi.management.ServerConfigFactory;
+import org.jboss.wsf.spi.metadata.j2ee.UnifiedApplicationMetaData;
 
 /**
  * A deployer that generates a webapp for an EJB endpoint 
@@ -46,17 +47,17 @@ import org.jboss.wsf.spi.management.ServerConfigFactory;
  */
 public class WebAppGeneratorDeployer extends AbstractDeployer
 {
-   private SecurityRolesHandler securityRolesHandlerEJB21;
-   private SecurityRolesHandler securityRolesHandlerEJB3;
+   private SecurityHandler securityHandlerEJB21;
+   private SecurityHandler securityHandlerEJB3;
 
-   public void setSecurityRolesHandlerEJB21(SecurityRolesHandler securityRolesHandlerEJB21)
+   public void setSecurityHandlerEJB21(SecurityHandler handler)
    {
-      this.securityRolesHandlerEJB21 = securityRolesHandlerEJB21;
+      this.securityHandlerEJB21 = handler;
    }
 
-   public void setSecurityRolesHandlerEJB3(SecurityRolesHandler securityRolesHandlerEJB3)
+   public void setSecurityHandlerEJB3(SecurityHandler handler)
    {
-      this.securityRolesHandlerEJB3 = securityRolesHandlerEJB3;
+      this.securityHandlerEJB3 = handler;
    }
 
    @Override
@@ -68,18 +69,18 @@ public class WebAppGeneratorDeployer extends AbstractDeployer
 
       if (dep.getType().toString().endsWith("EJB21"))
       {
-         udi.webappURL = generatWebDeployment(dep, securityRolesHandlerEJB21);
+         udi.webappURL = generatWebDeployment(dep, securityHandlerEJB21);
       }
       else if (dep.getType().toString().endsWith("EJB3"))
       {
-         udi.webappURL = generatWebDeployment(dep, securityRolesHandlerEJB3);
+         udi.webappURL = generatWebDeployment(dep, securityHandlerEJB3);
       }
    }
 
-   private URL generatWebDeployment(Deployment dep, SecurityRolesHandler securityHandler)
+   private URL generatWebDeployment(Deployment dep, SecurityHandler securityHandler)
    {
       Document webDoc = createWebAppDescriptor(dep, securityHandler);
-      Document jbossDoc = createJBossWebAppDescriptor(dep);
+      Document jbossDoc = createJBossWebAppDescriptor(dep, securityHandler);
 
       File tmpWar = null;
       try
@@ -116,7 +117,7 @@ public class WebAppGeneratorDeployer extends AbstractDeployer
       }
    }
 
-   private Document createWebAppDescriptor(Deployment dep, SecurityRolesHandler securityHandler)
+   private Document createWebAppDescriptor(Deployment dep, SecurityHandler securityHandler)
    {
       UnifiedDeploymentInfo udi = dep.getContext().getAttachment(UnifiedDeploymentInfo.class);
 
@@ -220,13 +221,13 @@ public class WebAppGeneratorDeployer extends AbstractDeployer
          loginConfig.addElement("auth-method").addText(authMethod);
          loginConfig.addElement("realm-name").addText("EJBServiceEndpointServlet Realm");
 
-         securityHandler.addSecurityRoles(webApp, udi);
+         securityHandler.addSecurityRoles(webApp, dep);
       }
 
       return document;
    }
 
-   private Document createJBossWebAppDescriptor(Deployment dep)
+   private Document createJBossWebAppDescriptor(Deployment dep, SecurityHandler securityHandler)
    {
       Document document = DocumentHelper.createDocument();
 
@@ -239,9 +240,7 @@ public class WebAppGeneratorDeployer extends AbstractDeployer
        */
       Element jbossWeb = document.addElement("jboss-web");
 
-      String securityDomain = (String)dep.getContext().getProperty("security-domain");
-      if (securityDomain != null)
-         jbossWeb.addElement("security-domain").addText("java:/jaas/" + securityDomain);
+      securityHandler.addSecurityDomain(jbossWeb, dep);
 
       // Get the context root for this deployment
       String contextRoot = dep.getService().getContextRoot();

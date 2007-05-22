@@ -41,7 +41,7 @@ public class ContextRootDeployer extends AbstractDeployer
       
       // #1 Use the explicit context root from the web meta data
       UnifiedDeploymentInfo udi = dep.getContext().getAttachment(UnifiedDeploymentInfo.class);
-      UnifiedWebMetaData webMetaData = udi.getAttachment(UnifiedWebMetaData.class);
+      UnifiedWebMetaData webMetaData = dep.getContext().getAttachment(UnifiedWebMetaData.class);
       if (webMetaData != null)
          contextRoot = webMetaData.getContextRoot();
 
@@ -54,7 +54,7 @@ public class ContextRootDeployer extends AbstractDeployer
             WebContext anWebContext = (WebContext)implClass.getAnnotation(WebContext.class);
             if (anWebContext != null && anWebContext.contextRoot().length() > 0)
             {
-               if (contextRoot != null && contextRoot.equals(anWebContext.contextRoot()))
+               if (contextRoot != null && contextRoot.equals(anWebContext.contextRoot()) == false)
                   throw new IllegalStateException("Context root must be the same for all deployed endpoints");
 
                contextRoot = anWebContext.contextRoot();

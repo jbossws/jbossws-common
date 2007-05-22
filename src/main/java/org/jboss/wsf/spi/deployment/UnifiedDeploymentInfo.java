@@ -26,8 +26,6 @@ package org.jboss.wsf.spi.deployment;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.management.ObjectName;
 
@@ -68,19 +66,6 @@ public class UnifiedDeploymentInfo
    /** An optional ObjectName of the deployed object */
    public ObjectName deployedObject;
 
-   /** An arbitrary map of state associated with the deployment */
-   private Map<Class, Object> attachments = new HashMap<Class, Object>();
-   
-   public <T> T getAttachment(Class<T> key)
-   {
-      return (T)attachments.get(key);
-   }
-   
-   public <T> T addAttachment(Class<T> key, T value)
-   {
-      return (T)attachments.put(key, value);
-   }
-   
    /** The sortName concatenated with the canonical names of all parents. */
    public String getCanonicalName()
    {
