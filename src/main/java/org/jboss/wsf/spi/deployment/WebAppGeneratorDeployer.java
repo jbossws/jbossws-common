@@ -160,7 +160,7 @@ public class WebAppGeneratorDeployer extends AbstractDeployer
       {
          String ejbName = ep.getShortName();
          
-         boolean secureWSDLAccess = false;
+         Boolean secureWSDLAccess = null;
          String transportGuarantee = null;
          String beanAuthMethod = null;
 
@@ -174,6 +174,7 @@ public class WebAppGeneratorDeployer extends AbstractDeployer
             {
                beanAuthMethod = pc.getAuthMethod();
                transportGuarantee = pc.getTransportGuarantee();
+               secureWSDLAccess = pc.getSecureWSDLAccess();
             }
          }
          else if(anWebContext != null)
@@ -206,7 +207,7 @@ public class WebAppGeneratorDeployer extends AbstractDeployer
             Element wrc = securityConstraint.addElement("web-resource-collection");
             wrc.addElement("web-resource-name").addText(ejbName);
             wrc.addElement("url-pattern").addText(ep.getURLPattern());
-            if (secureWSDLAccess)
+            if (Boolean.TRUE.equals(secureWSDLAccess))
             {
                wrc.addElement("http-method").addText("GET");
             }
