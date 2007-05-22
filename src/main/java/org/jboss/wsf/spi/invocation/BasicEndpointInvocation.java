@@ -31,7 +31,7 @@ import java.lang.reflect.Method;
  * @author Thomas.Diesler@jboss.com
  * @since 20-Apr-2007 
  */
-public class BasicEndpointInvocation implements EndpointInvocation
+public class BasicEndpointInvocation implements Invocation
 {
    private InvocationContext invocationContext;
    private Method javaMethod;

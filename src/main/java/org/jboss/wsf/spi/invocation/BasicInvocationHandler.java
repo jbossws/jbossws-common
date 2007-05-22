@@ -33,7 +33,7 @@ import org.jboss.wsf.spi.deployment.Endpoint;
  */
 public abstract class BasicInvocationHandler implements InvocationHandler
 {
-   public EndpointInvocation createInvocation()
+   public Invocation createInvocation()
    {
       return new BasicEndpointInvocation();
    }

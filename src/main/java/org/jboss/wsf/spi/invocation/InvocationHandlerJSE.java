@@ -44,7 +44,7 @@ public class InvocationHandlerJSE extends AbstractInvocationHandler
       return targetBean;
    }
 
-   public void invoke(Endpoint ep, Object beanInstance, EndpointInvocation epInv) throws Exception
+   public void invoke(Endpoint ep, Object beanInstance, Invocation epInv) throws Exception
    {
       try
       {

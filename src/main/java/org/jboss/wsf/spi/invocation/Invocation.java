@@ -31,7 +31,7 @@ import java.lang.reflect.Method;
  * @author Thomas.Diesler@jboss.com
  * @since 20-Apr-2007 
  */
-public interface EndpointInvocation
+public interface Invocation
 {
    InvocationContext getInvocationContext();
    

@@ -34,7 +34,7 @@ import org.jboss.wsf.spi.deployment.Endpoint;
 public interface InvocationHandler
 {
    /** Create the default invokation object */
-   EndpointInvocation createInvocation();
+   Invocation createInvocation();
    
    /** Create the invocation handler */
    void create(Endpoint ep);
@@ -43,7 +43,7 @@ public interface InvocationHandler
    void start(Endpoint ep);
 
    /** Invoke the the service endpoint */
-   void invoke(Endpoint ep, Object beanInstance, EndpointInvocation inv) throws Exception;
+   void invoke(Endpoint ep, Object beanInstance, Invocation inv) throws Exception;
 
    /** Stop the invocation handler */
    void stop(Endpoint ep);
