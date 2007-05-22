@@ -31,8 +31,11 @@ import java.security.Principal;
  * @author Thomas.Diesler@jboss.org
  * @since 10-May-2005
  */
-public interface SecurityAssociationAdaptor 
+public interface SecurityAdaptor 
 {
+   Principal getPrincipal();
    void setPrincipal(Principal pricipal);
+   
+   Object getCredential();
    void setCredential(Object credential);
 }
