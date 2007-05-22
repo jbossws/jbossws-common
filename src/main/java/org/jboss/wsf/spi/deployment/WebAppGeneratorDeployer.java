@@ -165,6 +165,16 @@ public class WebAppGeneratorDeployer extends AbstractDeployer
          String beanAuthMethod = null;
 
          WebContext anWebContext = (WebContext)ep.getTargetBeanClass().getAnnotation(WebContext.class);
+         if(anWebContext != null)
+         {
+            if (anWebContext.authMethod().length() > 0)
+               beanAuthMethod = anWebContext.authMethod();
+            if (anWebContext.transportGuarantee().length() > 0)
+               transportGuarantee = anWebContext.transportGuarantee();
+            if (anWebContext.secureWSDLAccess())
+               secureWSDLAccess = anWebContext.secureWSDLAccess();
+         }
+         
          UnifiedApplicationMetaData appMetaData = dep.getContext().getAttachment(UnifiedApplicationMetaData.class);
          if (appMetaData != null && appMetaData.getBeanByEjbName(ejbName) != null)
          {
@@ -176,15 +186,6 @@ public class WebAppGeneratorDeployer extends AbstractDeployer
                transportGuarantee = pc.getTransportGuarantee();
                secureWSDLAccess = pc.getSecureWSDLAccess();
             }
-         }
-         else if(anWebContext != null)
-         {
-            if (anWebContext.authMethod().length() > 0)
-               beanAuthMethod = anWebContext.authMethod();
-            if (anWebContext.transportGuarantee().length() > 0)
-               transportGuarantee = anWebContext.transportGuarantee();
-            if (anWebContext.secureWSDLAccess())
-               secureWSDLAccess = anWebContext.secureWSDLAccess();
          }
 
          if (beanAuthMethod != null || transportGuarantee != null)
