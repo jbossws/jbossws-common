@@ -38,6 +38,8 @@ import org.jboss.wsf.spi.annotation.WebContext;
 import org.jboss.wsf.spi.management.ServerConfig;
 import org.jboss.wsf.spi.management.ServerConfigFactory;
 import org.jboss.wsf.spi.metadata.j2ee.UnifiedApplicationMetaData;
+import org.jboss.wsf.spi.metadata.j2ee.UnifiedBeanMetaData;
+import org.jboss.wsf.spi.metadata.j2ee.UnifiedEjbPortComponentMetaData;
 
 /**
  * A deployer that generates a webapp for an EJB endpoint 
@@ -156,20 +158,34 @@ public class WebAppGeneratorDeployer extends AbstractDeployer
       // Add web-app/security-constraint for each port component
       for (Endpoint ep : dep.getService().getEndpoints())
       {
-         Class targetBean = ep.getTargetBeanClass();
+         String ejbName = ep.getShortName();
+         
          boolean secureWSDLAccess = false;
          String transportGuarantee = null;
          String beanAuthMethod = null;
 
-         WebContext anWebContext = (WebContext)targetBean.getAnnotation(WebContext.class);
-         if (anWebContext != null && anWebContext.authMethod().length() > 0)
-            beanAuthMethod = anWebContext.authMethod();
-         if (anWebContext != null && anWebContext.transportGuarantee().length() > 0)
-            transportGuarantee = anWebContext.transportGuarantee();
-         if (anWebContext != null && anWebContext.secureWSDLAccess())
-            secureWSDLAccess = anWebContext.secureWSDLAccess();
+         WebContext anWebContext = (WebContext)ep.getTargetBeanClass().getAnnotation(WebContext.class);
+         UnifiedApplicationMetaData appMetaData = dep.getContext().getAttachment(UnifiedApplicationMetaData.class);
+         if (appMetaData != null && appMetaData.getBeanByEjbName(ejbName) != null)
+         {
+            UnifiedBeanMetaData bmd = appMetaData.getBeanByEjbName(ejbName);
+            UnifiedEjbPortComponentMetaData pc = bmd.getPortComponent();
+            if (pc != null)
+            {
+               beanAuthMethod = pc.getAuthMethod();
+               transportGuarantee = pc.getTransportGuarantee();
+            }
+         }
+         else if(anWebContext != null)
+         {
+            if (anWebContext.authMethod().length() > 0)
+               beanAuthMethod = anWebContext.authMethod();
+            if (anWebContext.transportGuarantee().length() > 0)
+               transportGuarantee = anWebContext.transportGuarantee();
+            if (anWebContext.secureWSDLAccess())
+               secureWSDLAccess = anWebContext.secureWSDLAccess();
+         }
 
-         String ejbName = ep.getShortName();
          if (beanAuthMethod != null || transportGuarantee != null)
          {
             /*
