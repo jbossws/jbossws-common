@@ -24,7 +24,9 @@ package org.jboss.wsf.spi.deployment;
 //$Id$
 
 import org.jboss.wsf.spi.annotation.WebContext;
+import org.jboss.wsf.spi.metadata.j2ee.UnifiedApplicationMetaData;
 import org.jboss.wsf.spi.metadata.j2ee.UnifiedWebMetaData;
+import org.jboss.wsf.spi.metadata.webservices.WebservicesMetaData;
 
 /**
  * A deployer that assigns the context root to the service 
@@ -40,7 +42,6 @@ public class ContextRootDeployer extends AbstractDeployer
       String contextRoot = null;
       
       // #1 Use the explicit context root from the web meta data
-      UnifiedDeploymentInfo udi = dep.getContext().getAttachment(UnifiedDeploymentInfo.class);
       UnifiedWebMetaData webMetaData = dep.getContext().getAttachment(UnifiedWebMetaData.class);
       if (webMetaData != null)
          contextRoot = webMetaData.getContextRoot();
@@ -62,15 +63,23 @@ public class ContextRootDeployer extends AbstractDeployer
          }
       }
 
-      // #3 Use the implicit context root derived from the deployment name
+      // #3 Use the explicit context root from webservices/context-root
+      UnifiedApplicationMetaData appMetaData = dep.getContext().getAttachment(UnifiedApplicationMetaData.class);
+      if (contextRoot == null && appMetaData != null)
+      {
+         contextRoot = appMetaData.getWebServiceContextRoot();
+      }
+
+      // #4 Use the implicit context root derived from the deployment name
       if (contextRoot == null)
       {
-         String name = udi.simpleName;
-         contextRoot = name.substring(0, name.length() - 4);
+         UnifiedDeploymentInfo udi = dep.getContext().getAttachment(UnifiedDeploymentInfo.class);
+         String simpleName = udi.simpleName;
+         contextRoot = simpleName.substring(0, simpleName.length() - 4);
          if (udi.parent != null)
          {
-            name = udi.parent.simpleName;
-            contextRoot = name.substring(0, name.length() - 4) + "-" + contextRoot;
+            simpleName = udi.parent.simpleName;
+            contextRoot = simpleName.substring(0, simpleName.length() - 4) + "-" + contextRoot;
          }
       }
 

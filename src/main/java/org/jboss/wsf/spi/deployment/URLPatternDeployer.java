@@ -24,6 +24,9 @@ package org.jboss.wsf.spi.deployment;
 //$Id$
 
 import org.jboss.wsf.spi.annotation.WebContext;
+import org.jboss.wsf.spi.metadata.j2ee.UnifiedApplicationMetaData;
+import org.jboss.wsf.spi.metadata.j2ee.UnifiedBeanMetaData;
+import org.jboss.wsf.spi.metadata.j2ee.UnifiedEjbPortComponentMetaData;
 import org.jboss.wsf.spi.metadata.j2ee.UnifiedWebMetaData;
 
 /**
@@ -49,7 +52,6 @@ public class URLPatternDeployer extends AbstractDeployer
       String urlPattern = null;
 
       // #1 For JSE lookup the url-pattern from the servlet mappings 
-      UnifiedDeploymentInfo udi = dep.getContext().getAttachment(UnifiedDeploymentInfo.class);
       UnifiedWebMetaData webMetaData = dep.getContext().getAttachment(UnifiedWebMetaData.class);
       if (webMetaData != null)
       {
@@ -59,7 +61,19 @@ public class URLPatternDeployer extends AbstractDeployer
             throw new IllegalStateException("Cannot obtain servlet mapping for: " + epName);
       }
 
-      // #2 For EJB use @WebContext.urlPattern 
+      // #2 Use the explicit urlPattern from port-component/port-component-uri
+      UnifiedApplicationMetaData appMetaData = dep.getContext().getAttachment(UnifiedApplicationMetaData.class);
+      if (appMetaData != null && appMetaData.getBeanByEjbName(ep.getShortName()) != null)
+      {
+         UnifiedBeanMetaData bmd = appMetaData.getBeanByEjbName(ep.getShortName());
+         UnifiedEjbPortComponentMetaData pcmd = bmd.getPortComponent();
+         if (pcmd != null)
+         {
+            urlPattern = pcmd.getPortComponentURI();
+         }
+      }
+      
+      // #3 For EJB use @WebContext.urlPattern 
       if (urlPattern == null)
       {
          Class beanClass = ep.getTargetBeanClass();
@@ -68,7 +82,7 @@ public class URLPatternDeployer extends AbstractDeployer
             urlPattern = anWebContext.urlPattern();
       }
 
-      // #3 Fallback to the ejb-name 
+      // #4 Fallback to the ejb-name 
       if (urlPattern == null)
       {
          urlPattern = "/" + ep.getShortName();

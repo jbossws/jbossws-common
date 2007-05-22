@@ -59,16 +59,6 @@ public class UnifiedEjbPortComponentMetaData
       this.portComponentURI = portComponentURI;
    }
 
-   public String getURLPattern()
-   {
-      String pattern = "/*";
-      if (portComponentURI != null)
-      {
-         return portComponentURI;
-      }
-      return pattern;
-   }
-
    public String getAuthMethod()
    {
       return authMethod;

@@ -53,4 +53,7 @@ public interface Service
    
    /** Set the context root for this service */
    void setContextRoot(String contextRoot);
+   
+   /** Get the Endpoint for a give short name */
+   Endpoint getEndpointByName(String shortName);
 }
