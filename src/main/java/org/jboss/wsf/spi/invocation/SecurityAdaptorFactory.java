@@ -23,7 +23,7 @@ package org.jboss.wsf.spi.invocation;
 
 // $Id$
 
-import org.jboss.wsf.spi.utils.FactoryLoader;
+import org.jboss.ws.integration.FactoryLoader;
 
 /**
  * A container idependent SecurityAdaptorFactory
