@@ -105,7 +105,10 @@ public class UnifiedDeploymentInfo
 
             if (deploymentPath.startsWith("jar:") && deploymentPath.endsWith("!/") == false)
                deploymentPath += "!/";
-
+            
+            if (deploymentPath.startsWith("war:") && deploymentPath.endsWith("!/") == false)
+               deploymentPath += "!/";
+            
             if (deploymentPath.endsWith("/") == false)
                deploymentPath += "/";
 
