@@ -19,5 +19,7 @@
 	<classpathentry kind="lib" path="thirdparty/jboss-javaee.jar"/>
 	<classpathentry kind="lib" path="thirdparty/jaxrpc-api.jar"/>
 	<classpathentry kind="lib" path="thirdparty/dom4j.jar"/>
+	<classpathentry kind="lib" path="thirdparty/ant.jar"/>
+	<classpathentry kind="lib" path="thirdparty/getopt.jar"/>
 	<classpathentry kind="output" path="output-eclipse"/>
 </classpath>
