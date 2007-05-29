@@ -13,6 +13,8 @@
 
 <project>
 
+  <property file="${core.dir}/version.properties"/>
+
   <!-- ========= -->
   <!-- Libraries -->
   <!-- ========= -->
@@ -42,6 +44,7 @@
     <get src="${jboss.repository}/jboss/common-core/${jboss-common-core}/lib/jboss-common-core-sources.jar" dest="${thirdparty.dir}/jboss-common-core-sources.jar" usetimestamp="true" verbose="true"/>
     <get src="${jboss.repository}/jboss/common-logging-log4j/${jboss-common-logging-log4j}/lib/jboss-logging-log4j.jar" dest="${thirdparty.dir}/jboss-logging-log4j.jar" usetimestamp="true" verbose="true"/>
     <get src="${jboss.repository}/jboss/common-logging-spi/${jboss-common-logging-spi}/lib/jboss-logging-spi.jar" dest="${thirdparty.dir}/jboss-logging-spi.jar" usetimestamp="true" verbose="true"/>
+    <get src="${jboss.repository}/gnu-getopt/${gnu-getopt}/lib/getopt.jar" dest="${thirdparty.dir}/getopt.jar" usetimestamp="true" verbose="true"/>
     <get src="${jboss.repository}/jboss/jboss-javaee/${jboss-javaee}/lib/jboss-javaee.jar" dest="${thirdparty.dir}/jboss-javaee.jar" usetimestamp="true" verbose="true"/>
     <get src="${jboss.repository}/jboss/jbossxb/${jboss-jbossxb}/lib/jboss-xml-binding.jar" dest="${thirdparty.dir}/jboss-xml-binding.jar" usetimestamp="true" verbose="true"/>
     <get src="${jboss.repository}/jboss/jbossxb/${jboss-jbossxb}/lib/jboss-xml-binding-sources.jar" dest="${thirdparty.dir}/jboss-xml-binding-sources.jar" usetimestamp="true" verbose="true"/>
@@ -62,7 +65,6 @@
     <get src="${jboss.repository}/sun-jaxws/${sun-jaxws}/lib/saaj-api.jar" dest="${thirdparty.dir}/saaj-api.jar" usetimestamp="true" verbose="true"/>
     <get src="${jboss.repository}/sun-jaxrpc/${sun-jaxrpc}/lib/jaxrpc-api.jar" dest="${thirdparty.dir}/jaxrpc-api.jar" usetimestamp="true" verbose="true"/> 
     <get src="${jboss.repository}/sun-servlet/${sun-servlet}/lib/servlet-api.jar" dest="${thirdparty.dir}/servlet-api.jar" usetimestamp="true" verbose="true"/>
-    
     <checksum file="${build.dir}/version.properties" fileext=".md5"/>
   </target>
   
@@ -72,6 +74,7 @@
     <path id="thirdparty.classpath">
       <pathelement location="${thirdparty.dir}/activation.jar"/>
       <pathelement location="${thirdparty.dir}/dom4j.jar"/>
+      <pathelement location="${thirdparty.dir}/getopt.jar"/>
       <pathelement location="${thirdparty.dir}/jboss-common-core.jar"/>
       <pathelement location="${thirdparty.dir}/jboss-dependency.jar"/>
       <pathelement location="${thirdparty.dir}/jboss-logging-spi.jar"/>

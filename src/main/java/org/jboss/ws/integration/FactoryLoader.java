@@ -31,7 +31,6 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Properties;
 
-import org.jboss.logging.Logger;
 
 // $Id$
 
@@ -43,20 +42,19 @@ import org.jboss.logging.Logger;
  */
 public class FactoryLoader
 {
-   // provide logging
-   private static Logger log = Logger.getLogger(FactoryLoader.class);
-   
    private FactoryLoader()
    {
    }
 
    /**
     * Load a factory using this ordered lookup procedure
-    * 
-    *  1. Use the system property
-    *  2. Use the properties file "lib/jaxm.properties" in the JRE directory
-    *  3. Use the Services API (as detailed in the JAR specification), if available, to determine the classname
-    *  4. Use the default factory implementation class
+    *
+    * <ol>
+    *  <li>Use the system property
+    *  <li>Use the properties file "lib/jaxm.properties" in the JRE directory
+    *  <li>Use the Services API (as detailed in the JAR specification), if available, to determine the classname
+    *  <li>Use the default factory implementation class
+    * </ol>
     *  
     *  @return the factory impl, or null 
     */
@@ -72,7 +70,7 @@ public class FactoryLoader
       {
          try
          {
-            if(log.isDebugEnabled()) log.debug("Load from system property: " + factoryName);
+            //if(log.isDebugEnabled()) log.debug("Load from system property: " + factoryName);
             Class factoryClass = loader.loadClass(factoryName);
             factory = factoryClass.newInstance();
          }
@@ -98,7 +96,7 @@ public class FactoryLoader
                factoryName = jaxmProperties.getProperty(propertyName);
                if (factoryName != null)
                {
-                  if(log.isDebugEnabled()) log.debug("Load from " + jaxmFile + ": " + factoryName);
+                  //if(log.isDebugEnabled()) log.debug("Load from " + jaxmFile + ": " + factoryName);
                   Class factoryClass = loader.loadClass(factoryName);
                   factory = factoryClass.newInstance();
                }
@@ -124,7 +122,7 @@ public class FactoryLoader
                br.close();
                if (factoryName != null)
                {
-                  if(log.isTraceEnabled()) log.trace("Load from Service API " + filename + ": " + factoryName);
+                  //if(log.isTraceEnabled()) log.trace("Load from Service API " + filename + ": " + factoryName);
                   Class factoryClass = loader.loadClass(factoryName);
                   factory = factoryClass.newInstance();
                }
@@ -142,7 +140,7 @@ public class FactoryLoader
          try
          {
             factoryName = defaultFactory;
-            if(log.isDebugEnabled()) log.debug("Load from default: " + factoryName);
+            //if(log.isDebugEnabled()) log.debug("Load from default: " + factoryName);
             Class factoryClass = loader.loadClass(factoryName);
             factory = factoryClass.newInstance();
          }
