@@ -636,8 +636,8 @@ public class JavaUtils
       if (isJBossRepositoryClassLoader(loader))
       {
          try
-         {
-            loader.getClass().getMethod("clearBlacklists").invoke(loader);
+         {                               
+            loader.getClass().getMethod("clearBlackLists").invoke(loader);
          }
          catch (Exception e)
          {
