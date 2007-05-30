@@ -21,74 +21,68 @@
 */
 package org.jboss.wsf.spi.tools.ant;
 
-import org.apache.tools.ant.AntClassLoader;
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Project;
-import org.apache.tools.ant.Task;
+import org.apache.tools.ant.*;
 import org.apache.tools.ant.taskdefs.ExecuteJava;
 import org.apache.tools.ant.taskdefs.LogOutputStream;
 import org.apache.tools.ant.types.Commandline;
 import org.apache.tools.ant.types.CommandlineJava;
+import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Path;
-import org.apache.tools.ant.types.Reference;
-import org.jboss.wsf.spi.tools.WSContractProvider;
+import org.jboss.wsf.spi.tools.WSContractConsumer;
 
 import java.io.File;
 import java.io.PrintStream;
+import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Ant task which invokes provides a Web Service contract and portable JAX-WS wrapper classes.
+ * Ant task which consumes a Web Service contract.
  * 
  * <table border="1">
  *   <tr align="left" BGCOLOR="#CCCCFF" CLASS="TableHeadingColor"><th>Attribute</th><th>Description</th><th>Default</th></tr>
  *   <tr><td>fork</td><td>Whether or not to run the generation task in a separate VM.</td><td>true</td></tr>
  *   <tr><td>keep</td><td>Keep/Enable Java source code generation.</td><td>false</td></tr>
+ *   <tr><td>catalog</td><td> Oasis XML Catalog file for entity resolution</td><td>none</td></tr>
+ *   <tr><td>package</td><td> The target Java package for generated code.</td><td>generated</td></tr>
+ *   <tr><td>binding</td><td>A JAX-WS or JAXB binding file</td><td>none</td></tr>
+ *   <tr><td>wsdlLocation</td><td>Value to use for @@WebService.wsdlLocation</td><td>generated</td></tr>
  *   <tr><td>destdir</td><td>The output directory for generated artifacts.</td><td>"output"</td></tr>
- *   <tr><td>resourcedestdir</td><td>The output directory for resource artifacts (WSDL/XSD).</td><td>value of destdir</td></tr>
  *   <tr><td>sourcedestdir</td><td>The output directory for Java source.</td><td>value of destdir</td></tr>
- *   <tr><td>genwsdl</td><td>Whether or not to generate WSDL.</td><td>false</td><tr>
- *   <tr><td>verbose</td><td>Enables more informational output about command progress.</td><td>false</td><tr>
- *   <tr><td>sei*</td><td>Service Endpoint Implementation.</td><td></td><tr>
- *   <tr><td>classpath</td><td>The classpath that contains the service endpoint implementation.</td><td>""</tr>
+ *   <tr><td>verbose</td><td>Enables more informational output about cmd progress.</td><td>false</td><tr>
+ *   <tr><td>wsdl*</td><td>The WSDL file or URL</td><td>n/a</td><tr>
  * </table>
  * <b>* = required.</b>
  * 
  * <p>Example:
  * 
  * <pre>
- *  &lt;target name=&quot;test-wsproivde&quot; depends=&quot;init&quot;&gt;
- *    &lt;taskdef name=&quot;wsprovide&quot; classname=&quot;org.jboss.wsf.spi.tools.ant.wsprovide&quot;&gt;
- *      &lt;classpath refid=&quot;core.classpath&quot;/&gt;
- *    &lt;/taskdef&gt;
- *    &lt;wsprovide
- *      fork=&quot;false&quot;
- *      keep=&quot;true&quot;
- *      destdir=&quot;out&quot;
- *      resourcedestdir=&quot;out-resource&quot;
- *      sourcedestdir=&quot;out-source&quot;
- *      genwsdl=&quot;true&quot; 
- *      verbose=&quot;true&quot;
- *      sei=&quot;org.jboss.test.ws.jaxws.jsr181.soapbinding.DocWrappedServiceImpl&quot;&gt;
- *      &lt;classpath&gt;
- *        &lt;pathelement path=&quot;${tests.output.dir}/classes&quot;/&gt;
- *      &lt;/classpath&gt;
- *    &lt;/wsprovide&gt;
- *  &lt;/target&gt;
+ * &lt;WSConsumeTask
+ *   fork=&quot;true&quot;
+ *   verbose=&quot;true&quot;
+ *   destdir=&quot;output&quot;
+ *   sourcedestdir=&quot;gen-src&quot;
+ *   keep=&quot;true&quot;
+ *   wsdllocation=&quot;handEdited.wsdl&quot; 
+ *   wsdl=&quot;foo.wsdl&quot;&gt;
+ *   &lt;binding dir=&quot;binding-files&quot; includes=&quot;*.xml&quot; excludes=&quot;bad.xml&quot;/&gt;
+ * &lt;/wsimport&gt;
  * </pre>
  * 
  * @author <a href="mailto:jason.greene@jboss.com">Jason T. Greene</a>
  * @version $Revision$
  */
-public class wsprovide extends Task
+public class WSConsumeTask extends Task
 {
-   private Path classpath = new Path(getProject());
    private CommandlineJava command = new CommandlineJava();
-   private String sei = null;
+   private String wsdl = null;
    private File destdir = null;
-   private File resourcedestdir = null;
    private File sourcedestdir = null;
+   private List<File> bindingFiles = new ArrayList<File>();
+   private File catalog = null;
+   private String wsdlLocation = null;
+   private String targetPackage = null;
    private boolean keep = false;
-   private boolean genwsdl = false;
    private boolean verbose = false;
    private boolean fork = false;
    private boolean debug = false;
@@ -99,49 +93,34 @@ public class wsprovide extends Task
       this.debug = debug;
    }
    
-   public Commandline.Argument createJvmarg() 
+   public Commandline.Argument createJvmarg()
    {
       return command.createVmArgument();
    }
-   
-   public void setClasspath(Path classpath)
+
+   public void setBinding(File bindingFile)
    {
-      this.classpath = classpath;
+      bindingFiles.add(bindingFile);
    }
-   
-   public void setClasspathRef(Reference ref)
+
+   public void setCatalog(File catalog)
    {
-      createClasspath().setRefid(ref);
+      this.catalog = catalog;
    }
-   
-   public Path createClasspath()
-   {
-      return classpath;
-   }
-   
+
    public void setDestdir(File destdir)
    {
       this.destdir = destdir;
    }
 
-   public void setKeep(boolean keep)
-   {
-      this.keep = keep;
-   }
-   
-   public void setSei(String sei)
-   {
-      this.sei = sei;
-   }
-   
    public void setFork(boolean fork)
    {
       this.fork = fork;
    }
 
-   public void setResourcedestdir(File resourcedestdir)
+   public void setKeep(boolean keep)
    {
-      this.resourcedestdir = resourcedestdir;
+      this.keep = keep;
    }
 
    public void setSourcedestdir(File sourcedestdir)
@@ -149,21 +128,36 @@ public class wsprovide extends Task
       this.sourcedestdir = sourcedestdir;
    }
 
+   public void setPackage(String targetPackage)
+   {
+      this.targetPackage = targetPackage;
+   }
+
    public void setVerbose(boolean verbose)
    {
       this.verbose = verbose;
    }
 
-   public void setGenwsdl(boolean genwsdl)
+   public void setWsdl(String wsdl)
    {
-      this.genwsdl = genwsdl;
+      this.wsdl = wsdl;
+   }
+
+   public void setWsdlLocation(String wsdlLocation)
+   {
+      this.wsdlLocation = wsdlLocation;
    }
    
-   private ClassLoader getClasspathLoader(ClassLoader parent)
+   public void addConfiguredBinding(FileSet fs)
    {
-      return new AntClassLoader(parent, getProject(), classpath, false);
+      DirectoryScanner ds = fs.getDirectoryScanner(getProject());
+      File baseDir = ds.getBasedir();
+      for (String file : ds.getIncludedFiles())
+      {
+         bindingFiles.add(new File(baseDir, file));
+      }
    }
-   
+
    public void executeNonForked()
    {
       ClassLoader prevCL = Thread.currentThread().getContextClassLoader();
@@ -171,33 +165,48 @@ public class wsprovide extends Task
       Thread.currentThread().setContextClassLoader(antLoader);
       try
       {
-         WSContractProvider gen = WSContractProvider.newInstance();
-         gen.setClassLoader(getClasspathLoader(antLoader));
-         if (verbose)
-            gen.setMessageStream(new PrintStream(new LogOutputStream(this, Project.MSG_INFO)));
-         gen.setGenerateSource(keep);
-         gen.setGenerateWsdl(genwsdl);
+         WSContractConsumer importer = WSContractConsumer.newInstance();
+         importer.setGenerateSource(keep);
          if (destdir != null)
-            gen.setOutputDirectory(destdir);
-         if (resourcedestdir != null)
-            gen.setResourceDirectory(resourcedestdir);
+            importer.setOutputDirectory(destdir);
          if (sourcedestdir != null)
-            gen.setSourceDirectory(sourcedestdir);
-
-         log("Generating from endpoint: " + sei, Project.MSG_INFO);
+            importer.setSourceDirectory(sourcedestdir);
+         if (targetPackage != null)
+            importer.setTargetPackage(targetPackage);
+         if (wsdlLocation != null)
+            importer.setWsdlLocation(wsdlLocation);
+         if (catalog != null)
+            importer.setCatalog(catalog);
+         if (bindingFiles != null && bindingFiles.size() > 0)
+            importer.setBindingFiles(bindingFiles);
          
-         gen.provide(sei);
+         log("Consuming wsdl: " + wsdl, Project.MSG_INFO);
+         
+         if (verbose)
+         {
+            importer.setMessageStream(new PrintStream(new LogOutputStream(this, Project.MSG_INFO)));
+         }
+         
+         try
+         {
+            importer.setAdditionalCompilerClassPath(getTaskClassPathStrings());            
+            importer.consume(wsdl);
+         }
+         catch (MalformedURLException e)
+         {
+            throw new BuildException(e, getLocation());
+         }
       }
       finally
       {
          Thread.currentThread().setContextClassLoader(prevCL);
       }
    }
-   
+
    public void execute() throws BuildException
    {
-      if (sei == null)
-         throw new BuildException("The sei attribute must be specified!", getLocation());
+      if (wsdl == null)
+         throw new BuildException("The wsdl attribute must be specified!", getLocation());
       
       if (fork)
          executeForked();
@@ -216,31 +225,61 @@ public class wsprovide extends Task
       
       return new Path(getProject());
    }
+   
+   private List<String> getTaskClassPathStrings()
+   {
+      // Why is everything in the Ant API a big hack???
+      List<String> strings = new ArrayList<String>();
+      ClassLoader cl = this.getClass().getClassLoader();
+      if (cl instanceof AntClassLoader)
+      {
+         for (String string : ((AntClassLoader)cl).getClasspath().split(File.pathSeparator))
+            strings.add(string);
+      }
+      
+      return strings;
+   }
 
    private void executeForked() throws BuildException
    {
-      command.setClassname(org.jboss.wsf.spi.tools.command.wsprovide.class.getName());
+      command.setClassname(org.jboss.wsf.spi.tools.cmd.WSConsume.class.getName());
       
       Path path = command.createClasspath(getProject());
       path.append(getTaskClassPath());
-      path.append(classpath);
      
       if (keep)
          command.createArgument().setValue("-k");
+     
+      for (File file : bindingFiles)
+      {
+         command.createArgument().setValue("-b");
+         command.createArgument().setFile(file);
+      }
       
-      if (genwsdl)
+      if (catalog != null)
+      {
+         command.createArgument().setValue("-c");
+         command.createArgument().setFile(catalog);
+      }
+      
+      if (targetPackage != null)
+      {
+         command.createArgument().setValue("-p");
+         command.createArgument().setValue(targetPackage);
+      }
+      
+      if (wsdlLocation != null)
+      {
          command.createArgument().setValue("-w");
-      
+         command.createArgument().setValue(wsdlLocation);
+      }
+         
       if (destdir != null)
       {
          command.createArgument().setValue("-o");
          command.createArgument().setFile(destdir);
       }
-      if (resourcedestdir != null)
-      {
-         command.createArgument().setValue("-r");
-         command.createArgument().setFile(resourcedestdir);
-      }
+      
       if (sourcedestdir != null)
       {
          command.createArgument().setValue("-s");
@@ -252,7 +291,7 @@ public class wsprovide extends Task
       
       // Always dump traces
       command.createArgument().setValue("-t");
-      command.createArgument().setValue(sei);
+      command.createArgument().setValue(wsdl);
       
       if (verbose)
          log("Command invoked: " + command.getJavaCommand().toString());
@@ -261,6 +300,6 @@ public class wsprovide extends Task
       execute.setClasspath(path);
       execute.setJavaCommand(command.getJavaCommand());
       if (execute.fork(this) != 0)
-         throw new BuildException("Could not invoke wsprovide", getLocation());
+         throw new BuildException("Could not invoke WSConsumeTask", getLocation());
    }
 }

@@ -24,7 +24,7 @@ package org.jboss.wsf.spi.tools;
 import org.jboss.wsf.spi.tools.WSContractProvider;
 
 /**
- * WSContractProviderFactory defines the contract for a WSContractProvider factory.
+ * Creates WSContractProvider implementations.
  * 
  * @author <a href="mailto:jason.greene@jboss.com">Jason T. Greene</a>
  */

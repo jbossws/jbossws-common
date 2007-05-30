@@ -24,7 +24,7 @@ package org.jboss.wsf.spi.tools;
 import org.jboss.wsf.spi.tools.WSContractConsumer;
 
 /**
- * WSContractConsumerFactory defines the contract for a WSContractConsumer factory.
+ * Creates WSContractConsumer implementations.
  * 
  * @author <a href="mailto:jason.greene@jboss.com">Jason T. Greene</a>
  */

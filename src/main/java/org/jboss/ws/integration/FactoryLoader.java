@@ -35,8 +35,15 @@ import java.util.Properties;
 // $Id$
 
 /**
- * Load a factory using the factory lookup procedure 
- * 
+ * Load a factory using this ordered lookup procedure
+ *
+ * <ol>
+ *  <li>Use the system property
+ *  <li>Use the properties file "lib/jaxm.properties" in the JRE directory
+ *  <li>Use the Services API (as detailed in the JAR specification), if available, to determine the classname
+ *  <li>Use the default factory implementation class
+ * </ol>
+ *
  * @author Thomas.Diesler@jboss.com
  * @since 14-Dec-2006
  */
@@ -46,15 +53,7 @@ public class FactoryLoader
    {
    }
 
-   /**
-    * Load a factory using this ordered lookup procedure
-    *
-    * <ol>
-    *  <li>Use the system property
-    *  <li>Use the properties file "lib/jaxm.properties" in the JRE directory
-    *  <li>Use the Services API (as detailed in the JAR specification), if available, to determine the classname
-    *  <li>Use the default factory implementation class
-    * </ol>
+   /**   
     *  
     *  @return the factory impl, or null 
     */

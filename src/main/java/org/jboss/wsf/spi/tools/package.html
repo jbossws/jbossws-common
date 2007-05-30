@@ -1,0 +1,55 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+</head>
+<body bgcolor="white">
+
+A stack indepedent SPI that's provides entry points to command line tools and ANT
+tasks that generate JAX-WS artefacts from WSDL or wrapper beans and WSDL from existing sources.
+
+<h3>Service provider responsibilities</h3>
+
+A service provider needs to implement both the factory and the actual <code>WSContractConsumer</code>
+or <code>WSContractProvider</code>.
+The ANT tasks and the command line tools offer static client interfaces and rely on a standard WSF service factory
+mechanism that allows pluggability of different implementations:
+
+<ul>
+   <li>See org.jboss.ws.integration.FactoryLoader</li>
+</ul>
+
+<h3>ANT tasks</h3>
+<ul>
+   <li>{@link org.jboss.wsf.spi.tools.ant.WSConsumeTask}</li>
+   <li>{@link org.jboss.wsf.spi.tools.ant.WSProvideTask}</li>
+</ul>
+
+<h3>Command line interfaces and shell scripts</h3>
+
+The shell scripts are installed with the JBossAS installation
+and can be found in the JBOSS_HOME/bin directory.
+<p/>
+
+They delegate to the following command line implementations:
+<ul>
+   <li>{@link org.jboss.wsf.spi.tools.cmd.WSConsume}</li>
+   <li>{@link org.jboss.wsf.spi.tools.cmd.WSProvide}</li>
+</ul>
+
+
+<h2>Related Documentation</h2>
+
+<ul>
+   <li>{@link org.jboss.ws.integration.FactoryLoader}   
+</ul>
+
+For overviews, tutorials, examples, guides, and tool documentation, please see:
+<ul>
+  <li><a href="http://labs.jboss.com/jbossws/">JBossWS Userguide</a>  
+</ul>
+<br>
+
+@since JBossWS 2.1
+
+</body>
+</html>
