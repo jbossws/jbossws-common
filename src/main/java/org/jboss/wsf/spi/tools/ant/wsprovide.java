@@ -31,7 +31,7 @@ import org.apache.tools.ant.types.Commandline;
 import org.apache.tools.ant.types.CommandlineJava;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Reference;
-import org.jboss.wsf.spi.tools.api.WSContractProvider;
+import org.jboss.wsf.spi.tools.WSContractProvider;
 
 import java.io.File;
 import java.io.PrintStream;

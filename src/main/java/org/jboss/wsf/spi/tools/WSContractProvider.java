@@ -1,6 +1,6 @@
-package org.jboss.wsf.spi.tools.api;
+package org.jboss.wsf.spi.tools;
 
-import org.jboss.wsf.spi.tools.spi.WSContractProviderFactory;
+import org.jboss.wsf.spi.tools.WSContractProviderFactory;
 import org.jboss.ws.integration.FactoryLoader;
 
 import java.io.File;

@@ -19,10 +19,10 @@
 * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
-package org.jboss.wsf.spi.tools.api;
+package org.jboss.wsf.spi.tools;
 
 import org.jboss.ws.integration.FactoryLoader;
-import org.jboss.wsf.spi.tools.spi.WSContractConsumerFactory;
+import org.jboss.wsf.spi.tools.WSContractConsumerFactory;
 
 import java.io.File;
 import java.io.PrintStream;

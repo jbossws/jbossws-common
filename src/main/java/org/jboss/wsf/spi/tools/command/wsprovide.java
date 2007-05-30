@@ -24,7 +24,7 @@ package org.jboss.wsf.spi.tools.command;
 import gnu.getopt.Getopt;
 import gnu.getopt.LongOpt;
 import org.jboss.wsf.spi.utils.JavaUtils;
-import org.jboss.wsf.spi.tools.api.WSContractProvider;
+import org.jboss.wsf.spi.tools.WSContractProvider;
 
 import java.io.File;
 import java.io.PrintStream;

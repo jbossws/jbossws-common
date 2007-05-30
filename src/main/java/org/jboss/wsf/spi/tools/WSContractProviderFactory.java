@@ -19,22 +19,25 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.wsf.spi.tools.spi;
+package org.jboss.wsf.spi.tools;
 
-import org.jboss.wsf.spi.tools.api.WSContractConsumer;
+import org.jboss.wsf.spi.tools.WSContractProvider;
 
 /**
- * WSContractConsumerFactory defines the contract for a WSContractConsumer factory.
+ * WSContractProviderFactory defines the contract for a WSContractProvider factory.
  * 
  * @author <a href="mailto:jason.greene@jboss.com">Jason T. Greene</a>
  */
-public interface WSContractConsumerFactory
+public interface WSContractProviderFactory
 {
    /**
-    * Create a new WSContractConsumer. There are no restrictions on how this
-    * should be performed. 
+    * Create a new WSContractProvider. There are no restrictions on how this
+    * should be performed. The passed ClassLoader is the one used in
+    * {@link WSContractProvider#newInstance(ClassLoader)}. This loader
+    * should be made available to the generated WSContractProvider.
     * 
-    * @return a new WSContractConsumer
+    * @param loader the ClassLoader for type discovery
+    * @return a new WSContractProvider
     */
-   public WSContractConsumer createConsumer();
+   public WSContractProvider createProvider(ClassLoader loader);
 }

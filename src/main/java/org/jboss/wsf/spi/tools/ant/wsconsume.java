@@ -28,7 +28,7 @@ import org.apache.tools.ant.types.Commandline;
 import org.apache.tools.ant.types.CommandlineJava;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Path;
-import org.jboss.wsf.spi.tools.api.WSContractConsumer;
+import org.jboss.wsf.spi.tools.WSContractConsumer;
 
 import java.io.File;
 import java.io.PrintStream;

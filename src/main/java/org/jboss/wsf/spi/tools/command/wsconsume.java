@@ -23,7 +23,7 @@ package org.jboss.wsf.spi.tools.command;
 
 import gnu.getopt.Getopt;
 import gnu.getopt.LongOpt;
-import org.jboss.wsf.spi.tools.api.WSContractConsumer;
+import org.jboss.wsf.spi.tools.WSContractConsumer;
 
 import java.io.File;
 import java.io.PrintStream;
