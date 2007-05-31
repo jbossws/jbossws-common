@@ -23,12 +23,7 @@ package org.jboss.wsf.spi.utils;
 
 // $Id$
 
-import java.lang.reflect.Array;
-import java.lang.reflect.GenericArrayType;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
-import java.lang.reflect.WildcardType;
+import java.lang.reflect.*;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -635,14 +630,20 @@ public class JavaUtils
    {
       if (isJBossRepositoryClassLoader(loader))
       {
-         try
-         {                               
-            loader.getClass().getMethod("clearBlackLists").invoke(loader);
-         }
-         catch (Exception e)
-         {
-            if(log.isDebugEnabled()) log.debug("Could not clear blacklists on " + loader);
-         }
+			for(Method m : loader.getClass().getMethods())
+			{
+				if("clearBlackLists".equalsIgnoreCase(m.getName()))
+				{
+					try
+					{
+						m.invoke(loader);
+					}
+					catch (Exception e)
+					{
+						if(log.isDebugEnabled()) log.debug("Could not clear blacklists on " + loader);
+					}
+				}
+			}			
       }
    }
 }
