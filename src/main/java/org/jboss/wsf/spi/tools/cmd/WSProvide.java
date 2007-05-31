@@ -44,7 +44,7 @@ import java.util.List;
  *  -h, --help                  Show this help message
  *  -k, --keep                  Keep/Generate Java source
  *  -w, --wsdl                  Enable WSDL file generation
- *  -c. --classpath=&lt;path&lt;      The classpath that contains the endpoint
+ *  -c, --classpath=&lt;path&lt;      The classpath that contains the endpoint
  *  -o, --output=&lt;directory&gt;    The directory to put generated artifacts
  *  -r, --resource=&lt;directory&gt;  The directory to put resource artifacts
  *  -s, --source=&lt;directory&gt;    The directory to put Java source
