@@ -38,7 +38,7 @@ if [ "x$JAVA" = "x" ]; then
 fi
 
 #JPDA options. Uncomment and modify as appropriate to enable remote debugging .
-#JAVA_OPTS="-classic -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=8787,server=y,suspend=n $JAVA_OPTS"
+#JAVA_OPTS="-classic -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=8787,server=y,suspend=y $JAVA_OPTS"
 
 # Setup JBoss sepecific properties
 JAVA_OPTS="$JAVA_OPTS"
@@ -58,9 +58,13 @@ fi
 #
 
 # shared libs
+WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$JAVA_HOME/lib/tools.jar"
 WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$JBOSS_HOME/client/jbossws-spi.jar"
 WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$JBOSS_HOME/client/activation.jar"
 WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$JBOSS_HOME/client/getopt.jar"
+
+# TODO: verify jbossall-client.jar dependency. It might be just logging
+WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$JBOSS_HOME/client/jbossall-client.jar"
 WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$JBOSS_HOME/client/log4j.jar"
 WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$JBOSS_HOME/client/mail.jar"
 
@@ -68,6 +72,8 @@ WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$JBOSS_HOME/client/mail.jar"
 WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$JBOSS_HOME/client/jaxb-api.jar"
 WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$JBOSS_HOME/client/jaxb-impl.jar"
 WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$JBOSS_HOME/client/jaxb-xjc.jar"
+WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$JBOSS_HOME/client/jaxws-tools.jar"
+WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$JBOSS_HOME/client/jaxws-rt.jar"
 
 # stack specific dependencies
 if [ "x$JBOSSWS_NATIVE" = "x" ]; then
@@ -81,7 +87,9 @@ else
    WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$JBOSS_HOME/client/jbossws-client.jar"
    WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$JBOSS_HOME/client/jboss-jaxws.jar"
    WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$JBOSS_HOME/client/jboss-jaxrpc.jar"
-   WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$JBOSS_HOME/client/jboss-saaj.jar"   
+   WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$JBOSS_HOME/client/jboss-saaj.jar"
+   WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$JBOSS_HOME/client/policy.jar"
+   WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$JBOSS_HOME/client/wsdl4j.jar"
 fi
 
 # For Cygwin, switch paths to Windows format before running java
