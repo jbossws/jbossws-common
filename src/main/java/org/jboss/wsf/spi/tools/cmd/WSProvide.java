@@ -233,6 +233,7 @@ public class WSProvide
       out.println("    -s, --source=<directory>    The directory to put Java source");
       out.println("    -q, --quiet                 Be somewhat more quiet");
       out.println("    -t, --show-traces           Show full exception stack traces");
-      out.flush();
+		out.println("    -l, --load-provider         Load the provider and exit (debug utility)");
+		out.flush();
    }
 }

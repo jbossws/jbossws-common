@@ -14,7 +14,8 @@
 <project default="main" basedir="../..">
   
   <import file="${basedir}/build/ant-import/build-setup.xml"/>
-  
+
+  <import file="${spi.dir}/ant-import/build-deploy.xml"/>
   <import file="${spi.dir}/ant-import/build-release.xml"/>
   <import file="${spi.dir}/ant-import/build-thirdparty.xml"/>
   
