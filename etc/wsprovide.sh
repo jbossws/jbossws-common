@@ -79,6 +79,10 @@ WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$JBOSS_HOME/client/jaxws-rt.jar"
 if [ "x$JBOSSWS_NATIVE" = "x" ]; then
    echo "Seems to be a Sun-RI stack deployed"
    WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$JBOSS_HOME/client/jbossws-sunri-client.jar"
+   WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$JBOSS_HOME/client/jaxws-api.jar"
+   WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$JBOSS_HOME/client/jsr181-api.jar"
+   WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$JBOSS_HOME/client/saaj-api.jar"
+   WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$JBOSS_HOME/client/saaj-impl.jar"
 else
    echo "Seems to be a JBossWS-Native stack deployed"	
 	WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$JBOSS_HOME/client/jboss-xml-binding.jar"
