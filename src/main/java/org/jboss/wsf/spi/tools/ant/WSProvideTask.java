@@ -172,8 +172,9 @@ public class WSProvideTask extends Task
       Thread.currentThread().setContextClassLoader(antLoader);
       try
       {
-         WSContractProvider gen = WSContractProvider.newInstance();
-         gen.setClassLoader(getClasspathLoader(antLoader));
+         WSContractProvider gen = WSContractProvider.newInstance(
+					getClasspathLoader(antLoader)
+			);         
          if (verbose)
             gen.setMessageStream(new PrintStream(new LogOutputStream(this, Project.MSG_INFO)));
          gen.setGenerateSource(keep);
