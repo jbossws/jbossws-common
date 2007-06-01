@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ====================================================================== -->
+<!--                                                                        -->
+<!--  JBoss, the OpenSource J2EE webOS                                      -->
+<!--                                                                        -->
+<!--  Distributable under LGPL license.                                     -->
+<!--  See terms of license at http://www.gnu.org.                           -->
+<!--                                                                        -->
+<!-- ====================================================================== -->
+
+<!-- $Id$ -->
+
+<project>
+
+	<macrodef name="macro-deploy-spi">
+		<attribute name="spilibs"/>
+		<attribute name="spiscripts"/>
+		<attribute name="thirdpartylibs"/>
+		<sequential>
+			<fail message="Not available: ${jboss50.available.file}" unless="jboss50.available"/>
+
+			<copy todir="${jboss50.home}/client">
+				<fileset dir="@{spilibs}">
+					<include name="jbossws-spi.jar"/>
+				</fileset>
+			</copy>
+			<copy todir="${jboss50.home}/server/${jboss.server.instance}/lib">
+				<fileset dir="@{spilibs}">
+					<include name="jbossws-spi.jar"/>
+				</fileset>
+			</copy>
+			<copy todir="${jboss50.home}/bin" overwrite="true">
+				<fileset dir="@{spiscripts}">
+					<include name="wsconsume.bat"/>
+					<include name="wsconsume.sh"/>
+					<include name="wsprovide.bat"/>
+					<include name="wsprovide.sh"/>
+				</fileset>
+			</copy>
+
+			<chmod dir="${jboss50.home}/bin" perm="+x" includes="**/*.sh"/>
+		</sequential>
+	</macrodef>
+
+	<!-- Remove jbossws/sunri from jboss50 -->
+	<macrodef name="macro-undeploy-spi">
+		<sequential>
+			<delete>
+
+				<fileset dir="${jboss50.home}/client">
+					<include name="jbossws-spi.jar"/>
+				</fileset>
+
+				<fileset dir="${jboss50.home}/server/${jboss.server.instance}/lib">
+					<include name="jbossws-spi.jar"/>
+				</fileset>
+
+				<!--include name="jbossws-spi.jar"/-->
+				<fileset dir="${jboss50.home}/bin">
+					<include name="wsconsume.bat"/>
+					<include name="wsconsume.sh"/>
+					<include name="wsprovide.bat"/>
+					<include name="wsprovide.sh"/>
+				</fileset>
+			</delete>
+		</sequential>
+	</macrodef>
+
+</project>

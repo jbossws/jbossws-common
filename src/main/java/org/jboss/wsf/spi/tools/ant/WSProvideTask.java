@@ -161,7 +161,8 @@ public class WSProvideTask extends Task
    
    private ClassLoader getClasspathLoader(ClassLoader parent)
    {
-      return new AntClassLoader(parent, getProject(), classpath, false);
+		AntClassLoader loader = new AntClassLoader(parent, getProject(), classpath, false);		
+		return loader;
    }
    
    public void executeNonForked()
