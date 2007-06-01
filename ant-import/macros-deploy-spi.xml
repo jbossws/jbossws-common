@@ -17,20 +17,19 @@
 		<attribute name="spilibs"/>
 		<attribute name="spiscripts"/>
 		<attribute name="thirdpartylibs"/>
+		<attribute name="jbosshome"/>
 		<sequential>
-			<fail message="Not available: ${jboss50.available.file}" unless="jboss50.available"/>
-
-			<copy todir="${jboss50.home}/client">
+			<copy todir="@{jbosshome}/client">
 				<fileset dir="@{spilibs}">
 					<include name="jbossws-spi.jar"/>
 				</fileset>
 			</copy>
-			<copy todir="${jboss50.home}/server/${jboss.server.instance}/lib">
+			<copy todir="@{jbosshome}/server/${jboss.server.instance}/lib">
 				<fileset dir="@{spilibs}">
 					<include name="jbossws-spi.jar"/>
 				</fileset>
 			</copy>
-			<copy todir="${jboss50.home}/bin" overwrite="true">
+			<copy todir="@{jbosshome}/bin" overwrite="true">
 				<fileset dir="@{spiscripts}">
 					<include name="wsconsume.bat"/>
 					<include name="wsconsume.sh"/>
@@ -38,26 +37,21 @@
 					<include name="wsprovide.sh"/>
 				</fileset>
 			</copy>
-
-			<chmod dir="${jboss50.home}/bin" perm="+x" includes="**/*.sh"/>
+			<chmod dir="@{jbosshome}/bin" perm="+x" includes="*.sh"/>
 		</sequential>
 	</macrodef>
 
-	<!-- Remove jbossws/sunri from jboss50 -->
 	<macrodef name="macro-undeploy-spi">
+		<attribute name="jbosshome"/>
 		<sequential>
 			<delete>
-
-				<fileset dir="${jboss50.home}/client">
+				<fileset dir="@{jbosshome}/client">
 					<include name="jbossws-spi.jar"/>
 				</fileset>
-
-				<fileset dir="${jboss50.home}/server/${jboss.server.instance}/lib">
+				<fileset dir="@{jbosshome}/server/${jboss.server.instance}/lib">
 					<include name="jbossws-spi.jar"/>
 				</fileset>
-
-				<!--include name="jbossws-spi.jar"/-->
-				<fileset dir="${jboss50.home}/bin">
+				<fileset dir="@{jbosshome}/bin">
 					<include name="wsconsume.bat"/>
 					<include name="wsconsume.sh"/>
 					<include name="wsprovide.bat"/>
