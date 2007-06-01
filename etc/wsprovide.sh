@@ -1,6 +1,12 @@
 #!/bin/sh
 
-# $Id: wsprovide.sh 3101 2007-05-16 08:26:33Z heiko.braun@jboss.com $
+#
+# Invoke wsprovide with dynamic classpath
+# depending on the deployed stack and the location
+#
+# @author Heiko.Braun@jboss.com
+# @version $Id: $
+#
 
 DIRNAME=`dirname $0`
 PROGNAME=`basename $0`
@@ -46,55 +52,72 @@ JAVA_OPTS="$JAVA_OPTS"
 # Setup the java endorsed dirs
 JBOSS_ENDORSED_DIRS="$JBOSS_HOME/lib/endorsed"
 
+###
+# Setup the LIBDIR
+# This script maybe used form within the jbossws distribution
+# or instaled under JBOSS_HOME/bin
+###
+
+PARENT=`cd $DIRNAME/..; pwd`
+if [ -d $PARENT/client ]; then
+	LIBDIR=$JBOSS_HOME/client
+else
+	LIBDIR=$PARENT/lib
+fi
+
 # is it a JBossWS-native or SunRI installation?
-if [ -a $JBOSS_HOME/client/jbossws-client.jar ]; then
+if [ -a $LIBDIR/jbossws-client.jar ]; then
     JBOSSWS_NATIVE="true"
 fi
 
-#
+###
 # Setup the wsprovide classpath
 # The classpath is dynamically build depending on the stack that
 # is deployed. See $JBOSSWS_NATIVE above.
-#
+###
 
 # shared libs
 WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$JAVA_HOME/lib/tools.jar"
-WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$JBOSS_HOME/client/jbossws-spi.jar"
-WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$JBOSS_HOME/client/activation.jar"
-WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$JBOSS_HOME/client/getopt.jar"
+WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$LIBDIR/jbossws-spi.jar"
+WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$LIBDIR/activation.jar"
+WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$LIBDIR/getopt.jar"
 
 # TODO: verify jbossall-client.jar dependency. It might be just logging
-WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$JBOSS_HOME/client/jbossall-client.jar"
-WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$JBOSS_HOME/client/log4j.jar"
-WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$JBOSS_HOME/client/mail.jar"
+WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$LIBDIR/jbossall-client.jar"
+WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$LIBDIR/log4j.jar"
+WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$LIBDIR/mail.jar"
 
 # shared jaxws libs
-WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$JBOSS_HOME/client/jaxb-api.jar"
-WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$JBOSS_HOME/client/jaxb-impl.jar"
-WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$JBOSS_HOME/client/jaxb-xjc.jar"
-WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$JBOSS_HOME/client/jaxws-tools.jar"
-WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$JBOSS_HOME/client/jaxws-rt.jar"
+WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$LIBDIR/jaxb-api.jar"
+WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$LIBDIR/jaxb-impl.jar"
+WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$LIBDIR/jaxb-xjc.jar"
+WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$LIBDIR/jaxws-tools.jar"
+WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$LIBDIR/jaxws-rt.jar"
 
 # stack specific dependencies
 if [ "x$JBOSSWS_NATIVE" = "x" ]; then
    echo "Seems to be a Sun-RI stack deployed"
-   WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$JBOSS_HOME/client/jbossws-sunri-client.jar"
-   WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$JBOSS_HOME/client/jaxws-api.jar"
-   WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$JBOSS_HOME/client/jsr181-api.jar"
-   WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$JBOSS_HOME/client/saaj-api.jar"
-   WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$JBOSS_HOME/client/saaj-impl.jar"
+   WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$LIBDIR/jbossws-sunri-client.jar"
+   WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$LIBDIR/jaxws-api.jar"
+   WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$LIBDIR/jsr181-api.jar"
+   WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$LIBDIR/saaj-api.jar"
+   WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$LIBDIR/saaj-impl.jar"
 else
    echo "Seems to be a JBossWS-Native stack deployed"	
-	WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$JBOSS_HOME/client/jboss-xml-binding.jar"
-   WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$JBOSS_HOME/client/javassist.jar"
-   WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$JBOSS_HOME/client/jbossall-client.jar"
-   WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$JBOSS_HOME/client/jbossws-client.jar"
-   WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$JBOSS_HOME/client/jboss-jaxws.jar"
-   WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$JBOSS_HOME/client/jboss-jaxrpc.jar"
-   WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$JBOSS_HOME/client/jboss-saaj.jar"
-   WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$JBOSS_HOME/client/policy.jar"
-   WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$JBOSS_HOME/client/wsdl4j.jar"
+	WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$LIBDIR/jboss-xml-binding.jar"
+   WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$LIBDIR/javassist.jar"
+   WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$LIBDIR/jbossall-client.jar"
+   WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$LIBDIR/jbossws-client.jar"
+   WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$LIBDIR/jboss-jaxws.jar"
+   WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$LIBDIR/jboss-jaxrpc.jar"
+   WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$LIBDIR/jboss-saaj.jar"
+   WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$LIBDIR/policy.jar"
+   WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$LIBDIR/wsdl4j.jar"
 fi
+
+###
+# Execute the JVM
+###
 
 # For Cygwin, switch paths to Windows format before running java
 if $cygwin; then
@@ -104,7 +127,6 @@ if $cygwin; then
     JBOSS_ENDORSED_DIRS=`cygpath --path --windows "$JBOSS_ENDORSED_DIRS"`
 fi
 
-# Execute the JVM
 "$JAVA" $JAVA_OPTS \
    -Djava.endorsed.dirs="$JBOSS_ENDORSED_DIRS" \
    -Dlog4j.configuration=wstools-log4j.xml \

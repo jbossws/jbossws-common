@@ -1,6 +1,12 @@
 #!/bin/sh
 
-# $Id: wsgen.sh 2158 2007-01-27 06:20:59Z jason.greene@jboss.com $
+#
+# Invoke wsconsume with dynamic classpath
+# depending on the deployed stack and the location
+#
+# @author Heiko.Braun@jboss.com
+# @version $Id: $
+#
 
 DIRNAME=`dirname $0`
 PROGNAME=`basename $0`
@@ -46,48 +52,65 @@ JAVA_OPTS="$JAVA_OPTS"
 # Setup the java endorsed dirs
 JBOSS_ENDORSED_DIRS="$JBOSS_HOME/lib/endorsed"
 
-# is it a JBossWS-native or SunRI installation?
-if [ -a $JBOSS_HOME/client/jbossws-client.jar ]; then
+###
+# Setup the LIBDIR
+# This script maybe used form within the jbossws distribution
+# or instaled under JBOSS_HOME/bin
+###
+
+PARENT=`cd $DIRNAME/..; pwd`
+if [ -d $PARENT/client ]; then	
+	LIBDIR=$JBOSS_HOME/client
+else
+	LIBDIR=$PARENT/lib	
+fi
+
+# Is it a JBossWS-native or SunRI installation?
+if [ -a $LIBDIR/jbossws-client.jar ]; then
     JBOSSWS_NATIVE="true"
 fi
 
-#
+###
 # Setup the wsconsume classpath
 # The classpath is dynamically build depending on the stack that
 # is deployed. See $JBOSSWS_NATIVE above.
-#
+###
 
 # shared libs
 WSCONSUME_CLASSPATH="$WSCONSUME_CLASSPATH:$JAVA_HOME/lib/tools.jar"
-WSCONSUME_CLASSPATH="$WSCONSUME_CLASSPATH:$JBOSS_HOME/client/activation.jar"
-WSCONSUME_CLASSPATH="$WSCONSUME_CLASSPATH:$JBOSS_HOME/client/getopt.jar"
-WSCONSUME_CLASSPATH="$WSCONSUME_CLASSPATH:$JBOSS_HOME/client/wstx.jar"
-WSCONSUME_CLASSPATH="$WSCONSUME_CLASSPATH:$JBOSS_HOME/client/jbossall-client.jar"
-WSCONSUME_CLASSPATH="$WSCONSUME_CLASSPATH:$JBOSS_HOME/client/log4j.jar"
-WSCONSUME_CLASSPATH="$WSCONSUME_CLASSPATH:$JBOSS_HOME/client/mail.jar"
-WSCONSUME_CLASSPATH="$WSCONSUME_CLASSPATH:$JBOSS_HOME/client/jbossws-spi.jar"
+WSCONSUME_CLASSPATH="$WSCONSUME_CLASSPATH:$LIBDIR/activation.jar"
+WSCONSUME_CLASSPATH="$WSCONSUME_CLASSPATH:$LIBDIR/getopt.jar"
+WSCONSUME_CLASSPATH="$WSCONSUME_CLASSPATH:$LIBDIR/wstx.jar"
+WSCONSUME_CLASSPATH="$WSCONSUME_CLASSPATH:$LIBDIR/jbossall-client.jar"
+WSCONSUME_CLASSPATH="$WSCONSUME_CLASSPATH:$LIBDIR/log4j.jar"
+WSCONSUME_CLASSPATH="$WSCONSUME_CLASSPATH:$LIBDIR/mail.jar"
+WSCONSUME_CLASSPATH="$WSCONSUME_CLASSPATH:$LIBDIR/jbossws-spi.jar"
 
 # shared jaxws libs 
-WSCONSUME_CLASSPATH="$WSCONSUME_CLASSPATH:$JBOSS_HOME/client/jaxws-tools.jar"
-WSCONSUME_CLASSPATH="$WSCONSUME_CLASSPATH:$JBOSS_HOME/client/jaxws-rt.jar"
-WSCONSUME_CLASSPATH="$WSCONSUME_CLASSPATH:$JBOSS_HOME/client/jaxb-api.jar"
-WSCONSUME_CLASSPATH="$WSCONSUME_CLASSPATH:$JBOSS_HOME/client/jaxb-impl.jar"
-WSCONSUME_CLASSPATH="$WSCONSUME_CLASSPATH:$JBOSS_HOME/client/jaxb-xjc.jar"
-WSCONSUME_CLASSPATH="$WSCONSUME_CLASSPATH:$JBOSS_HOME/client/stax-api.jar"
+WSCONSUME_CLASSPATH="$WSCONSUME_CLASSPATH:$LIBDIR/jaxws-tools.jar"
+WSCONSUME_CLASSPATH="$WSCONSUME_CLASSPATH:$LIBDIR/jaxws-rt.jar"
+WSCONSUME_CLASSPATH="$WSCONSUME_CLASSPATH:$LIBDIR/jaxb-api.jar"
+WSCONSUME_CLASSPATH="$WSCONSUME_CLASSPATH:$LIBDIR/jaxb-impl.jar"
+WSCONSUME_CLASSPATH="$WSCONSUME_CLASSPATH:$LIBDIR/jaxb-xjc.jar"
+WSCONSUME_CLASSPATH="$WSCONSUME_CLASSPATH:$LIBDIR/stax-api.jar"
 
 # stack specific dependencies
 if [ "x$JBOSSWS_NATIVE" = "x" ]; then
    echo "Seems to be a Sun-RI stack deployed"
-   WSCONSUME_CLASSPATH="$WSCONSUME_CLASSPATH:$JBOSS_HOME/client/jbossws-sunri-client.jar"
+   WSCONSUME_CLASSPATH="$WSCONSUME_CLASSPATH:$LIBDIR/jbossws-sunri-client.jar"
 else
    echo "Seems to be a JBossWS-Native stack deployed"
-   WSCONSUME_CLASSPATH="$WSCONSUME_CLASSPATH:$JBOSS_HOME/client/javassist.jar"
-   WSCONSUME_CLASSPATH="$WSCONSUME_CLASSPATH:$JBOSS_HOME/client/jboss-xml-binding.jar"
-   WSCONSUME_CLASSPATH="$WSCONSUME_CLASSPATH:$JBOSS_HOME/client/jbossws-client.jar"
-   WSCONSUME_CLASSPATH="$WSCONSUME_CLASSPATH:$JBOSS_HOME/client/jboss-jaxws.jar"
-   WSCONSUME_CLASSPATH="$WSCONSUME_CLASSPATH:$JBOSS_HOME/client/jboss-jaxrpc.jar"
-   WSCONSUME_CLASSPATH="$WSCONSUME_CLASSPATH:$JBOSS_HOME/client/jboss-saaj.jar"
+   WSCONSUME_CLASSPATH="$WSCONSUME_CLASSPATH:$LIBDIR/javassist.jar"
+   WSCONSUME_CLASSPATH="$WSCONSUME_CLASSPATH:$LIBDIR/jboss-xml-binding.jar"
+   WSCONSUME_CLASSPATH="$WSCONSUME_CLASSPATH:$LIBDIR/jbossws-client.jar"
+   WSCONSUME_CLASSPATH="$WSCONSUME_CLASSPATH:$LIBDIR/jboss-jaxws.jar"
+   WSCONSUME_CLASSPATH="$WSCONSUME_CLASSPATH:$LIBDIR/jboss-jaxrpc.jar"
+   WSCONSUME_CLASSPATH="$WSCONSUME_CLASSPATH:$LIBDIR/jboss-saaj.jar"
 fi
+
+###
+# Execute the JVM
+###
 
 # For Cygwin, switch paths to Windows format before running java
 if $cygwin; then
@@ -97,7 +120,6 @@ if $cygwin; then
     JBOSS_ENDORSED_DIRS=`cygpath --path --windows "$JBOSS_ENDORSED_DIRS"`
 fi
 
-# Execute the JVM
 "$JAVA" $JAVA_OPTS \
    -Djava.endorsed.dirs="$JBOSS_ENDORSED_DIRS" \
    -Dlog4j.configuration=wstools-log4j.xml \
