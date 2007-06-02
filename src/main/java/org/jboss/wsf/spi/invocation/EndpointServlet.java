@@ -55,11 +55,16 @@ public class EndpointServlet extends HttpServlet
    {
       super.init(servletConfig);
       epRegistry = EndpointRegistryFactory.getEndpointRegistry();
-      endpoint = initServiceEndpoint(getServletContext().getContextPath());
    }
 
    public void service(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException
    {
+      if (endpoint == null)
+      {
+         String contextPath = req.getContextPath();
+         initServiceEndpoint(contextPath);
+      }
+
       try
       {
          EndpointAssociation.setEndpoint(endpoint);
@@ -74,12 +79,11 @@ public class EndpointServlet extends HttpServlet
 
    /** Initialize the service endpoint
     */
-   protected Endpoint initServiceEndpoint(String contextPath)
+   protected void initServiceEndpoint(String contextPath)
    {
       if (contextPath.startsWith("/"))
          contextPath = contextPath.substring(1);
 
-      Endpoint endpoint = null;
       String servletName = getServletName();
       for (ObjectName sepId : epRegistry.getEndpoints())
       {
@@ -98,7 +102,5 @@ public class EndpointServlet extends HttpServlet
                + Endpoint.SEPID_PROPERTY_ENDPOINT + "=" + servletName);
          throw new WebServiceException("Cannot obtain endpoint for: " + oname);
       }
-      
-      return endpoint;
    }
 }

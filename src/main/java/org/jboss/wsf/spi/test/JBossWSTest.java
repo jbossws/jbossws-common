@@ -77,6 +77,11 @@ public abstract class JBossWSTest extends TestCase
       return delegate.isTargetJBoss42();
    }
 
+   public boolean isTargetJBoss40()
+   {
+      return delegate.isTargetJBoss40();
+   }
+
    public boolean isIntegrationNative()
    {
       return delegate.isIntegrationNative();

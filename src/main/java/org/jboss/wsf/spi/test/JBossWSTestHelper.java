@@ -81,6 +81,13 @@ public class JBossWSTestHelper
       return "jboss42".equals(target);
    }
 
+   /** True, if -Djbossws.integration.target=jboss40 */
+   public static boolean isTargetJBoss40()
+   {
+      String target = getIntegrationTarget();
+      return "jboss40".equals(target);
+   }
+
    public boolean isIntegrationNative()
    {
       String vendor = Service.class.getPackage().getImplementationVendor();
@@ -150,6 +157,8 @@ public class JBossWSTestHelper
                jbossVersion = "jboss50";
             else if (jbossVersion.startsWith("4.2"))
                jbossVersion = "jboss42";
+            else if (jbossVersion.startsWith("4.0"))
+               jbossVersion = "jboss40";
             else throw new RuntimeException("Unsupported jboss version: " + jbossVersion);
 
             if (jbossVersion.equals(integrationTarget) == false)
