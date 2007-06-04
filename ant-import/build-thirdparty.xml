@@ -70,10 +70,31 @@
   </target>
   
   <target name="thirdparty-classpath" depends="thirdparty-get">
-    
-    <!-- The compile classpath for jbossws spi -->
-    <path id="thirdparty.classpath">
-      <pathelement location="${thirdparty.dir}/activation.jar"/>
+
+	  <echo>SPI thirdparty-classpath</echo>
+
+	  <fileset id="spi.thirdparty.fileset">
+		<include name="ant.jar"/>
+		<include name="activation.jar"/>
+      <include name="dom4j.jar"/>
+      <include name="getopt.jar"/>
+      <include name="jboss-common-core.jar"/>
+      <include name="jboss-dependency.jar"/>
+      <include name="jboss-logging-spi.jar"/>
+      <include name="jboss-javaee.jar"/>
+      <include name="jboss-microcontainer.jar"/>
+      <include name="jboss-xml-binding.jar"/>
+      <include name="jaxws-api.jar"/>
+      <include name="jaxrpc-api.jar"/>
+      <include name="jsr181-api.jar"/>
+		<include name="junit.jar"/>
+		<include name="servlet-api.jar"/>
+    </fileset>
+
+	 <!-- The compile classpath for jbossws spi -->
+    <path id="spi.thirdparty.classpath">
+		<pathelement location="${thirdparty.dir}/ant.jar"/>
+		<pathelement location="${thirdparty.dir}/activation.jar"/>
       <pathelement location="${thirdparty.dir}/dom4j.jar"/>
       <pathelement location="${thirdparty.dir}/getopt.jar"/>
       <pathelement location="${thirdparty.dir}/jboss-common-core.jar"/>
@@ -85,7 +106,8 @@
       <pathelement location="${thirdparty.dir}/jaxws-api.jar"/>
       <pathelement location="${thirdparty.dir}/jaxrpc-api.jar"/>
       <pathelement location="${thirdparty.dir}/jsr181-api.jar"/>
-      <pathelement location="${thirdparty.dir}/servlet-api.jar"/>
+		<pathelement location="${thirdparty.dir}/junit.jar"/>
+		<pathelement location="${thirdparty.dir}/servlet-api.jar"/>
     </path>
 
   </target>

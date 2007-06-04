@@ -63,7 +63,7 @@
       deprecation="${javac.deprecation}" failonerror="${javac.fail.onerror}" source="1.5" target="1.5">
       <include name="org/jboss/wsf/spi/**"/>
       <include name="org/jboss/ws/integration/**"/>
-      <classpath refid="thirdparty.classpath"/>
+      <classpath refid="spi.thirdparty.classpath"/>
     </javac>
   </target>
   
@@ -127,21 +127,13 @@
 
       <mkdir dir="${spi.output.apidocs.dir}"/>
       <javadoc destdir="${spi.output.apidocs.dir}" author="true" version="true" use="true" windowtitle="JBossWS API">
-         <classpath refid="thirdparty.classpath"/>
+         <classpath refid="spi.thirdparty.classpath"/>
          <packageset dir="${spi.java.dir}" defaultexcludes="yes">
             <include name="org/jboss/ws/**"/>
             <include name="org/jboss/wsf/**"/>
          </packageset>
          <doctitle><![CDATA[<h1>JBoss Web Service Framework - SPI</h1>]]></doctitle>
-         <tag name="todo" scope="all" description="To do:"/>
-         <group title="Integration (AS 4.2 backwards compatibility)" packages="org.jboss.ws.integration*"/>
-         <group title="Annotations" packages="org.jboss.wsf.spi.annotation*"/>
-         <group title="Deployment" packages="org.jboss.wsf.spi.deployment*"/>
-         <group title="Invocation" packages="org.jboss.wsf.spi.invocation*"/>
-         <group title="Management" packages="org.jboss.wsf.spi.management*"/>
-         <group title="Handler" packages="org.jboss.wsf.spi.handler*"/>
-         <group title="MetaData" packages="org.jboss.wsf.spi.metadata*"/>
-         <group title="Tools" packages="org.jboss.wsf.spi.tools*"/>          
+         <tag name="todo" scope="all" description="To do:"/>         
       </javadoc>
    </target>
   
