@@ -35,6 +35,12 @@ import org.jboss.wsf.spi.tools.WSContractProvider;
 
 import java.io.File;
 import java.io.PrintStream;
+import java.net.URLClassLoader;
+import java.net.URL;
+import java.net.MalformedURLException;
+import java.util.StringTokenizer;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Ant task which invokes provides a Web Service contract and portable JAX-WS wrapper classes.
@@ -161,8 +167,28 @@ public class WSProvideTask extends Task
    
    private ClassLoader getClasspathLoader(ClassLoader parent)
    {
-		AntClassLoader loader = new AntClassLoader(parent, getProject(), classpath, false);		
-		return loader;
+		AntClassLoader antLoader = new AntClassLoader(parent, getProject(), classpath, false);
+
+		// It's necessary to wrap it into an URLLoader in order to extract that information
+		// within the actual provider impl.
+		// See SunRIProviderImpl for instance
+		List<URL> urls = new ArrayList<URL>();
+		StringTokenizer tok = new StringTokenizer(antLoader.getClasspath(), File.separator);
+		while(tok.hasMoreTokens())
+		{
+			try
+			{
+				urls.add(new URL(tok.nextToken()));
+			}
+			catch (MalformedURLException e)
+			{
+				throw new IllegalArgumentException("Failed to wrap classloader", e);
+			}
+
+		}
+
+		ClassLoader wrapper = new URLClassLoader(urls.toArray(new URL[0]), antLoader);
+		return wrapper;
    }
    
    public void executeNonForked()
