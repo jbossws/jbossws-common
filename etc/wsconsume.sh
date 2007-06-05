@@ -55,7 +55,7 @@ JBOSS_ENDORSED_DIRS="$JBOSS_HOME/lib/endorsed"
 ###
 # Setup the LIBDIR
 # This script maybe used form within the jbossws distribution
-# or instaled under JBOSS_HOME/bin
+# or installed under JBOSS_HOME/bin
 ###
 
 PARENT=`cd $DIRNAME/..; pwd`
@@ -89,10 +89,10 @@ WSCONSUME_CLASSPATH="$WSCONSUME_CLASSPATH:$LIBDIR/jbossws-spi.jar"
 # shared jaxws libs 
 WSCONSUME_CLASSPATH="$WSCONSUME_CLASSPATH:$LIBDIR/jaxws-tools.jar"
 WSCONSUME_CLASSPATH="$WSCONSUME_CLASSPATH:$LIBDIR/jaxws-rt.jar"
+WSCONSUME_CLASSPATH="$WSCONSUME_CLASSPATH:$LIBDIR/stax-api.jar"
 WSCONSUME_CLASSPATH="$WSCONSUME_CLASSPATH:$LIBDIR/jaxb-api.jar"
 WSCONSUME_CLASSPATH="$WSCONSUME_CLASSPATH:$LIBDIR/jaxb-impl.jar"
 WSCONSUME_CLASSPATH="$WSCONSUME_CLASSPATH:$LIBDIR/jaxb-xjc.jar"
-WSCONSUME_CLASSPATH="$WSCONSUME_CLASSPATH:$LIBDIR/stax-api.jar"
 
 # stack specific dependencies
 if [ "x$JBOSSWS_NATIVE" = "x" ]; then

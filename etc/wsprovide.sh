@@ -55,7 +55,7 @@ JBOSS_ENDORSED_DIRS="$JBOSS_HOME/lib/endorsed"
 ###
 # Setup the LIBDIR
 # This script maybe used form within the jbossws distribution
-# or instaled under JBOSS_HOME/bin
+# or installed under JBOSS_HOME/bin
 ###
 
 PARENT=`cd $DIRNAME/..; pwd`
