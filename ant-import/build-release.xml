@@ -24,7 +24,8 @@
       <fileset dir="${spi.output.lib.dir}">
         <include name="jbossws-spi.jar"/>
         <include name="jbossws-integration-src.zip"/>
-      </fileset>
+		  <include name="jbossws-spi-scripts.zip"/>
+		</fileset>
     </copy>
     <copy tofile="${jboss.repository.dir}/jbossws-spi/${repository.id}/component-info.xml" file="${spi.etc.dir}/component-info.xml" filtering="true" overwrite="true">
       <filterset>

@@ -115,7 +115,11 @@
     <zip zipfile="${spi.output.lib.dir}/jbossws-spi-src.zip" >
       <fileset dir="${spi.java.dir}"/>
     </zip>
-    
+
+	  <!-- Build jbossws-spi-scripts.zip -->
+    <zip zipfile="${spi.output.lib.dir}/jbossws-spi-scripts.zip" >
+      <fileset dir="${spi.dir}/etc"/>
+    </zip>
   </target>
   
   <!-- ================================================================== -->
