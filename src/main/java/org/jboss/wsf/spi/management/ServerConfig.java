@@ -24,7 +24,9 @@ package org.jboss.wsf.spi.management;
 // $Id$
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.net.UnknownHostException;
+import java.net.URL;
 
 import javax.management.ObjectName;
 
@@ -34,6 +36,7 @@ import org.jboss.wsf.spi.utils.ObjectNameFactory;
  * Interface to container independent config 
  *
  * @author Thomas.Diesler@jboss.org
+ * @author mageshbk@jboss.com
  * @since 08-May-2006
  */
 public interface ServerConfig
@@ -66,4 +69,8 @@ public interface ServerConfig
    boolean isModifySOAPAddress();
    
    void setModifySOAPAddress(boolean flag);
+
+   String getDisplayAddress(String endpointAddress, URL requestURL) throws MalformedURLException;
+
+   String getDisplayHost(String endpointAddress, URL requestURL) throws MalformedURLException;
 }
