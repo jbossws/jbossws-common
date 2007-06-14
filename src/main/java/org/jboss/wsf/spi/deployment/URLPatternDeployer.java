@@ -42,12 +42,19 @@ public class URLPatternDeployer extends AbstractDeployer
    {
       for (Endpoint ep : dep.getService().getEndpoints())
       {
-         String urlPattern = getUrlPattern(dep, ep);
+         String urlPattern = getExplicitPattern(dep, ep);
+         if (urlPattern == null)
+            urlPattern = getImplicitPattern(dep, ep);
+         
+         // Always prefix with '/'
+         if (urlPattern.startsWith("/") == false)
+            urlPattern = "/" + urlPattern;
+
          ep.setURLPattern(urlPattern);
       }
    }
 
-   private String getUrlPattern(Deployment dep, Endpoint ep)
+   protected String getExplicitPattern(Deployment dep, Endpoint ep)
    {
       String urlPattern = null;
 
@@ -81,13 +88,14 @@ public class URLPatternDeployer extends AbstractDeployer
          if (anWebContext != null && anWebContext.urlPattern().length() > 0)
             urlPattern = anWebContext.urlPattern();
       }
+      
+      return urlPattern;
+   }
 
+   protected String getImplicitPattern(Deployment dep, Endpoint ep)
+   {
       // #4 Fallback to the ejb-name 
-      if (urlPattern == null)
-      {
-         urlPattern = "/" + ep.getShortName();
-      }
-
+      String urlPattern = ep.getShortName();
       return urlPattern;
    }
 }

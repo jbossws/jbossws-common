@@ -71,9 +71,7 @@
   <target name="compile-etc" depends="init">
     <mkdir dir="${spi.output.etc.dir}"/>
     <copy todir="${spi.output.etc.dir}" filtering="yes">
-      <fileset dir="${spi.etc.dir}">
-        <include name="component-info.xml"/>
-  	  </fileset>
+      <fileset dir="${spi.etc.dir}"/>
       <fileset dir="${build.dir}/etc">
         <include name="default.mf"/>
   	  </fileset>
@@ -111,15 +109,23 @@
       </fileset>
     </jar>
     
-    <!-- Build jbossws-src.zip -->
+    <!-- Build jbossws-spi-scripts.zip -->
+    <zip zipfile="${spi.output.lib.dir}/jbossws-spi-scripts.zip" >
+			<fileset dir="${spi.output.etc.dir}">
+				<include name="wsconsume.bat"/>
+				<include name="wsprovide.bat"/>
+			</fileset>
+			<zipfileset dir="${spi.output.etc.dir}" filemode="755">
+				<include name="wsconsume.sh"/>
+				<include name="wsprovide.sh"/>
+			</zipfileset>
+    </zip>
+	  
+    <!-- Build jbossws-spi-src.zip -->
     <zip zipfile="${spi.output.lib.dir}/jbossws-spi-src.zip" >
       <fileset dir="${spi.java.dir}"/>
     </zip>
 
-	  <!-- Build jbossws-spi-scripts.zip -->
-    <zip zipfile="${spi.output.lib.dir}/jbossws-spi-scripts.zip" >
-      <fileset dir="${spi.dir}/etc"/>
-    </zip>
   </target>
   
   <!-- ================================================================== -->

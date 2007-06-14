@@ -37,8 +37,6 @@ import org.xml.sax.Attributes;
  */
 public interface ServiceRefHandler
 {
-   String BEAN_NAME = "ServiceRefHandler";
-   
    ServiceRefMetaData newServiceRefMetaData();
 
    Object newChild(ServiceRefElement ref, UnmarshallingContext navigator, String namespaceURI, String localName, Attributes attrs);

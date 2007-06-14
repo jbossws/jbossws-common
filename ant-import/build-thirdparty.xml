@@ -41,6 +41,8 @@
     <mkdir dir="${thirdparty.dir}"/>
     <get src="${jboss.repository}/apache-ant/${apache-ant}/lib/ant.jar" dest="${thirdparty.dir}/ant.jar" usetimestamp="true" verbose="true"/>
     <get src="${jboss.repository}/dom4j/${dom4j}/lib/dom4j.jar" dest="${thirdparty.dir}/dom4j.jar" usetimestamp="true" verbose="true"/>
+    <get src="${jboss.repository}/ibm-wsdl4j/${ibm-wsdl4j}/lib/wsdl4j.jar" dest="${thirdparty.dir}/wsdl4j.jar" usetimestamp="true" verbose="true"/>
+    <get src="${jboss.repository}/ibm-wsdl4j/${ibm-wsdl4j}/lib/wsdl4j-src.jar" dest="${thirdparty.dir}/wsdl4j-src.jar" usetimestamp="true" verbose="true"/>
     <get src="${jboss.repository}/jboss/common-core/${jboss-common-core}/lib/jboss-common-core.jar" dest="${thirdparty.dir}/jboss-common-core.jar" usetimestamp="true" verbose="true"/>
     <get src="${jboss.repository}/jboss/common-core/${jboss-common-core}/lib/jboss-common-core-sources.jar" dest="${thirdparty.dir}/jboss-common-core-sources.jar" usetimestamp="true" verbose="true"/>
     <get src="${jboss.repository}/jboss/common-logging-log4j/${jboss-common-logging-log4j}/lib/jboss-logging-log4j.jar" dest="${thirdparty.dir}/jboss-logging-log4j.jar" usetimestamp="true" verbose="true"/>
@@ -57,6 +59,7 @@
     <get src="${jboss.repository}/jboss/microcontainer/${jboss-microcontainer}/lib/jboss-microcontainer.jar" dest="${thirdparty.dir}/jboss-microcontainer.jar" usetimestamp="true" verbose="true"/>
     <get src="${jboss.repository}/jboss/microcontainer/${jboss-microcontainer}/lib/jboss-microcontainer-src.zip" dest="${thirdparty.dir}/jboss-microcontainer-src.zip" usetimestamp="true" verbose="true"/>
     <get src="${jboss.repository}/junit/${junit}/lib/junit.jar" dest="${thirdparty.dir}/junit.jar" usetimestamp="true" verbose="true"/>
+    <get src="${jboss.repository}/stax-api/${stax-api}/lib/stax-api.jar" dest="${thirdparty.dir}/stax-api.jar" usetimestamp="true" verbose="true"/>
     <get src="${jboss.repository}/sun-jaf/${sun-jaf}/lib/activation.jar" dest="${thirdparty.dir}/activation.jar" usetimestamp="true" verbose="true"/>
     <get src="${jboss.repository}/sun-jaxb/${sun-jaxb}/lib/jaxb-api.jar" dest="${thirdparty.dir}/jaxb-api.jar" usetimestamp="true" verbose="true"/>
     <get src="${jboss.repository}/sun-jaxb/${sun-jaxb}/lib/jaxb-impl.jar" dest="${thirdparty.dir}/jaxb-impl.jar" usetimestamp="true" verbose="true"/>

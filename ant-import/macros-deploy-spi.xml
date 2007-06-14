@@ -15,29 +15,27 @@
 
 	<macrodef name="macro-deploy-spi">
 		<attribute name="spilibs"/>
-		<attribute name="spiscripts"/>
 		<attribute name="thirdpartylibs"/>
 		<attribute name="jbosshome"/>
 		<sequential>
+      
+      <!-- BIN SCRIPTS -->
+      <unzip dest="@{jbosshome}/bin" src="@{spilibs}/jbossws-spi-scripts.zip"/>
+			<chmod dir="@{jbosshome}/bin" perm="+x" includes="*.sh"/>
+      
+      <!-- CLIENT JARS-->
 			<copy todir="@{jbosshome}/client">
 				<fileset dir="@{spilibs}">
 					<include name="jbossws-spi.jar"/>
 				</fileset>
 			</copy>
+      
+      <!-- SERVER JARS-->
 			<copy todir="@{jbosshome}/server/${jboss.server.instance}/lib">
 				<fileset dir="@{spilibs}">
 					<include name="jbossws-spi.jar"/>
 				</fileset>
 			</copy>
-			<copy todir="@{jbosshome}/bin" overwrite="true">
-				<fileset dir="@{spiscripts}">
-					<include name="wsconsume.bat"/>
-					<include name="wsconsume.sh"/>
-					<include name="wsprovide.bat"/>
-					<include name="wsprovide.sh"/>
-				</fileset>
-			</copy>
-			<chmod dir="@{jbosshome}/bin" perm="+x" includes="*.sh"/>
 		</sequential>
 	</macrodef>
 
@@ -45,17 +43,20 @@
 		<attribute name="jbosshome"/>
 		<sequential>
 			<delete>
+        <!-- BIN SCRIPTS -->
+				<fileset dir="@{jbosshome}/bin">
+					<include name="wsconsume.*"/>
+					<include name="wsprovide.*"/>
+				</fileset>
+        
+        <!-- CLIENT JARS-->
 				<fileset dir="@{jbosshome}/client">
 					<include name="jbossws-spi.jar"/>
 				</fileset>
+        
+        <!-- SERVER JARS-->
 				<fileset dir="@{jbosshome}/server/${jboss.server.instance}/lib">
 					<include name="jbossws-spi.jar"/>
-				</fileset>
-				<fileset dir="@{jbosshome}/bin">
-					<include name="wsconsume.bat"/>
-					<include name="wsconsume.sh"/>
-					<include name="wsprovide.bat"/>
-					<include name="wsprovide.sh"/>
 				</fileset>
 			</delete>
 		</sequential>

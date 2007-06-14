@@ -1,4 +1,5 @@
 <project name="jboss/jbossws-spi">
+    <artifact id="jbossws-spi-scripts.zip"/>
 
 	<component id="jboss/jbossws-spi"
 				  description="JBossWS SPI"

@@ -23,7 +23,7 @@ package org.jboss.wsf.spi.invocation;
 
 // $Id$
 
-import org.jboss.ws.integration.FactoryLoader;
+import org.jboss.wsf.spi.utils.ServiceLoader;
 
 /**
  * A container idependent SecurityAdaptorFactory
@@ -35,7 +35,7 @@ public final class SecurityAdaptorFactory
 {
    public static SecurityAdaptor getSecurityAdaptor()
    {
-      SecurityAdaptor securityAdaptor = (SecurityAdaptor)FactoryLoader.loadFactory(SecurityAdaptor.class.getName(), null);
+      SecurityAdaptor securityAdaptor = (SecurityAdaptor)ServiceLoader.loadService(SecurityAdaptor.class.getName(), null);
       if (securityAdaptor == null)
          throw new IllegalStateException("Cannot load SecurityAdaptor");
 

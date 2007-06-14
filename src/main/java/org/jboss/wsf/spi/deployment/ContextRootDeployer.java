@@ -26,7 +26,6 @@ package org.jboss.wsf.spi.deployment;
 import org.jboss.wsf.spi.annotation.WebContext;
 import org.jboss.wsf.spi.metadata.j2ee.UnifiedApplicationMetaData;
 import org.jboss.wsf.spi.metadata.j2ee.UnifiedWebMetaData;
-import org.jboss.wsf.spi.metadata.webservices.WebservicesMetaData;
 
 /**
  * A deployer that assigns the context root to the service 
@@ -39,8 +38,21 @@ public class ContextRootDeployer extends AbstractDeployer
    @Override
    public void create(Deployment dep)
    {
-      String contextRoot = null;
+      String contextRoot = getExplicitContextRoot(dep);
+      if (contextRoot == null)
+         contextRoot = getImplicitContextRoot(dep);
       
+      // Always prefix with '/'
+      if (contextRoot.startsWith("/") == false)
+         contextRoot = "/" + contextRoot;
+      
+      dep.getService().setContextRoot(contextRoot);
+   }
+
+   protected String getExplicitContextRoot(Deployment dep)
+   {
+      String contextRoot = null;
+
       // #1 Use the explicit context root from the web meta data
       UnifiedWebMetaData webMetaData = dep.getContext().getAttachment(UnifiedWebMetaData.class);
       if (webMetaData != null)
@@ -70,22 +82,21 @@ public class ContextRootDeployer extends AbstractDeployer
          contextRoot = appMetaData.getWebServiceContextRoot();
       }
 
-      // #4 Use the implicit context root derived from the deployment name
-      if (contextRoot == null)
+      return contextRoot;
+   }
+
+   /** Use the implicit context root derived from the deployment name
+    */
+   protected String getImplicitContextRoot(Deployment dep)
+   {
+      UnifiedDeploymentInfo udi = dep.getContext().getAttachment(UnifiedDeploymentInfo.class);
+      String simpleName = udi.simpleName;
+      String contextRoot = simpleName.substring(0, simpleName.length() - 4);
+      if (udi.parent != null)
       {
-         UnifiedDeploymentInfo udi = dep.getContext().getAttachment(UnifiedDeploymentInfo.class);
-         String simpleName = udi.simpleName;
-         contextRoot = simpleName.substring(0, simpleName.length() - 4);
-         if (udi.parent != null)
-         {
-            simpleName = udi.parent.simpleName;
-            contextRoot = simpleName.substring(0, simpleName.length() - 4) + "-" + contextRoot;
-         }
+         simpleName = udi.parent.simpleName;
+         contextRoot = simpleName.substring(0, simpleName.length() - 4) + "-" + contextRoot;
       }
-
-      if (contextRoot.startsWith("/"))
-         contextRoot = contextRoot.substring(1);
-
-      dep.getService().setContextRoot(contextRoot);
+      return contextRoot;
    }
 }

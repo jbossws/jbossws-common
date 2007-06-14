@@ -1,11 +1,9 @@
 package org.jboss.wsf.spi.tools;
 
-import org.jboss.wsf.spi.tools.WSContractProviderFactory;
-import org.jboss.ws.integration.FactoryLoader;
-
 import java.io.File;
 import java.io.PrintStream;
 
+import org.jboss.wsf.spi.utils.ServiceLoader;
 
 /**
  * WSContractProvider is responsible for generating the required portable
@@ -33,12 +31,12 @@ public abstract class WSContractProvider
 {
    private static String DEFAULT_PROVIDER = "org.jboss.ws.tools.jaxws.impl.JBossWSProviderFactoryImpl";
    public static final String PROVIDER_PROPERTY = "org.jboss.wsf.tools.ProviderFactoryImpl";
-   
-   protected WSContractProvider() 
+
+   protected WSContractProvider()
    {
-      
+
    }
-   
+
    /**
     * Obtain a new instance of a WSContractProvider. This will use the current
     * thread's context class loader to locate the WSContractProviderFactory
@@ -50,7 +48,7 @@ public abstract class WSContractProvider
    {
       return newInstance(Thread.currentThread().getContextClassLoader());
    }
-   
+
    /**
     * Obtain a new instance of a WSContractProvider. The specified ClassLoader will be used to
     * locate the WSContractProviderFactory implementation
@@ -60,40 +58,40 @@ public abstract class WSContractProvider
     */
    public static WSContractProvider newInstance(ClassLoader loader)
    {
-      ClassLoader  oldLoader = Thread.currentThread().getContextClassLoader();
+      ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
       try
       {
          Thread.currentThread().setContextClassLoader(loader);
-         WSContractProviderFactory factory = (WSContractProviderFactory)
-               FactoryLoader.loadFactory(PROVIDER_PROPERTY, DEFAULT_PROVIDER);
+         WSContractProviderFactory factory = (WSContractProviderFactory)ServiceLoader.loadService(PROVIDER_PROPERTY, DEFAULT_PROVIDER);
          return factory.createProvider(loader);
       }
-      finally{
+      finally
+      {
          Thread.currentThread().setContextClassLoader(oldLoader);
       }
    }
-   
+
    /**
     * Enables/Disables WSDL generation.
     * 
     * @param generateWsdl whether or not to generate WSDL
     */
    public abstract void setGenerateWsdl(boolean generateWsdl);
-   
+
    /**
     * Enables/Disables Java source generation.
     * 
     * @param generateSource whether or not to generate Java source.
     */
    public abstract void setGenerateSource(boolean generateSource);
-   
+
    /**
     * Sets the main output directory. If the directory does not exist, it will be created.
     * 
     * @param directory the root directory for generated files
     */
    public abstract void setOutputDirectory(File directory);
-   
+
    /**
     * Sets the resource directory. This directory will contain any generated
     * WSDL and XSD files. If the directory does not exist, it will be created.
@@ -102,7 +100,7 @@ public abstract class WSContractProvider
     * @param directory the root directory for generated resource files
     */
    public abstract void setResourceDirectory(File directory);
-  
+
    /**
     * Sets the source directory. This directory will contain any generated Java source.
     * If the directory does not exist, it will be created. If not specified, 
@@ -111,7 +109,7 @@ public abstract class WSContractProvider
     * @param directory the root directory for generated source code
     */
    public abstract void setSourceDirectory(File directory);
-   
+
    /**
     * Sets the ClassLoader used to discover types. This defaults to the one used
     * in instantiation.
@@ -119,7 +117,7 @@ public abstract class WSContractProvider
     * @param loader the ClassLoader to use
     */
    public abstract void setClassLoader(ClassLoader loader);
-   
+
    /**
     * Generates artifacts using the current settings. This method may be invoked
     * more than once (e.g. multiple endpoints).
@@ -137,7 +135,7 @@ public abstract class WSContractProvider
     * @throws RuntimeException if any error occurs during processing
     */
    public abstract void provide(Class<?> endpointClass);
-   
+
    /**
     * Sets the PrintStream to use for status feedback. The simplest example
     * would be to use System.out.

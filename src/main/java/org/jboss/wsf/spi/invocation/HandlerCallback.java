@@ -34,11 +34,11 @@ import org.jboss.wsf.spi.metadata.j2ee.serviceref.UnifiedHandlerMetaData.Handler
 public interface HandlerCallback
 {
    /** Handlers are beeing called through the HandlerCallback from the EJB interceptor */
-   boolean callRequestHandlerChain(HandlerType type);
+   boolean callRequestHandlerChain(Invocation wsInv, HandlerType type);
 
    /** Handlers are beeing called through the HandlerCallback from the EJB interceptor */
-   boolean callResponseHandlerChain(HandlerType type);
+   boolean callResponseHandlerChain(Invocation wsInv, HandlerType type);
 
    /** Handlers are beeing called through the HandlerCallback from the EJB interceptor */
-   boolean callFaultHandlerChain(HandlerType type, Exception ex);
+   boolean callFaultHandlerChain(Invocation wsInv, HandlerType type, Exception ex);
 }
