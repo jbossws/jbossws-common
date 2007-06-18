@@ -28,6 +28,9 @@
 				<fileset dir="@{spilibs}">
 					<include name="jbossws-spi.jar"/>
 				</fileset>
+				<fileset dir="@{thirdpartylibs}">
+					<include name="wsdl4j.jar"/>
+				</fileset>
 			</copy>
       
       <!-- SERVER JARS-->
@@ -52,6 +55,7 @@
         <!-- CLIENT JARS-->
 				<fileset dir="@{jbosshome}/client">
 					<include name="jbossws-spi.jar"/>
+					<include name="wsdl4j.jar"/>
 				</fileset>
         
         <!-- SERVER JARS-->
