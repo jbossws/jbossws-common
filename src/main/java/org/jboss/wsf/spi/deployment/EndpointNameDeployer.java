@@ -38,7 +38,12 @@ public class EndpointNameDeployer extends AbstractDeployer
    {
       String contextRoot = dep.getService().getContextRoot();
 
-      for (Endpoint ep : dep.getService().getEndpoints())
+		if(contextRoot.startsWith("/"))
+			contextRoot = contextRoot.substring(1);
+		else
+			throw new IllegalArgumentException("Expected context-root with leading slash");
+
+		for (Endpoint ep : dep.getService().getEndpoints())
       {
          StringBuilder name = new StringBuilder(Endpoint.SEPID_DOMAIN + ":");
          name.append(Endpoint.SEPID_PROPERTY_CONTEXT + "=" + contextRoot + ",");
