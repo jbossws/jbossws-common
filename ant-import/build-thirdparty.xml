@@ -67,7 +67,9 @@
     <get src="${jboss.repository}/sun-jaxws/${sun-jaxws}/lib/jaxws-api.jar" dest="${thirdparty.dir}/jaxws-api.jar" usetimestamp="true" verbose="true"/> 
     <get src="${jboss.repository}/sun-jaxws/${sun-jaxws}/lib/jsr181-api.jar" dest="${thirdparty.dir}/jsr181-api.jar" usetimestamp="true" verbose="true"/> 
     <get src="${jboss.repository}/sun-jaxws/${sun-jaxws}/lib/saaj-api.jar" dest="${thirdparty.dir}/saaj-api.jar" usetimestamp="true" verbose="true"/>
-    <get src="${jboss.repository}/sun-jaxrpc/${sun-jaxrpc}/lib/jaxrpc-api.jar" dest="${thirdparty.dir}/jaxrpc-api.jar" usetimestamp="true" verbose="true"/> 
+	 <get src="${jboss.repository}/sun-jaxws/${sun-jaxws}/lib/streambuffer.jar" dest="${thirdparty.dir}/streambuffer.jar" usetimestamp="true" verbose="true"/>
+	 <get src="${jboss.repository}/sun-jaxws/${sun-jaxws}/lib/stax-ex.jar" dest="${thirdparty.dir}/stax-ex.jar" usetimestamp="true" verbose="true"/>
+	 <get src="${jboss.repository}/sun-jaxrpc/${sun-jaxrpc}/lib/jaxrpc-api.jar" dest="${thirdparty.dir}/jaxrpc-api.jar" usetimestamp="true" verbose="true"/>
     <get src="${jboss.repository}/sun-servlet/${sun-servlet}/lib/servlet-api.jar" dest="${thirdparty.dir}/servlet-api.jar" usetimestamp="true" verbose="true"/>
     <checksum file="${build.dir}/version.properties" fileext=".md5"/>
   </target>
