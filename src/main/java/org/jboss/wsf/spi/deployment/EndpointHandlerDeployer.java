@@ -25,6 +25,7 @@ package org.jboss.wsf.spi.deployment;
 
 import java.util.Map;
 
+import org.jboss.wsf.spi.invocation.InvocationExceptionHandler;
 import org.jboss.wsf.spi.invocation.InvocationHandler;
 import org.jboss.wsf.spi.invocation.RequestHandler;
 
@@ -38,7 +39,8 @@ public class EndpointHandlerDeployer extends AbstractDeployer
 {
    private String requestHandler;
    private String lifecycleHandler;
-   private Map<String,String> invocationHandler;
+   private Map<String, String> invocationHandler;
+   private String invocationExceptionHandler;
 
    public void setLifecycleHandler(String handler)
    {
@@ -50,9 +52,14 @@ public class EndpointHandlerDeployer extends AbstractDeployer
       this.requestHandler = handler;
    }
 
-   public void setInvocationHandler(Map<String,String> handlers)
+   public void setInvocationHandler(Map<String, String> handlers)
    {
       this.invocationHandler = handlers;
+   }
+
+   public void setInvocationExceptionHandler(String handler)
+   {
+      this.invocationExceptionHandler = handler;
    }
 
    @Override
@@ -97,11 +104,23 @@ public class EndpointHandlerDeployer extends AbstractDeployer
       String className = invocationHandler.get(dep.getType().toString());
       if (className == null)
          throw new IllegalStateException("Cannot obtain invocation handler for: " + dep.getType());
-      
+
+      InvocationExceptionHandler exceptionHandler;
+      try
+      {
+         Class<?> handlerClass = dep.getClassLoader().loadClass(invocationExceptionHandler);
+         exceptionHandler = (InvocationExceptionHandler)handlerClass.newInstance();
+      }
+      catch (Exception e)
+      {
+         throw new IllegalStateException("Cannot load invocation exception handler: " + invocationExceptionHandler);
+      }
       try
       {
          Class<?> handlerClass = dep.getClassLoader().loadClass(className);
-         return (InvocationHandler)handlerClass.newInstance();
+         InvocationHandler invocationHandlerInstance = (InvocationHandler)handlerClass.newInstance();
+         invocationHandlerInstance.setExceptionHandler(exceptionHandler);
+         return invocationHandlerInstance;
       }
       catch (Exception e)
       {

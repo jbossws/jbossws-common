@@ -21,36 +21,44 @@
  */
 package org.jboss.wsf.spi.invocation;
 
-//$Id$
+import java.lang.reflect.UndeclaredThrowableException;
 
-import org.jboss.wsf.spi.deployment.Endpoint;
+import javax.management.MBeanException;
 
 /**
- * A general endpoint invocation handler.
+ * A basic invocation exception handler that simply rethrows Throwable as Exception
  * 
- * @author Thomas.Diesler@jboss.com
- * @since 20-Apr-2007 
+ * @author Alessio Soldano, <alessio.soldano@javalinux.it>
+ * @since 17-Jun-2007
+ *
  */
-public interface InvocationHandler
+public class BasicInvocationExceptionHandler implements InvocationExceptionHandler
 {
-   /** Create the default invokation object */
-   Invocation createInvocation();
    
-   /** Create the invocation handler */
-   void create(Endpoint ep);
+   public void handleInvocationException(Throwable th) throws Exception
+   {
+      if (th instanceof MBeanException)
+      {
+         throw ((MBeanException)th).getTargetException();
+      }
 
-   /** Start the invocation handler */
-   void start(Endpoint ep);
-
-   /** Invoke the the service endpoint */
-   void invoke(Endpoint ep, Object beanInstance, Invocation inv) throws Exception;
-
-   /** Stop the invocation handler */
-   void stop(Endpoint ep);
-
-   /** Destroy the invocation handler */
-   void destroy(Endpoint ep);
+      handleInvocationThrowable(th);
+   }
    
-   /** Set the handler to be used to deal with invocation exceptions **/
-   void setExceptionHandler(InvocationExceptionHandler exceptionHandler);
+   protected void handleInvocationThrowable(Throwable th) throws Exception
+   {
+      if (th instanceof Exception)
+      {
+         throw (Exception)th;
+      }
+      else if (th instanceof Error)
+      {
+         throw (Error)th;
+      }
+      else
+      {
+         throw new UndeclaredThrowableException(th);
+      }
+   }
+   
 }

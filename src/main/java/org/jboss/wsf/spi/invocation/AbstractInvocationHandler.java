@@ -23,11 +23,7 @@ package org.jboss.wsf.spi.invocation;
 
 // $Id$
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.UndeclaredThrowableException;
-
-import javax.management.MBeanException;
 
 import org.jboss.logging.Logger;
 import org.jboss.wsf.spi.deployment.Endpoint;
@@ -43,6 +39,8 @@ public abstract class AbstractInvocationHandler extends BasicInvocationHandler
 {
    // provide logging
    private static final Logger log = Logger.getLogger(AbstractInvocationHandler.class);
+   
+   protected InvocationExceptionHandler exceptionHandler;
 
    protected Method getImplMethod(Class implClass, Method seiMethod) throws ClassNotFoundException, NoSuchMethodException
    {
@@ -63,37 +61,10 @@ public abstract class AbstractInvocationHandler extends BasicInvocationHandler
       return implMethod;
    }
 
-   protected void handleInvocationException(Throwable th) throws Exception
+   protected final void handleInvocationException(Throwable th) throws Exception
    {
-      if (th instanceof InvocationTargetException)
-      {
-         // unwrap the throwable raised by the service endpoint implementation
-         Throwable targetEx = ((InvocationTargetException)th).getTargetException();
-         handleInvocationThrowable(targetEx);
-      }
-
-      if (th instanceof MBeanException)
-      {
-         throw ((MBeanException)th).getTargetException();
-      }
-
-      handleInvocationThrowable(th);
-   }
-
-   private void handleInvocationThrowable(Throwable th) throws Exception
-   {
-      if (th instanceof Exception)
-      {
-         throw (Exception)th;
-      }
-      else if (th instanceof Error)
-      {
-         throw (Error)th;
-      }
-      else
-      {
-         throw new UndeclaredThrowableException(th);
-      }
+      //delegate to invocation exception handler
+      exceptionHandler.handleInvocationException(th);
    }
 
    public void create(Endpoint ep)
@@ -114,5 +85,15 @@ public abstract class AbstractInvocationHandler extends BasicInvocationHandler
    public void destroy(Endpoint ep)
    {
       log.debug("Destroy: " + ep.getName());
+   }
+   
+   public InvocationExceptionHandler getExceptionHandler()
+   {
+      return exceptionHandler;
+   }
+
+   public void setExceptionHandler(InvocationExceptionHandler exceptionHandler)
+   {
+      this.exceptionHandler = exceptionHandler;
    }
 }
