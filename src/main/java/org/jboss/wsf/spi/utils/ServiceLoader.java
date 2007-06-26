@@ -42,7 +42,7 @@ import java.util.Properties;
 public abstract class ServiceLoader
 {
    /**
-    * This method uses the algirithm below using the JAXWS Provider as an example. 
+    * This method uses the algorithm below using the JAXWS Provider as an example.
     * 
     * 1. If a resource with the name of META-INF/services/javax.xml.ws.spi.Provider exists, then
     * its first line, if present, is used as the UTF-8 encoded name of the implementation class.
