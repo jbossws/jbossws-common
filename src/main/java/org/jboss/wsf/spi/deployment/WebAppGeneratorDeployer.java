@@ -136,7 +136,7 @@ public class WebAppGeneratorDeployer extends AbstractDeployer
       {
          Element servlet = webApp.addElement("servlet");
          servlet.addElement("servlet-name").addText(ep.getShortName());
-         servlet.addElement("servlet-class").addText(ep.getTargetBean());
+         servlet.addElement("servlet-class").addText(ep.getTargetBeanName());
       }
 
       /*

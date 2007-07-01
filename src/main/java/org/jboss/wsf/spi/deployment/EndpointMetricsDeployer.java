@@ -19,44 +19,33 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.wsf.spi.invocation;
+package org.jboss.wsf.spi.deployment;
 
-// $Id$
+//$Id: EndpointNameDeployer.java 3146 2007-05-18 22:55:26Z thomas.diesler@jboss.com $
 
-import java.security.Principal;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.xml.ws.handler.MessageContext;
+import org.jboss.wsf.spi.management.EndpointMetrics;
 
 /**
- * A WebServiceContext implementation that delegates to the HttpServletRequest.
+ * A deployer that assigns the metrics to the Endpoint 
  *
  * @author Thomas.Diesler@jboss.org
- * @since 23-Jan-2007
+ * @since 20-Jun-2007
  */
-public class WebServiceContextJSE extends AbstractWebServiceContext
+public class EndpointMetricsDeployer extends AbstractDeployer
 {
-   private HttpServletRequest httpRequest;
-
-   public WebServiceContextJSE(MessageContext msgContext)
+   private EndpointMetrics metrics;
+   
+   public void setEndpointMetrics(EndpointMetrics metrics)
    {
-      super(msgContext);
-      httpRequest = (HttpServletRequest)msgContext.get(MessageContext.SERVLET_REQUEST);
-      if (httpRequest == null)
-         throw new IllegalStateException("Cannot obtain HTTPServletRequest from message context");
+      this.metrics = metrics;
    }
 
    @Override
-   public Principal getUserPrincipal()
+   public void create(Deployment dep)
    {
-      Principal principal = httpRequest.getUserPrincipal();
-      return principal;
-   }
-
-   @Override
-   public boolean isUserInRole(String role)
-   {
-      boolean isUserInRole = httpRequest.isUserInRole(role);
-      return isUserInRole;
+      for (Endpoint ep : dep.getService().getEndpoints())
+      {
+         ep.setEndpointMetrics(metrics);
+      }
    }
 }

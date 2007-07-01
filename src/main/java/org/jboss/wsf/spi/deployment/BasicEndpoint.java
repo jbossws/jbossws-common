@@ -27,8 +27,10 @@ import java.util.Set;
 
 import javax.management.ObjectName;
 
+import org.jboss.wsf.spi.binding.jaxb.JAXBHandler;
 import org.jboss.wsf.spi.invocation.InvocationHandler;
 import org.jboss.wsf.spi.invocation.RequestHandler;
+import org.jboss.wsf.spi.management.EndpointMetrics;
 
 /**
  * A general JAXWS endpoint.
@@ -47,8 +49,10 @@ public class BasicEndpoint implements Endpoint
    private RequestHandler requestHandler;
    private InvocationHandler invocationHandler;
    private LifecycleHandler lifecycleHandler;
+   private JAXBHandler jaxbHandler;
    private Map<Class, Object> attachments = new HashMap<Class, Object>();
    private Map<String, Object> properties = new HashMap<String, Object>();
+   private EndpointMetrics metrics;
 
    public BasicEndpoint()
    {
@@ -62,16 +66,18 @@ public class BasicEndpoint implements Endpoint
 
    public void setService(Service service)
    {
+      assertEndpointSetterAccess();
       this.service = service;
    }
 
-   public String getTargetBean()
+   public String getTargetBeanName()
    {
       return targetBean;
    }
 
-   public void setTargetBean(String targetBean)
+   public void setTargetBeanName(String targetBean)
    {
+      assertEndpointSetterAccess();
       this.targetBean = targetBean;
    }
 
@@ -95,6 +101,7 @@ public class BasicEndpoint implements Endpoint
       }
       return beanClass;
    }
+   
    public ObjectName getName()
    {
       return name;
@@ -102,6 +109,7 @@ public class BasicEndpoint implements Endpoint
 
    public void setName(ObjectName name)
    {
+      assertEndpointSetterAccess();
       this.name = name;
    }
 
@@ -112,6 +120,7 @@ public class BasicEndpoint implements Endpoint
 
    public void setShortName(String shortName)
    {
+      assertEndpointSetterAccess();
       this.shortName = shortName;
    }
 
@@ -122,6 +131,7 @@ public class BasicEndpoint implements Endpoint
 
    public void setURLPattern(String urlPattern)
    {
+      assertEndpointSetterAccess();
       this.urlPattern = urlPattern;
    }
 
@@ -142,6 +152,7 @@ public class BasicEndpoint implements Endpoint
 
    public void setRequestHandler(RequestHandler handler)
    {
+      assertEndpointSetterAccess();
       this.requestHandler = handler;
    }
 
@@ -152,6 +163,7 @@ public class BasicEndpoint implements Endpoint
 
    public void setLifecycleHandler(LifecycleHandler handler)
    {
+      assertEndpointSetterAccess();
       this.lifecycleHandler = handler;
    }
 
@@ -162,7 +174,19 @@ public class BasicEndpoint implements Endpoint
 
    public void setInvocationHandler(InvocationHandler handler)
    {
+      assertEndpointSetterAccess();
       this.invocationHandler = handler;
+   }
+
+   public JAXBHandler getJAXBHandler()
+   {
+      return jaxbHandler;
+   }
+
+   public void setJAXBHandler(JAXBHandler jaxbHandler)
+   {
+      assertEndpointSetterAccess();
+      this.jaxbHandler = jaxbHandler;
    }
 
    public <T> T addAttachment(Class<T> key, Object value)
@@ -198,5 +222,24 @@ public class BasicEndpoint implements Endpoint
    public void setProperty(String key, Object value)
    {
       properties.put(key, value);
+   }
+
+   public EndpointMetrics getEndpointMetrics()
+   {
+      return metrics;
+   }
+
+   public void setEndpointMetrics(EndpointMetrics metrics)
+   {
+      assertEndpointSetterAccess();
+      metrics.setEndpoint(this);
+      this.metrics = metrics;
+      
+   }
+   
+   private void assertEndpointSetterAccess()
+   {
+      if (state == EndpointState.STARTED)
+         throw new IllegalStateException("Cannot modify endpoint properties in state: " + state);
    }
 }

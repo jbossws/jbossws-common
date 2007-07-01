@@ -29,7 +29,7 @@ package org.jboss.wsf.spi.metadata.j2ee;
  * @author Thomas.Diesler@jboss.org
  * @since 05-May-2006
  */
-public class UnifiedBeanMetaData
+public abstract class UnifiedBeanMetaData
 {
    /** The ejb-name element specifies an enterprise bean's name. */
    private String ejbName;

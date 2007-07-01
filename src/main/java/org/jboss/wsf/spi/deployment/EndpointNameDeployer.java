@@ -23,6 +23,9 @@ package org.jboss.wsf.spi.deployment;
 
 //$Id$
 
+import org.jboss.wsf.spi.metadata.j2ee.UnifiedApplicationMetaData;
+import org.jboss.wsf.spi.metadata.j2ee.UnifiedBeanMetaData;
+import org.jboss.wsf.spi.metadata.j2ee.UnifiedMessageDrivenMetaData;
 import org.jboss.wsf.spi.utils.ObjectNameFactory;
 
 /**
@@ -37,18 +40,27 @@ public class EndpointNameDeployer extends AbstractDeployer
    public void create(Deployment dep)
    {
       String contextRoot = dep.getService().getContextRoot();
-
-		if(contextRoot.startsWith("/"))
-			contextRoot = contextRoot.substring(1);
-		else
-			throw new IllegalArgumentException("Expected context-root with leading slash");
+      if (contextRoot.startsWith("/") == false)
+         throw new IllegalStateException("Context root expected to start with leading slash: " + contextRoot);
 
 		for (Endpoint ep : dep.getService().getEndpoints())
       {
          StringBuilder name = new StringBuilder(Endpoint.SEPID_DOMAIN + ":");
-         name.append(Endpoint.SEPID_PROPERTY_CONTEXT + "=" + contextRoot + ",");
+         name.append(Endpoint.SEPID_PROPERTY_CONTEXT + "=" + contextRoot.substring(1) + ",");
          name.append(Endpoint.SEPID_PROPERTY_ENDPOINT + "=" + ep.getShortName());
 
+         // Append the JMS destination, for an MDB endpoint
+         UnifiedApplicationMetaData uapp = dep.getContext().getAttachment(UnifiedApplicationMetaData.class);
+         if (uapp != null)
+         {
+            UnifiedBeanMetaData bmd = uapp.getBeanByEjbName(ep.getShortName());
+            if (bmd instanceof UnifiedMessageDrivenMetaData)
+            {
+               String destName = ((UnifiedMessageDrivenMetaData)bmd).getDestinationJndiName();
+               name.append(",jms=" + destName);
+            }
+         }
+         
          ep.setName(ObjectNameFactory.create(name.toString()));
       }
    }

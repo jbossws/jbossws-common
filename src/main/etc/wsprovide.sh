@@ -98,15 +98,15 @@ WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$LIBDIR/stax-ex.jar"
 
 # stack specific dependencies
 if [ "x$JBOSSWS_NATIVE" = "x" ]; then
-   echo "Seems to be a Sun-RI stack deployed"
+   echo "JBossWS-SunRI stack deployed"
    WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$LIBDIR/jbossws-sunri-client.jar"
    WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$LIBDIR/jaxws-api.jar"
    WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$LIBDIR/jsr181-api.jar"
    WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$LIBDIR/saaj-api.jar"
    WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$LIBDIR/saaj-impl.jar"
 else
-   echo "Seems to be a JBossWS-Native stack deployed"	
-	WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$LIBDIR/jboss-xml-binding.jar"
+   echo "JBossWS-Native stack deployed"	
+   WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$LIBDIR/jboss-xml-binding.jar"
    WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$LIBDIR/javassist.jar"
    WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$LIBDIR/jbossall-client.jar"
    WSPROVIDE_CLASSPATH="$WSPROVIDE_CLASSPATH:$LIBDIR/jbossws-client.jar"

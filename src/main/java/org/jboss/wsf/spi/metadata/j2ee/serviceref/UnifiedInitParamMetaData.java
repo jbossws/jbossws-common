@@ -36,6 +36,16 @@ public class UnifiedInitParamMetaData extends ServiceRefElement
    // The required <param-value> element
    private String paramValue;
 
+   public UnifiedInitParamMetaData(String paramName, String paramValue)
+   {
+      this.paramName = paramName;
+      this.paramValue = paramValue;
+   }
+   
+   public UnifiedInitParamMetaData()
+   {
+   }
+
    public String getParamName()
    {
       return paramName;

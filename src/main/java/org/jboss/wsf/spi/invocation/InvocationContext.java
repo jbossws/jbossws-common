@@ -31,6 +31,10 @@ package org.jboss.wsf.spi.invocation;
  */
 public interface InvocationContext
 {
+   Object getTargetBean();
+   
+   void setTargetBean(Object targetBean);
+   
    /** Add arbitrary attachments */
    <T> T addAttachment(Class<T> key, Object value);
 

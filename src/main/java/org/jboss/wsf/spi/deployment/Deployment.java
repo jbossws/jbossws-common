@@ -44,7 +44,7 @@ public interface Deployment
    
    public enum DeploymentState
    {
-      UNDEFINED, CREATED, STARTED, STOPED, DESTROYED
+      UNDEFINED, CREATED, STARTED, STOPPED, DESTROYED
    };
    
    /** Get the root file for this deployment */

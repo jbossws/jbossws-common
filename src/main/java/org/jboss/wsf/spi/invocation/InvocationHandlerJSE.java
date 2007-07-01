@@ -37,29 +37,41 @@ import org.jboss.wsf.spi.deployment.Endpoint;
  */
 public class InvocationHandlerJSE extends AbstractInvocationHandler
 {
-   protected Object getBeanInstance(Endpoint ep) throws InstantiationException, IllegalAccessException
+   protected Object getTargetBean(Endpoint ep, Invocation epInv) 
    {
-      Class epImpl = ep.getTargetBeanClass();
-      Object targetBean = epImpl.newInstance();
+      InvocationContext invCtx = epInv.getInvocationContext();
+      Object targetBean = invCtx.getTargetBean();
+      if (targetBean == null)
+      {
+         try
+         {
+            Class epImpl = ep.getTargetBeanClass();
+            targetBean = epImpl.newInstance();
+            invCtx.setTargetBean(targetBean);
+         }
+         catch (Exception ex)
+         {
+            throw new IllegalStateException("Canot get target bean instance", ex);
+         }
+      }
       return targetBean;
    }
-
-   public void invoke(Endpoint ep, Object beanInstance, Invocation epInv) throws Exception
+   
+   public void invoke(Endpoint ep, Invocation epInv) throws Exception
    {
       try
       {
-         if (beanInstance == null)
-            beanInstance = getBeanInstance(ep);
+         Object targetBean = getTargetBean(ep, epInv);
 
          InvocationContext invContext = epInv.getInvocationContext();
          WebServiceContext wsContext = invContext.getAttachment(WebServiceContext.class);
          if (wsContext != null)
          {
-            new WebServiceContextInjector().injectContext(beanInstance, (WebServiceContext)wsContext);
+            new WebServiceContextInjector().injectContext(targetBean, (WebServiceContext)wsContext);
          }
 
-         Method method = getImplMethod(beanInstance.getClass(), epInv.getJavaMethod());
-         Object retObj = method.invoke(beanInstance, epInv.getArgs());
+         Method method = getImplMethod(targetBean.getClass(), epInv.getJavaMethod());
+         Object retObj = method.invoke(targetBean, epInv.getArgs());
          epInv.setReturnValue(retObj);
       }
       catch (Exception e)

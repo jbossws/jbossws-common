@@ -27,8 +27,10 @@ import java.util.Set;
 
 import javax.management.ObjectName;
 
+import org.jboss.wsf.spi.binding.jaxb.JAXBHandler;
 import org.jboss.wsf.spi.invocation.InvocationHandler;
 import org.jboss.wsf.spi.invocation.RequestHandler;
+import org.jboss.wsf.spi.management.EndpointMetrics;
 
 /**
  * A general JAXWS endpoint.
@@ -46,7 +48,7 @@ public interface Endpoint
 
    public enum EndpointState
    {
-      UNDEFINED, CREATED, STARTED, STOPED, DESTROYED
+      UNDEFINED, CREATED, STARTED, STOPPED, DESTROYED
    };
 
    /** Get the service this endpoint belongs to */
@@ -74,10 +76,10 @@ public interface Endpoint
    void setState(EndpointState state);
 
    /** Get the endpoint implementation bean */
-   String getTargetBean();
+   String getTargetBeanName();
 
    /** Set the endpoint implementation bean */
-   void setTargetBean(String epImpl);
+   void setTargetBeanName(String epImpl);
    
    /** Use the deployment classloader to load the bean */
    Class getTargetBeanClass();
@@ -105,6 +107,18 @@ public interface Endpoint
 
    /** Set the endpoint bean invoker */
    void setInvocationHandler(InvocationHandler invoker);
+   
+   /** Get the JAXBHandler for this endpoint */
+   JAXBHandler getJAXBHandler();
+   
+   /** Set the JAXBHandler for this endpoint */
+   void setJAXBHandler(JAXBHandler handler);
+   
+   /** Get the endpoint metrics for this endpoint */
+   EndpointMetrics getEndpointMetrics();
+
+   /** Set the endpoint metrics for this endpoint */
+   void setEndpointMetrics(EndpointMetrics metrics);
 
    /** Add arbitrary attachments */
    <T> T addAttachment(Class<T> key, Object value);

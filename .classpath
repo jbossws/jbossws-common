@@ -21,5 +21,7 @@
 	<classpathentry kind="lib" path="thirdparty/dom4j.jar"/>
 	<classpathentry kind="lib" path="thirdparty/ant.jar"/>
 	<classpathentry kind="lib" path="thirdparty/getopt.jar"/>
+	<classpathentry kind="lib" path="thirdparty/saaj-api.jar"/>
+	<classpathentry kind="lib" path="thirdparty/jaxb-api.jar"/>
 	<classpathentry kind="output" path="output/eclipse"/>
 </classpath>

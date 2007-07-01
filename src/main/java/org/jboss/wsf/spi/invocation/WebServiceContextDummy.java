@@ -21,42 +21,42 @@
  */
 package org.jboss.wsf.spi.invocation;
 
-// $Id$
+// $Id: WebServiceContextJSE.java 3146 2007-05-18 22:55:26Z thomas.diesler@jboss.com $
 
 import java.security.Principal;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.xml.ws.handler.MessageContext;
 
+import org.jboss.logging.Logger;
+
 /**
- * A WebServiceContext implementation that delegates to the HttpServletRequest.
+ * A WebServiceContext implementation that has no access to
+ * a security context.
  *
  * @author Thomas.Diesler@jboss.org
- * @since 23-Jan-2007
+ * @since 29-Jun-2007
  */
-public class WebServiceContextJSE extends AbstractWebServiceContext
+public class WebServiceContextDummy extends AbstractWebServiceContext
 {
-   private HttpServletRequest httpRequest;
-
-   public WebServiceContextJSE(MessageContext msgContext)
+   // provide logging
+   private static final Logger log = Logger.getLogger(WebServiceContextDummy.class);
+   
+   public WebServiceContextDummy(MessageContext msgContext)
    {
       super(msgContext);
-      httpRequest = (HttpServletRequest)msgContext.get(MessageContext.SERVLET_REQUEST);
-      if (httpRequest == null)
-         throw new IllegalStateException("Cannot obtain HTTPServletRequest from message context");
    }
 
    @Override
    public Principal getUserPrincipal()
    {
-      Principal principal = httpRequest.getUserPrincipal();
-      return principal;
+      log.warn("No security context available");
+      return null;
    }
 
    @Override
    public boolean isUserInRole(String role)
    {
-      boolean isUserInRole = httpRequest.isUserInRole(role);
-      return isUserInRole;
+      log.warn("No security context available");
+      return false;
    }
 }

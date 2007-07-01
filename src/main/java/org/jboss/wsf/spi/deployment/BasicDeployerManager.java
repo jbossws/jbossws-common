@@ -103,7 +103,7 @@ public class BasicDeployerManager implements DeployerManager
          failsafeStop(deployer, dep);
       }
       
-      dep.setState(DeploymentState.STOPED);
+      dep.setState(DeploymentState.STOPPED);
       
       // destroy the deployment
       for (int i = deployers.size(); 0 < i; i--)

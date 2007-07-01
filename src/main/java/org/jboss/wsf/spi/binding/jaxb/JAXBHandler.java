@@ -19,44 +19,22 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.wsf.spi.invocation;
+package org.jboss.wsf.spi.binding.jaxb;
 
-// $Id$
+// $Id: $
 
-import java.security.Principal;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.xml.ws.handler.MessageContext;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 
 /**
- * A WebServiceContext implementation that delegates to the HttpServletRequest.
+ * A factory for JAXBContext 
  *
  * @author Thomas.Diesler@jboss.org
- * @since 23-Jan-2007
+ * @since 26-Jun-2007
  */
-public class WebServiceContextJSE extends AbstractWebServiceContext
+public interface JAXBHandler
 {
-   private HttpServletRequest httpRequest;
-
-   public WebServiceContextJSE(MessageContext msgContext)
-   {
-      super(msgContext);
-      httpRequest = (HttpServletRequest)msgContext.get(MessageContext.SERVLET_REQUEST);
-      if (httpRequest == null)
-         throw new IllegalStateException("Cannot obtain HTTPServletRequest from message context");
-   }
-
-   @Override
-   public Principal getUserPrincipal()
-   {
-      Principal principal = httpRequest.getUserPrincipal();
-      return principal;
-   }
-
-   @Override
-   public boolean isUserInRole(String role)
-   {
-      boolean isUserInRole = httpRequest.isUserInRole(role);
-      return isUserInRole;
-   }
+   /** Get a JAXBContext instance.
+    */
+   JAXBContext getJAXBContext(Class[] javaTypes) throws JAXBException;
 }

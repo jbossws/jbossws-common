@@ -98,10 +98,10 @@ WSCONSUME_CLASSPATH="$WSCONSUME_CLASSPATH:$LIBDIR/stax-ex.jar"
 
 # stack specific dependencies
 if [ "x$JBOSSWS_NATIVE" = "x" ]; then
-   echo "Seems to be a Sun-RI stack deployed"
+   echo "JBossWS-SunRI stack deployed"
    WSCONSUME_CLASSPATH="$WSCONSUME_CLASSPATH:$LIBDIR/jbossws-sunri-client.jar"
 else
-   echo "Seems to be a JBossWS-Native stack deployed"
+   echo "JBossWS-Native stack deployed"
    WSCONSUME_CLASSPATH="$WSCONSUME_CLASSPATH:$LIBDIR/javassist.jar"
    WSCONSUME_CLASSPATH="$WSCONSUME_CLASSPATH:$LIBDIR/jboss-xml-binding.jar"
    WSCONSUME_CLASSPATH="$WSCONSUME_CLASSPATH:$LIBDIR/jbossws-client.jar"

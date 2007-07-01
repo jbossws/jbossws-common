@@ -19,45 +19,53 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.wsf.spi.invocation;
+package org.jboss.wsf.spi.binding.jaxb;
 
-import java.util.HashMap;
+// $Id: $
+
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+
+import org.jboss.wsf.spi.utils.HashCodeUtil;
 
 /**
- * A basic invocation context.
- * 
+ * Cache JAXBContext's.
+ *
+ * @author Heiko.Braun@jboss.com
  * @author Thomas.Diesler@jboss.com
- * @since 20-Apr-2007 
+ * @since 26-Jun-2007
  */
-public class BasicInvocationContext implements InvocationContext
+public class JAXBContextCache implements JAXBHandler
 {
-   private Object targetBean;
-   private Map<Class, Object> attachments = new HashMap<Class, Object>();
-   
-   public Object getTargetBean()
+   private Map<Integer, JAXBContext> cache = new ConcurrentHashMap<Integer, JAXBContext>();
+
+   /**
+    * Retrieve a cached JAXBContext instance.
+    * If no instance is cached a new one will be created and registered.
+    */
+   public JAXBContext getJAXBContext(Class[] javaTypes) throws JAXBException
    {
-      return targetBean;
+      Integer id = buildId(javaTypes);
+      JAXBContext context = cache.get(id);
+      if (null == context)
+      {
+         context = JAXBContext.newInstance(javaTypes);
+         cache.put(id, context);
+      }
+
+      return context;
    }
 
-   public void setTargetBean(Object targetBean)
+   private Integer buildId(Class[] classes)
    {
-      this.targetBean = targetBean;
-   }
-
-
-   public <T> T addAttachment(Class<T> key, Object value)
-   {
-      return (T)attachments.put(key, value);
-   }
-
-   public <T> T getAttachment(Class<T> key)
-   {
-      return (T)attachments.get(key);
-   }
-
-   public <T> T removeAttachment(Class<T> key)
-   {
-      return (T)attachments.get(key);
+      int sum = HashCodeUtil.SEED;
+      for (Class cls : classes)
+      {
+         sum = HashCodeUtil.hash(sum, cls.getName());
+      }
+      return new Integer(sum);
    }
 }

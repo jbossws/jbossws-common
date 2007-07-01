@@ -55,6 +55,9 @@ public class BasicLifecycleHandler implements LifecycleHandler
          throw new IllegalStateException("Cannot start endpoint in state: " + state);
 
       ep.getInvocationHandler().start(ep);
+      
+      if (ep.getEndpointMetrics() != null)
+         ep.getEndpointMetrics().start();
 
       ep.setState(EndpointState.STARTED);
    }
@@ -68,8 +71,11 @@ public class BasicLifecycleHandler implements LifecycleHandler
          throw new IllegalStateException("Cannot stop endpoint in state: " + state);
 
       ep.getInvocationHandler().stop(ep);
+      
+      if (ep.getEndpointMetrics() != null)
+         ep.getEndpointMetrics().stop();
 
-      ep.setState(EndpointState.STOPED);
+      ep.setState(EndpointState.STOPPED);
    }
 
    public void destroy(Endpoint ep)

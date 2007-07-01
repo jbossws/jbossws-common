@@ -27,6 +27,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import javax.management.MBeanServerConnection;
+import javax.naming.NamingException;
+
+import org.jboss.logging.Logger;
+
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -39,29 +44,27 @@ import junit.framework.TestSuite;
  */
 public class JBossWSTestSetup extends TestSetup
 {
+   // provide logging
+   private static Logger log = Logger.getLogger(JBossWSTestSetup.class);
+   
    private JBossWSTestHelper delegate = new JBossWSTestHelper();
    private String[] archives = new String[0];
 
-   public static JBossWSTestSetup newTestSetup(Class testClass, String archiveList)
-   {
-      return new JBossWSTestSetup(testClass, archiveList);
-   }
-
-   public static JBossWSTestSetup newTestSetup(Test test, String archiveList)
-   {
-      return new JBossWSTestSetup(test, archiveList);
-   }
-
-   protected JBossWSTestSetup(Class testClass, String archiveList)
+   public JBossWSTestSetup(Class testClass, String archiveList)
    {
       super(new TestSuite(testClass));
       getArchiveArray(archiveList);
    }
 
-   protected JBossWSTestSetup(Test test, String archiveList)
+   public JBossWSTestSetup(Test test, String archiveList)
    {
       super(test);
       getArchiveArray(archiveList);
+   }
+
+   public JBossWSTestSetup(Test test)
+   {
+      super(test);
    }
 
    private void getArchiveArray(String archiveList)
@@ -78,6 +81,10 @@ public class JBossWSTestSetup extends TestSetup
 
    protected void setUp() throws Exception
    {
+      // verify integration target
+      String integrationTarget = delegate.getIntegrationTarget();
+      log.debug("Integration target: " + integrationTarget);
+      
       List clientJars = new ArrayList();
       for (int i = 0; i < archives.length; i++)
       {
@@ -120,5 +127,10 @@ public class JBossWSTestSetup extends TestSetup
          String archive = archives[archives.length - i - 1];
          delegate.undeploy(archive);
       }
+   }
+   
+   public MBeanServerConnection getServer() throws NamingException
+   {
+      return delegate.getServer();
    }
 }

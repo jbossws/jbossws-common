@@ -19,38 +19,15 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.wsf.spi.invocation;
+package org.jboss.wsf.spi.management;
 
-//$Id$
+import javax.management.ObjectName;
 
-import org.jboss.wsf.spi.deployment.Endpoint;
+import org.jboss.wsf.spi.management.ServerConfig;
+import org.jboss.wsf.spi.utils.ObjectNameFactory;
 
-/**
- * A general endpoint invocation handler.
- * 
- * @author Thomas.Diesler@jboss.com
- * @since 20-Apr-2007 
- */
-public interface InvocationHandler
+public interface BasicServerConfigMBean extends ServerConfig
 {
-   /** Create the default invokation object */
-   Invocation createInvocation();
-   
-   /** Create the invocation handler */
-   void create(Endpoint ep);
-
-   /** Start the invocation handler */
-   void start(Endpoint ep);
-
-   /** Invoke the the service endpoint */
-   void invoke(Endpoint ep, Invocation inv) throws Exception;
-
-   /** Stop the invocation handler */
-   void stop(Endpoint ep);
-
-   /** Destroy the invocation handler */
-   void destroy(Endpoint ep);
-   
-   /** Set the handler to be used to deal with invocation exceptions **/
-   void setExceptionHandler(InvocationExceptionHandler exceptionHandler);
+   /** The object name in the MBean server */
+   ObjectName OBJECT_NAME = ObjectNameFactory.create("jboss.ws:service=ServerConfig");
 }

@@ -61,7 +61,6 @@ public abstract class JBossWSTest extends TestCase
       super(name);
    }
 
-   /** Get the MBeanServerConnection from JNDI */
    public MBeanServerConnection getServer() throws NamingException
    {
       return delegate.getServer();

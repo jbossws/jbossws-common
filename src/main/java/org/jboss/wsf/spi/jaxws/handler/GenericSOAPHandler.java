@@ -19,44 +19,40 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.wsf.spi.invocation;
+package org.jboss.wsf.spi.jaxws.handler;
 
-// $Id$
+// $Id: $
 
-import java.security.Principal;
+import java.util.HashSet;
+import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.xml.ws.handler.MessageContext;
+import javax.xml.namespace.QName;
+import javax.xml.ws.handler.LogicalMessageContext;
+import javax.xml.ws.handler.soap.SOAPHandler;
+
 
 /**
- * A WebServiceContext implementation that delegates to the HttpServletRequest.
+ * A generic jaxws soap handler
  *
  * @author Thomas.Diesler@jboss.org
- * @since 23-Jan-2007
+ * @since 13-Aug-2006
  */
-public class WebServiceContextJSE extends AbstractWebServiceContext
+public abstract class GenericSOAPHandler<C extends LogicalMessageContext> extends GenericHandler implements SOAPHandler
 {
-   private HttpServletRequest httpRequest;
-
-   public WebServiceContextJSE(MessageContext msgContext)
+   // The header blocks that can be processed by this Handler instance
+   private Set<QName> headers = new HashSet<QName>();
+   
+   /** Gets the header blocks that can be processed by this Handler instance.
+    */
+   public Set<QName> getHeaders()
    {
-      super(msgContext);
-      httpRequest = (HttpServletRequest)msgContext.get(MessageContext.SERVLET_REQUEST);
-      if (httpRequest == null)
-         throw new IllegalStateException("Cannot obtain HTTPServletRequest from message context");
+      return headers;
    }
 
-   @Override
-   public Principal getUserPrincipal()
+   /** Sets the header blocks that can be processed by this Handler instance.
+    */
+   public void setHeaders(Set<QName> headers)
    {
-      Principal principal = httpRequest.getUserPrincipal();
-      return principal;
-   }
-
-   @Override
-   public boolean isUserInRole(String role)
-   {
-      boolean isUserInRole = httpRequest.isUserInRole(role);
-      return isUserInRole;
+      this.headers = headers;
    }
 }

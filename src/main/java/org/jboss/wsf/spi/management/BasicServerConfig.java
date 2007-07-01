@@ -25,9 +25,7 @@ package org.jboss.wsf.spi.management;
 
 import java.io.File;
 import java.net.InetAddress;
-import java.net.MalformedURLException;
 import java.net.UnknownHostException;
-import java.net.URL;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -41,14 +39,13 @@ import org.jboss.logging.Logger;
 import org.jboss.wsf.spi.utils.ObjectNameFactory;
 
 /**
- * JBoss specific implementation of a ServerConfig 
+ * Basic implementation of a ServerConfig 
  *
  * @author Thomas.Diesler@jboss.org
  * @author darran.lofthouse@jboss.com
- * @author mageshbk@jboss.com
  * @since 08-May-2006
  */
-public class BasicServerConfig implements ServerConfig
+public class BasicServerConfig implements BasicServerConfigMBean
 {
    private static final Logger log = Logger.getLogger(BasicServerConfig.class);
 
@@ -139,27 +136,49 @@ public class BasicServerConfig implements ServerConfig
       if (webServicePort <= 0)
          webServicePort = getConnectorPort("HTTP/1.1", false);
 
-      if (webServicePort <= 0)
+      int localPort = webServicePort;
+      if (localPort <= 0)
       {
+         // Do not initialize webServicePort with the default, the connector port may become available later 
          log.warn("Unable to calculate 'WebServicePort', using default '8080'");
-         webServicePort = 8080;
+         localPort = 8080;
       }
 
-      return webServicePort;
+      return localPort;
    }
 
    public int getWebServiceSecurePort()
    {
       if (webServiceSecurePort <= 0)
          webServiceSecurePort = getConnectorPort("HTTP/1.1", true);
-
-      if (webServiceSecurePort <= 0)
+      
+      int localPort = webServiceSecurePort;
+      if (localPort <= 0)
       {
+         // Do not initialize webServiceSecurePort with the default, the connector port may become available later 
          log.warn("Unable to calculate 'WebServiceSecurePort', using default '8443'");
-         webServiceSecurePort = 8443;
+         localPort = 8443;
       }
 
-      return webServiceSecurePort;
+      return localPort;
+   }
+
+   public void create() throws Exception
+   {
+      MBeanServer server = getMBeanServer();
+      if (server != null)
+      {
+         server.registerMBean(this, BasicServerConfigMBean.OBJECT_NAME);
+      }
+   }
+
+   public void destroy() throws Exception
+   {
+      MBeanServer server = getMBeanServer();
+      if (server != null)
+      {
+         server.unregisterMBean(BasicServerConfigMBean.OBJECT_NAME);
+      }
    }
 
    private int getConnectorPort(final String protocol, final boolean secure)
@@ -217,64 +236,5 @@ public class BasicServerConfig implements ServerConfig
          }
       }
       return server;
-   }
-
-   public String getDisplayAddress(String endpointAddress, URL requestURL) throws MalformedURLException
-   {
-      URL displayURL = new URL(endpointAddress);
-      String displayHost = getDisplayHost(endpointAddress, requestURL);
-
-      String displayAddress = displayHost + displayURL.getPath();
-      if (log.isDebugEnabled())
-      {
-         log.trace("Mapping WSDL soap:address from '" + endpointAddress + "' to '" + displayAddress + "'");
-      }
-      return displayAddress;
-   }
-
-   /*
-    * Formats the Service endpoint host according to the beans.xml definition and
-    * the requested url and returns the URL as string
-    *
-   */
-   public String getDisplayHost(String endpointAddress, URL requestURL) throws MalformedURLException
-   {
-      URL displayURL = new URL(endpointAddress);
-      String protocol = displayURL.getProtocol();
-      String host = displayURL.getHost();
-      int port = displayURL.getPort();
-      String uriScheme = requestURL.getProtocol();
-      if (this.modifySOAPAddress || host.equals(BasicServerConfig.UNDEFINED_HOSTNAME) == true)
-      {
-         //Modify the address
-         if (this.getWebServiceHost().equals(BasicServerConfig.UNDEFINED_HOSTNAME) == true)
-         {
-            //Use the incoming request's address
-            protocol = uriScheme;
-            host = requestURL.getHost();
-            port = requestURL.getPort();
-         }
-         else
-         {
-            //Use the address given in jboss-beans.xml
-            protocol = uriScheme;
-            host = this.getWebServiceHost();
-            if (protocol.equals("https"))
-            {
-               port = this.getWebServiceSecurePort();
-            }
-            else
-            {
-               port = this.getWebServicePort();
-            }
-         }
-      }
-      String displayHost = protocol + "://" + host + (port > 0 ? ":" + port : "");
-
-      if (log.isDebugEnabled())
-      {
-         log.trace("Mapping WSDL host from '" + protocol + "://" + host + ":" + port + "' to '" + displayHost + "'");
-      }
-      return displayHost;
    }
 }

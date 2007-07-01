@@ -19,40 +19,24 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.wsf.spi.handler;
+package org.jboss.wsf.spi.binding.jaxb;
 
 // $Id: $
 
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.xml.namespace.QName;
-import javax.xml.ws.handler.LogicalMessageContext;
-import javax.xml.ws.handler.soap.SOAPHandler;
-
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 
 /**
- * A generic jaxws soap handler
+ * A basic JAXBHandler.
  *
- * @author Thomas.Diesler@jboss.org
- * @since 13-Aug-2006
+ * @author Thomas.Diesler@jboss.com
+ * @since 26-Jun-2007
  */
-public abstract class GenericSOAPHandler<C extends LogicalMessageContext> extends GenericHandler implements SOAPHandler
+public class BasicJAXBHandler implements JAXBHandler
 {
-   // The header blocks that can be processed by this Handler instance
-   private Set<QName> headers = new HashSet<QName>();
-   
-   /** Gets the header blocks that can be processed by this Handler instance.
-    */
-   public Set<QName> getHeaders()
+   public JAXBContext getJAXBContext(Class[] javaTypes) throws JAXBException
    {
-      return headers;
-   }
-
-   /** Sets the header blocks that can be processed by this Handler instance.
-    */
-   public void setHeaders(Set<QName> headers)
-   {
-      this.headers = headers;
+      JAXBContext ctx = JAXBContext.newInstance(javaTypes);
+      return ctx;
    }
 }

@@ -30,7 +30,6 @@ import javax.management.MBeanServerConnection;
 import javax.management.ObjectName;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
 
 import org.jboss.logging.Logger;
@@ -68,21 +67,21 @@ public class JBossWSTestHelper
    }
 
    /** True, if -Djbossws.integration.target=jboss50 */
-   public static boolean isTargetJBoss50()
+   public boolean isTargetJBoss50()
    {
       String target = getIntegrationTarget();
       return "jboss50".equals(target);
    }
 
    /** True, if -Djbossws.integration.target=jboss42 */
-   public static boolean isTargetJBoss42()
+   public boolean isTargetJBoss42()
    {
       String target = getIntegrationTarget();
       return "jboss42".equals(target);
    }
 
    /** True, if -Djbossws.integration.target=jboss40 */
-   public static boolean isTargetJBoss40()
+   public boolean isTargetJBoss40()
    {
       String target = getIntegrationTarget();
       return "jboss40".equals(target);
@@ -93,18 +92,18 @@ public class JBossWSTestHelper
       String vendor = Service.class.getPackage().getImplementationVendor();
       return vendor.startsWith("JBoss");
    }
-   
+
    public boolean isIntegrationSunRI()
    {
       String vendor = Service.class.getPackage().getImplementationVendor();
       return vendor.startsWith("Sun Microsystems");
    }
-   
+
    public boolean isIntegrationXFire()
    {
       throw new NotImplementedException();
    }
-   
+
    /**
     * Get the JBoss server host from system property "jboss.bind.address"
     * This defaults to "localhost"
@@ -139,7 +138,7 @@ public class JBossWSTestHelper
       return new TestDeployerJBoss(getServer());
    }
 
-   private static String getIntegrationTarget()
+   public String getIntegrationTarget()
    {
       if (integrationTarget == null)
       {
@@ -149,10 +148,11 @@ public class JBossWSTestHelper
             throw new IllegalStateException("Cannot obtain jbossws.integration.target");
 
          // Read the JBoss SpecificationVersion
+         String jbossVersion = null;
          try
          {
             ObjectName oname = ObjectNameFactory.create("jboss.system:type=ServerConfig");
-            String jbossVersion = (String)getServer().getAttribute(oname, "SpecificationVersion");
+            jbossVersion = (String)getServer().getAttribute(oname, "SpecificationVersion");
             if (jbossVersion.startsWith("5.0"))
                jbossVersion = "jboss50";
             else if (jbossVersion.startsWith("4.2"))
@@ -160,17 +160,14 @@ public class JBossWSTestHelper
             else if (jbossVersion.startsWith("4.0"))
                jbossVersion = "jboss40";
             else throw new RuntimeException("Unsupported jboss version: " + jbossVersion);
-
-            if (jbossVersion.equals(integrationTarget) == false)
-            {
-               throw new IllegalStateException("Integration target mismatch, using: " + jbossVersion);
-               //integrationTarget = jbossVersion;
-            }
          }
          catch (Throwable th)
          {
             // ignore, we are not running on jboss-4.2 or greater
          }
+         
+         if (jbossVersion != null && jbossVersion.equals(integrationTarget) == false)
+            throw new IllegalStateException("Integration target mismatch, using: " + jbossVersion);
       }
       return integrationTarget;
    }
