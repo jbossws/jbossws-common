@@ -29,11 +29,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 
-import org.jboss.ws.integration.UnifiedVirtualFile;
-
 /**
- * The default file adapter loads resources through an associated classloader.
- * If no classload is set, the the thread context classloader will be used.
+ * Load resources through a URLClassLoader.<br>
+ * NOTE: The associated classloader doesn't do parent delegation.
+ *
  *
  * @author Heiko.Braun@jboss.org
  * @since 25.01.2007
@@ -118,8 +117,7 @@ public class URLLoaderAdapter implements UnifiedVirtualFile
    {
       if (loader == null)
       {
-         ClassLoader ctxLoader = Thread.currentThread().getContextClassLoader();
-         loader = new URLClassLoader(new URL[]{rootURL}, ctxLoader);
+         loader = new URLClassLoader(new URL[]{rootURL});
       }
       return loader;
    }
