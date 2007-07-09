@@ -48,7 +48,7 @@ public abstract class WSContractConsumer
     * Obtain a new instance of a WSContractProvider. This will use the current
     * thread's context class loader to locate the WSContractProviderFactory
     * implementation.
-    * 
+    *
     * @return a new WSContractProvider
     */
    public static WSContractConsumer newInstance()
@@ -59,7 +59,7 @@ public abstract class WSContractConsumer
    /**
     * Obtain a new instance of a WSContractConsumer. The specified ClassLoader will be used to
     * locate the WebServiceImporterProvide implementation
-    * 
+    *
     * @param loader the ClassLoader to use
     * @return a new WSContractConsumer
     */
@@ -80,37 +80,37 @@ public abstract class WSContractConsumer
 
    /**
     * Specifies the JAX-WS and JAXB binding files to use on import operations.
-    * 
+    *
     * @param bindingFiles list of JAX-WS or JAXB binding files
     */
    public abstract void setBindingFiles(List<File> bindingFiles);
 
    /**
     * Sets the OASIS XML Catalog file to use for entity resolution.
-    * 
+    *
     * @param catalog the OASIS XML Catalog file
     */
    public abstract void setCatalog(File catalog);
 
    /**
     * Sets the main output directory. If the directory does not exist, it will be created.
-    * 
+    *
     * @param directory the root directory for generated files
     */
    public abstract void setOutputDirectory(File directory);
 
    /**
     * Sets the source directory. This directory will contain any generated Java source.
-    * If the directory does not exist, it will be created. If not specified, 
+    * If the directory does not exist, it will be created. If not specified,
     * the output directory will be used instead.
-    * 
+    *
     * @param directory the root directory for generated source code
     */
    public abstract void setSourceDirectory(File directory);
 
    /**
     * Enables/Disables Java source generation.
-    * 
+    *
     * @param generateSource whether or not to generate Java source.
     */
    public abstract void setGenerateSource(boolean generateSource);
@@ -118,14 +118,14 @@ public abstract class WSContractConsumer
    /**
     * Sets the target package for generated source. If not specified the default
     * is based off of the XML namespace.
-    * 
+    *
     * @param targetPackage the target package for generated source
     */
    public abstract void setTargetPackage(String targetPackage);
 
    /**
     * Sets the @@WebService.wsdlLocation and @@WebServiceClient.wsdlLocation attributes to a custom value.
-    * 
+    *
     * @param wsdlLocation the custom WSDL location to use in generated source
     */
    public abstract void setWsdlLocation(String wsdlLocation);
@@ -133,23 +133,29 @@ public abstract class WSContractConsumer
    /**
     * Sets the PrintStream to use for status feedback. The simplest example
     * would be to use System.out.
-    * 
+    *
     * @param messageStream  the stream to use for status messages:
     */
    public abstract void setMessageStream(PrintStream messageStream);
 
    /**
     * Sets the additional classpath to use if/when invoking the Java compiler.
-    * Typically an implementation will use the system <code>java.class.path</code> 
+    * Typically an implementation will use the system <code>java.class.path</code>
     * property. So for most normal applications this method is not needed. However,
     * if this API is being used from an isolated classloader, then it needs to
-    * be called in order to reference all jars that are required by the 
+    * be called in order to reference all jars that are required by the
     * implementation.
-    * 
-    * @param classPath a list of strings where each entry references a 
+    *
+    * @param classPath a list of strings where each entry references a
     *                  single jar or directory
     */
    public abstract void setAdditionalCompilerClassPath(List<String> classPath);
+
+   /**
+    * Set the target JAX-WS specification target. Defaults to <code>2.0</code>
+    * @param target  the JAX-WS specification version. Allowed values are 2.0, 2.1
+    */
+   public abstract void setTarget(String target);
 
    /**
     * Generate the required artifacts using the specified WSDL URL. This method

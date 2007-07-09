@@ -54,7 +54,7 @@ public abstract class ServiceRefHandlerFactory
    {
       Kernel kernel = KernelLocator.getKernel();
       KernelRegistry registry = kernel.getRegistry();
-      KernelRegistryEntry entry = registry.getEntry("WSServiceRefHandler");
+      KernelRegistryEntry entry = registry.getEntry(ServiceRefHandler.BEAN_NAME);
       ServiceRefHandler handler = (ServiceRefHandler)entry.getTarget();
 
       // Try legancy JBossAS-4.2 name

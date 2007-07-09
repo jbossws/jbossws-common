@@ -1,31 +1,29 @@
 <project name="jboss/jbossws-spi">
+	<artifact id="jbossws-spi-src.zip"/>
+	<artifact id="jbossws-spi-scripts.zip"/>
+	
+  <component id="jboss/jbossws-spi" description="JBossWS SPI" version="@repository.id@" licenseType="lgpl">
+    
+    <artifact id="jbossws-spi.jar"/>
     <artifact id="jbossws-spi-scripts.zip"/>
-
-	<component id="jboss/jbossws-spi"
-				  description="JBossWS SPI"
-				  version="@repository.id@"
-				  licenseType="lgpl">
-
-		<artifact id="jbossws-spi.jar"/>
-		<artifact id="jbossws-spi-scripts.zip"/>
-
-		<import componentref="sun-jaxb">
-			<compatible version="@sun-jaxb@"/>
-		</import>
-
-		<import componentref="sun-jaxws">
-			<compatible version="@sun-jaxws@"/>
-		</import>
-
-		<import componentref="woodstox">
-			<compatible version="@woodstox@"/>
-		</import>
-		
-		<export>
-			<include input="jbossws-spi.jar"/>
-			<include input="jbossws-spi-scripts.zip"/>
-		</export>
-
-	</component>
-
+    
+    <import componentref="sun-jaxb">
+      <compatible version="@sun-jaxb@"/>
+    </import>
+    
+    <import componentref="sun-jaxws">
+      <compatible version="@sun-jaxws@"/>
+    </import>
+    
+    <import componentref="woodstox">
+      <compatible version="@woodstox@"/>
+    </import>
+    
+    <export>
+      <include input="jbossws-spi.jar"/>
+      <include input="jbossws-spi-scripts.zip"/>
+    </export>
+    
+  </component>
+	
 </project>

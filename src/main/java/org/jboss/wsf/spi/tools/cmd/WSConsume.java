@@ -35,23 +35,24 @@ import java.util.List;
 /**
  * WSConsumeTask is a cmd line tool that generates portable JAX-WS artifacts
  * from a WSDL file.
- * 
+ *
  * <pre>
  *  usage: WSConsumeTask [options] &lt;wsdl-url&gt;
- *  options: 
- *  -h, --help                  Show this help message
- *  -b, --binding=&lt;file&gt;        One or more JAX-WS or JAXB binding files 
- *  -k, --keep                  Keep/Generate Java source
- *  -c  --catalog=&lt;file&gt;        Oasis XML Catalog file for entity resolution
- *  -p  --package=&lt;name&gt;        The target package for generated source
- *  -w  --wsdlLocation=&lt;loc&gt;    Value to use for @@WebService.wsdlLocation
- *  -o, --output=&lt;directory&gt;    The directory to put generated artifacts
- *  -s, --source=&lt;directory&gt;    The directory to put Java source
- *  -q, --quiet                 Be somewhat more quiet
- *  -t, --show-traces           Show full exception stack traces
- *  -l, --load-consumer           Load the consumer and exit (debug utility)
+ *  options:
+ *  -h, --help                     Show this help message
+ *  -b, --binding=&lt;file&gt;     One or more JAX-WS or JAXB binding files
+ *  -k, --keep                     Keep/Generate Java source
+ *  -c  --catalog=&lt;file&gt;     Oasis XML Catalog file for entity resolution
+ *  -p  --package=&lt;name&gt;     The target package for generated source
+ *  -w  --wsdlLocation=&lt;loc&gt; Value to use for @@WebService.wsdlLocation
+ *  -o, --output=&lt;directory&gt; The directory to put generated artifacts
+ *  -s, --source=&lt;directory&gt; The directory to put Java source
+ *  -t, --target=&lt;2.0|2.1&gt;   The target specification target
+ *  -q, --quiet                    Be somewhat more quiet
+ *  -v, --verbose                  Show full exception stack traces
+ *  -l, --load-consumer            Load the consumer and exit (debug utility)
  * </pre>
- * 
+ *
  * @author <a href="mailto:jason.greene@jboss.com">Jason T. Greene</a>
  * @version $Revision$
  */
@@ -63,11 +64,12 @@ public class WSConsume
    private String targetPackage = null;
    private String wsdlLocation = null;
    private boolean quiet = false;
-   private boolean showTraces = false;
+   private boolean verbose = false;
    private boolean loadConsumer = false;
    private File outputDir = new File("output");
    private File sourceDir = null;
-   
+   private String target = null;
+
    public static String PROGRAM_NAME = System.getProperty("program.name", WSConsume.class.getName());
 
    public static void main(String[] args)
@@ -76,25 +78,26 @@ public class WSConsume
       URL wsdl = importer.parseArguments(args);
       System.exit(importer.importServices(wsdl));
    }
-   
+
    private URL parseArguments(String[] args)
    {
-      String shortOpts = "hb:kc:p:w:o:s:qtl";
-      LongOpt[] longOpts = 
+      String shortOpts = "b:c:p:w:o:s:t:khqvl";
+      LongOpt[] longOpts =
       {
-         new LongOpt("help", LongOpt.NO_ARGUMENT, null, 'h'),
          new LongOpt("binding", LongOpt.REQUIRED_ARGUMENT, null, 'b'),
-         new LongOpt("keep", LongOpt.NO_ARGUMENT, null, 'k'),
          new LongOpt("catalog", LongOpt.REQUIRED_ARGUMENT, null, 'c'),
          new LongOpt("package", LongOpt.REQUIRED_ARGUMENT, null, 'p'),
          new LongOpt("wsdlLocation", LongOpt.REQUIRED_ARGUMENT, null, 'w'),
          new LongOpt("output", LongOpt.REQUIRED_ARGUMENT, null, 'o'),
          new LongOpt("source", LongOpt.REQUIRED_ARGUMENT, null, 's'),
+         new LongOpt("target", LongOpt.REQUIRED_ARGUMENT, null, 't'),
+         new LongOpt("keep", LongOpt.NO_ARGUMENT, null, 'k'),
+         new LongOpt("help", LongOpt.NO_ARGUMENT, null, 'h'),
          new LongOpt("quiet", LongOpt.NO_ARGUMENT, null, 'q'),
-         new LongOpt("show-traces", LongOpt.NO_ARGUMENT, null, 't'),
+         new LongOpt("verbose", LongOpt.NO_ARGUMENT, null, 'v'),
          new LongOpt("load-consumer", LongOpt.NO_ARGUMENT, null, 'l'),
       };
-      
+
       Getopt getopt = new Getopt(PROGRAM_NAME, args, shortOpts, longOpts);
       int c;
       while ((c = getopt.getopt()) != -1)
@@ -122,11 +125,14 @@ public class WSConsume
             case 's':
                sourceDir = new File(getopt.getOptarg());
                break;
+            case 't':
+               target = getopt.getOptarg();
+               break;
             case 'q':
                quiet = true;
                break;
-            case 't':
-               showTraces = true;
+            case 'v':
+               verbose = true;
                break;
             case 'l':
                loadConsumer = true;
@@ -154,7 +160,7 @@ public class WSConsume
          printHelp();
          System.exit(1);
       }
-      
+
       URL url = null;
       try
       {
@@ -173,11 +179,11 @@ public class WSConsume
          System.err.println("Error: Invalid URI: " + args[wsdlPos]);
          System.exit(1);
       }
-      
+
       return url;
    }
-   
-   
+
+
    private int importServices(URL wsdl)
    {
       WSContractConsumer importer = WSContractConsumer.newInstance();
@@ -189,19 +195,22 @@ public class WSConsume
 
       if (! quiet)
          importer.setMessageStream(System.out);
-      
+
       if (catalog != null)
          importer.setCatalog(catalog);
-      
+
       if (targetPackage != null)
          importer.setTargetPackage(targetPackage);
-      
+
       if (wsdlLocation != null)
          importer.setWsdlLocation(wsdlLocation);
-      
+
       if (bindingFiles != null && bindingFiles.size() > 0)
          importer.setBindingFiles(bindingFiles);
-      
+
+      if(target!=null)
+         importer.setTarget(target);
+
       try
       {
          importer.consume(wsdl);
@@ -209,8 +218,8 @@ public class WSConsume
       }
       catch (Throwable t)
       {
-         System.err.println("Error: Could not import. (use --show-traces to see full traces)");
-         if (!showTraces)
+         System.err.println("Error: Could not import. (use --verbose to see full traces)");
+         if (!verbose)
          {
             String message = t.getMessage();
             if (message == null)
@@ -221,9 +230,9 @@ public class WSConsume
          {
             t.printStackTrace(System.err);
          }
-         
+
       }
-      
+
       return 1;
    }
 
@@ -241,8 +250,9 @@ public class WSConsume
       out.println("    -w  --wsdlLocation=<loc>    Value to use for @WebService.wsdlLocation");
       out.println("    -o, --output=<directory>    The directory to put generated artifacts");
       out.println("    -s, --source=<directory>    The directory to put Java source");
+      out.println("    -t, --target=<2.0|2.1>      The JAX-WS specification target");
       out.println("    -q, --quiet                 Be somewhat more quiet");
-      out.println("    -t, --show-traces           Show full exception stack traces");
+      out.println("    -v, --verbose               Show full exception stack traces");
       out.println("    -l, --load-consumer         Load the consumer and exit (debug utility)");
       out.flush();
    }
