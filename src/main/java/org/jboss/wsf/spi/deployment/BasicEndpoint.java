@@ -21,16 +21,13 @@
  */
 package org.jboss.wsf.spi.deployment;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
-import javax.management.ObjectName;
-
-import org.jboss.wsf.spi.binding.jaxb.JAXBHandler;
+import org.jboss.wsf.spi.binding.BindingCustomization;
 import org.jboss.wsf.spi.invocation.InvocationHandler;
 import org.jboss.wsf.spi.invocation.RequestHandler;
 import org.jboss.wsf.spi.management.EndpointMetrics;
+
+import javax.management.ObjectName;
+import java.util.*;
 
 /**
  * A general JAXWS endpoint.
@@ -49,10 +46,10 @@ public class BasicEndpoint implements Endpoint
    private RequestHandler requestHandler;
    private InvocationHandler invocationHandler;
    private LifecycleHandler lifecycleHandler;
-   private JAXBHandler jaxbHandler;
    private Map<Class, Object> attachments = new HashMap<Class, Object>();
    private Map<String, Object> properties = new HashMap<String, Object>();
    private EndpointMetrics metrics;
+   private List<BindingCustomization> bindingCustomizsations = new ArrayList<BindingCustomization>();
 
    public BasicEndpoint()
    {
@@ -81,15 +78,15 @@ public class BasicEndpoint implements Endpoint
       this.targetBean = targetBean;
    }
 
-   public Class getTargetBeanClass() 
+   public Class getTargetBeanClass()
    {
       if (targetBean == null)
          throw new IllegalStateException("Target bean not set");
-      
+
       ClassLoader classLoader = service.getDeployment().getClassLoader();
       if (classLoader == null)
          throw new IllegalStateException("Deployment classloader not set");
-         
+
       Class beanClass;
       try
       {
@@ -101,7 +98,7 @@ public class BasicEndpoint implements Endpoint
       }
       return beanClass;
    }
-   
+
    public ObjectName getName()
    {
       return name;
@@ -178,15 +175,33 @@ public class BasicEndpoint implements Endpoint
       this.invocationHandler = handler;
    }
 
-   public JAXBHandler getJAXBHandler()
+   public List<BindingCustomization> getBindingCustomizations()
    {
-      return jaxbHandler;
+      return Collections.unmodifiableList(bindingCustomizsations);
    }
 
-   public void setJAXBHandler(JAXBHandler jaxbHandler)
+   /* Get a concrete binding customization */
+   public BindingCustomization getBindingCustomization(BindingCustomization customization)
+   {
+      BindingCustomization match = null;
+
+      Iterator<BindingCustomization> it = bindingCustomizsations.iterator();
+      while(it.hasNext())
+      {
+         BindingCustomization bc = it.next();
+         if(bc.getClass().equals(customization.getClass()))
+         {
+            match = bc;
+         }
+      }
+
+      return match;
+   }
+
+   public void addBindingCustomization(BindingCustomization customization)
    {
       assertEndpointSetterAccess();
-      this.jaxbHandler = jaxbHandler;
+      bindingCustomizsations.add(customization);
    }
 
    public <T> T addAttachment(Class<T> key, Object value)
@@ -203,7 +218,7 @@ public class BasicEndpoint implements Endpoint
    {
       return (T)attachments.get(key);
    }
-   
+
    public Set<String> getProperties()
    {
       return properties.keySet();
@@ -234,9 +249,9 @@ public class BasicEndpoint implements Endpoint
       assertEndpointSetterAccess();
       metrics.setEndpoint(this);
       this.metrics = metrics;
-      
+
    }
-   
+
    private void assertEndpointSetterAccess()
    {
       if (state == EndpointState.STARTED)

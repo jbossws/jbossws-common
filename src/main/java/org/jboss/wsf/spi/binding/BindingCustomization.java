@@ -19,24 +19,21 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.wsf.spi.binding.jaxb;
+package org.jboss.wsf.spi.binding;
 
-// $Id: $
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
+import java.util.HashMap;
 
 /**
- * A basic JAXBHandler.
+ * Allows introduction of arbitrary binding customization properties.<p>
+ * This may be different between stacks and addresses meta data binding
+ * (i.e JSR-181 to UnifiedMetaData) as well as JAVA to XML binding operations.
+ * <p>
+ * Supported properties need to be documented in subclasses.
  *
- * @author Thomas.Diesler@jboss.com
- * @since 26-Jun-2007
+ *
+ * @author Heiko.Braun@jboss.com
+ *         Created: Jun 28, 2007
  */
-public class BasicJAXBHandler implements JAXBHandler
-{
-   public JAXBContext getJAXBContext(Class[] javaTypes) throws JAXBException
-   {
-      JAXBContext ctx = JAXBContext.newInstance(javaTypes);
-      return ctx;
-   }
+public abstract class BindingCustomization extends HashMap {
+      
 }

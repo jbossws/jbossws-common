@@ -23,15 +23,14 @@ package org.jboss.wsf.spi.deployment;
 
 //$Id$
 
-import java.util.Map;
-
-import org.jboss.wsf.spi.binding.jaxb.JAXBHandler;
 import org.jboss.wsf.spi.invocation.InvocationExceptionHandler;
 import org.jboss.wsf.spi.invocation.InvocationHandler;
 import org.jboss.wsf.spi.invocation.RequestHandler;
 import org.jboss.wsf.spi.metadata.j2ee.UnifiedApplicationMetaData;
 import org.jboss.wsf.spi.metadata.j2ee.UnifiedBeanMetaData;
 import org.jboss.wsf.spi.metadata.j2ee.UnifiedMessageDrivenMetaData;
+
+import java.util.Map;
 
 /**
  * A deployer that assigns the handlers to the Endpoint 
@@ -43,9 +42,9 @@ public class EndpointHandlerDeployer extends AbstractDeployer
 {
    private String requestHandler;
    private String lifecycleHandler;
+
    private Map<String, String> invocationHandler;
    private String invocationExceptionHandler;
-   private String jaxbHandler;
 
    public void setLifecycleHandler(String handler)
    {
@@ -67,11 +66,6 @@ public class EndpointHandlerDeployer extends AbstractDeployer
       this.invocationExceptionHandler = handler;
    }
 
-   public void setJaxbHandler(String jaxbHandler)
-   {
-      this.jaxbHandler = jaxbHandler;
-   }
-
    @Override
    public void create(Deployment dep)
    {
@@ -80,7 +74,6 @@ public class EndpointHandlerDeployer extends AbstractDeployer
          ep.setRequestHandler(getRequestHandler(dep));
          ep.setLifecycleHandler(getLifecycleHandler(dep));
          ep.setInvocationHandler(getInvocationHandler(ep));
-         ep.setJAXBHandler(getJAXBHandler(dep));
       }
    }
 
@@ -107,19 +100,6 @@ public class EndpointHandlerDeployer extends AbstractDeployer
       catch (Exception e)
       {
          throw new IllegalStateException("Cannot load lifecycle handler: " + lifecycleHandler);
-      }
-   }
-
-   private JAXBHandler getJAXBHandler(Deployment dep)
-   {
-      try
-      {
-         Class<?> handlerClass = dep.getClassLoader().loadClass(jaxbHandler);
-         return (JAXBHandler)handlerClass.newInstance();
-      }
-      catch (Exception e)
-      {
-         throw new IllegalStateException("Cannot load jaxb handler: " + jaxbHandler);
       }
    }
 

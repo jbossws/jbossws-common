@@ -23,14 +23,14 @@ package org.jboss.wsf.spi.deployment;
 
 // $Id$
 
-import java.util.Set;
-
-import javax.management.ObjectName;
-
-import org.jboss.wsf.spi.binding.jaxb.JAXBHandler;
+import org.jboss.wsf.spi.binding.BindingCustomization;
 import org.jboss.wsf.spi.invocation.InvocationHandler;
 import org.jboss.wsf.spi.invocation.RequestHandler;
 import org.jboss.wsf.spi.management.EndpointMetrics;
+
+import javax.management.ObjectName;
+import java.util.List;
+import java.util.Set;
 
 /**
  * A general JAXWS endpoint.
@@ -107,13 +107,16 @@ public interface Endpoint
 
    /** Set the endpoint bean invoker */
    void setInvocationHandler(InvocationHandler invoker);
-   
-   /** Get the JAXBHandler for this endpoint */
-   JAXBHandler getJAXBHandler();
-   
-   /** Set the JAXBHandler for this endpoint */
-   void setJAXBHandler(JAXBHandler handler);
-   
+
+   /** Get all binding customizations for this endpoint */
+   List<BindingCustomization> getBindingCustomizations();
+
+   /* Get a concrete binding customization */
+   BindingCustomization getBindingCustomization(BindingCustomization bindingCustomization);
+
+   /** Add a binding customization to this endpoint*/
+   void addBindingCustomization (BindingCustomization bindingCustomization);
+
    /** Get the endpoint metrics for this endpoint */
    EndpointMetrics getEndpointMetrics();
 
