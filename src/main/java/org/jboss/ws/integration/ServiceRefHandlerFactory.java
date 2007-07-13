@@ -57,7 +57,7 @@ public abstract class ServiceRefHandlerFactory
       KernelRegistryEntry entry = registry.getEntry(ServiceRefHandler.BEAN_NAME);
       ServiceRefHandler handler = (ServiceRefHandler)entry.getTarget();
 
-      // Try legancy JBossAS-4.2 name
+      // Try legacy JBossAS-4.2 name
       if (handler == null)
       {
          entry = registry.getEntry("ServiceRefHandler");
@@ -69,7 +69,7 @@ public abstract class ServiceRefHandlerFactory
    private static ServiceRefHandler getClientSideServiceRefHandler()
    {
       String propName = ServiceRefHandler.class.getName();
-      String defaultImpl = "org.jboss.ws.core.client.ServiceRefHandlerImpl";
+      String defaultImpl = "org.jboss.wsf.spi.deployment.serviceref.ServiceRefHandlerImpl";
       ServiceRefHandler handler = (ServiceRefHandler)ServiceLoader.loadService(propName, defaultImpl);
       return handler;
    }
