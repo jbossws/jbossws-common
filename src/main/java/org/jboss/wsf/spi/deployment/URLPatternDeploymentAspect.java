@@ -21,7 +21,7 @@
  */
 package org.jboss.wsf.spi.deployment;
 
-//$Id$
+//$Id: URLPatternDeployer.java 3576 2007-06-14 09:23:52Z thomas.diesler@jboss.com $
 
 import org.jboss.wsf.spi.annotation.WebContext;
 import org.jboss.wsf.spi.metadata.j2ee.UnifiedApplicationMetaData;
@@ -35,7 +35,7 @@ import org.jboss.wsf.spi.metadata.j2ee.UnifiedWebMetaData;
  * @author Thomas.Diesler@jboss.org
  * @since 19-May-2007
  */
-public class URLPatternDeployer extends AbstractDeployer
+public class URLPatternDeploymentAspect extends DeploymentAspect
 {
    @Override
    public void create(Deployment dep)

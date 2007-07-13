@@ -21,31 +21,42 @@
  */
 package org.jboss.wsf.spi.deployment;
 
-//$Id: EndpointNameDeployer.java 3146 2007-05-18 22:55:26Z thomas.diesler@jboss.com $
+//$Id: BackwardCompatibleURLPatternDeployer.java 3576 2007-06-14 09:23:52Z thomas.diesler@jboss.com $
 
-import org.jboss.wsf.spi.management.EndpointMetrics;
+import java.util.StringTokenizer;
+
 
 /**
- * A deployer that assigns the metrics to the Endpoint 
+ * A deployer that assigns the URLPattern to endpoints. 
  *
+ * This deployer uses the first token from the <port-component-uri>
+ * as the context root.
+ * 
  * @author Thomas.Diesler@jboss.org
- * @since 20-Jun-2007
+ * @since 19-May-2007
  */
-public class EndpointMetricsDeployer extends AbstractDeployer
+public class BackwardCompatibleURLPatternDeploymentAspect extends URLPatternDeploymentAspect
 {
-   private EndpointMetrics metrics;
-   
-   public void setEndpointMetrics(EndpointMetrics metrics)
-   {
-      this.metrics = metrics;
-   }
 
    @Override
-   public void create(Deployment dep)
+   protected String getExplicitPattern(Deployment dep, Endpoint ep)
    {
-      for (Endpoint ep : dep.getService().getEndpoints())
+      String contextRoot = dep.getService().getContextRoot();
+      if (contextRoot == null)
+         throw new IllegalStateException("Cannot obtain context root");
+
+      String urlPattern = super.getExplicitPattern(dep, ep);
+      if (urlPattern != null)
       {
-         ep.setEndpointMetrics(metrics);
+         if (urlPattern.startsWith("/") == false)
+            urlPattern = "/" + urlPattern;
+
+         StringTokenizer st = new StringTokenizer(urlPattern, "/");
+         if (st.countTokens() > 1 && urlPattern.startsWith(contextRoot))
+         {
+            urlPattern = urlPattern.substring(contextRoot.length());
+         }
       }
+      return urlPattern;
    }
 }

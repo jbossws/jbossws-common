@@ -35,7 +35,7 @@ import org.jboss.wsf.spi.deployment.Endpoint;
  * @author Thomas.Diesler@jboss.org
  * @since 25-Apr-2007
  */
-public class InvocationHandlerJSE extends AbstractInvocationHandler
+public class InvocationHandlerJSE extends BasicInvocationHandler
 {
    protected Object getTargetBean(Endpoint ep, Invocation epInv) 
    {

@@ -21,16 +21,16 @@
  */
 package org.jboss.wsf.spi.deployment;
 
-//$Id$
+//$Id: EndpointHandlerDeployer.java 3828 2007-07-09 16:56:38Z heiko.braun@jboss.com $
 
-import org.jboss.wsf.spi.invocation.InvocationExceptionHandler;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.jboss.wsf.spi.invocation.InvocationHandler;
 import org.jboss.wsf.spi.invocation.RequestHandler;
 import org.jboss.wsf.spi.metadata.j2ee.UnifiedApplicationMetaData;
 import org.jboss.wsf.spi.metadata.j2ee.UnifiedBeanMetaData;
 import org.jboss.wsf.spi.metadata.j2ee.UnifiedMessageDrivenMetaData;
-
-import java.util.Map;
 
 /**
  * A deployer that assigns the handlers to the Endpoint 
@@ -38,14 +38,13 @@ import java.util.Map;
  * @author Thomas.Diesler@jboss.org
  * @since 25-Apr-2007
  */
-public class EndpointHandlerDeployer extends AbstractDeployer
+public class EndpointHandlerDeploymentAspect extends DeploymentAspect
 {
    private String requestHandler;
    private String lifecycleHandler;
 
-   private Map<String, String> invocationHandler;
-   private String invocationExceptionHandler;
-
+   private Map<String, String> invocationHandlerMap = new HashMap<String, String>();
+   
    public void setLifecycleHandler(String handler)
    {
       this.lifecycleHandler = handler;
@@ -58,12 +57,7 @@ public class EndpointHandlerDeployer extends AbstractDeployer
 
    public void setInvocationHandler(Map<String, String> handlers)
    {
-      this.invocationHandler = handlers;
-   }
-
-   public void setInvocationExceptionHandler(String handler)
-   {
-      this.invocationExceptionHandler = handler;
+      this.invocationHandlerMap = handlers;
    }
 
    @Override
@@ -71,9 +65,18 @@ public class EndpointHandlerDeployer extends AbstractDeployer
    {
       for (Endpoint ep : dep.getService().getEndpoints())
       {
-         ep.setRequestHandler(getRequestHandler(dep));
-         ep.setLifecycleHandler(getLifecycleHandler(dep));
-         ep.setInvocationHandler(getInvocationHandler(ep));
+         if (requestHandler != null)
+            ep.setRequestHandler(getRequestHandler(dep));
+         
+         if (lifecycleHandler != null)
+            ep.setLifecycleHandler(getLifecycleHandler(dep));
+         
+         if (invocationHandlerMap != null)
+         {
+            InvocationHandler invocationHandler = getInvocationHandler(ep);
+            if (invocationHandler != null)
+               ep.setInvocationHandler(invocationHandler);
+         }
       }
    }
 
@@ -119,30 +122,20 @@ public class EndpointHandlerDeployer extends AbstractDeployer
          }
       }
       
-      String className = invocationHandler.get(key);
-      if (className == null)
-         throw new IllegalStateException("Cannot obtain invocation handler for: " + key);
-
-      InvocationExceptionHandler exceptionHandler;
-      try
+      InvocationHandler invocationHandler = null;
+      String className = invocationHandlerMap.get(key);
+      if (className != null)
       {
-         Class<?> handlerClass = dep.getClassLoader().loadClass(invocationExceptionHandler);
-         exceptionHandler = (InvocationExceptionHandler)handlerClass.newInstance();
+         try
+         {
+            Class<?> handlerClass = dep.getClassLoader().loadClass(className);
+            invocationHandler = (InvocationHandler)handlerClass.newInstance();
+         }
+         catch (Exception e)
+         {
+            throw new IllegalStateException("Cannot load invocation handler: " + className);
+         }
       }
-      catch (Exception e)
-      {
-         throw new IllegalStateException("Cannot load invocation exception handler: " + invocationExceptionHandler);
-      }
-      try
-      {
-         Class<?> handlerClass = dep.getClassLoader().loadClass(className);
-         InvocationHandler invocationHandlerInstance = (InvocationHandler)handlerClass.newInstance();
-         invocationHandlerInstance.setExceptionHandler(exceptionHandler);
-         return invocationHandlerInstance;
-      }
-      catch (Exception e)
-      {
-         throw new IllegalStateException("Cannot load invocation handler: " + className);
-      }
+      return invocationHandler;
    }
 }

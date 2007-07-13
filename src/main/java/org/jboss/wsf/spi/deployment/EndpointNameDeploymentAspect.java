@@ -21,7 +21,7 @@
  */
 package org.jboss.wsf.spi.deployment;
 
-//$Id$
+//$Id: EndpointNameDeployer.java 3772 2007-07-01 19:29:13Z thomas.diesler@jboss.com $
 
 import org.jboss.wsf.spi.metadata.j2ee.UnifiedApplicationMetaData;
 import org.jboss.wsf.spi.metadata.j2ee.UnifiedBeanMetaData;
@@ -34,13 +34,13 @@ import org.jboss.wsf.spi.utils.ObjectNameFactory;
  * @author Thomas.Diesler@jboss.org
  * @since 25-Apr-2007
  */
-public class EndpointNameDeployer extends AbstractDeployer
+public class EndpointNameDeploymentAspect extends DeploymentAspect
 {
    @Override
    public void create(Deployment dep)
    {
       String contextRoot = dep.getService().getContextRoot();
-      if (contextRoot.startsWith("/") == false)
+      if (contextRoot == null || contextRoot.startsWith("/") == false)
          throw new IllegalStateException("Context root expected to start with leading slash: " + contextRoot);
 
 		for (Endpoint ep : dep.getService().getEndpoints())

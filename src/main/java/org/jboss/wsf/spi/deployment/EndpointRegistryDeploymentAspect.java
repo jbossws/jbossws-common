@@ -21,35 +21,32 @@
  */
 package org.jboss.wsf.spi.deployment;
 
-//$Id$
-
-import org.jboss.logging.Logger;
+import org.jboss.wsf.spi.management.EndpointRegistry;
+import org.jboss.wsf.spi.management.EndpointRegistryFactory;
 
 /**
- * An abstract deployer that does nothing.
- * Overwrite the deployer methods appropriately. 
+ * A deployer that registers the endpoints 
  * 
  * @author Thomas.Diesler@jboss.com
  * @since 20-Apr-2007 
  */
-public abstract class AbstractDeployer implements Deployer
+public class EndpointRegistryDeploymentAspect extends DeploymentAspect
 {
-   // provide logging
-   protected final Logger log = Logger.getLogger(getClass());
-   
    public void create(Deployment dep)
    {
+      EndpointRegistry registry = EndpointRegistryFactory.getEndpointRegistry();
+      for (Endpoint ep : dep.getService().getEndpoints())
+      {
+         registry.register(ep);
+      }
    }
 
    public void destroy(Deployment dep)
    {
-   }
-
-   public void start(Deployment dep)
-   {
-   }
-
-   public void stop(Deployment dep)
-   {
+      EndpointRegistry registry = EndpointRegistryFactory.getEndpointRegistry();
+      for (Endpoint ep : dep.getService().getEndpoints())
+      {
+         registry.unregister(ep);
+      }
    }
 }

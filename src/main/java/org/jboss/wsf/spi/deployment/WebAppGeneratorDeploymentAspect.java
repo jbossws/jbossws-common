@@ -21,7 +21,7 @@
  */
 package org.jboss.wsf.spi.deployment;
 
-//$Id$
+//$Id: WebAppGeneratorDeployer.java 3772 2007-07-01 19:29:13Z thomas.diesler@jboss.com $
 
 import java.io.File;
 import java.io.FileWriter;
@@ -47,7 +47,7 @@ import org.jboss.wsf.spi.metadata.j2ee.UnifiedEjbPortComponentMetaData;
  * @author Thomas.Diesler@jboss.org
  * @since 25-Apr-2007
  */
-public class WebAppGeneratorDeployer extends AbstractDeployer
+public class WebAppGeneratorDeploymentAspect extends DeploymentAspect
 {
    private SecurityHandler securityHandlerEJB21;
    private SecurityHandler securityHandlerEJB3;

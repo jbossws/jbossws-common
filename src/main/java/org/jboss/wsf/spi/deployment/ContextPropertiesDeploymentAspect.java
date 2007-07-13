@@ -21,32 +21,40 @@
  */
 package org.jboss.wsf.spi.deployment;
 
-import org.jboss.wsf.spi.management.EndpointRegistry;
-import org.jboss.wsf.spi.management.EndpointRegistryFactory;
+import java.util.Iterator;
+import java.util.Map;
+
 
 /**
- * A deployer that registers the endpoints 
- * 
- * @author Thomas.Diesler@jboss.com
- * @since 20-Apr-2007 
+ * Populate deployment context properties
+ *
+ * @author Thomas.Diesler@jboss.org
+ * @since 19-May-2006
  */
-public class EndpointRegistryDeployer extends AbstractDeployer
+public class ContextPropertiesDeploymentAspect extends DeploymentAspect
 {
-   public void create(Deployment dep)
+   // The configured service endpoint servlet
+   private Map<String,String> contextProperties;
+
+   public Map<String, String> getContextProperties()
    {
-      EndpointRegistry registry = EndpointRegistryFactory.getEndpointRegistry();
-      for (Endpoint ep : dep.getService().getEndpoints())
-      {
-         registry.register(ep);
-      }
+      return contextProperties;
    }
 
-   public void destroy(Deployment dep)
+   public void setContextProperties(Map<String, String> contextProperties)
    {
-      EndpointRegistry registry = EndpointRegistryFactory.getEndpointRegistry();
-      for (Endpoint ep : dep.getService().getEndpoints())
+      this.contextProperties = contextProperties;
+   }
+
+   @Override
+   public void create(Deployment dep)
+   {
+      Iterator<String> it = contextProperties.keySet().iterator();
+      while (it.hasNext())
       {
-         registry.unregister(ep);
+         String key = it.next();
+         String value = contextProperties.get(key);
+         dep.getContext().setProperty(key, value);
       }
    }
 }

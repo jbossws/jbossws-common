@@ -21,7 +21,7 @@
  */
 package org.jboss.wsf.spi.deployment;
 
-//$Id$
+//$Id: EndpointLifecycleDeployer.java 3146 2007-05-18 22:55:26Z thomas.diesler@jboss.com $
 
 
 /**
@@ -30,7 +30,7 @@ package org.jboss.wsf.spi.deployment;
  * @author Thomas.Diesler@jboss.org
  * @since 25-Apr-2007
  */
-public class EndpointLifecycleDeployer extends AbstractDeployer
+public class EndpointLifecycleDeploymentAspect extends DeploymentAspect
 {
    @Override
    public void create(Deployment dep)

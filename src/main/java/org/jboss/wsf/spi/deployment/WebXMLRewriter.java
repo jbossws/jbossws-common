@@ -59,6 +59,8 @@ public class WebXMLRewriter
    public RewriteResults rewriteWebXml(Deployment dep)
    {
       UnifiedDeploymentInfo udi = dep.getContext().getAttachment(UnifiedDeploymentInfo.class);
+      if (udi == null)
+         throw new IllegalStateException("Cannot obtain unified deployment info");
       
       URL warURL = udi.webappURL;
       File warFile = new File(warURL.getFile());

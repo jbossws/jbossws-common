@@ -21,7 +21,7 @@
  */
 package org.jboss.wsf.spi.deployment;
 
-//$Id$
+//$Id: ContextRootDeployer.java 3576 2007-06-14 09:23:52Z thomas.diesler@jboss.com $
 
 import org.jboss.wsf.spi.annotation.WebContext;
 import org.jboss.wsf.spi.metadata.j2ee.UnifiedApplicationMetaData;
@@ -33,7 +33,7 @@ import org.jboss.wsf.spi.metadata.j2ee.UnifiedWebMetaData;
  * @author Thomas.Diesler@jboss.org
  * @since 25-Apr-2007
  */
-public class ContextRootDeployer extends AbstractDeployer
+public class ContextRootDeploymentAspect extends DeploymentAspect
 {
    @Override
    public void create(Deployment dep)

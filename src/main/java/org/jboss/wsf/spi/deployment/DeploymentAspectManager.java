@@ -23,20 +23,30 @@ package org.jboss.wsf.spi.deployment;
 
 // $Id$
 
+import java.util.List;
+
 /**
- * A general web service deployer.
+ * A general service deployment manger.
  * 
  * @author Thomas.Diesler@jboss.com
  * @since 20-Apr-2007 
  */
-public interface Deployer
+public interface DeploymentAspectManager
 {
-   void create (Deployment dep);
-   
-   void start (Deployment dep);
-   
-   void stop (Deployment dep);
-   
-   void destroy (Deployment dep);
-}
+   static final String LAST_DEPLOYMENT_ASPECT = "LAST_DEPLOYMENT_ASPECT";
 
+   /** Get the name for this aspect manager */
+   String getName();
+   
+   /** Get the ordered list of registered deployment aspects */
+   List<DeploymentAspect> getDeploymentAspects();
+   
+   /** Add deployment aspect */
+   void addDeploymentAspect(DeploymentAspect aspect);
+   
+   /** Deploy a web service */
+   void deploy(Deployment dep);
+   
+   /** Undeploy a web service */
+   void undeploy(Deployment dep);
+}

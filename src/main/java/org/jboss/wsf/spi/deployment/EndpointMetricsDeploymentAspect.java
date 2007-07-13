@@ -19,46 +19,33 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.wsf.spi.invocation;
+package org.jboss.wsf.spi.deployment;
 
-import java.lang.reflect.UndeclaredThrowableException;
+//$Id: EndpointNameDeployer.java 3146 2007-05-18 22:55:26Z thomas.diesler@jboss.com $
 
-import javax.management.MBeanException;
+import org.jboss.wsf.spi.management.EndpointMetrics;
 
 /**
- * A basic invocation exception handler that simply rethrows Throwable as Exception
- * 
- * @author Alessio Soldano, <alessio.soldano@javalinux.it>
- * @since 17-Jun-2007
+ * A deployer that assigns the metrics to the Endpoint 
  *
+ * @author Thomas.Diesler@jboss.org
+ * @since 20-Jun-2007
  */
-public class BasicInvocationExceptionHandler implements InvocationExceptionHandler
+public class EndpointMetricsDeploymentAspect extends DeploymentAspect
 {
+   private EndpointMetrics metrics;
    
-   public void handleInvocationException(Throwable th) throws Exception
+   public void setEndpointMetrics(EndpointMetrics metrics)
    {
-      if (th instanceof MBeanException)
-      {
-         throw ((MBeanException)th).getTargetException();
-      }
+      this.metrics = metrics;
+   }
 
-      handleInvocationThrowable(th);
-   }
-   
-   protected void handleInvocationThrowable(Throwable th) throws Exception
+   @Override
+   public void create(Deployment dep)
    {
-      if (th instanceof Exception)
+      for (Endpoint ep : dep.getService().getEndpoints())
       {
-         throw (Exception)th;
-      }
-      else if (th instanceof Error)
-      {
-         throw (Error)th;
-      }
-      else
-      {
-         throw new UndeclaredThrowableException(th);
+         ep.setEndpointMetrics(metrics);
       }
    }
-   
 }

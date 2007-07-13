@@ -21,37 +21,97 @@
  */
 package org.jboss.wsf.spi.invocation;
 
-//$Id$
+// $Id$
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.UndeclaredThrowableException;
+
+import javax.management.MBeanException;
+
+import org.jboss.logging.Logger;
 import org.jboss.wsf.spi.deployment.Endpoint;
+import org.jboss.wsf.spi.utils.JavaUtils;
 
 /**
- * A basic endpoint invocation handler.
- * 
- * @author Thomas.Diesler@jboss.com
- * @since 20-Apr-2007 
+ * Handles invocations on endpoints.
+ *
+ * @author Thomas.Diesler@jboss.org
+ * @since 25-Apr-2007
  */
 public abstract class BasicInvocationHandler implements InvocationHandler
 {
+   // provide logging
+   private static final Logger log = Logger.getLogger(BasicInvocationHandler.class);
+   
    public Invocation createInvocation()
    {
       return new BasicEndpointInvocation();
    }
 
+   protected Method getImplMethod(Class implClass, Method seiMethod) throws ClassNotFoundException, NoSuchMethodException
+   {
+      String methodName = seiMethod.getName();
+      Class[] paramTypes = seiMethod.getParameterTypes();
+      for (int i = 0; i < paramTypes.length; i++)
+      {
+         Class paramType = paramTypes[i];
+         if (JavaUtils.isPrimitive(paramType) == false)
+         {
+            String paramTypeName = paramType.getName();
+            paramType = JavaUtils.loadJavaType(paramTypeName);
+            paramTypes[i] = paramType;
+         }
+      }
+
+      Method implMethod = implClass.getMethod(methodName, paramTypes);
+      return implMethod;
+   }
+
    public void create(Endpoint ep)
    {
+      log.debug("Create: " + ep.getName());
    }
 
    public void start(Endpoint ep)
    {
+      log.debug("Start: " + ep.getName());
    }
 
    public void stop(Endpoint ep)
    {
+      log.debug("Stop: " + ep.getName());
    }
 
    public void destroy(Endpoint ep)
    {
+      log.debug("Destroy: " + ep.getName());
    }
+   
+   protected void handleInvocationException(Throwable th) throws Exception
+   {
+      if (th instanceof MBeanException)
+      {
+         throw ((MBeanException)th).getTargetException();
+      }
 
+      if (th instanceof InvocationTargetException)
+      {
+         // Unwrap the throwable raised by the service endpoint implementation
+         Throwable targetEx = ((InvocationTargetException)th).getTargetException();
+         handleInvocationException(targetEx);
+      }
+      
+      if (th instanceof Exception)
+      {
+         throw (Exception)th;
+      }
+      
+      if (th instanceof Error)
+      {
+         throw (Error)th;
+      }
+      
+      throw new UndeclaredThrowableException(th);
+   }
 }

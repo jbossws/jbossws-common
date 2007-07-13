@@ -25,6 +25,7 @@ package org.jboss.wsf.spi.deployment;
 
 import org.jboss.logging.Logger;
 import org.jboss.wsf.spi.deployment.Endpoint.EndpointState;
+import org.jboss.wsf.spi.invocation.InvocationHandler;
 
 /**
  * A basic lifecycle handler
@@ -41,8 +42,11 @@ public class BasicLifecycleHandler implements LifecycleHandler
    {
       log.debug("Create: " + ep.getName());
 
-      ep.getInvocationHandler().create(ep);
-
+      InvocationHandler invHandler = ep.getInvocationHandler();
+      if (invHandler == null)
+         throw new IllegalStateException("Invocation handler not available");
+      
+      invHandler.create(ep);
       ep.setState(EndpointState.CREATED);
    }
 

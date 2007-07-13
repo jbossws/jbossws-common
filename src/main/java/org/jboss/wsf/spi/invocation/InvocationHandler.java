@@ -50,7 +50,4 @@ public interface InvocationHandler
 
    /** Destroy the invocation handler */
    void destroy(Endpoint ep);
-   
-   /** Set the handler to be used to deal with invocation exceptions **/
-   void setExceptionHandler(InvocationExceptionHandler exceptionHandler);
 }

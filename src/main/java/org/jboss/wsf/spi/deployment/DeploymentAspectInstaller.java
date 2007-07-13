@@ -19,17 +19,40 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.wsf.spi.invocation;
+package org.jboss.wsf.spi.deployment;
+
+//$Id: AbstractDeployer.java 3146 2007-05-18 22:55:26Z thomas.diesler@jboss.com $
+
+import java.util.Set;
 
 /**
- * A general invocation exception handler
+ * A deployment aspect installer.
  * 
- * @author Alessio Soldano, <alessio.soldano@javalinux.it>
- * @since 17-Jun-2007
- *
+ * Use this installer with microkernel version 1.x
+ * 
+ * @author Thomas.Diesler@jboss.com
+ * @since 20-Apr-2007 
  */
-public interface InvocationExceptionHandler
+public class DeploymentAspectInstaller
 {
-   public void handleInvocationException(Throwable th) throws Exception;
+   private DeploymentAspectManager manager;
+   private Set<DeploymentAspect> aspects;
 
+   public void setManager(DeploymentAspectManager manager)
+   {
+      this.manager = manager;
+   }
+
+   public void setAspects(Set<DeploymentAspect> aspects)
+   {
+      this.aspects = aspects;
+   }
+
+   public void create()
+   {
+      for (DeploymentAspect aspect : aspects)
+      {
+         manager.addDeploymentAspect(aspect);
+      }
+   }
 }
