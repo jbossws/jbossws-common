@@ -22,6 +22,7 @@
 package org.jboss.wsf.spi.deployment.serviceref;
 
 import org.jboss.wsf.spi.metadata.j2ee.serviceref.UnifiedServiceRefMetaData;
+import org.jboss.wsf.spi.WSFException;
 import org.jboss.util.naming.Util;
 import org.jboss.logging.Logger;
 
@@ -31,6 +32,8 @@ import javax.naming.Referenceable;
 import javax.xml.ws.WebServiceRef;
 import javax.xml.ws.WebServiceRefs;
 import javax.xml.ws.Service;
+import javax.xml.ws.WebServiceClient;
+import javax.xml.namespace.QName;
 import javax.jws.HandlerChain;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
@@ -58,13 +61,19 @@ public abstract class CommonServiceRefBinder implements ServiceRefBinder
    // logging support
    private static Logger log = Logger.getLogger(CommonServiceRefBinder.class);
 
-   public void setupServiceRef(Context encCtx, String encName, AnnotatedElement anElement, UnifiedServiceRefMetaData serviceRef) throws NamingException
+   private ClassLoader loader = null;
+
+   public void setupServiceRef(Context encCtx, String encName, AnnotatedElement anElement, UnifiedServiceRefMetaData serviceRef, ClassLoader loader) throws NamingException
    {
       WebServiceRef wsref = null;
 
+      if(null == loader)
+         throw new IllegalArgumentException("There needs to be a classloader available");
+
       // Build the list of @WebServiceRef relevant annotations
       List<WebServiceRef> wsrefList = new ArrayList<WebServiceRef>();
-      if (anElement != null)
+
+      if(anElement!=null)
       {
          for (Annotation an : anElement.getAnnotations())
          {
@@ -177,6 +186,24 @@ public abstract class CommonServiceRefBinder implements ServiceRefBinder
          }
 
          serviceRef.setHandlerChain(handlerChain);
+      }
+
+      // Extract service QName for target service
+      if(null == serviceRef.getServiceQName())
+      {
+         try
+         {
+            Class serviceClass = loader.loadClass(serviceImplClass);
+            if(serviceClass.getAnnotation(WebServiceClient.class) !=null)
+            {
+               WebServiceClient clientDecl = (WebServiceClient)serviceClass.getAnnotation(WebServiceClient.class);
+               serviceRef.setServiceQName( new QName(clientDecl.targetNamespace(), clientDecl.name()));
+            }
+         }
+         catch (ClassNotFoundException e)
+         {
+            WSFException.rethrow("Cannot extract service QName for target service", e);
+         }
       }
 
       // Do not use rebind, the binding should be unique

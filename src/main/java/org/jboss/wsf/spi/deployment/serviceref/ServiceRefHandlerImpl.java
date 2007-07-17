@@ -121,12 +121,12 @@ public class ServiceRefHandlerImpl implements ServiceRefHandler
       {
          if (getServiceRefType(serviceRef, loader) == Type.JAXRPC)
          {
-            jaxrpcBinder.setupServiceRef(encCtx, encName, null, serviceRef);
+            jaxrpcBinder.setupServiceRef(encCtx, encName, null, serviceRef, loader);
          }
          else
          {
             AnnotatedElement anElement = (AnnotatedElement)sref.getAnnotatedElement();
-            jaxwsBinder.setupServiceRef(encCtx, encName, anElement, serviceRef);
+            jaxwsBinder.setupServiceRef(encCtx, encName, anElement, serviceRef, loader);
          }
       }
       finally

@@ -39,6 +39,6 @@ public interface ServiceRefBinder
 
    public final static String JAXWS_BINDER = "WSServiceRefBinderJAXWS";
 
-   void setupServiceRef(Context encCtx, String encName, AnnotatedElement anElement, UnifiedServiceRefMetaData serviceRef)
-       throws NamingException;
+   void setupServiceRef(Context encCtx, String encName, AnnotatedElement anElement, UnifiedServiceRefMetaData serviceRef, ClassLoader loader)
+     throws NamingException;
 }
