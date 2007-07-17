@@ -42,15 +42,19 @@ public class URLPatternDeploymentAspect extends DeploymentAspect
    {
       for (Endpoint ep : dep.getService().getEndpoints())
       {
-         String urlPattern = getExplicitPattern(dep, ep);
+         String urlPattern = ep.getURLPattern();
          if (urlPattern == null)
-            urlPattern = getImplicitPattern(dep, ep);
-         
-         // Always prefix with '/'
-         if (urlPattern.startsWith("/") == false)
-            urlPattern = "/" + urlPattern;
+         {
+            urlPattern = getExplicitPattern(dep, ep);
+            if (urlPattern == null)
+               urlPattern = getImplicitPattern(dep, ep);
+            
+            // Always prefix with '/'
+            if (urlPattern.startsWith("/") == false)
+               urlPattern = "/" + urlPattern;
 
-         ep.setURLPattern(urlPattern);
+            ep.setURLPattern(urlPattern);
+         }
       }
    }
 

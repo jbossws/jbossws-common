@@ -104,7 +104,16 @@ public class BasicDeploymentAspectManager implements DeploymentAspectManager
          }
 
          if (allAspects.size() != 0)
-            throw new IllegalStateException("Cannot add: " + allAspects);
+         {
+            Set<String> providedConditions = new HashSet<String>();
+            for (int i = 0; i < sortedAspects.size(); i++)
+            {
+               DeploymentAspect sortedAspect = sortedAspects.get(i);
+               providedConditions.addAll(sortedAspect.getProvidesAsSet());
+            }
+            
+            throw new IllegalStateException("Cannot add: " + allAspects + "\n provided: " + providedConditions);
+         }
          
          for (DeploymentAspect aspect : sortedAspects)
             log.info(name + ": " + aspect);

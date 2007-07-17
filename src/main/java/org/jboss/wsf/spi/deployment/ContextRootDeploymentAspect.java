@@ -38,15 +38,19 @@ public class ContextRootDeploymentAspect extends DeploymentAspect
    @Override
    public void create(Deployment dep)
    {
-      String contextRoot = getExplicitContextRoot(dep);
+      String contextRoot = dep.getService().getContextRoot();
       if (contextRoot == null)
-         contextRoot = getImplicitContextRoot(dep);
-      
-      // Always prefix with '/'
-      if (contextRoot.startsWith("/") == false)
-         contextRoot = "/" + contextRoot;
-      
-      dep.getService().setContextRoot(contextRoot);
+      {
+         contextRoot = getExplicitContextRoot(dep);
+         if (contextRoot == null)
+            contextRoot = getImplicitContextRoot(dep);
+         
+         // Always prefix with '/'
+         if (contextRoot.startsWith("/") == false)
+            contextRoot = "/" + contextRoot;
+         
+         dep.getService().setContextRoot(contextRoot);
+      }
    }
 
    protected String getExplicitContextRoot(Deployment dep)

@@ -22,6 +22,7 @@
 package org.jboss.wsf.spi.deployment;
 
 import java.util.Iterator;
+import java.util.Map;
 
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -40,14 +41,34 @@ public class WebAppDesciptorModifierImpl implements WebAppDesciptorModifier
 
    public RewriteResults modifyDescriptor(Deployment dep, Document webXml) throws ClassNotFoundException
    {
-      String propKey = "SERVICE_ENDPOINT_SERVLET";
+      RewriteResults results = new RewriteResults();
+      Element root = webXml.getRootElement();
+      
+      String propKey = SERVLET_CLASS;
       String servletClass = (String)dep.getContext().getProperty(propKey);
       if (servletClass == null)
          throw new IllegalStateException("Cannot obtain context property: " + propKey);
       
-      RewriteResults results = new RewriteResults();
-
-      Element root = webXml.getRootElement();
+      propKey = CONTEXT_PARAMETER_MAP;
+      Map<String, String> contextParams = (Map<String, String>)dep.getContext().getProperty(propKey);
+      if (contextParams != null)
+      {
+         for (Map.Entry<String, String> entry : contextParams.entrySet())
+         {
+            Element contextParam = root.addElement("context-param");
+            contextParam.addElement("param-name").addText(entry.getKey());
+            contextParam.addElement("param-value").addText(entry.getValue());
+         }
+      }
+      
+      propKey = SERVLET_CONTEXT_LISTENER;
+      String listenerClass = (String)dep.getContext().getProperty(propKey);
+      if (listenerClass != null)
+      {
+         Element listener = root.addElement("listener");
+         listener.addElement("listener-class").setText(listenerClass);
+      }
+      
       for (Iterator it = root.elementIterator("servlet"); it.hasNext();)
       {
          Element servlet = (Element)it.next();
@@ -66,7 +87,7 @@ public class WebAppDesciptorModifierImpl implements WebAppDesciptorModifier
          Class orgServletClass = null;
          try
          {
-            ClassLoader loader = dep.getClassLoader();
+            ClassLoader loader = dep.getInitialClassLoader();
             orgServletClass = loader.loadClass(orgServletClassName);
          }
          catch (ClassNotFoundException ex)

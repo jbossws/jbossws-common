@@ -35,8 +35,12 @@ import org.dom4j.Document;
  */
 public interface WebAppDesciptorModifier
 {
+   final String SERVLET_CONTEXT_LISTENER = "ServletContextListener";
+   final String CONTEXT_PARAMETER_MAP = "ContextParameterMap";
+   final String SERVLET_CLASS = "ServletClass";
+   
    // The results of the URL rewriting
-   public class RewriteResults
+   class RewriteResults
    {
       // The URL to the rewrittn web.xml
       public URL webXML;

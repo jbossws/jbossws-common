@@ -84,7 +84,7 @@ public class EndpointHandlerDeploymentAspect extends DeploymentAspect
    {
       try
       {
-         Class<?> handlerClass = dep.getClassLoader().loadClass(requestHandler);
+         Class<?> handlerClass = dep.getInitialClassLoader().loadClass(requestHandler);
          return (RequestHandler)handlerClass.newInstance();
       }
       catch (Exception e)
@@ -97,7 +97,7 @@ public class EndpointHandlerDeploymentAspect extends DeploymentAspect
    {
       try
       {
-         Class<?> handlerClass = dep.getClassLoader().loadClass(lifecycleHandler);
+         Class<?> handlerClass = dep.getInitialClassLoader().loadClass(lifecycleHandler);
          return (LifecycleHandler)handlerClass.newInstance();
       }
       catch (Exception e)
@@ -128,7 +128,7 @@ public class EndpointHandlerDeploymentAspect extends DeploymentAspect
       {
          try
          {
-            Class<?> handlerClass = dep.getClassLoader().loadClass(className);
+            Class<?> handlerClass = dep.getInitialClassLoader().loadClass(className);
             invocationHandler = (InvocationHandler)handlerClass.newInstance();
          }
          catch (Exception e)

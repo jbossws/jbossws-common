@@ -47,7 +47,9 @@ public class BasicDeployment implements Deployment
    // The state for this deployment
    private DeploymentState state;
    // The deployment class loader
-   private ClassLoader classLoader;
+   private ClassLoader initialLoader;
+   // The runtime class loader
+   private ClassLoader runtimeLoader;
 
    public BasicDeployment()
    {
@@ -76,14 +78,24 @@ public class BasicDeployment implements Deployment
       this.rootFile = rootFile;
    }
 
-   public void setClassLoader(ClassLoader classLoader)
+   public void setInitialClassLoader(ClassLoader classLoader)
    {
-      this.classLoader = classLoader;
+      this.initialLoader = classLoader;
    }
    
-   public ClassLoader getClassLoader()
+   public ClassLoader getInitialClassLoader()
    {
-      return classLoader;
+      return initialLoader;
+   }
+   
+   public void setRuntimeClassLoader(ClassLoader classLoader)
+   {
+      this.runtimeLoader = classLoader;
+   }
+   
+   public ClassLoader getRuntimeClassLoader()
+   {
+      return runtimeLoader;
    }
    
    public Service getService()

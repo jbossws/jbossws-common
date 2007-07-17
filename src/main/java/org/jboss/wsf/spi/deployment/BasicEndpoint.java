@@ -83,7 +83,10 @@ public class BasicEndpoint implements Endpoint
       if (targetBean == null)
          throw new IllegalStateException("Target bean not set");
 
-      ClassLoader classLoader = service.getDeployment().getClassLoader();
+      ClassLoader classLoader = service.getDeployment().getRuntimeClassLoader();
+      if (classLoader == null)
+         classLoader = service.getDeployment().getInitialClassLoader();
+      
       if (classLoader == null)
          throw new IllegalStateException("Deployment classloader not set");
 

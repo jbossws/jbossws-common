@@ -54,10 +54,16 @@ public interface Deployment
    void setRootFile(UnifiedVirtualFile root);
    
    /** Get the class loader for this deployment */
-   ClassLoader getClassLoader();
+   ClassLoader getInitialClassLoader();
    
    /** Set the class loader for this deployment */
-   void setClassLoader(ClassLoader loader);
+   void setInitialClassLoader(ClassLoader loader);
+   
+   /** Get the runtime class loader for this deployment */
+   ClassLoader getRuntimeClassLoader();
+   
+   /** Set the runtime class loader for this deployment */
+   void setRuntimeClassLoader(ClassLoader loader);
    
    /** Get the deployment context */
    DeploymentContext getContext();

@@ -33,8 +33,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.ws.WebServiceException;
 
+import org.jboss.wsf.spi.deployment.Deployment;
 import org.jboss.wsf.spi.deployment.Endpoint;
 import org.jboss.wsf.spi.deployment.EndpointAssociation;
+import org.jboss.wsf.spi.deployment.Deployment.DeploymentType;
 import org.jboss.wsf.spi.management.EndpointRegistry;
 import org.jboss.wsf.spi.management.EndpointRegistryFactory;
 import org.jboss.wsf.spi.utils.ObjectNameFactory;
@@ -101,6 +103,14 @@ public class EndpointServlet extends HttpServlet
          ObjectName oname = ObjectNameFactory.create(Endpoint.SEPID_DOMAIN + ":" + Endpoint.SEPID_PROPERTY_CONTEXT + "=" + contextPath + ","
                + Endpoint.SEPID_PROPERTY_ENDPOINT + "=" + servletName);
          throw new WebServiceException("Cannot obtain endpoint for: " + oname);
+      }
+      
+      // Set the runtime classloader for JSE endpoints, this should be the tomcat classloader
+      Deployment dep = endpoint.getService().getDeployment();
+      if (dep.getType() == DeploymentType.JAXRPC_JSE || dep.getType() == DeploymentType.JAXWS_JSE)
+      {
+         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+         dep.setRuntimeClassLoader(classLoader);
       }
    }
 }
