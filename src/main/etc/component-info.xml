@@ -1,8 +1,9 @@
 <project name="jboss/jbossws-spi">
-	<artifact id="jbossws-spi-src.zip"/>
-	<artifact id="jbossws-spi-scripts.zip"/>
 	
-  <component id="jboss/jbossws-spi" description="JBossWS SPI" version="@repository.id@" licenseType="lgpl">
+  <component id="jboss/jbossws-spi" 
+    description="JBossWS SPI" 
+    version="@repository.id@" 
+    licenseType="lgpl">
     
     <artifact id="jbossws-spi.jar"/>
     <artifact id="jbossws-spi-scripts.zip"/>
@@ -17,11 +18,11 @@
     
     <import componentref="woodstox">
       <compatible version="@woodstox@"/>
+      <compatible version="@woodstox@-brew"/>
     </import>
     
     <export>
       <include input="jbossws-spi.jar"/>
-      <include input="jbossws-spi-scripts.zip"/>
     </export>
     
   </component>
