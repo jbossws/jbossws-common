@@ -27,7 +27,6 @@ import javax.naming.Context;
 import javax.naming.NamingException;
 
 import org.jboss.xb.binding.UnmarshallingContext;
-import org.jboss.wsf.spi.deployment.serviceref.ServiceRefBinder;
 import org.xml.sax.Attributes;
 
 /**
@@ -47,8 +46,4 @@ public interface ServiceRefHandler
    void setValue(ServiceRefElement ref, UnmarshallingContext navigator, String namespaceURI, String localName, String value);
    
    void bindServiceRef(Context encCtx, String encName, UnifiedVirtualFile vfsRoot, ClassLoader loader, ServiceRefMetaData sref) throws NamingException;
-
-   void setJaxrpcBinder(ServiceRefBinder binder);
-
-   void setJaxwsBinder(ServiceRefBinder binder);
 }
