@@ -90,6 +90,12 @@ public interface Endpoint
    /** Set the URL pattern for this endpoint */
    void setURLPattern(String urlPattern);
 
+   /** Get endpoint address */
+   String getAddress();
+
+   /** Set endpoint address */
+   void setAddress(String address);
+   
    /** Set the request handler for this endpoint */
    void setRequestHandler(RequestHandler handler);
 

@@ -42,6 +42,7 @@ public class BasicEndpoint implements Endpoint
    private String shortName;
    private String urlPattern;
    private String targetBean;
+   private String address;
    private EndpointState state;
    private RequestHandler requestHandler;
    private InvocationHandler invocationHandler;
@@ -133,6 +134,16 @@ public class BasicEndpoint implements Endpoint
    {
       assertEndpointSetterAccess();
       this.urlPattern = urlPattern;
+   }
+
+   public String getAddress()
+   {
+      return address;
+   }
+
+   public void setAddress(String address)
+   {
+      this.address = address;
    }
 
    public EndpointState getState()
