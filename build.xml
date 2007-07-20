@@ -61,7 +61,7 @@
     <mkdir dir="${spi.output.classes.dir}"/>
     <javac srcdir="${spi.java.dir}" sourcepath="" destdir="${spi.output.classes.dir}" encoding="utf-8" debug="${javac.debug}" verbose="${javac.verbose}"
       deprecation="${javac.deprecation}" failonerror="${javac.fail.onerror}" source="1.5" target="1.5">
-      <include name="org/jboss/wsf/spi/**"/>
+      <include name="org/jboss/wsf/**"/>
       <include name="org/jboss/ws/integration/**"/>
       <classpath refid="spi.thirdparty.classpath"/>
     </javac>
@@ -104,7 +104,7 @@
     <mkdir dir="${spi.output.lib.dir}"/>
     <jar jarfile="${spi.output.lib.dir}/jbossws-spi.jar" manifest="${spi.output.etc.dir}/default.mf">
       <fileset dir="${spi.output.classes.dir}">
-        <include name="org/jboss/wsf/spi/**"/>
+        <include name="org/jboss/wsf/**"/>
         <include name="org/jboss/ws/integration/**"/>
       </fileset>
     </jar>

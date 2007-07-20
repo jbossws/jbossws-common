@@ -27,7 +27,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
-import org.jboss.wsf.spi.utils.ServiceLoader;
+import org.jboss.wsf.common.ServiceLoader;
 
 /**
  * WSContractConsumer is responsible for generating JAX-WS client and server
@@ -42,7 +42,7 @@ import org.jboss.wsf.spi.utils.ServiceLoader;
 public abstract class WSContractConsumer
 {
    private static String DEFAULT_PROVIDER = "org.jboss.ws.tools.jaxws.impl.SunRIConsumerFactoryImpl";
-   public static final String PROVIDER_PROPERTY = "org.jboss.wsf.tools.ConsumerFactoryImpl";
+   public static final String PROVIDER_PROPERTY = "org.jboss.wsf.spi.tools.ConsumerFactoryImpl";
 
    /**
     * Obtain a new instance of a WSContractProvider. This will use the current
@@ -69,7 +69,7 @@ public abstract class WSContractConsumer
       try
       {
          Thread.currentThread().setContextClassLoader(loader);
-         WSContractConsumerFactory factory = (WSContractConsumerFactory)ServiceLoader.loadService(PROVIDER_PROPERTY, DEFAULT_PROVIDER);
+         WSContractConsumerFactory factory = (WSContractConsumerFactory) ServiceLoader.loadService(PROVIDER_PROPERTY, DEFAULT_PROVIDER);
          return factory.createConsumer();
       }
       finally

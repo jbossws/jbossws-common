@@ -3,7 +3,7 @@ package org.jboss.wsf.spi.tools;
 import java.io.File;
 import java.io.PrintStream;
 
-import org.jboss.wsf.spi.utils.ServiceLoader;
+import org.jboss.wsf.common.ServiceLoader;
 
 /**
  * WSContractProvider is responsible for generating the required portable
@@ -30,7 +30,7 @@ import org.jboss.wsf.spi.utils.ServiceLoader;
 public abstract class WSContractProvider
 {
    private static String DEFAULT_PROVIDER = "org.jboss.ws.tools.jaxws.impl.JBossWSProviderFactoryImpl";
-   public static final String PROVIDER_PROPERTY = "org.jboss.wsf.tools.ProviderFactoryImpl";
+   public static final String PROVIDER_PROPERTY = "org.jboss.wsf.spi.tools.ProviderFactoryImpl";
 
    protected WSContractProvider()
    {
@@ -62,7 +62,7 @@ public abstract class WSContractProvider
       try
       {
          Thread.currentThread().setContextClassLoader(loader);
-         WSContractProviderFactory factory = (WSContractProviderFactory)ServiceLoader.loadService(PROVIDER_PROPERTY, DEFAULT_PROVIDER);
+         WSContractProviderFactory factory = (WSContractProviderFactory) ServiceLoader.loadService(PROVIDER_PROPERTY, DEFAULT_PROVIDER);
          return factory.createProvider(loader);
       }
       finally

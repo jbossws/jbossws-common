@@ -24,7 +24,7 @@ package org.jboss.ws.integration;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.registry.KernelRegistry;
 import org.jboss.kernel.spi.registry.KernelRegistryEntry;
-import org.jboss.wsf.spi.utils.ServiceLoader;
+import org.jboss.wsf.common.ServiceLoader;
 
 // $Id$
 
@@ -69,8 +69,8 @@ public abstract class ServiceRefHandlerFactory
    private static ServiceRefHandler getClientSideServiceRefHandler()
    {
       String propName = ServiceRefHandler.class.getName();
-      String defaultImpl = "org.jboss.wsf.spi.deployment.serviceref.ServiceRefHandlerImpl";
-      ServiceRefHandler handler = (ServiceRefHandler)ServiceLoader.loadService(propName, defaultImpl);
+      String defaultImpl = "org.jboss.ws.integration.ServiceRefHandlerImpl";
+      ServiceRefHandler handler = (ServiceRefHandler) ServiceLoader.loadService(propName, defaultImpl);
       return handler;
    }
 }

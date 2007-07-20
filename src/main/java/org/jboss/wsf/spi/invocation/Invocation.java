@@ -23,29 +23,61 @@ package org.jboss.wsf.spi.invocation;
 
 import java.lang.reflect.Method;
 
-//$Id$
-
 /**
  * A general endpoint invocation.
- * 
+ *
  * @author Thomas.Diesler@jboss.com
- * @since 20-Apr-2007 
+ * @since 20-Apr-2007
  */
-public interface Invocation
+public class Invocation 
 {
-   InvocationContext getInvocationContext();
-   
-   void setInvocationContext(InvocationContext context);
-   
-   Method getJavaMethod();
-   
-   void setJavaMethod(Method method);
-   
-   Object[] getArgs();
-   
-   void setArgs(Object[] args);
-   
-   Object getReturnValue();
-   
-   void setReturnValue(Object ret);
+   private InvocationContext invocationContext;
+   private Method javaMethod;
+   private Object[] args;
+   private Object returnValue;
+
+   public Invocation()
+   {
+      this.invocationContext = new InvocationContext();
+   }
+
+   public InvocationContext getInvocationContext()
+   {
+      return invocationContext;
+   }
+
+   public void setInvocationContext(InvocationContext invocationContext)
+   {
+      this.invocationContext = invocationContext;
+   }
+
+   public Method getJavaMethod()
+   {
+      return javaMethod;
+   }
+
+   public void setJavaMethod(Method javaMethod)
+   {
+      this.javaMethod = javaMethod;
+   }
+
+   public Object[] getArgs()
+   {
+      return args;
+   }
+
+   public void setArgs(Object[] args)
+   {
+      this.args = args;
+   }
+
+   public Object getReturnValue()
+   {
+      return returnValue;
+   }
+
+   public void setReturnValue(Object returnValue)
+   {
+      this.returnValue = returnValue;
+   }
 }

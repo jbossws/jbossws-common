@@ -21,33 +21,76 @@
  */
 package org.jboss.wsf.spi.invocation;
 
-//$Id$
-
+import org.jboss.wsf.common.JavaUtils;
 import org.jboss.wsf.spi.deployment.Endpoint;
 
-/**
- * A general endpoint invocation handler.
- * 
- * @author Thomas.Diesler@jboss.com
- * @since 20-Apr-2007 
- */
-public interface InvocationHandler
-{
-   /** Create the default invokation object */
-   Invocation createInvocation();
-   
-   /** Create the invocation handler */
-   void create(Endpoint ep);
+import javax.management.MBeanException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.UndeclaredThrowableException;
 
-   /** Start the invocation handler */
-   void start(Endpoint ep);
+/**
+ * Handles invocations on endpoints.
+ *
+ * @author Thomas.Diesler@jboss.org
+ * @author Heiko.Braun@jboss.com
+ * @since 25-Apr-2007
+ */
+public abstract class InvocationHandler
+{
+   
+   /** Create a container specific invocation **/
+   public abstract Invocation createInvocation();
 
    /** Invoke the the service endpoint */
-   void invoke(Endpoint ep, Invocation inv) throws Exception;
+   public abstract void invoke(Endpoint ep, Invocation inv) throws Exception;
 
-   /** Stop the invocation handler */
-   void stop(Endpoint ep);
+   /** Initilize the invocation handler **/
+   public abstract void init(Endpoint ep);
 
-   /** Destroy the invocation handler */
-   void destroy(Endpoint ep);
+   protected Method getImplMethod(Class implClass, Method seiMethod) throws ClassNotFoundException, NoSuchMethodException
+   {
+      String methodName = seiMethod.getName();
+      Class[] paramTypes = seiMethod.getParameterTypes();
+      for (int i = 0; i < paramTypes.length; i++)
+      {
+         Class paramType = paramTypes[i];
+         if (JavaUtils.isPrimitive(paramType) == false)
+         {
+            String paramTypeName = paramType.getName();
+            paramType = JavaUtils.loadJavaType(paramTypeName);
+            paramTypes[i] = paramType;
+         }
+      }
+
+      Method implMethod = implClass.getMethod(methodName, paramTypes);
+      return implMethod;
+   }
+
+   protected void handleInvocationException(Throwable th) throws Exception
+   {
+      if (th instanceof MBeanException)
+      {
+         throw ((MBeanException)th).getTargetException();
+      }
+
+      if (th instanceof InvocationTargetException)
+      {
+         // Unwrap the throwable raised by the service endpoint implementation
+         Throwable targetEx = ((InvocationTargetException)th).getTargetException();
+         handleInvocationException(targetEx);
+      }
+
+      if (th instanceof Exception)
+      {
+         throw (Exception)th;
+      }
+
+      if (th instanceof Error)
+      {
+         throw (Error)th;
+      }
+
+      throw new UndeclaredThrowableException(th);
+   }
 }

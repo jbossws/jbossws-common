@@ -28,7 +28,7 @@ import java.util.Set;
 import javax.management.ObjectName;
 
 import org.jboss.wsf.spi.deployment.Endpoint;
-import org.jboss.wsf.spi.utils.ObjectNameFactory;
+import org.jboss.wsf.common.ObjectNameFactory;
 
 /**
  * A general endpoint registry.

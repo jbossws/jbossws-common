@@ -26,6 +26,7 @@ import java.net.URL;
 
 import org.jboss.ws.integration.UnifiedVirtualFile;
 import org.jboss.wsf.spi.deployment.Deployment.DeploymentType;
+import org.jboss.wsf.spi.deployment.UnifiedDeploymentInfo;
 import org.jboss.wsf.spi.metadata.webservices.WebservicesFactory;
 import org.jboss.wsf.spi.metadata.webservices.WebservicesMetaData;
 import org.jboss.xb.binding.ObjectModelFactory;

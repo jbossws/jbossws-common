@@ -28,7 +28,7 @@ import java.util.Iterator;
 import javax.xml.namespace.QName;
 
 import org.jboss.logging.Logger;
-import org.jboss.wsf.spi.utils.DOMUtils;
+import org.jboss.wsf.common.DOMUtils;
 import org.jboss.xb.QNameBuilder;
 import org.w3c.dom.Element;
 

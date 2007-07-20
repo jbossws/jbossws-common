@@ -23,6 +23,8 @@ package org.jboss.wsf.spi.invocation;
 
 // $Id$
 
+import org.jboss.wsf.spi.invocation.ExtendableWebServiceContext;
+
 import java.security.Principal;
 
 import javax.ejb.EJBContext;
@@ -34,24 +36,23 @@ import javax.xml.ws.handler.MessageContext;
  * @author Thomas.Diesler@jboss.org
  * @since 23-Jan-2007
  */
-public class WebServiceContextEJB extends AbstractWebServiceContext
+public class WebServiceContextEJB extends ExtendableWebServiceContext
 {
-   private EJBContext ejbContext;
-
-   public WebServiceContextEJB(MessageContext msgContext, EJBContext ejbContext)
+   public WebServiceContextEJB(MessageContext msgContext)
    {
       super(msgContext);
-      this.ejbContext = ejbContext;
    }
 
    public Principal getUserPrincipal()
    {
+      EJBContext ejbContext = getAttachment(EJBContext.class);
       Principal principal = ejbContext.getCallerPrincipal();
       return principal;
    }
 
    public boolean isUserInRole(String role)
    {
+      EJBContext ejbContext = getAttachment(EJBContext.class);
       boolean isUserInRole = ejbContext.isCallerInRole(role);
       return isUserInRole;
    }

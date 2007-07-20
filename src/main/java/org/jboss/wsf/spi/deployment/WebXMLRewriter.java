@@ -21,99 +21,11 @@
  */
 package org.jboss.wsf.spi.deployment;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.net.URL;
-
-import javax.xml.ws.WebServiceException;
-
-import org.dom4j.Document;
-import org.dom4j.io.OutputFormat;
-import org.dom4j.io.SAXReader;
-import org.dom4j.io.XMLWriter;
-import org.jboss.wsf.spi.deployment.WebAppDesciptorModifier.RewriteResults;
-import org.jboss.wsf.spi.utils.IOUtils;
-
 /**
- * The rewriter for web.xml
- *
- * @author Thomas.Diesler@jboss.org
- * @since 19-May-2007
+ * @author Heiko.Braun@jboss.com
+ *         Created: Jul 19, 2007
  */
-public class WebXMLRewriter
+public interface WebXMLRewriter
 {
-   private WebAppDesciptorModifier desciptorModifier;
-
-   public WebAppDesciptorModifier getDesciptorModifier()
-   {
-      return desciptorModifier;
-   }
-
-   public void setDesciptorModifier(WebAppDesciptorModifier desciptorModifier)
-   {
-      this.desciptorModifier = desciptorModifier;
-   }
-
-   public RewriteResults rewriteWebXml(Deployment dep)
-   {
-      UnifiedDeploymentInfo udi = dep.getContext().getAttachment(UnifiedDeploymentInfo.class);
-      if (udi == null)
-         throw new IllegalStateException("Cannot obtain unified deployment info");
-      
-      URL warURL = udi.webappURL;
-      File warFile = new File(warURL.getFile());
-      if (warFile.isDirectory() == false)
-         throw new WebServiceException("Expected a war directory: " + warURL);
-
-      File webXML = new File(warURL.getFile() + "/WEB-INF/web.xml");
-      if (webXML.isFile() == false)
-         throw new WebServiceException("Cannot find web.xml: " + webXML);
-
-      try
-      {
-         // After redeployment there might be a stale copy of the original web.xml.org, we delete it
-         File orgWebXML = new File(webXML.getCanonicalPath() + ".org");
-         orgWebXML.delete();
-
-         // Rename the web.xml
-         if (webXML.renameTo(orgWebXML) == false)
-            throw new WebServiceException("Cannot rename web.xml: " + orgWebXML);
-
-         FileInputStream stream = new FileInputStream(orgWebXML);
-         return rewriteWebXml(stream, webXML, dep);
-      }
-      catch (RuntimeException rte)
-      {
-         throw rte;
-      }
-      catch (Exception e)
-      {
-         throw new WebServiceException(e);
-      }
-   }
-
-   private RewriteResults rewriteWebXml(InputStream source, File destFile, Deployment dep) throws Exception
-   {
-      if (destFile == null)
-      {
-         destFile = File.createTempFile("jbossws-alt-web", "xml", IOUtils.createTempDirectory());
-         destFile.deleteOnExit();
-      }
-
-      SAXReader reader = new SAXReader();
-      Document document = reader.read(source);
-
-      RewriteResults results = desciptorModifier.modifyDescriptor(dep, document);
-      results.webXML = destFile.toURL();
-
-      FileOutputStream fos = new FileOutputStream(destFile);
-      OutputFormat format = OutputFormat.createPrettyPrint();
-      XMLWriter writer = new XMLWriter(fos, format);
-      writer.write(document);
-      writer.close();
-
-      return results;
-   }
+   RewriteResults rewriteWebXml(Deployment dep);
 }

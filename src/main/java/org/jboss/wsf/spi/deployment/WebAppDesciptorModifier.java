@@ -21,11 +21,10 @@
  */
 package org.jboss.wsf.spi.deployment;
 
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.dom4j.Document;
+import org.jboss.wsf.spi.deployment.Deployment;
+import org.jboss.wsf.spi.deployment.RewriteResults;
+import org.jboss.wsf.spi.SPIView;
 
 /**
  * Modifies the web app according to the stack requirements. 
@@ -38,15 +37,6 @@ public interface WebAppDesciptorModifier
    final String SERVLET_CONTEXT_LISTENER = "ServletContextListener";
    final String CONTEXT_PARAMETER_MAP = "ContextParameterMap";
    final String SERVLET_CLASS = "ServletClass";
-   
-   // The results of the URL rewriting
-   class RewriteResults
-   {
-      // The URL to the rewrittn web.xml
-      public URL webXML;
-      // Maps the servlet name to the target bean 
-      public Map<String, String> sepTargetMap = new HashMap<String, String>();
-   }
 
    RewriteResults modifyDescriptor(Deployment dep, Document webXml) throws ClassNotFoundException;
 }

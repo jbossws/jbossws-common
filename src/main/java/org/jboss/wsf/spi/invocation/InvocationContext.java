@@ -21,26 +21,43 @@
  */
 package org.jboss.wsf.spi.invocation;
 
-//$Id$
+import java.util.Map;
+import java.util.HashMap;
 
 /**
- * A general endpoint invocation context.
- * 
+ * A basic invocation context.
+ *
  * @author Thomas.Diesler@jboss.com
- * @since 20-Apr-2007 
+ * @since 20-Apr-2007
  */
-public interface InvocationContext
+public class InvocationContext 
 {
-   Object getTargetBean();
-   
-   void setTargetBean(Object targetBean);
-   
-   /** Add arbitrary attachments */
-   <T> T addAttachment(Class<T> key, Object value);
+   private Object targetBean;
+   private Map<Class, Object> attachments = new HashMap<Class, Object>();
 
-   /** Get arbitrary attachments */
-   <T> T getAttachment(Class<T> key);
+   public Object getTargetBean()
+   {
+      return targetBean;
+   }
 
-   /** Remove arbitrary attachments */
-   <T> T removeAttachment(Class<T> key);
+   public void setTargetBean(Object targetBean)
+   {
+      this.targetBean = targetBean;
+   }
+
+
+   public <T> T addAttachment(Class<T> key, Object value)
+   {
+      return (T)attachments.put(key, value);
+   }
+
+   public <T> T getAttachment(Class<T> key)
+   {
+      return (T)attachments.get(key);
+   }
+
+   public <T> T removeAttachment(Class<T> key)
+   {
+      return (T)attachments.get(key);
+   }
 }

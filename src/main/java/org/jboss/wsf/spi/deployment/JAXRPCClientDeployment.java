@@ -24,6 +24,7 @@ package org.jboss.wsf.spi.deployment;
 //$Id$
 
 import org.jboss.wsf.spi.deployment.Deployment.DeploymentType;
+import org.jboss.wsf.spi.deployment.UnifiedDeploymentInfo;
 
 /**
  * The container independent deployment info. 
