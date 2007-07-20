@@ -19,9 +19,13 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.wsf.spi.deployment;
+package org.jboss.wsf.framework.deployment;
 
-//$Id: URLPatternDeployer.java 3576 2007-06-14 09:23:52Z thomas.diesler@jboss.com $
+import org.jboss.wsf.spi.deployment.DeploymentAspect;
+import org.jboss.wsf.spi.deployment.Deployment;
+import org.jboss.wsf.spi.deployment.Endpoint;
+
+//$Id$
 
 /**
  * A deployer that assigns the endpoint address. 
