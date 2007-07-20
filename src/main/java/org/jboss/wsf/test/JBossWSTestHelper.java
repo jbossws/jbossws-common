@@ -30,10 +30,11 @@ import javax.management.MBeanServerConnection;
 import javax.management.ObjectName;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
+import javax.xml.ws.handler.HandlerResolver;
 
 import org.jboss.logging.Logger;
-import org.jboss.util.NotImplementedException;
 import org.jboss.wsf.common.ObjectNameFactory;
 
 /**
@@ -49,6 +50,9 @@ public class JBossWSTestHelper
 
    private static MBeanServerConnection server;
    private static String integrationTarget;
+   private static String implVendor;
+   private static String implTitle;
+   private static String implVersion;
 
    /** Deploy the given archive
     */
@@ -89,19 +93,33 @@ public class JBossWSTestHelper
 
    public boolean isIntegrationNative()
    {
-      String vendor = Service.class.getPackage().getImplementationVendor();
-      return vendor.startsWith("JBoss");
+      String vendor = getImplementationVendor();
+      return vendor.indexOf("JBoss") != -1;
    }
 
    public boolean isIntegrationSunRI()
    {
-      String vendor = Service.class.getPackage().getImplementationVendor();
-      return vendor.startsWith("Sun Microsystems");
+      String vendor = getImplementationVendor();
+      return vendor.indexOf("Sun") != -1;
    }
 
    public boolean isIntegrationXFire()
    {
-      throw new NotImplementedException();
+      String vendor = getImplementationVendor();
+      return vendor.indexOf("Apache") != -1;
+   }
+
+   private String getImplementationVendor()
+   {
+      if (implVendor == null)
+      {
+         HandlerResolver resolver = Service.create(new QName("dummy")).getHandlerResolver();
+         implVendor = resolver.getClass().getPackage().getImplementationVendor();
+         implTitle = resolver.getClass().getPackage().getImplementationTitle();
+         implVersion = resolver.getClass().getPackage().getImplementationVersion();
+         System.out.println(implVendor + ", " + implTitle + ", " + implVersion);
+      }
+      return implVendor;
    }
 
    /**
