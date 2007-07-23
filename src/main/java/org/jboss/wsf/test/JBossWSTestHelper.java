@@ -31,8 +31,11 @@ import javax.management.ObjectName;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.xml.namespace.QName;
+import javax.xml.transform.Source;
+import javax.xml.ws.Dispatch;
 import javax.xml.ws.Service;
-import javax.xml.ws.handler.HandlerResolver;
+import javax.xml.ws.Service.Mode;
+import javax.xml.ws.soap.SOAPBinding;
 
 import org.jboss.logging.Logger;
 import org.jboss.wsf.common.ObjectNameFactory;
@@ -113,10 +116,12 @@ public class JBossWSTestHelper
    {
       if (implVendor == null)
       {
-         HandlerResolver resolver = Service.create(new QName("dummy")).getHandlerResolver();
-         implVendor = resolver.getClass().getPackage().getImplementationVendor();
-         implTitle = resolver.getClass().getPackage().getImplementationTitle();
-         implVersion = resolver.getClass().getPackage().getImplementationVersion();
+         Service service = Service.create(new QName("dummyService"));
+         service.addPort(new QName("dummyPort"), SOAPBinding.SOAP11HTTP_BINDING, "http://dummy-address");
+         Dispatch<Source> obj = service.createDispatch(new QName("dummyPort"), Source.class, Mode.PAYLOAD);
+         implVendor = obj.getClass().getPackage().getImplementationVendor();
+         implTitle = obj.getClass().getPackage().getImplementationTitle();
+         implVersion = obj.getClass().getPackage().getImplementationVersion();
          System.out.println(implVendor + ", " + implTitle + ", " + implVersion);
       }
       return implVendor;
@@ -183,7 +188,7 @@ public class JBossWSTestHelper
          {
             // ignore, we are not running on jboss-4.2 or greater
          }
-         
+
          if (jbossVersion != null && jbossVersion.equals(integrationTarget) == false)
             throw new IllegalStateException("Integration target mismatch, using: " + jbossVersion);
       }
