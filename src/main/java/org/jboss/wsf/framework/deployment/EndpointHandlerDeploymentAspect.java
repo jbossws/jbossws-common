@@ -25,20 +25,11 @@ package org.jboss.wsf.framework.deployment;
 
 import org.jboss.wsf.spi.SPIProvider;
 import org.jboss.wsf.spi.SPIProviderResolver;
-import org.jboss.wsf.spi.deployment.Deployment;
-import org.jboss.wsf.spi.deployment.DeploymentAspect;
-import org.jboss.wsf.spi.deployment.Endpoint;
-import org.jboss.wsf.spi.deployment.LifecycleHandler;
-import org.jboss.wsf.spi.invocation.InvocationHandler;
-import org.jboss.wsf.spi.invocation.InvocationModelFactory;
-import org.jboss.wsf.spi.invocation.InvocationType;
-import org.jboss.wsf.spi.invocation.RequestHandler;
+import org.jboss.wsf.spi.deployment.*;
+import org.jboss.wsf.spi.invocation.*;
 import org.jboss.wsf.spi.metadata.j2ee.UnifiedApplicationMetaData;
 import org.jboss.wsf.spi.metadata.j2ee.UnifiedBeanMetaData;
 import org.jboss.wsf.spi.metadata.j2ee.UnifiedMessageDrivenMetaData;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * A deployer that assigns the handlers to the Endpoint 
@@ -49,69 +40,42 @@ import java.util.Map;
 public class EndpointHandlerDeploymentAspect extends DeploymentAspect
 {
    private String requestHandler;
-   private String lifecycleHandler;
+   private LifecycleHandler lifecycleHandler;
 
-   private Map<String, String> invocationHandlerMap = new HashMap<String, String>();
+   private SPIProvider spiProvider;
 
-   public void setLifecycleHandler(String handler)
+   public EndpointHandlerDeploymentAspect()
    {
-      this.lifecycleHandler = handler;
-   }
-
-   public void setRequestHandler(String handler)
-   {
-      this.requestHandler = handler;
-   }
-
-   public void setInvocationHandler(Map<String, String> handlers)
-   {
-      this.invocationHandlerMap = handlers;
-   }
+      spiProvider = SPIProviderResolver.getInstance().getProvider();
+   }  
 
    @Override
    public void create(Deployment dep)
    {
       for (Endpoint ep : dep.getService().getEndpoints())
       {
-         if (requestHandler != null)
-            ep.setRequestHandler(getRequestHandler(dep));
+         // associate a request handler
+         ep.setRequestHandler(getRequestHandler(dep));
 
-         if (lifecycleHandler != null)
-            ep.setLifecycleHandler(getLifecycleHandler(dep));
+         // associate a lifecycle handler
+         ep.setLifecycleHandler(getLifecycleHandler(dep));
 
-         if (invocationHandlerMap != null)
-         {
-            InvocationHandler invocationHandler = getInvocationHandler(ep);
-            if (invocationHandler != null)
-               ep.setInvocationHandler(invocationHandler);
-         }
+         // associate a n invocation handler
+         // TODO: can this be null?
+         InvocationHandler invocationHandler = getInvocationHandler(ep);
+         if (invocationHandler != null)
+            ep.setInvocationHandler(invocationHandler);
       }
    }
 
    private RequestHandler getRequestHandler(Deployment dep)
    {
-      try
-      {
-         Class<?> handlerClass = dep.getInitialClassLoader().loadClass(requestHandler);
-         return (RequestHandler)handlerClass.newInstance();
-      }
-      catch (Exception e)
-      {
-         throw new IllegalStateException("Cannot load request handler: " + requestHandler);
-      }
+      return spiProvider.getSPI(RequestHandlerFactory.class).createRequestHandler();
    }
 
    private LifecycleHandler getLifecycleHandler(Deployment dep)
    {
-      try
-      {
-         Class<?> handlerClass = dep.getInitialClassLoader().loadClass(lifecycleHandler);
-         return (LifecycleHandler)handlerClass.newInstance();
-      }
-      catch (Exception e)
-      {
-         throw new IllegalStateException("Cannot load lifecycle handler: " + lifecycleHandler);
-      }
+      return spiProvider.getSPI(LifecycleHandlerFactory.class).createLifecylceHandler();
    }
 
    private InvocationHandler getInvocationHandler(Endpoint ep)
@@ -130,7 +94,7 @@ public class EndpointHandlerDeploymentAspect extends DeploymentAspect
          }
       }
 
-      SPIProvider spiProvider = SPIProviderResolver.getInstance().getProvider();
+
       InvocationType type = InvocationType.valueOf(key);
       InvocationHandler invocationHandler= spiProvider.getSPI(InvocationModelFactory.class).createInvocationHandler( type );
       return invocationHandler;

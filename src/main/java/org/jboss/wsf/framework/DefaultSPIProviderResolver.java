@@ -29,8 +29,10 @@ import org.jboss.wsf.spi.WSFException;
 import org.jboss.wsf.spi.deployment.DeploymentModelFactory;
 import org.jboss.wsf.spi.deployment.WebXMLRewriterFactory;
 import org.jboss.wsf.spi.deployment.DeploymentAspectManagerFactory;
+import org.jboss.wsf.spi.deployment.LifecycleHandlerFactory;
 import org.jboss.wsf.spi.invocation.InvocationModelFactory;
 import org.jboss.wsf.spi.invocation.ResourceInjectorFactory;
+import org.jboss.wsf.spi.invocation.RequestHandlerFactory;
 
 /**
  * @author Heiko.Braun@jboss.com
@@ -59,7 +61,7 @@ public class DefaultSPIProviderResolver extends SPIProviderResolver
 
          T returnType = null;
 
-         // SPI provided by framework
+         // SPI provided by framework, default that can be overridden
 
          if(DeploymentModelFactory.class.equals(spiType))
          {
@@ -79,6 +81,12 @@ public class DefaultSPIProviderResolver extends SPIProviderResolver
               spiType, "org.jboss.wsf.framework.deployment.WebXMLRewriterFactoryImpl"
             );
          }
+         else if(LifecycleHandlerFactory.class.equals(spiType))
+         {
+            returnType = (T) loadService(
+              spiType, "org.jboss.wsf.framework.deployment.LifecycleHandlerFactoryImpl"
+            );
+         }
 
          // SPI provided by either container or stack integration
 
@@ -89,6 +97,12 @@ public class DefaultSPIProviderResolver extends SPIProviderResolver
          else if(DeploymentAspectManagerFactory.class.equals(spiType))
          {
             returnType = (T) loadService(spiType, null);
+         }
+         else if(RequestHandlerFactory.class.equals(spiType))
+         {
+            returnType = (T) loadService(
+              spiType, null
+            );
          }
 
          // help debugging
