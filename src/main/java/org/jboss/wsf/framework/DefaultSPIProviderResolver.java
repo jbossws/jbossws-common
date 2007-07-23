@@ -28,6 +28,7 @@ import org.jboss.wsf.spi.SPIProviderResolver;
 import org.jboss.wsf.spi.WSFException;
 import org.jboss.wsf.spi.deployment.DeploymentModelFactory;
 import org.jboss.wsf.spi.deployment.WebXMLRewriterFactory;
+import org.jboss.wsf.spi.deployment.DeploymentAspectManagerFactory;
 import org.jboss.wsf.spi.invocation.InvocationModelFactory;
 import org.jboss.wsf.spi.invocation.ResourceInjectorFactory;
 
@@ -82,6 +83,10 @@ public class DefaultSPIProviderResolver extends SPIProviderResolver
          // SPI provided by either container or stack integration
 
          else if(InvocationModelFactory.class.equals(spiType))
+         {
+            returnType = (T) loadService(spiType, null);
+         }
+         else if(DeploymentAspectManagerFactory.class.equals(spiType))
          {
             returnType = (T) loadService(spiType, null);
          }

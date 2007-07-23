@@ -19,15 +19,17 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.wsf.spi;
+package org.jboss.wsf.spi.deployment;
+
+import org.jboss.wsf.spi.SPIView;
 
 /**
- * Marks a specific subset onto the overall SPI.<br>
- * An SPIView can be passed to the {@link SPIProvider} to get an implementation.
- *
+ * Creates DeploymentAspectManager's by {@link org.jboss.wsf.spi.deployment.Deployment.DeploymentType}
+ * 
  * @author Heiko.Braun@jboss.com
- *         Created: Jul 18, 2007
+ *         Created: Jul 20, 2007
  */
-public interface SPIView
+public abstract class DeploymentAspectManagerFactory implements SPIView
 {
+   public abstract DeploymentAspectManager createDeploymentAspectManager(Deployment.DeploymentType deploymentType);
 }
