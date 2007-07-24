@@ -19,7 +19,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.wsf.framework;
+package org.jboss.wsf.common;
 
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.registry.KernelRegistry;

@@ -23,7 +23,7 @@ package org.jboss.wsf.framework.deployment;
 
 import org.jboss.wsf.spi.deployment.WebXMLRewriterFactory;
 import org.jboss.wsf.spi.deployment.WebXMLRewriter;
-import org.jboss.wsf.framework.KernelAwareSPIFactory;
+import org.jboss.wsf.common.KernelAwareSPIFactory;
 
 /**
  * @author Heiko.Braun@jboss.com

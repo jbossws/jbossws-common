@@ -23,7 +23,7 @@ package org.jboss.wsf.framework.management;
 
 import org.jboss.wsf.spi.management.ServerConfigFactory;
 import org.jboss.wsf.spi.management.ServerConfig;
-import org.jboss.wsf.framework.KernelAwareSPIFactory;
+import org.jboss.wsf.common.KernelAwareSPIFactory;
 
 /**
  * @author Heiko.Braun@jboss.com
