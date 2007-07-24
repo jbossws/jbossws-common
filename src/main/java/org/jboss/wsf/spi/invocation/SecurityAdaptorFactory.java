@@ -23,22 +23,17 @@ package org.jboss.wsf.spi.invocation;
 
 // $Id$
 
-import org.jboss.wsf.common.ServiceLoader;
+import org.jboss.wsf.spi.SPIView;
 
 /**
  * A container idependent SecurityAdaptorFactory
  *
  * @author Thomas.Diesler@jboss.org
+ * @author Heiko.Braun@jboss.com
+ * 
  * @since 10-May-2005
  */
-public final class SecurityAdaptorFactory
+public abstract class SecurityAdaptorFactory implements SPIView
 {
-   public static SecurityAdaptor getSecurityAdaptor()
-   {
-      SecurityAdaptor securityAdaptor = (SecurityAdaptor) ServiceLoader.loadService(SecurityAdaptor.class.getName(), null);
-      if (securityAdaptor == null)
-         throw new IllegalStateException("Cannot load SecurityAdaptor");
-
-      return securityAdaptor;
-   }
+   public abstract SecurityAdaptor createSecurityAdapter();
 }

@@ -35,6 +35,7 @@ import org.jboss.wsf.spi.deployment.LifecycleHandlerFactory;
 import org.jboss.wsf.spi.invocation.InvocationModelFactory;
 import org.jboss.wsf.spi.invocation.ResourceInjectorFactory;
 import org.jboss.wsf.spi.invocation.RequestHandlerFactory;
+import org.jboss.wsf.spi.invocation.SecurityAdaptorFactory;
 
 /**
  * @author Heiko.Braun@jboss.com
@@ -109,6 +110,10 @@ public class DefaultSPIProviderResolver extends SPIProviderResolver
             returnType = (T) loadService(spiType, null);
          }
          else if(ServerConfigFactory.class.equals(spiType))
+         {
+            returnType = (T) loadService(spiType, null);
+         }
+         else if(SecurityAdaptorFactory.class.equals(spiType))
          {
             returnType = (T) loadService(spiType, null);
          }

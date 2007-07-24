@@ -35,6 +35,8 @@ import javax.management.ReflectionException;
 
 import org.jboss.wsf.spi.invocation.SecurityAdaptor;
 import org.jboss.wsf.spi.invocation.SecurityAdaptorFactory;
+import org.jboss.wsf.spi.SPIProvider;
+import org.jboss.wsf.spi.SPIProviderResolver;
 
 /**
  * A JBossWS test helper that deals with test deployment/undeployment, etc.
@@ -45,7 +47,7 @@ import org.jboss.wsf.spi.invocation.SecurityAdaptorFactory;
 public class TestDeployerJBoss implements TestDeployer
 {
    private static final String MAIN_DEPLOYER = "jboss.system:service=MainDeployer";
-   
+
    private MBeanServerConnection server;
    private String username;
    private String password;
@@ -53,11 +55,11 @@ public class TestDeployerJBoss implements TestDeployer
    public TestDeployerJBoss(MBeanServerConnection server)
    {
       this.server = server;
-      
+
       username = System.getProperty("jmx.authentication.username");
       if ("${jmx.authentication.username}".equals(username))
          username = null;
-      
+
       password = System.getProperty("jmx.authentication.password");
       if ("${jmx.authentication.password}".equals(password))
          password = null;
@@ -77,8 +79,9 @@ public class TestDeployerJBoss implements TestDeployer
    {
       Principal prevUsername = null;
       Object prevPassword = null;
-      
-      SecurityAdaptor securityAdaptor = SecurityAdaptorFactory.getSecurityAdaptor();
+
+      SPIProvider spiProvider = SPIProviderResolver.getInstance().getProvider();
+      SecurityAdaptor securityAdaptor = spiProvider.getSPI(SecurityAdaptorFactory.class).createSecurityAdapter();
       if (username != null || password != null)
       {
          prevUsername = securityAdaptor.getPrincipal();
@@ -86,7 +89,7 @@ public class TestDeployerJBoss implements TestDeployer
          securityAdaptor.setPrincipal(new SimplePrincipal(username));
          securityAdaptor.setCredential(password);
       }
-      
+
       try
       {
          server.invoke(new ObjectName(MAIN_DEPLOYER), methodName, new Object[] { url }, new String[] { "java.net.URL" });
@@ -104,7 +107,7 @@ public class TestDeployerJBoss implements TestDeployer
    public static class SimplePrincipal implements Principal, Serializable
    {
       private String name;
-      
+
       public SimplePrincipal(String name)
       {
          this.name = name;
