@@ -26,6 +26,8 @@ import org.jboss.wsf.spi.management.EndpointRegistryFactory;
 import org.jboss.wsf.spi.deployment.DeploymentAspect;
 import org.jboss.wsf.spi.deployment.Deployment;
 import org.jboss.wsf.spi.deployment.Endpoint;
+import org.jboss.wsf.spi.SPIProvider;
+import org.jboss.wsf.spi.SPIProviderResolver;
 
 /**
  * A deployer that registers the endpoints 
@@ -37,7 +39,8 @@ public class EndpointRegistryDeploymentAspect extends DeploymentAspect
 {
    public void create(Deployment dep)
    {
-      EndpointRegistry registry = EndpointRegistryFactory.getEndpointRegistry();
+      SPIProvider spiProvider = SPIProviderResolver.getInstance().getProvider();
+      EndpointRegistry registry = spiProvider.getSPI(EndpointRegistryFactory.class).createEndpointRegistry();
       for (Endpoint ep : dep.getService().getEndpoints())
       {
          registry.register(ep);
@@ -46,7 +49,9 @@ public class EndpointRegistryDeploymentAspect extends DeploymentAspect
 
    public void destroy(Deployment dep)
    {
-      EndpointRegistry registry = EndpointRegistryFactory.getEndpointRegistry();
+      SPIProvider spiProvider = SPIProviderResolver.getInstance().getProvider();
+      EndpointRegistry registry = spiProvider.getSPI(EndpointRegistryFactory.class).createEndpointRegistry();
+            
       for (Endpoint ep : dep.getService().getEndpoints())
       {
          registry.unregister(ep);

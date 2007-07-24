@@ -19,23 +19,22 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.wsf.spi.management;
+package org.jboss.wsf.framework.management;
 
-//$Id$
-
-import org.jboss.kernel.Kernel;
-import org.jboss.kernel.spi.registry.KernelRegistry;
-import org.jboss.kernel.spi.registry.KernelRegistryEntry;
-import org.jboss.ws.integration.KernelLocator;
-import org.jboss.wsf.spi.SPIView;
+import org.jboss.wsf.spi.management.ServerConfigFactory;
+import org.jboss.wsf.spi.management.ServerConfig;
+import org.jboss.wsf.framework.KernelAwareSPIFactory;
 
 /**
- * Get the endpoint registry from the kernel
- * 
- * @author Thomas.Diesler@jboss.com
- * @since 20-Apr-2007 
+ * @author Heiko.Braun@jboss.com
+ *         Created: Jul 23, 2007
  */
-public abstract class EndpointRegistryFactory implements SPIView
+public class ServerConfigFactoryImpl extends ServerConfigFactory
 {
-   public abstract EndpointRegistry createEndpointRegistry();
+   public ServerConfig createServerConfig()
+   {
+      return new KernelAwareSPIFactory().getKernelProvidedSPI(
+        ServerConfig.BEAN_NAME, ServerConfig.class
+      );
+   }
 }

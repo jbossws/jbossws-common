@@ -39,6 +39,8 @@ import javax.xml.ws.WebServiceException;
 
 import org.jboss.wsf.spi.management.ServerConfig;
 import org.jboss.wsf.spi.management.ServerConfigFactory;
+import org.jboss.wsf.spi.SPIProvider;
+import org.jboss.wsf.spi.SPIProviderResolver;
 
 /**
  * IO utilites
@@ -123,9 +125,10 @@ public final class IOUtils
 
       try
       {
-         ServerConfigFactory factory = ServerConfigFactory.getInstance();
-         ServerConfig config = factory.getServerConfig();
+         // TODO: recursive dependency, ohoh
 
+         SPIProvider spiProvider = SPIProviderResolver.getInstance().getProvider();
+         ServerConfig config = spiProvider.getSPI(ServerConfigFactory.class).createServerConfig();        
          tmpdir = new File(config.getServerTempDir().getCanonicalPath() + "/jbossws");
          tmpdir.mkdirs();
       }

@@ -19,31 +19,29 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.wsf.framework.management;
+package org.jboss.wsf.spi.management;
 
 // $Id$
 
+import org.jboss.logging.Logger;
+import org.jboss.wsf.spi.deployment.Endpoint;
+import org.jboss.wsf.spi.management.EndpointRegistry;
+
+import javax.management.ObjectName;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import javax.management.ObjectName;
-
-import org.jboss.logging.Logger;
-import org.jboss.util.NotImplementedException;
-import org.jboss.wsf.spi.deployment.Endpoint;
-import org.jboss.wsf.spi.management.EndpointRegistry;
-
 /**
  * A general endpoint registry.
- * 
+ *
  * @author Thomas.Diesler@jboss.com
- * @since 20-Apr-2007 
+ * @since 20-Apr-2007
  */
-public class BasicEndpointRegistry implements EndpointRegistry
+public class DefaultEndpointRegistry implements EndpointRegistry
 {
    // provide logging
-   private static final Logger log = Logger.getLogger(BasicEndpointRegistry.class);
+   private static final Logger log = Logger.getLogger(DefaultEndpointRegistry.class);
 
    private Map<ObjectName, Endpoint> endpoints = new HashMap<ObjectName, Endpoint>();
 
@@ -61,7 +59,7 @@ public class BasicEndpointRegistry implements EndpointRegistry
 
    public Endpoint resolvePortComponentLink(String pcLink)
    {
-      throw new NotImplementedException();
+      throw new IllegalArgumentException("Not implemented");
    }
 
    public boolean isRegistered(ObjectName epName)

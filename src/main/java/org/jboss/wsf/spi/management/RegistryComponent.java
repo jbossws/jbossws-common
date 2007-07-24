@@ -21,21 +21,22 @@
  */
 package org.jboss.wsf.spi.management;
 
-//$Id$
-
-import org.jboss.kernel.Kernel;
-import org.jboss.kernel.spi.registry.KernelRegistry;
-import org.jboss.kernel.spi.registry.KernelRegistryEntry;
-import org.jboss.ws.integration.KernelLocator;
-import org.jboss.wsf.spi.SPIView;
+import org.jboss.wsf.spi.deployment.Endpoint;
 
 /**
- * Get the endpoint registry from the kernel
- * 
- * @author Thomas.Diesler@jboss.com
- * @since 20-Apr-2007 
+ * Allows endpoint registry composition
+ *
+ * @author Heiko.Braun@jboss.com
+ *         Created: Jul 23, 2007
  */
-public abstract class EndpointRegistryFactory implements SPIView
+public interface RegistryComponent
 {
-   public abstract EndpointRegistry createEndpointRegistry();
+   /** Register an endpoint */
+   void register(Endpoint endpoint);
+
+   /** Unregister an endpoint */
+   void unregister(Endpoint endpoint);
+
+   /** Resolve a port component link */
+   void resolve(EndpointResolver resolver);
 }

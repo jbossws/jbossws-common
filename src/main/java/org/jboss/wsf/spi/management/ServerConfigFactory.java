@@ -24,35 +24,17 @@ package org.jboss.wsf.spi.management;
 import org.jboss.kernel.spi.registry.KernelRegistry;
 import org.jboss.logging.Logger;
 import org.jboss.ws.integration.KernelLocator;
+import org.jboss.wsf.spi.SPIView;
 
 // $Id$
 
 /**
  * Factory to container independent config 
  *
- * @author Thomas.Diesler@jboss.org
+ * @author Thomas.Diesler@jboss.org 
  * @since 08-May-2006
  */
-public class ServerConfigFactory
+public abstract class ServerConfigFactory implements SPIView
 {
-   // provide logging
-   private static final Logger log = Logger.getLogger(ServerConfigFactory.class);
-
-   private static ServerConfigFactory instance = new ServerConfigFactory();
-
-   // Hide ctor
-   protected ServerConfigFactory()
-   {
-   }
-
-   public static ServerConfigFactory getInstance()
-   {
-      return instance;
-   }
-
-   public ServerConfig getServerConfig()
-   {
-      KernelRegistry registry = KernelLocator.getKernel().getRegistry();
-      return (ServerConfig)registry.getEntry(ServerConfig.BEAN_NAME).getTarget();
-   }
+   public abstract ServerConfig createServerConfig();
 }

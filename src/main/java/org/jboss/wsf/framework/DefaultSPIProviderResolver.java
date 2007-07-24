@@ -26,6 +26,8 @@ import org.jboss.wsf.common.ServiceLoader;
 import org.jboss.wsf.spi.SPIProvider;
 import org.jboss.wsf.spi.SPIProviderResolver;
 import org.jboss.wsf.spi.WSFException;
+import org.jboss.wsf.spi.management.EndpointRegistryFactory;
+import org.jboss.wsf.spi.management.ServerConfigFactory;
 import org.jboss.wsf.spi.deployment.DeploymentModelFactory;
 import org.jboss.wsf.spi.deployment.WebXMLRewriterFactory;
 import org.jboss.wsf.spi.deployment.DeploymentAspectManagerFactory;
@@ -100,9 +102,15 @@ public class DefaultSPIProviderResolver extends SPIProviderResolver
          }
          else if(RequestHandlerFactory.class.equals(spiType))
          {
-            returnType = (T) loadService(
-              spiType, null
-            );
+            returnType = (T) loadService(spiType, null);
+         }
+         else if(EndpointRegistryFactory.class.equals(spiType))
+         {
+            returnType = (T) loadService(spiType, null);
+         }
+         else if(ServerConfigFactory.class.equals(spiType))
+         {
+            returnType = (T) loadService(spiType, null);
          }
 
          // help debugging

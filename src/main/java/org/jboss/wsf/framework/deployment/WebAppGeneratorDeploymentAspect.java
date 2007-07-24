@@ -41,6 +41,8 @@ import org.jboss.wsf.spi.metadata.j2ee.UnifiedApplicationMetaData;
 import org.jboss.wsf.spi.metadata.j2ee.UnifiedBeanMetaData;
 import org.jboss.wsf.spi.metadata.j2ee.UnifiedEjbPortComponentMetaData;
 import org.jboss.wsf.spi.deployment.*;
+import org.jboss.wsf.spi.SPIProvider;
+import org.jboss.wsf.spi.SPIProviderResolver;
 
 /**
  * A deployer that generates a webapp for an EJB endpoint 
@@ -88,7 +90,9 @@ public class WebAppGeneratorDeploymentAspect extends DeploymentAspect
       File tmpWar = null;
       try
       {
-         ServerConfig config = ServerConfigFactory.getInstance().getServerConfig();
+         // TODO: recursive dependency, ohoh
+         SPIProvider spiProvider = SPIProviderResolver.getInstance().getProvider();
+         ServerConfig config = spiProvider.getSPI(ServerConfigFactory.class).createServerConfig();
          File tmpdir = new File(config.getServerTempDir().getCanonicalPath() + "/deploy");
 
          UnifiedDeploymentInfo udi = dep.getContext().getAttachment(UnifiedDeploymentInfo.class);

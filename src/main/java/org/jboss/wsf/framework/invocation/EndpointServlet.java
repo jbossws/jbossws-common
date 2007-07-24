@@ -40,6 +40,8 @@ import org.jboss.wsf.spi.management.EndpointRegistry;
 import org.jboss.wsf.spi.management.EndpointRegistryFactory;
 import org.jboss.wsf.common.ObjectNameFactory;
 import org.jboss.wsf.spi.invocation.RequestHandler;
+import org.jboss.wsf.spi.SPIProvider;
+import org.jboss.wsf.spi.SPIProviderResolver;
 import org.jboss.wsf.framework.invocation.EndpointAssociation;
 
 /**
@@ -57,7 +59,8 @@ public class EndpointServlet extends HttpServlet
    public void init(ServletConfig servletConfig) throws ServletException
    {
       super.init(servletConfig);
-      epRegistry = EndpointRegistryFactory.getEndpointRegistry();
+      SPIProvider spiProvider = SPIProviderResolver.getInstance().getProvider();
+      epRegistry = spiProvider.getSPI(EndpointRegistryFactory.class).createEndpointRegistry();                  
    }
 
    public void service(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException

@@ -30,6 +30,8 @@ import org.jboss.wsf.spi.invocation.InvocationContext;
 import org.jboss.wsf.spi.invocation.RequestHandler;
 import org.jboss.wsf.spi.management.EndpointRegistry;
 import org.jboss.wsf.spi.management.EndpointRegistryFactory;
+import org.jboss.wsf.spi.SPIProvider;
+import org.jboss.wsf.spi.SPIProviderResolver;
 
 import javax.ejb.EJBException;
 import javax.ejb.MessageDrivenBean;
@@ -123,7 +125,9 @@ public abstract class JMSTransportSupport implements MessageDrivenBean, MessageL
 
    protected void processSOAPMessage(String fromName, InputStream inputStream, OutputStream outStream) throws SOAPException, IOException, RemoteException
    {
-      EndpointRegistry epRegistry = EndpointRegistryFactory.getEndpointRegistry();
+      SPIProvider spiProvider = SPIProviderResolver.getInstance().getProvider();
+      EndpointRegistry epRegistry = spiProvider.getSPI(EndpointRegistryFactory.class).createEndpointRegistry();
+
       Endpoint endpoint = getEndpointForDestination(epRegistry, fromName);
 
       if (endpoint == null)
