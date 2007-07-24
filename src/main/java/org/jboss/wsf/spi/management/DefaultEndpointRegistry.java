@@ -57,9 +57,9 @@ public class DefaultEndpointRegistry implements EndpointRegistry
       return endpoint;
    }
 
-   public Endpoint resolvePortComponentLink(String pcLink)
+   public Endpoint resolve(EndpointResolver resolver)
    {
-      throw new IllegalArgumentException("Not implemented");
+      return resolver.query(endpoints.values().iterator());
    }
 
    public boolean isRegistered(ObjectName epName)

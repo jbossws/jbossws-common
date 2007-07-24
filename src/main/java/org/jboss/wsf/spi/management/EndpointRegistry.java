@@ -34,6 +34,8 @@ import org.jboss.wsf.common.ObjectNameFactory;
  * A general endpoint registry.
  * 
  * @author Thomas.Diesler@jboss.com
+ * @author Heiko.Braun@jboss.com
+ * 
  * @since 20-Apr-2007 
  */
 public interface EndpointRegistry
@@ -49,9 +51,9 @@ public interface EndpointRegistry
 
    /** Get the registered endpoint */
    Endpoint getEndpoint(ObjectName epName);
-   
-   /** Resolve a port component link */
-   Endpoint resolvePortComponentLink(String pcLink);
+
+   /** Resolve endpoints thrrough a resolve instance **/
+   Endpoint resolve(EndpointResolver resolver);
    
    /** True is an endpoint for that name is registered */
    boolean isRegistered(ObjectName epName);

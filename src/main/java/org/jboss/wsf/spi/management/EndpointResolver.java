@@ -23,12 +23,13 @@ package org.jboss.wsf.spi.management;
 
 import org.jboss.wsf.spi.deployment.Endpoint;
 
+import java.util.Iterator;
+
 /**
  * @author Heiko.Braun@jboss.com
  *         Created: Jul 23, 2007
  */
 public interface EndpointResolver
 {
-   Endpoint getResult();
-   void setResult(Endpoint result);
+   Endpoint query(Iterator<Endpoint> endpoints);   
 }

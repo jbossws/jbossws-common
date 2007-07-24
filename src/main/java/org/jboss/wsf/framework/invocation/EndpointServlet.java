@@ -23,7 +23,15 @@ package org.jboss.wsf.framework.invocation;
 
 // $Id$
 
-import java.io.IOException;
+import org.jboss.wsf.common.ObjectNameFactory;
+import org.jboss.wsf.spi.SPIProvider;
+import org.jboss.wsf.spi.SPIProviderResolver;
+import org.jboss.wsf.spi.deployment.Deployment;
+import org.jboss.wsf.spi.deployment.Deployment.DeploymentType;
+import org.jboss.wsf.spi.deployment.Endpoint;
+import org.jboss.wsf.spi.invocation.RequestHandler;
+import org.jboss.wsf.spi.management.EndpointRegistry;
+import org.jboss.wsf.spi.management.EndpointRegistryFactory;
 
 import javax.management.ObjectName;
 import javax.servlet.ServletConfig;
@@ -32,17 +40,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.ws.WebServiceException;
-
-import org.jboss.wsf.spi.deployment.Deployment;
-import org.jboss.wsf.spi.deployment.Endpoint;
-import org.jboss.wsf.spi.deployment.Deployment.DeploymentType;
-import org.jboss.wsf.spi.management.EndpointRegistry;
-import org.jboss.wsf.spi.management.EndpointRegistryFactory;
-import org.jboss.wsf.common.ObjectNameFactory;
-import org.jboss.wsf.spi.invocation.RequestHandler;
-import org.jboss.wsf.spi.SPIProvider;
-import org.jboss.wsf.spi.SPIProviderResolver;
-import org.jboss.wsf.framework.invocation.EndpointAssociation;
+import java.io.IOException;
 
 /**
  * The JAX-WS dispatcher servlet.
@@ -74,7 +72,7 @@ public class EndpointServlet extends HttpServlet
       try
       {
          EndpointAssociation.setEndpoint(endpoint);
-         RequestHandler requestHandler = (RequestHandler)endpoint.getRequestHandler();
+         RequestHandler requestHandler = endpoint.getRequestHandler();
          requestHandler.handleHttpRequest(endpoint, req, res, getServletContext());
       }
       finally
@@ -87,25 +85,15 @@ public class EndpointServlet extends HttpServlet
     */
    protected void initServiceEndpoint(String contextPath)
    {
-      if (contextPath.startsWith("/"))
-         contextPath = contextPath.substring(1);
+      WebAppResolver resolver = new WebAppResolver(contextPath, getServletName());
+      this.endpoint = epRegistry.resolve(resolver);
 
-      String servletName = getServletName();
-      for (ObjectName sepId : epRegistry.getEndpoints())
+      if (this.endpoint == null)
       {
-         String propContext = sepId.getKeyProperty(Endpoint.SEPID_PROPERTY_CONTEXT);
-         String propEndpoint = sepId.getKeyProperty(Endpoint.SEPID_PROPERTY_ENDPOINT);
-         if (servletName.equals(propEndpoint) && contextPath.equals(propContext))
-         {
-            endpoint = epRegistry.getEndpoint(sepId);
-            break;
-         }
-      }
-
-      if (endpoint == null)
-      {
-         ObjectName oname = ObjectNameFactory.create(Endpoint.SEPID_DOMAIN + ":" + Endpoint.SEPID_PROPERTY_CONTEXT + "=" + contextPath + ","
-               + Endpoint.SEPID_PROPERTY_ENDPOINT + "=" + servletName);
+         ObjectName oname = ObjectNameFactory.create(Endpoint.SEPID_DOMAIN + ":" +
+           Endpoint.SEPID_PROPERTY_CONTEXT + "=" + contextPath + "," +
+           Endpoint.SEPID_PROPERTY_ENDPOINT + "=" + getServletName()
+         );
          throw new WebServiceException("Cannot obtain endpoint for: " + oname);
       }
 
