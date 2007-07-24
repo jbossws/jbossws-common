@@ -117,8 +117,12 @@ public class JBossWSTestHelper
       if (implVendor == null)
       {
          Service service = Service.create(new QName("dummyService"));
-         service.addPort(new QName("dummyPort"), SOAPBinding.SOAP11HTTP_BINDING, "http://dummy-address");
-         Dispatch<Source> obj = service.createDispatch(new QName("dummyPort"), Source.class, Mode.PAYLOAD);
+         Object obj = service.getHandlerResolver();
+         if (obj == null)
+         {
+            service.addPort(new QName("dummyPort"), SOAPBinding.SOAP11HTTP_BINDING, "http://dummy-address");
+            obj = service.createDispatch(new QName("dummyPort"), Source.class, Mode.PAYLOAD);
+         }
          implVendor = obj.getClass().getPackage().getImplementationVendor();
          implTitle = obj.getClass().getPackage().getImplementationTitle();
          implVersion = obj.getClass().getPackage().getImplementationVersion();

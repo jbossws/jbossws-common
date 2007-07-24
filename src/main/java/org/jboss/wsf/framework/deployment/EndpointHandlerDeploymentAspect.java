@@ -25,8 +25,16 @@ package org.jboss.wsf.framework.deployment;
 
 import org.jboss.wsf.spi.SPIProvider;
 import org.jboss.wsf.spi.SPIProviderResolver;
-import org.jboss.wsf.spi.deployment.*;
-import org.jboss.wsf.spi.invocation.*;
+import org.jboss.wsf.spi.deployment.Deployment;
+import org.jboss.wsf.spi.deployment.DeploymentAspect;
+import org.jboss.wsf.spi.deployment.Endpoint;
+import org.jboss.wsf.spi.deployment.LifecycleHandler;
+import org.jboss.wsf.spi.deployment.LifecycleHandlerFactory;
+import org.jboss.wsf.spi.invocation.InvocationHandler;
+import org.jboss.wsf.spi.invocation.InvocationModelFactory;
+import org.jboss.wsf.spi.invocation.InvocationType;
+import org.jboss.wsf.spi.invocation.RequestHandler;
+import org.jboss.wsf.spi.invocation.RequestHandlerFactory;
 import org.jboss.wsf.spi.metadata.j2ee.UnifiedApplicationMetaData;
 import org.jboss.wsf.spi.metadata.j2ee.UnifiedBeanMetaData;
 import org.jboss.wsf.spi.metadata.j2ee.UnifiedMessageDrivenMetaData;
@@ -39,29 +47,26 @@ import org.jboss.wsf.spi.metadata.j2ee.UnifiedMessageDrivenMetaData;
  */
 public class EndpointHandlerDeploymentAspect extends DeploymentAspect
 {
-   private String requestHandler;
-   private LifecycleHandler lifecycleHandler;
-
    private SPIProvider spiProvider;
 
    public EndpointHandlerDeploymentAspect()
    {
       spiProvider = SPIProviderResolver.getInstance().getProvider();
-   }  
+   }
 
    @Override
    public void create(Deployment dep)
    {
       for (Endpoint ep : dep.getService().getEndpoints())
       {
-         // associate a request handler
+         // Associate a request handler
          ep.setRequestHandler(getRequestHandler(dep));
 
-         // associate a lifecycle handler
+         // Associate a lifecycle handler
          ep.setLifecycleHandler(getLifecycleHandler(dep));
 
-         // associate a n invocation handler
-         // TODO: can this be null?
+         // Associate an invocation handler
+         // Invocation handlers are assigned per container or per stack
          InvocationHandler invocationHandler = getInvocationHandler(ep);
          if (invocationHandler != null)
             ep.setInvocationHandler(invocationHandler);
@@ -94,9 +99,8 @@ public class EndpointHandlerDeploymentAspect extends DeploymentAspect
          }
       }
 
-
       InvocationType type = InvocationType.valueOf(key);
-      InvocationHandler invocationHandler= spiProvider.getSPI(InvocationModelFactory.class).createInvocationHandler( type );
+      InvocationHandler invocationHandler = spiProvider.getSPI(InvocationModelFactory.class).createInvocationHandler(type);
       return invocationHandler;
    }
 }

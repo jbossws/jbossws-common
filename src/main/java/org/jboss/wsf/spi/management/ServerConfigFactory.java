@@ -21,12 +21,9 @@
  */
 package org.jboss.wsf.spi.management;
 
-import org.jboss.kernel.spi.registry.KernelRegistry;
-import org.jboss.logging.Logger;
-import org.jboss.ws.integration.KernelLocator;
-import org.jboss.wsf.spi.SPIView;
+//$Id$
 
-// $Id$
+import org.jboss.wsf.spi.SPIView;
 
 /**
  * Factory to container independent config 

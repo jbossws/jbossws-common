@@ -21,11 +21,15 @@
  */
 package org.jboss.wsf.framework.deployment;
 
+//$Id$
+
+import org.jboss.wsf.spi.SPIProvider;
+import org.jboss.wsf.spi.SPIProviderResolver;
 import org.jboss.wsf.spi.deployment.DeploymentAspect;
 import org.jboss.wsf.spi.deployment.Deployment;
 import org.jboss.wsf.spi.deployment.Endpoint;
-
-//$Id$
+import org.jboss.wsf.spi.management.ServerConfig;
+import org.jboss.wsf.spi.management.ServerConfigFactory;
 
 /**
  * A deployer that assigns the endpoint address. 
@@ -41,6 +45,14 @@ public class EndpointAddressDeploymentAspect extends DeploymentAspect
       String contextRoot = dep.getService().getContextRoot();
       if (contextRoot == null)
          throw new IllegalStateException("Cannot obtain context root");
+      
+      SPIProvider provider = SPIProviderResolver.getInstance().getProvider();
+      ServerConfigFactory spi = provider.getSPI(ServerConfigFactory.class);
+      ServerConfig serverConfig = spi.createServerConfig();
+      
+      String host = serverConfig.getWebServiceHost();
+      int port = serverConfig.getWebServicePort();
+      String hostAndPort = host + (port > 0 ? ":" + port : ""); 
 
       for (Endpoint ep : dep.getService().getEndpoints())
       {
@@ -51,7 +63,7 @@ public class EndpointAddressDeploymentAspect extends DeploymentAspect
          if (urlPattern.endsWith("/*"))
             urlPattern = urlPattern.substring(0, urlPattern.length() - 2);
 
-         ep.setAddress(contextRoot + urlPattern);
+         ep.setAddress("http://" + hostAndPort + contextRoot + urlPattern);
       }
    }
 }
