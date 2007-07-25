@@ -98,11 +98,11 @@ public class ContextRootDeploymentAspect extends DeploymentAspect
    protected String getImplicitContextRoot(Deployment dep)
    {
       UnifiedDeploymentInfo udi = dep.getContext().getAttachment(UnifiedDeploymentInfo.class);
-      String simpleName = udi.simpleName;
+      String simpleName = udi.getSimpleName();
       String contextRoot = simpleName.substring(0, simpleName.length() - 4);
-      if (udi.parent != null)
+      if (udi.getParent() != null)
       {
-         simpleName = udi.parent.simpleName;
+         simpleName = udi.getParent().getSimpleName();
          contextRoot = simpleName.substring(0, simpleName.length() - 4) + "-" + contextRoot;
       }
       return contextRoot;

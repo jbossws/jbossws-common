@@ -40,38 +40,113 @@ import org.jboss.wsf.spi.deployment.Deployment.DeploymentType;
  */
 public class UnifiedDeploymentInfo
 {
+   /** Sub deployments have a parent */
+   private UnifiedDeploymentInfo parent;
+   /** The suffix of the deployment url */
+   private String simpleName;
+   /** The URL for this deployment */
+   private URL url;
+   /** The virtual file for the deployment root */
+   private UnifiedVirtualFile vfRoot;
+   /** The URL to the expanded webapp **/
+   private URL webappURL;
+   /** We can hold "typed" metadata */
+   private Object metaData;
+   /** The deployment classloader **/
+   private ClassLoader classLoader;
+   /** An optional ObjectName of the deployed object */
+   private ObjectName deployedObject;
+
    public UnifiedDeploymentInfo(DeploymentType type)
    {
-      this.type = type;
    }
 
-   /** The type of this deployment */
-   public DeploymentType type;
-   /** Sub deployments have a parent */
-   public UnifiedDeploymentInfo parent;
-   /** The suffix of the deployment url */
-   public String simpleName;
-   /** The URL for this deployment */
-   public URL url;
-   /** The virtual file for the deployment root */
-   public UnifiedVirtualFile vfRoot;
-   /** The string identifing this deployment **/
-   public String name;
-   /** The URL to the expanded webapp **/
-   public URL webappURL;
-   /** We can hold "typed" metadata */
-   public Object metaData;
-   /** The deployment classloader **/
-   public ClassLoader classLoader;
-   /** An optional ObjectName of the deployed object */
-   public ObjectName deployedObject;
+   public void setDeployedObject(ObjectName deployedObject)
+   {
+      this.deployedObject = deployedObject;
+   }
+
+   public ObjectName getDeployedObject()
+   {
+      return deployedObject;
+   }
+
+   public void setClassLoader(ClassLoader classLoader)
+   {
+      this.classLoader = classLoader;
+   }
+
+   public ClassLoader getClassLoader()
+   {
+      return classLoader;
+   }
+
+   public void setMetaData(Object metaData)
+   {
+      this.metaData = metaData;
+   }
+
+   public Object getMetaData()
+   {
+      return metaData;
+   }
+
+   public void setWebappURL(URL webappURL)
+   {
+      this.webappURL = webappURL;
+   }
+
+   public URL getWebappURL()
+   {
+      return webappURL;
+   }
+
+   public void setVfRoot(UnifiedVirtualFile vfRoot)
+   {
+      this.vfRoot = vfRoot;
+   }
+
+   public UnifiedVirtualFile getVfRoot()
+   {
+      return vfRoot;
+   }
+
+   public void setUrl(URL url)
+   {
+      this.url = url;
+   }
+
+   public URL getUrl()
+   {
+      return url;
+   }
+
+   public void setSimpleName(String simpleName)
+   {
+      this.simpleName = simpleName;
+   }
+
+   public String getSimpleName()
+   {
+      return simpleName;
+   }
+
+   public void setParent(UnifiedDeploymentInfo parent)
+   {
+      this.parent = parent;
+   }
+
+   public UnifiedDeploymentInfo getParent()
+   {
+      return parent;
+   }
 
    /** The sortName concatenated with the canonical names of all parents. */
    public String getCanonicalName()
    {
-      String name = simpleName;
-      if (parent != null)
-         name = parent.getCanonicalName() + "/" + name;
+      String name = getSimpleName();
+      if (getParent() != null)
+         name = getParent().getCanonicalName() + "/" + name;
       return name;
    }
 
@@ -93,15 +168,15 @@ public class UnifiedDeploymentInfo
             // ignore
          }
 
-         if (resourceURL == null && vfRoot != null)
+         if (resourceURL == null && getVfRoot() != null)
          {
-            UnifiedVirtualFile vfResource = vfRoot.findChild(resourcePath);
+            UnifiedVirtualFile vfResource = getVfRoot().findChild(resourcePath);
             resourceURL = vfResource.toURL();
          }
 
          if (resourceURL == null)
          {
-            String deploymentPath = url.toExternalForm();
+            String deploymentPath = getUrl().toExternalForm();
 
             if (deploymentPath.startsWith("jar:") && deploymentPath.endsWith("!/") == false)
                deploymentPath += "!/";
@@ -123,7 +198,6 @@ public class UnifiedDeploymentInfo
    {
       StringBuilder builder = new StringBuilder();
       builder.append("[");
-      builder.append("type=" + type);
       builder.append(",simpleName=" + simpleName);
       builder.append(",url=" + url);
       builder.append("]");
