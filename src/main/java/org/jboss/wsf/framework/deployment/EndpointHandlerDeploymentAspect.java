@@ -31,7 +31,7 @@ import org.jboss.wsf.spi.deployment.Endpoint;
 import org.jboss.wsf.spi.deployment.LifecycleHandler;
 import org.jboss.wsf.spi.deployment.LifecycleHandlerFactory;
 import org.jboss.wsf.spi.invocation.InvocationHandler;
-import org.jboss.wsf.spi.invocation.InvocationModelFactory;
+import org.jboss.wsf.spi.invocation.InvocationHandlerFactory;
 import org.jboss.wsf.spi.invocation.InvocationType;
 import org.jboss.wsf.spi.invocation.RequestHandler;
 import org.jboss.wsf.spi.invocation.RequestHandlerFactory;
@@ -100,7 +100,7 @@ public class EndpointHandlerDeploymentAspect extends DeploymentAspect
       }
 
       InvocationType type = InvocationType.valueOf(key);
-      InvocationHandler invocationHandler = spiProvider.getSPI(InvocationModelFactory.class).createInvocationHandler(type);
+      InvocationHandler invocationHandler = spiProvider.getSPI(InvocationHandlerFactory.class).createInvocationHandler(type);
       return invocationHandler;
    }
 }

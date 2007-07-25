@@ -31,10 +31,7 @@ import org.jboss.wsf.spi.management.ServerConfigFactory;
 import org.jboss.wsf.spi.deployment.DeploymentModelFactory;
 import org.jboss.wsf.spi.deployment.DeploymentAspectManagerFactory;
 import org.jboss.wsf.spi.deployment.LifecycleHandlerFactory;
-import org.jboss.wsf.spi.invocation.InvocationModelFactory;
-import org.jboss.wsf.spi.invocation.ResourceInjectorFactory;
-import org.jboss.wsf.spi.invocation.RequestHandlerFactory;
-import org.jboss.wsf.spi.invocation.SecurityAdaptorFactory;
+import org.jboss.wsf.spi.invocation.*;
 
 /**
  * @author Heiko.Braun@jboss.com
@@ -86,7 +83,7 @@ public class DefaultSPIProviderResolver extends SPIProviderResolver
 
          // SPI provided by either container or stack integration
 
-         else if(InvocationModelFactory.class.equals(spiType))
+         else if(InvocationHandlerFactory.class.equals(spiType))
          {
             returnType = (T) loadService(spiType, null);
          }
@@ -107,6 +104,10 @@ public class DefaultSPIProviderResolver extends SPIProviderResolver
             returnType = (T) loadService(spiType, null);
          }
          else if(SecurityAdaptorFactory.class.equals(spiType))
+         {
+            returnType = (T) loadService(spiType, null);
+         }
+         else if(WebServiceContextFactory.class.equals(spiType))
          {
             returnType = (T) loadService(spiType, null);
          }

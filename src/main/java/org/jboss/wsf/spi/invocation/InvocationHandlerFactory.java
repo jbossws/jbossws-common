@@ -31,8 +31,7 @@ import javax.xml.ws.handler.MessageContext;
  * @author Heiko.Braun@jboss.com
  *         Created: Jul 19, 2007
  */
-public abstract class InvocationModelFactory implements SPIView
+public abstract class InvocationHandlerFactory implements SPIView
 {
-   public abstract InvocationHandler createInvocationHandler(InvocationType type);   
-   public abstract ExtendableWebServiceContext createWebServiceContext(InvocationType type, MessageContext messageContext);
+   public abstract InvocationHandler createInvocationHandler(InvocationType type);
 }
