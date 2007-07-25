@@ -86,7 +86,7 @@ public class EndpointHandlerDeploymentAspect extends DeploymentAspect
    private InvocationHandler getInvocationHandler(Endpoint ep)
    {
       Deployment dep = ep.getService().getDeployment();
-      String key = dep.getDeploymentType().toString();
+      String key = dep.getType().toString();
 
       // Use a special key for MDB endpoints
       UnifiedApplicationMetaData uapp = dep.getContext().getAttachment(UnifiedApplicationMetaData.class);

@@ -72,10 +72,10 @@ public interface Deployment
    void setContext(DeploymentContext context);
    
    /** Get the deployment type */
-   DeploymentType getDeploymentType();
+   DeploymentType getType();
    
    /** Set the deployment type */
-   void setDeploymentType(DeploymentType type);
+   void setType(DeploymentType type);
    
    /** Get the current deployment state */
    DeploymentState getState();

@@ -72,11 +72,11 @@ public class WebAppGeneratorDeploymentAspect extends DeploymentAspect
       if (udi == null)
          throw new IllegalStateException("Cannot obtain unified deployement info");
 
-      if (dep.getDeploymentType().toString().endsWith("EJB21"))
+      if (dep.getType().toString().endsWith("EJB21"))
       {
          udi.setWebappURL(generatWebDeployment(dep, securityHandlerEJB21));
       }
-      else if (dep.getDeploymentType().toString().endsWith("EJB3"))
+      else if (dep.getType().toString().endsWith("EJB3"))
       {
          udi.setWebappURL(generatWebDeployment(dep, securityHandlerEJB3));
       }

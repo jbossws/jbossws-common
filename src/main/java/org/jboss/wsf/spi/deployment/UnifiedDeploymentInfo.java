@@ -27,10 +27,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import javax.management.ObjectName;
-
 import org.jboss.ws.integration.UnifiedVirtualFile;
-import org.jboss.wsf.spi.deployment.Deployment.DeploymentType;
 
 /**
  * The container independent deployment info.
@@ -50,46 +47,6 @@ public class UnifiedDeploymentInfo
    private UnifiedVirtualFile vfRoot;
    /** The URL to the expanded webapp **/
    private URL webappURL;
-   /** We can hold "typed" metadata */
-   private Object metaData;
-   /** The deployment classloader **/
-   private ClassLoader classLoader;
-   /** An optional ObjectName of the deployed object */
-   private ObjectName deployedObject;
-
-   public UnifiedDeploymentInfo(DeploymentType type)
-   {
-   }
-
-   public void setDeployedObject(ObjectName deployedObject)
-   {
-      this.deployedObject = deployedObject;
-   }
-
-   public ObjectName getDeployedObject()
-   {
-      return deployedObject;
-   }
-
-   public void setClassLoader(ClassLoader classLoader)
-   {
-      this.classLoader = classLoader;
-   }
-
-   public ClassLoader getClassLoader()
-   {
-      return classLoader;
-   }
-
-   public void setMetaData(Object metaData)
-   {
-      this.metaData = metaData;
-   }
-
-   public Object getMetaData()
-   {
-      return metaData;
-   }
 
    public void setWebappURL(URL webappURL)
    {
@@ -180,10 +137,10 @@ public class UnifiedDeploymentInfo
 
             if (deploymentPath.startsWith("jar:") && deploymentPath.endsWith("!/") == false)
                deploymentPath += "!/";
-            
+
             if (deploymentPath.startsWith("war:") && deploymentPath.endsWith("!/") == false)
                deploymentPath += "!/";
-            
+
             if (deploymentPath.endsWith("/") == false)
                deploymentPath += "/";
 
@@ -192,15 +149,5 @@ public class UnifiedDeploymentInfo
          }
       }
       return resourceURL;
-   }
-
-   public String toString()
-   {
-      StringBuilder builder = new StringBuilder();
-      builder.append("[");
-      builder.append(",simpleName=" + simpleName);
-      builder.append(",url=" + url);
-      builder.append("]");
-      return builder.toString();
    }
 }

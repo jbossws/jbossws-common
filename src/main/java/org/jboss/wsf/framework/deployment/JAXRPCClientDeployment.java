@@ -37,6 +37,6 @@ public class JAXRPCClientDeployment extends UnifiedDeploymentInfo
 
    public JAXRPCClientDeployment(DeploymentType type)
    {
-      super(type);
+      super();
    }
 }

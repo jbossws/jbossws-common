@@ -36,6 +36,6 @@ public class JAXWSDeployment extends UnifiedDeploymentInfo
 {
    public JAXWSDeployment(DeploymentType type)
    {
-      super(type);
+      super();
    }
 }

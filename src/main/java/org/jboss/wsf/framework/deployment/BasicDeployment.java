@@ -121,12 +121,12 @@ public class BasicDeployment implements Deployment
       this.state = deploymentState;
    }
 
-   public DeploymentType getDeploymentType()
+   public DeploymentType getType()
    {
       return type;
    }
 
-   public void setDeploymentType(DeploymentType deploymentType)
+   public void setType(DeploymentType deploymentType)
    {
       this.type = deploymentType;
    }

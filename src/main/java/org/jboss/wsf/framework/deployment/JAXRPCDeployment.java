@@ -47,13 +47,13 @@ public class JAXRPCDeployment extends UnifiedDeploymentInfo
 
    public JAXRPCDeployment(DeploymentType type, WebservicesMetaData wsMetaData)
    {
-      super(type);
+      super();
       this.wsMetaData = wsMetaData;
    }
 
    public JAXRPCDeployment(DeploymentType type, UnifiedVirtualFile vfWebservices)
    {
-      super(type);
+      super();
 
       try
       {
