@@ -45,19 +45,7 @@ public class UnifiedDeploymentInfo
    private URL url;
    /** The virtual file for the deployment root */
    private UnifiedVirtualFile vfRoot;
-   /** The URL to the expanded webapp **/
-   private URL webappURL;
-
-   public void setWebappURL(URL webappURL)
-   {
-      this.webappURL = webappURL;
-   }
-
-   public URL getWebappURL()
-   {
-      return webappURL;
-   }
-
+   
    public void setVfRoot(UnifiedVirtualFile vfRoot)
    {
       this.vfRoot = vfRoot;

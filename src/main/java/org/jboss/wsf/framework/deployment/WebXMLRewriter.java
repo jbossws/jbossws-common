@@ -29,5 +29,7 @@ import org.jboss.wsf.spi.deployment.Deployment;
  */
 public interface WebXMLRewriter
 {
+   final String WEBAPP_URL = "org.jboss.ws.webapp.url";
+   
    RewriteResults rewriteWebXml(Deployment dep);
 }

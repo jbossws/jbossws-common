@@ -67,7 +67,7 @@ public class WebXMLRewriterImpl implements WebXMLRewriter
       if (udi == null)
          throw new IllegalStateException("Cannot obtain unified deployment info");
 
-      URL warURL = udi.getWebappURL();
+      URL warURL = (URL)dep.getContext().getProperty(WebXMLRewriter.WEBAPP_URL);
       File warFile = new File(warURL.getFile());
       if (warFile.isDirectory() == false)
          throw new WebServiceException("Expected a war directory: " + warURL);

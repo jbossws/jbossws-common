@@ -74,11 +74,13 @@ public class WebAppGeneratorDeploymentAspect extends DeploymentAspect
 
       if (dep.getType().toString().endsWith("EJB21"))
       {
-         udi.setWebappURL(generatWebDeployment(dep, securityHandlerEJB21));
+         URL webAppURL = generatWebDeployment(dep, securityHandlerEJB21);
+         dep.getContext().setProperty(WebXMLRewriter.WEBAPP_URL, webAppURL);
       }
       else if (dep.getType().toString().endsWith("EJB3"))
       {
-         udi.setWebappURL(generatWebDeployment(dep, securityHandlerEJB3));
+         URL webAppURL = generatWebDeployment(dep, securityHandlerEJB3);
+         dep.getContext().setProperty(WebXMLRewriter.WEBAPP_URL, webAppURL);
       }
    }
 
