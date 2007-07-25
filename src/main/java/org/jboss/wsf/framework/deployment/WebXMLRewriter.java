@@ -19,7 +19,9 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.wsf.spi.deployment;
+package org.jboss.wsf.framework.deployment;
+
+import org.jboss.wsf.spi.deployment.Deployment;
 
 /**
  * @author Heiko.Braun@jboss.com

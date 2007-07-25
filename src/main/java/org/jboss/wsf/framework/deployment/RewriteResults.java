@@ -21,22 +21,18 @@
  */
 package org.jboss.wsf.framework.deployment;
 
-import org.jboss.wsf.spi.deployment.WebXMLRewriterFactory;
-import org.jboss.wsf.spi.deployment.WebXMLRewriter;
-import org.jboss.wsf.common.KernelAwareSPIFactory;
+import java.net.URL;
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  * @author Heiko.Braun@jboss.com
  *         Created: Jul 19, 2007
  */
-public class WebXMLRewriterFactoryImpl extends WebXMLRewriterFactory
+public class RewriteResults
 {
-   public WebXMLRewriter createWebXMLRewriter()
-   {
-      WebXMLRewriter rewriter = new KernelAwareSPIFactory().getKernelProvidedSPI(
-        "WSWebXMLRewriter", WebXMLRewriter.class
-      );
-
-      return rewriter;
-   }
+   // The URL to the rewritten web.xml
+   public URL webXML;
+   // Maps the servlet name to the target bean
+   public Map<String, String> sepTargetMap = new HashMap<String, String>();
 }

@@ -29,8 +29,6 @@ import org.dom4j.Element;
 import org.jboss.logging.Logger;
 import org.jboss.wsf.spi.deployment.Deployment;
 import org.jboss.wsf.spi.deployment.Endpoint;
-import org.jboss.wsf.spi.deployment.RewriteResults;
-import org.jboss.wsf.spi.deployment.WebAppDesciptorModifier;
 
 /**
  * Modifies web.xml for jbossws

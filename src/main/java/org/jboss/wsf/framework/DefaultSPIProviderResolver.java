@@ -29,7 +29,6 @@ import org.jboss.wsf.spi.WSFException;
 import org.jboss.wsf.spi.management.EndpointRegistryFactory;
 import org.jboss.wsf.spi.management.ServerConfigFactory;
 import org.jboss.wsf.spi.deployment.DeploymentModelFactory;
-import org.jboss.wsf.spi.deployment.WebXMLRewriterFactory;
 import org.jboss.wsf.spi.deployment.DeploymentAspectManagerFactory;
 import org.jboss.wsf.spi.deployment.LifecycleHandlerFactory;
 import org.jboss.wsf.spi.invocation.InvocationModelFactory;
@@ -76,12 +75,6 @@ public class DefaultSPIProviderResolver extends SPIProviderResolver
          {
             returnType = (T) loadService(
               spiType, "org.jboss.wsf.framework.invocation.ResourceInjectorFactoryImpl"
-            );
-         }
-         else if(WebXMLRewriterFactory.class.equals(spiType))
-         {
-            returnType = (T) loadService(
-              spiType, "org.jboss.wsf.framework.deployment.WebXMLRewriterFactoryImpl"
             );
          }
          else if(LifecycleHandlerFactory.class.equals(spiType))

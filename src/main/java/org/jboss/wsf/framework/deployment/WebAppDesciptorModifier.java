@@ -19,15 +19,23 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.wsf.spi.deployment;
+package org.jboss.wsf.framework.deployment;
 
-import org.jboss.wsf.spi.SPIView;
+import org.dom4j.Document;
+import org.jboss.wsf.spi.deployment.Deployment;
+import org.jboss.wsf.framework.deployment.RewriteResults;
 
 /**
- * @author Heiko.Braun@jboss.com
- *         Created: Jul 19, 2007
+ * Modifies the web app according to the stack requirements. 
+ *
+ * @author Thomas.Diesler@jboss.org
+ * @since 19-May-2007
  */
-public abstract class WebXMLRewriterFactory implements SPIView
+public interface WebAppDesciptorModifier
 {
-   public abstract WebXMLRewriter createWebXMLRewriter();
+   final String SERVLET_CONTEXT_LISTENER = "ServletContextListener";
+   final String CONTEXT_PARAMETER_MAP = "ContextParameterMap";
+   final String SERVLET_CLASS = "ServletClass";
+
+   RewriteResults modifyDescriptor(Deployment dep, Document webXml) throws ClassNotFoundException;
 }
