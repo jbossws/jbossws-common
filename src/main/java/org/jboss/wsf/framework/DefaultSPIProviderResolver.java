@@ -26,12 +26,16 @@ import org.jboss.wsf.common.ServiceLoader;
 import org.jboss.wsf.spi.SPIProvider;
 import org.jboss.wsf.spi.SPIProviderResolver;
 import org.jboss.wsf.spi.WSFException;
+import org.jboss.wsf.spi.deployment.DeploymentAspectManagerFactory;
+import org.jboss.wsf.spi.deployment.DeploymentModelFactory;
+import org.jboss.wsf.spi.deployment.LifecycleHandlerFactory;
+import org.jboss.wsf.spi.invocation.InvocationHandlerFactory;
+import org.jboss.wsf.spi.invocation.RequestHandlerFactory;
+import org.jboss.wsf.spi.invocation.ResourceInjectorFactory;
+import org.jboss.wsf.spi.invocation.SecurityAdaptorFactory;
+import org.jboss.wsf.spi.invocation.WebServiceContextFactory;
 import org.jboss.wsf.spi.management.EndpointRegistryFactory;
 import org.jboss.wsf.spi.management.ServerConfigFactory;
-import org.jboss.wsf.spi.deployment.DeploymentModelFactory;
-import org.jboss.wsf.spi.deployment.DeploymentAspectManagerFactory;
-import org.jboss.wsf.spi.deployment.LifecycleHandlerFactory;
-import org.jboss.wsf.spi.invocation.*;
 
 /**
  * @author Heiko.Braun@jboss.com
@@ -56,67 +60,60 @@ public class DefaultSPIProviderResolver extends SPIProviderResolver
        */
       public <T> T getSPI(Class<T> spiType)
       {
-         log.debug("provide SPI '"+spiType+"'");
+         log.debug("provide SPI '" + spiType + "'");
 
          T returnType = null;
 
          // SPI provided by framework, default that can be overridden
 
-         if(DeploymentModelFactory.class.equals(spiType))
+         if (DeploymentModelFactory.class.equals(spiType))
          {
-            returnType = (T) loadService(
-              spiType, "org.jboss.wsf.framework.deployment.DeploymentModelFactoryImpl"
-            );
+            returnType = (T)loadService(spiType, "org.jboss.wsf.framework.deployment.DeploymentModelFactoryImpl");
          }
          else if (ResourceInjectorFactory.class.equals(spiType))
          {
-            returnType = (T) loadService(
-              spiType, "org.jboss.wsf.framework.invocation.ResourceInjectorFactoryImpl"
-            );
+            returnType = (T)loadService(spiType, "org.jboss.wsf.framework.invocation.ResourceInjectorFactoryImpl");
          }
-         else if(LifecycleHandlerFactory.class.equals(spiType))
+         else if (LifecycleHandlerFactory.class.equals(spiType))
          {
-            returnType = (T) loadService(
-              spiType, "org.jboss.wsf.framework.deployment.LifecycleHandlerFactoryImpl"
-            );
+            returnType = (T)loadService(spiType, "org.jboss.wsf.framework.deployment.LifecycleHandlerFactoryImpl");
          }
 
          // SPI provided by either container or stack integration
 
-         else if(InvocationHandlerFactory.class.equals(spiType))
+         else if (InvocationHandlerFactory.class.equals(spiType))
          {
-            returnType = (T) loadService(spiType, null);
+            returnType = (T)loadService(spiType, null);
          }
-         else if(DeploymentAspectManagerFactory.class.equals(spiType))
+         else if (DeploymentAspectManagerFactory.class.equals(spiType))
          {
-            returnType = (T) loadService(spiType, null);
+            returnType = (T)loadService(spiType, null);
          }
-         else if(RequestHandlerFactory.class.equals(spiType))
+         else if (RequestHandlerFactory.class.equals(spiType))
          {
-            returnType = (T) loadService(spiType, null);
+            returnType = (T)loadService(spiType, null);
          }
-         else if(EndpointRegistryFactory.class.equals(spiType))
+         else if (EndpointRegistryFactory.class.equals(spiType))
          {
-            returnType = (T) loadService(spiType, null);
+            returnType = (T)loadService(spiType, null);
          }
-         else if(ServerConfigFactory.class.equals(spiType))
+         else if (ServerConfigFactory.class.equals(spiType))
          {
-            returnType = (T) loadService(spiType, null);
+            returnType = (T)loadService(spiType, null);
          }
-         else if(SecurityAdaptorFactory.class.equals(spiType))
+         else if (SecurityAdaptorFactory.class.equals(spiType))
          {
-            returnType = (T) loadService(spiType, null);
+            returnType = (T)loadService(spiType, null);
          }
-         else if(WebServiceContextFactory.class.equals(spiType))
+         else if (WebServiceContextFactory.class.equals(spiType))
          {
-            returnType = (T) loadService(spiType, null);
+            returnType = (T)loadService(spiType, null);
          }
 
          // help debugging
-         if(null == returnType)
-            throw new WSFException("Failed to provide SPI '"+spiType+"'");
-         else
-            log.debug(spiType + " Implementation: " + returnType);
+         if (null == returnType)
+            throw new WSFException("Failed to provide SPI '" + spiType + "'");
+         else log.debug(spiType + " Implementation: " + returnType);
 
          return returnType;
       }
@@ -129,9 +126,8 @@ public class DefaultSPIProviderResolver extends SPIProviderResolver
        */
       private <T> T loadService(Class<T> spiType, String defaultImpl)
       {
-         return (T) ServiceLoader.loadService(spiType.getName(), defaultImpl);
+         return (T)ServiceLoader.loadService(spiType.getName(), defaultImpl);
       }
    }
-
 
 }
