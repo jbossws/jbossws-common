@@ -113,17 +113,13 @@ public class DefaultSPIProviderResolver extends SPIProviderResolver
          // help debugging
          if (null == returnType)
             throw new WSFException("Failed to provide SPI '" + spiType + "'");
-         else log.debug(spiType + " Implementation: " + returnType);
+
+         log.debug(spiType + " Implementation: " + returnType);
 
          return returnType;
       }
 
-      /**
-       * Load SPI implementation through ServiceLoader
-       * @param spiType
-       * @param defaultImpl
-       * @return the spiType implementation
-       */
+      // Load SPI implementation through ServiceLoader
       private <T> T loadService(Class<T> spiType, String defaultImpl)
       {
          return (T)ServiceLoader.loadService(spiType.getName(), defaultImpl);
