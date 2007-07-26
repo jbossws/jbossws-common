@@ -21,13 +21,11 @@
  */
 package org.jboss.wsf.framework.deployment;
 
-import org.jboss.ws.integration.UnifiedVirtualFile;
 import org.jboss.wsf.spi.deployment.Deployment;
 import org.jboss.wsf.spi.deployment.DeploymentContext;
 import org.jboss.wsf.spi.deployment.Service;
 
 //$Id$
-
 
 /**
  * A general web service deployment dep. 
@@ -41,8 +39,8 @@ public class BasicDeployment implements Deployment
 {
    // The context for this deployment dep
    private DeploymentContext context;
-   // The root file for this deployment
-   private UnifiedVirtualFile rootFile;
+   // The name for this deployment
+   private String name;
    // A deployment has one service
    private Service service;
    // The type of this deployment
@@ -72,36 +70,36 @@ public class BasicDeployment implements Deployment
       this.context = context;
    }
 
-   public UnifiedVirtualFile getRootFile()
+   public String getName()
    {
-      return rootFile;
+      return name;
    }
 
-   public void setRootFile(UnifiedVirtualFile rootFile)
+   public void setName(String name)
    {
-      this.rootFile = rootFile;
+      this.name = name;
    }
 
    public void setInitialClassLoader(ClassLoader classLoader)
    {
       this.initialLoader = classLoader;
    }
-   
+
    public ClassLoader getInitialClassLoader()
    {
       return initialLoader;
    }
-   
+
    public void setRuntimeClassLoader(ClassLoader classLoader)
    {
       this.runtimeLoader = classLoader;
    }
-   
+
    public ClassLoader getRuntimeClassLoader()
    {
       return runtimeLoader;
    }
-   
+
    public Service getService()
    {
       return service;

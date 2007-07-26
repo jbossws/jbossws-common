@@ -21,11 +21,7 @@
  */
 package org.jboss.wsf.spi.deployment;
 
-import org.jboss.ws.integration.UnifiedVirtualFile;
-
-
 // $Id$
-
 
 /**
  * A general web service deployment dep. 
@@ -47,12 +43,12 @@ public interface Deployment
       UNDEFINED, CREATED, STARTED, STOPPED, DESTROYED
    };
    
-   /** Get the root file for this deployment */
-   UnifiedVirtualFile getRootFile();
-   
-   /** Set the root file for this deployment */
-   void setRootFile(UnifiedVirtualFile root);
-   
+   /** Get the unique identifier for this deployment */
+   String getName();
+
+   /** Set the unique identifier for this deployment */
+   void setName(String name);
+
    /** Get the class loader for this deployment */
    ClassLoader getInitialClassLoader();
    
