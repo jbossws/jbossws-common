@@ -74,17 +74,17 @@ public class WebAppGeneratorDeploymentAspect extends DeploymentAspect
 
       if (dep.getType().toString().endsWith("EJB21"))
       {
-         URL webAppURL = generatWebDeployment(dep, securityHandlerEJB21);
+         URL webAppURL = generatWebDeployment((ArchiveDeployment)dep, securityHandlerEJB21);
          dep.getContext().setProperty(WebXMLRewriter.WEBAPP_URL, webAppURL);
       }
       else if (dep.getType().toString().endsWith("EJB3"))
       {
-         URL webAppURL = generatWebDeployment(dep, securityHandlerEJB3);
+         URL webAppURL = generatWebDeployment((ArchiveDeployment)dep, securityHandlerEJB3);
          dep.getContext().setProperty(WebXMLRewriter.WEBAPP_URL, webAppURL);
       }
    }
 
-   private URL generatWebDeployment(Deployment dep, SecurityHandler securityHandler)
+   private URL generatWebDeployment(ArchiveDeployment dep, SecurityHandler securityHandler)
    {
       Document webDoc = createWebAppDescriptor(dep, securityHandler);
       Document jbossDoc = createJBossWebAppDescriptor(dep, securityHandler);
@@ -98,7 +98,7 @@ public class WebAppGeneratorDeploymentAspect extends DeploymentAspect
          File tmpdir = new File(config.getServerTempDir().getCanonicalPath() + "/deploy");
 
          UnifiedDeploymentInfo udi = dep.getContext().getAttachment(UnifiedDeploymentInfo.class);
-         String deploymentName = udi.getCanonicalName().replace('/', '-');
+         String deploymentName = dep.getCanonicalName().replace('/', '-');
          tmpWar = File.createTempFile(deploymentName, ".war", tmpdir);
          tmpWar.delete();
 

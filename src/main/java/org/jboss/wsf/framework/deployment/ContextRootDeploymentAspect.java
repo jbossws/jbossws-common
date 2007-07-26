@@ -26,6 +26,7 @@ package org.jboss.wsf.framework.deployment;
 import org.jboss.wsf.spi.annotation.WebContext;
 import org.jboss.wsf.spi.metadata.j2ee.UnifiedApplicationMetaData;
 import org.jboss.wsf.spi.metadata.j2ee.UnifiedWebMetaData;
+import org.jboss.wsf.spi.deployment.ArchiveDeployment;
 import org.jboss.wsf.spi.deployment.DeploymentAspect;
 import org.jboss.wsf.spi.deployment.Deployment;
 import org.jboss.wsf.spi.deployment.Endpoint;
@@ -47,7 +48,7 @@ public class ContextRootDeploymentAspect extends DeploymentAspect
       {
          contextRoot = getExplicitContextRoot(dep);
          if (contextRoot == null)
-            contextRoot = getImplicitContextRoot(dep);
+            contextRoot = getImplicitContextRoot((ArchiveDeployment)dep);
 
          // Always prefix with '/'
          if (contextRoot.startsWith("/") == false)
@@ -95,14 +96,13 @@ public class ContextRootDeploymentAspect extends DeploymentAspect
 
    /** Use the implicit context root derived from the deployment name
     */
-   protected String getImplicitContextRoot(Deployment dep)
+   protected String getImplicitContextRoot(ArchiveDeployment dep)
    {
-      UnifiedDeploymentInfo udi = dep.getContext().getAttachment(UnifiedDeploymentInfo.class);
-      String simpleName = udi.getSimpleName();
+      String simpleName = dep.getSimpleName();
       String contextRoot = simpleName.substring(0, simpleName.length() - 4);
-      if (udi.getParent() != null)
+      if (dep.getParent() != null)
       {
-         simpleName = udi.getParent().getSimpleName();
+         simpleName = dep.getParent().getSimpleName();
          contextRoot = simpleName.substring(0, simpleName.length() - 4) + "-" + contextRoot;
       }
       return contextRoot;

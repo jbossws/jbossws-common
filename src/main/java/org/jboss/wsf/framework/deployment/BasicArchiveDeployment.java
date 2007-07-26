@@ -23,6 +23,10 @@ package org.jboss.wsf.framework.deployment;
 
 //$Id: BasicDeployment.java 3995 2007-07-26 08:52:45Z thomas.diesler@jboss.com $
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import org.jboss.ws.integration.UnifiedVirtualFile;
 import org.jboss.wsf.spi.deployment.ArchiveDeployment;
 
@@ -35,12 +39,24 @@ import org.jboss.wsf.spi.deployment.ArchiveDeployment;
  */
 public class BasicArchiveDeployment extends BasicDeployment implements ArchiveDeployment
 {
+   // The optional parent
+   private ArchiveDeployment parent;
    // The root file for this deployment
    private UnifiedVirtualFile rootFile;
 
-   BasicArchiveDeployment(ClassLoader classLoader)
+   BasicArchiveDeployment(String simpleName, ClassLoader classLoader)
    {
-      super(classLoader);
+      super(simpleName, classLoader);
+   }
+
+   public ArchiveDeployment getParent()
+   {
+      return parent;
+   }
+
+   public void setParent(ArchiveDeployment parent)
+   {
+      this.parent = parent;
    }
 
    public UnifiedVirtualFile getRootFile()
@@ -51,5 +67,59 @@ public class BasicArchiveDeployment extends BasicDeployment implements ArchiveDe
    public void setRootFile(UnifiedVirtualFile rootFile)
    {
       this.rootFile = rootFile;
+   }
+
+   public String getCanonicalName()
+   {
+      String name = getSimpleName();
+      if (getParent() != null)
+         name = getParent().getCanonicalName() + "/" + name;
+      return name;
+   }
+
+   public URL getMetaDataFileURL(String resourcePath) throws IOException
+   {
+      URL resourceURL = null;
+      if (resourcePath != null && resourcePath.length() > 0)
+      {
+         if (resourcePath.startsWith("/"))
+            resourcePath = resourcePath.substring(1);
+
+         try
+         {
+            // assign an absolute URL 
+            resourceURL = new URL(resourcePath);
+         }
+         catch (MalformedURLException ex)
+         {
+            // ignore
+         }
+
+         if (resourceURL == null && getRootFile() != null)
+         {
+            UnifiedVirtualFile vfResource = getRootFile().findChild(resourcePath);
+            resourceURL = vfResource.toURL();
+         }
+
+         /*
+         if (resourceURL == null)
+         {
+            String deploymentPath = getUrl().toExternalForm();
+
+            if (deploymentPath.startsWith("jar:") && deploymentPath.endsWith("!/") == false)
+               deploymentPath += "!/";
+
+            if (deploymentPath.startsWith("war:") && deploymentPath.endsWith("!/") == false)
+               deploymentPath += "!/";
+
+            if (deploymentPath.endsWith("/") == false)
+               deploymentPath += "/";
+
+            // assign a relative URL
+            resourceURL = new URL(deploymentPath + resourcePath);
+         }
+         */
+      }
+      return resourceURL;
    }
 }

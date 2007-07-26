@@ -32,9 +32,9 @@ import org.jboss.wsf.spi.deployment.Endpoint;
  */
 public class DeploymentModelFactoryImpl extends DeploymentModelFactory
 {
-   public Deployment createDeployment(ClassLoader initialLoader)
+   public Deployment createDeployment(String simpleName, ClassLoader initialLoader)
    {
-      return new BasicDeployment(initialLoader);
+      return new BasicDeployment(simpleName, initialLoader);
    }
 
    public Service createService()

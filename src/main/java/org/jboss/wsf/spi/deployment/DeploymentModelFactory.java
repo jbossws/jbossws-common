@@ -29,7 +29,7 @@ import org.jboss.wsf.spi.SPIView;
  */
 public abstract class DeploymentModelFactory implements SPIView
 {
-   public abstract Deployment createDeployment(ClassLoader initialLoader);
+   public abstract Deployment createDeployment(String simpleName, ClassLoader initialLoader);
    public abstract Service createService();
    public abstract Endpoint createEndpoint();
 

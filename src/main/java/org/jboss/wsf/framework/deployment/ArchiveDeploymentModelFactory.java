@@ -32,9 +32,9 @@ import org.jboss.wsf.spi.deployment.Endpoint;
  */
 public class ArchiveDeploymentModelFactory extends DeploymentModelFactory
 {
-   public Deployment createDeployment(ClassLoader initialLoader)
+   public Deployment createDeployment(String simpleName, ClassLoader initialLoader)
    {
-      return new BasicArchiveDeployment(initialLoader);
+      return new BasicArchiveDeployment(simpleName, initialLoader);
    }
 
    public Service createService()

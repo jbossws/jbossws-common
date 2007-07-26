@@ -40,7 +40,7 @@ public class BasicDeployment implements Deployment
    // The context for this deployment dep
    private DeploymentContext context;
    // The name for this deployment
-   private String name;
+   private String simpleName;
    // A deployment has one service
    private Service service;
    // The type of this deployment
@@ -52,8 +52,9 @@ public class BasicDeployment implements Deployment
    // The runtime class loader
    private ClassLoader runtimeLoader;
 
-   BasicDeployment(ClassLoader classLoader)
+   BasicDeployment(String name, ClassLoader classLoader)
    {
+      simpleName = name;
       context = new BasicDeploymentContext();
       state = DeploymentState.UNDEFINED;
       initialLoader = classLoader;
@@ -70,14 +71,14 @@ public class BasicDeployment implements Deployment
       this.context = context;
    }
 
-   public String getName()
+   public String getSimpleName()
    {
-      return name;
+      return simpleName;
    }
 
-   public void setName(String name)
+   public void setSimpleName(String name)
    {
-      this.name = name;
+      this.simpleName = name;
    }
 
    public void setInitialClassLoader(ClassLoader classLoader)

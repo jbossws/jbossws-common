@@ -43,11 +43,11 @@ public interface Deployment
       UNDEFINED, CREATED, STARTED, STOPPED, DESTROYED
    };
    
-   /** Get the unique identifier for this deployment */
-   String getName();
+   /** Get the identifier for this deployment */
+   String getSimpleName();
 
-   /** Set the unique identifier for this deployment */
-   void setName(String name);
+   /** Set the identifier for this deployment */
+   void setSimpleName(String name);
 
    /** Get the class loader for this deployment */
    ClassLoader getInitialClassLoader();

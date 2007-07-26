@@ -21,6 +21,9 @@
  */
 package org.jboss.wsf.spi.deployment;
 
+import java.io.IOException;
+import java.net.URL;
+
 import org.jboss.ws.integration.UnifiedVirtualFile;
 
 
@@ -37,10 +40,21 @@ import org.jboss.ws.integration.UnifiedVirtualFile;
  */
 public interface ArchiveDeployment extends Deployment
 {
+   /** Get the optional parent of this deployment */
+   ArchiveDeployment getParent();
+
+   /** Set the optional parent for this deployment */
+   void setParent (ArchiveDeployment parent);
+   
    /** Get the root file for this deployment */
    UnifiedVirtualFile getRootFile();
    
    /** Set the root file for this deployment */
    void setRootFile(UnifiedVirtualFile root);
    
+   /** The concatenated names including all parents. */
+   String getCanonicalName();
+   
+   /** Get the URL for a given resource path */
+   URL getMetaDataFileURL(String resourcePath) throws IOException;
 }
