@@ -33,8 +33,8 @@ import org.dom4j.Document;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
-import org.jboss.wsf.spi.deployment.*;
 import org.jboss.wsf.common.IOUtils;
+import org.jboss.wsf.spi.deployment.Deployment;
 
 /**
  * The rewriter for web.xml
@@ -63,10 +63,6 @@ public class WebXMLRewriterImpl implements WebXMLRewriter
 
    public RewriteResults rewriteWebXml(Deployment dep)
    {
-      UnifiedDeploymentInfo udi = dep.getContext().getAttachment(UnifiedDeploymentInfo.class);
-      if (udi == null)
-         throw new IllegalStateException("Cannot obtain unified deployment info");
-
       URL warURL = (URL)dep.getContext().getProperty(WebXMLRewriter.WEBAPP_URL);
       File warFile = new File(warURL.getFile());
       if (warFile.isDirectory() == false)

@@ -24,13 +24,12 @@ package org.jboss.wsf.framework.deployment;
 //$Id$
 
 import org.jboss.wsf.spi.annotation.WebContext;
+import org.jboss.wsf.spi.deployment.ArchiveDeployment;
+import org.jboss.wsf.spi.deployment.Deployment;
+import org.jboss.wsf.spi.deployment.DeploymentAspect;
+import org.jboss.wsf.spi.deployment.Endpoint;
 import org.jboss.wsf.spi.metadata.j2ee.UnifiedApplicationMetaData;
 import org.jboss.wsf.spi.metadata.j2ee.UnifiedWebMetaData;
-import org.jboss.wsf.spi.deployment.ArchiveDeployment;
-import org.jboss.wsf.spi.deployment.DeploymentAspect;
-import org.jboss.wsf.spi.deployment.Deployment;
-import org.jboss.wsf.spi.deployment.Endpoint;
-import org.jboss.wsf.spi.deployment.UnifiedDeploymentInfo;
 
 /**
  * A deployer that assigns the context root to the service 

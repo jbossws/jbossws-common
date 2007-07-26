@@ -34,15 +34,20 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
+import org.jboss.wsf.spi.SPIProvider;
+import org.jboss.wsf.spi.SPIProviderResolver;
 import org.jboss.wsf.spi.annotation.WebContext;
+import org.jboss.wsf.spi.deployment.ArchiveDeployment;
+import org.jboss.wsf.spi.deployment.Deployment;
+import org.jboss.wsf.spi.deployment.DeploymentAspect;
+import org.jboss.wsf.spi.deployment.Endpoint;
+import org.jboss.wsf.spi.deployment.SecurityHandler;
+import org.jboss.wsf.spi.deployment.WSFDeploymentException;
 import org.jboss.wsf.spi.management.ServerConfig;
 import org.jboss.wsf.spi.management.ServerConfigFactory;
 import org.jboss.wsf.spi.metadata.j2ee.UnifiedApplicationMetaData;
 import org.jboss.wsf.spi.metadata.j2ee.UnifiedBeanMetaData;
 import org.jboss.wsf.spi.metadata.j2ee.UnifiedEjbPortComponentMetaData;
-import org.jboss.wsf.spi.deployment.*;
-import org.jboss.wsf.spi.SPIProvider;
-import org.jboss.wsf.spi.SPIProviderResolver;
 
 /**
  * A deployer that generates a webapp for an EJB endpoint 
@@ -68,10 +73,6 @@ public class WebAppGeneratorDeploymentAspect extends DeploymentAspect
    @Override
    public void create(Deployment dep)
    {
-      UnifiedDeploymentInfo udi = dep.getContext().getAttachment(UnifiedDeploymentInfo.class);
-      if (udi == null)
-         throw new IllegalStateException("Cannot obtain unified deployement info");
-
       if (dep.getType().toString().endsWith("EJB21"))
       {
          URL webAppURL = generatWebDeployment((ArchiveDeployment)dep, securityHandlerEJB21);
@@ -97,7 +98,6 @@ public class WebAppGeneratorDeploymentAspect extends DeploymentAspect
          ServerConfig config = spiProvider.getSPI(ServerConfigFactory.class).createServerConfig();
          File tmpdir = new File(config.getServerTempDir().getCanonicalPath() + "/deploy");
 
-         UnifiedDeploymentInfo udi = dep.getContext().getAttachment(UnifiedDeploymentInfo.class);
          String deploymentName = dep.getCanonicalName().replace('/', '-');
          tmpWar = File.createTempFile(deploymentName, ".war", tmpdir);
          tmpWar.delete();
@@ -128,8 +128,6 @@ public class WebAppGeneratorDeploymentAspect extends DeploymentAspect
 
    private Document createWebAppDescriptor(Deployment dep, SecurityHandler securityHandler)
    {
-      UnifiedDeploymentInfo udi = dep.getContext().getAttachment(UnifiedDeploymentInfo.class);
-
       Document document = DocumentHelper.createDocument();
       Element webApp = document.addElement("web-app");
 
@@ -172,7 +170,7 @@ public class WebAppGeneratorDeploymentAspect extends DeploymentAspect
          String beanAuthMethod = null;
 
          WebContext anWebContext = (WebContext)ep.getTargetBeanClass().getAnnotation(WebContext.class);
-         if(anWebContext != null)
+         if (anWebContext != null)
          {
             if (anWebContext.authMethod().length() > 0)
                beanAuthMethod = anWebContext.authMethod();
