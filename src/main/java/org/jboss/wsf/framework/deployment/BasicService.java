@@ -45,10 +45,8 @@ public class BasicService implements Service
    private List<Endpoint> endpoints = new LinkedList<Endpoint>();
    private String contextRoot;
 
-   BasicService(Deployment dep)
+   BasicService()
    {
-      this.dep = dep;
-      this.dep.setService(this);
    }
 
    public Deployment getDeployment()

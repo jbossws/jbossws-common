@@ -54,11 +54,12 @@ public class BasicDeployment implements Deployment
    // The runtime class loader
    private ClassLoader runtimeLoader;
 
-   BasicDeployment()
+   BasicDeployment(ClassLoader classLoader)
    {
       context = new BasicDeploymentContext();
-      service = new BasicService(this);
       state = DeploymentState.UNDEFINED;
+      initialLoader = classLoader;
+      setService(new BasicService());
    }
 
    public DeploymentContext getContext()
@@ -108,6 +109,7 @@ public class BasicDeployment implements Deployment
 
    public void setService(Service service)
    {
+      service.setDeployment(this);
       this.service = service;
    }
 
