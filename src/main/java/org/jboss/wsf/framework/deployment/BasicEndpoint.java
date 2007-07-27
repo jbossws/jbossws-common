@@ -22,7 +22,6 @@
 package org.jboss.wsf.framework.deployment;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.management.ObjectName;
@@ -194,33 +193,6 @@ public class BasicEndpoint extends BasicExtendible implements Endpoint
       this.invocationHandler = handler;
    }
 
-   public List<BindingCustomization> getBindingCustomizations()
-   {
-      return Collections.unmodifiableList(bindingCustomizsations);
-   }
-
-   /* Get a concrete binding customization */
-   public BindingCustomization getBindingCustomization(BindingCustomization customization)
-   {
-      BindingCustomization match = null;
-
-      for (BindingCustomization bc : bindingCustomizsations)
-      {
-         if (bc.getClass().equals(customization.getClass()))
-         {
-            match = bc;
-         }
-      }
-
-      return match;
-   }
-
-   public void addBindingCustomization(BindingCustomization customization)
-   {
-      assertEndpointSetterAccess();
-      bindingCustomizsations.add(customization);
-   }
-
    public EndpointMetrics getEndpointMetrics()
    {
       return metrics;
@@ -232,6 +204,34 @@ public class BasicEndpoint extends BasicExtendible implements Endpoint
       metrics.setEndpoint(this);
       this.metrics = metrics;
 
+   }
+
+   @Override
+   public <T> T addAttachment(Class<T> clazz, Object obj)
+   {
+      assertEndpointSetterAccess();
+      return super.addAttachment(clazz, obj);
+   }
+
+   @Override
+   public <T> T removeAttachment(Class<T> key)
+   {
+      assertEndpointSetterAccess();
+      return super.removeAttachment(key);
+   }
+
+   @Override
+   public void removeProperty(String key)
+   {
+      assertEndpointSetterAccess();
+      super.removeProperty(key);
+   }
+
+   @Override
+   public void setProperty(String key, Object value)
+   {
+      assertEndpointSetterAccess();
+      super.setProperty(key, value);
    }
 
    private void assertEndpointSetterAccess()

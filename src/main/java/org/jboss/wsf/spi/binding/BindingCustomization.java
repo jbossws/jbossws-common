@@ -34,6 +34,7 @@ import java.util.HashMap;
  * @author Heiko.Braun@jboss.com
  *         Created: Jun 28, 2007
  */
-public abstract class BindingCustomization extends HashMap {
-      
+public abstract class BindingCustomization extends HashMap
+{
+
 }

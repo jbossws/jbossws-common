@@ -23,14 +23,11 @@ package org.jboss.wsf.spi.deployment;
 
 // $Id$
 
-import org.jboss.wsf.spi.binding.BindingCustomization;
+import javax.management.ObjectName;
+
 import org.jboss.wsf.spi.invocation.InvocationHandler;
 import org.jboss.wsf.spi.invocation.RequestHandler;
 import org.jboss.wsf.spi.management.EndpointMetrics;
-
-import javax.management.ObjectName;
-import java.util.List;
-import java.util.Set;
 
 /**
  * A general JAXWS endpoint.
@@ -113,15 +110,6 @@ public interface Endpoint extends Extendible
 
    /** Set the endpoint bean invoker */
    void setInvocationHandler(InvocationHandler invoker);
-
-   /** Get all binding customizations for this endpoint */
-   List<BindingCustomization> getBindingCustomizations();
-
-   /** Get a concrete binding customization */
-   BindingCustomization getBindingCustomization(BindingCustomization bindingCustomization);
-
-   /** Add a binding customization to this endpoint*/
-   void addBindingCustomization (BindingCustomization bindingCustomization);
 
    /** Get the endpoint metrics for this endpoint */
    EndpointMetrics getEndpointMetrics();

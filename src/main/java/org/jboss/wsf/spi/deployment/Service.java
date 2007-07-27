@@ -25,7 +25,6 @@ package org.jboss.wsf.spi.deployment;
 
 import java.util.List;
 
-
 /**
  * A general service deployment.
  * 
@@ -53,7 +52,4 @@ public interface Service extends Extendible
    
    /** Set the context root for this service */
    void setContextRoot(String contextRoot);
-   
-   /** Get the Endpoint for a give short name */
-   Endpoint getEndpointByName(String shortName);
 }

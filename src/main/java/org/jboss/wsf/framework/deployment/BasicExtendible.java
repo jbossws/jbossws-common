@@ -23,6 +23,7 @@ package org.jboss.wsf.framework.deployment;
 
 //$Id: BasicDeploymentContext.java 3959 2007-07-20 14:44:19Z heiko.braun@jboss.com $
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -39,6 +40,11 @@ public class BasicExtendible implements Extendible
 {
    private Map<Class, Object> attachments = new HashMap<Class, Object>();
    private Map<String, Object> properties = new HashMap<String, Object>();
+   
+   public Collection<Object> getAttachments()
+   {
+      return attachments.values();
+   }
    
    public <T> T getAttachment(Class<T> clazz)
    {

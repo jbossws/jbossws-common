@@ -23,6 +23,7 @@ package org.jboss.wsf.spi.deployment;
 
 //$Id: Deployment.java 3999 2007-07-26 11:33:20Z thomas.diesler@jboss.com $
 
+import java.util.Collection;
 import java.util.Set;
 
 /**
@@ -37,6 +38,9 @@ public interface Extendible
    <T> T addAttachment(Class<T> key, Object value);
    
    /** Get arbitrary attachments */
+   <T> Collection<T> getAttachments();
+   
+   /** Get an arbitrary attachment */
    <T> T getAttachment(Class<T> key);
    
    /** Remove arbitrary attachments */
