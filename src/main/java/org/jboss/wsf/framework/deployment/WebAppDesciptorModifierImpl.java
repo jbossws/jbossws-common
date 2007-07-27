@@ -47,12 +47,12 @@ public class WebAppDesciptorModifierImpl implements WebAppDesciptorModifier
       Element root = webXml.getRootElement();
 
       String propKey = SERVLET_CLASS;
-      String servletClass = (String)dep.getContext().getProperty(propKey);
+      String servletClass = (String)dep.getProperty(propKey);
       if (servletClass == null)
          throw new IllegalStateException("Cannot obtain context property: " + propKey);
 
       propKey = CONTEXT_PARAMETER_MAP;
-      Map<String, String> contextParams = (Map<String, String>)dep.getContext().getProperty(propKey);
+      Map<String, String> contextParams = (Map<String, String>)dep.getProperty(propKey);
       if (contextParams != null)
       {
          for (Map.Entry<String, String> entry : contextParams.entrySet())
@@ -64,7 +64,7 @@ public class WebAppDesciptorModifierImpl implements WebAppDesciptorModifier
       }
 
       propKey = SERVLET_CONTEXT_LISTENER;
-      String listenerClass = (String)dep.getContext().getProperty(propKey);
+      String listenerClass = (String)dep.getProperty(propKey);
       if (listenerClass != null)
       {
          Element listener = root.addElement("listener");

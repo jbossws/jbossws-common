@@ -66,7 +66,7 @@ public class URLPatternDeploymentAspect extends DeploymentAspect
       String urlPattern = null;
 
       // #1 For JSE lookup the url-pattern from the servlet mappings 
-      UnifiedWebMetaData webMetaData = dep.getContext().getAttachment(UnifiedWebMetaData.class);
+      UnifiedWebMetaData webMetaData = dep.getAttachment(UnifiedWebMetaData.class);
       if (webMetaData != null)
       {
          String epName = ep.getShortName();
@@ -76,7 +76,7 @@ public class URLPatternDeploymentAspect extends DeploymentAspect
       }
 
       // #2 Use the explicit urlPattern from port-component/port-component-uri
-      UnifiedApplicationMetaData appMetaData = dep.getContext().getAttachment(UnifiedApplicationMetaData.class);
+      UnifiedApplicationMetaData appMetaData = dep.getAttachment(UnifiedApplicationMetaData.class);
       if (appMetaData != null && appMetaData.getBeanByEjbName(ep.getShortName()) != null)
       {
          UnifiedBeanMetaData bmd = appMetaData.getBeanByEjbName(ep.getShortName());

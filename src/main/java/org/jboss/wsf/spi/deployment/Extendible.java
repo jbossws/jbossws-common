@@ -21,11 +21,17 @@
  */
 package org.jboss.wsf.spi.deployment;
 
-// $Id$
+//$Id: Deployment.java 3999 2007-07-26 11:33:20Z thomas.diesler@jboss.com $
 
 import java.util.Set;
 
-public interface DeploymentContext
+/**
+ * A general extendible artifact 
+ * 
+ * @author Thomas.Diesler@jboss.com
+ * @since 20-Apr-2007 
+ */
+public interface Extendible
 {
    /** Add arbitrary attachments */
    <T> T addAttachment(Class<T> key, Object value);

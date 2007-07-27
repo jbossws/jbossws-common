@@ -62,7 +62,7 @@ public class ContextRootDeploymentAspect extends DeploymentAspect
       String contextRoot = null;
 
       // #1 Use the explicit context root from the web meta data
-      UnifiedWebMetaData webMetaData = dep.getContext().getAttachment(UnifiedWebMetaData.class);
+      UnifiedWebMetaData webMetaData = dep.getAttachment(UnifiedWebMetaData.class);
       if (webMetaData != null)
          contextRoot = webMetaData.getContextRoot();
 
@@ -84,7 +84,7 @@ public class ContextRootDeploymentAspect extends DeploymentAspect
       }
 
       // #3 Use the explicit context root from webservices/context-root
-      UnifiedApplicationMetaData appMetaData = dep.getContext().getAttachment(UnifiedApplicationMetaData.class);
+      UnifiedApplicationMetaData appMetaData = dep.getAttachment(UnifiedApplicationMetaData.class);
       if (contextRoot == null && appMetaData != null)
       {
          contextRoot = appMetaData.getWebServiceContextRoot();

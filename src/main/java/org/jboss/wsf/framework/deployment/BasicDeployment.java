@@ -22,7 +22,6 @@
 package org.jboss.wsf.framework.deployment;
 
 import org.jboss.wsf.spi.deployment.Deployment;
-import org.jboss.wsf.spi.deployment.DeploymentContext;
 import org.jboss.wsf.spi.deployment.Service;
 
 //$Id$
@@ -35,10 +34,8 @@ import org.jboss.wsf.spi.deployment.Service;
  * @author Thomas.Diesler@jboss.com
  * @since 20-Apr-2007 
  */
-public class BasicDeployment implements Deployment
+public class BasicDeployment extends BasicExtendible implements Deployment
 {
-   // The context for this deployment dep
-   private DeploymentContext context;
    // The name for this deployment
    private String simpleName;
    // A deployment has one service
@@ -55,20 +52,9 @@ public class BasicDeployment implements Deployment
    BasicDeployment(String name, ClassLoader classLoader)
    {
       simpleName = name;
-      context = new BasicDeploymentContext();
       state = DeploymentState.UNDEFINED;
       initialLoader = classLoader;
       setService(new BasicService());
-   }
-
-   public DeploymentContext getContext()
-   {
-      return context;
-   }
-
-   public void setContext(DeploymentContext context)
-   {
-      this.context = context;
    }
 
    public String getSimpleName()

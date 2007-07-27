@@ -21,17 +21,20 @@
  */
 package org.jboss.wsf.framework.deployment;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import javax.management.ObjectName;
+
 import org.jboss.wsf.spi.binding.BindingCustomization;
+import org.jboss.wsf.spi.deployment.Endpoint;
+import org.jboss.wsf.spi.deployment.LifecycleHandler;
+import org.jboss.wsf.spi.deployment.Service;
+import org.jboss.wsf.spi.deployment.WSFDeploymentException;
 import org.jboss.wsf.spi.invocation.InvocationHandler;
 import org.jboss.wsf.spi.invocation.RequestHandler;
 import org.jboss.wsf.spi.management.EndpointMetrics;
-import org.jboss.wsf.spi.deployment.Endpoint;
-import org.jboss.wsf.spi.deployment.Service;
-import org.jboss.wsf.spi.deployment.LifecycleHandler;
-import org.jboss.wsf.spi.deployment.WSFDeploymentException;
-
-import javax.management.ObjectName;
-import java.util.*;
 
 /**
  * A general JAXWS endpoint.
@@ -39,7 +42,7 @@ import java.util.*;
  * @author Thomas.Diesler@jboss.com
  * @since 20-Apr-2007 
  */
-public class BasicEndpoint implements Endpoint
+public class BasicEndpoint extends BasicExtendible implements Endpoint
 {
    private Service service;
    private ObjectName name;
@@ -50,8 +53,6 @@ public class BasicEndpoint implements Endpoint
    private RequestHandler requestHandler;
    private InvocationHandler invocationHandler;
    private LifecycleHandler lifecycleHandler;
-   private Map<Class, Object> attachments = new HashMap<Class, Object>();
-   private Map<String, Object> properties = new HashMap<String, Object>();
    private EndpointMetrics metrics;
    private List<BindingCustomization> bindingCustomizsations = new ArrayList<BindingCustomization>();
    private String address;
@@ -218,41 +219,6 @@ public class BasicEndpoint implements Endpoint
    {
       assertEndpointSetterAccess();
       bindingCustomizsations.add(customization);
-   }
-
-   public <T> T addAttachment(Class<T> key, Object value)
-   {
-      return (T)attachments.put(key, value);
-   }
-
-   public <T> T getAttachment(Class<T> key)
-   {
-      return (T)attachments.get(key);
-   }
-
-   public <T> T removeAttachment(Class<T> key)
-   {
-      return (T)attachments.get(key);
-   }
-
-   public Set<String> getProperties()
-   {
-      return properties.keySet();
-   }
-
-   public Object getProperty(String key)
-   {
-      return properties.get(key);
-   }
-
-   public void removeProperty(String key)
-   {
-      properties.remove(key);
-   }
-
-   public void setProperty(String key, Object value)
-   {
-      properties.put(key, value);
    }
 
    public EndpointMetrics getEndpointMetrics()

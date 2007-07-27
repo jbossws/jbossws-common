@@ -34,7 +34,7 @@ import java.util.List;
  * @author Thomas.Diesler@jboss.com
  * @since 20-Apr-2007 
  */
-public interface Service
+public interface Service extends Extendible
 {
    /** Get the deployment this service belongs to */
    Deployment getDeployment();

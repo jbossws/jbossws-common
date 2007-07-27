@@ -31,7 +31,7 @@ package org.jboss.wsf.spi.deployment;
  * @author Thomas.Diesler@jboss.com
  * @since 20-Apr-2007 
  */
-public interface Deployment
+public interface Deployment extends Extendible
 {
    public enum DeploymentType
    {
@@ -60,12 +60,6 @@ public interface Deployment
    
    /** Set the runtime class loader for this deployment */
    void setRuntimeClassLoader(ClassLoader loader);
-   
-   /** Get the deployment context */
-   DeploymentContext getContext();
-   
-   /** Set the deployment context */
-   void setContext(DeploymentContext context);
    
    /** Get the deployment type */
    DeploymentType getType();

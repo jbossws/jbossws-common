@@ -89,7 +89,7 @@ public class EndpointHandlerDeploymentAspect extends DeploymentAspect
       String key = dep.getType().toString();
 
       // Use a special key for MDB endpoints
-      UnifiedApplicationMetaData uapp = dep.getContext().getAttachment(UnifiedApplicationMetaData.class);
+      UnifiedApplicationMetaData uapp = dep.getAttachment(UnifiedApplicationMetaData.class);
       if (uapp != null)
       {
          UnifiedBeanMetaData bmd = uapp.getBeanByEjbName(ep.getShortName());

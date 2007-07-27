@@ -76,12 +76,12 @@ public class WebAppGeneratorDeploymentAspect extends DeploymentAspect
       if (dep.getType().toString().endsWith("EJB21"))
       {
          URL webAppURL = generatWebDeployment((ArchiveDeployment)dep, securityHandlerEJB21);
-         dep.getContext().setProperty(WebXMLRewriter.WEBAPP_URL, webAppURL);
+         dep.setProperty(WebXMLRewriter.WEBAPP_URL, webAppURL);
       }
       else if (dep.getType().toString().endsWith("EJB3"))
       {
          URL webAppURL = generatWebDeployment((ArchiveDeployment)dep, securityHandlerEJB3);
-         dep.getContext().setProperty(WebXMLRewriter.WEBAPP_URL, webAppURL);
+         dep.setProperty(WebXMLRewriter.WEBAPP_URL, webAppURL);
       }
    }
 
@@ -180,7 +180,7 @@ public class WebAppGeneratorDeploymentAspect extends DeploymentAspect
                secureWSDLAccess = anWebContext.secureWSDLAccess();
          }
 
-         UnifiedApplicationMetaData appMetaData = dep.getContext().getAttachment(UnifiedApplicationMetaData.class);
+         UnifiedApplicationMetaData appMetaData = dep.getAttachment(UnifiedApplicationMetaData.class);
          if (appMetaData != null && appMetaData.getBeanByEjbName(ejbName) != null)
          {
             UnifiedBeanMetaData bmd = appMetaData.getBeanByEjbName(ejbName);

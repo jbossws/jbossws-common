@@ -63,7 +63,7 @@ public class WebXMLRewriterImpl implements WebXMLRewriter
 
    public RewriteResults rewriteWebXml(Deployment dep)
    {
-      URL warURL = (URL)dep.getContext().getProperty(WebXMLRewriter.WEBAPP_URL);
+      URL warURL = (URL)dep.getProperty(WebXMLRewriter.WEBAPP_URL);
       File warFile = new File(warURL.getFile());
       if (warFile.isDirectory() == false)
          throw new WebServiceException("Expected a war directory: " + warURL);

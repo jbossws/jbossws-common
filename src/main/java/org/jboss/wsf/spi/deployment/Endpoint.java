@@ -38,7 +38,7 @@ import java.util.Set;
  * @author Thomas.Diesler@jboss.com
  * @since 20-Apr-2007 
  */
-public interface Endpoint
+public interface Endpoint extends Extendible
 {
    static final String SEPID_DOMAIN = "jboss.ws";
    static final String SEPID_PROPERTY_CONTEXT = "context";
@@ -117,7 +117,7 @@ public interface Endpoint
    /** Get all binding customizations for this endpoint */
    List<BindingCustomization> getBindingCustomizations();
 
-   /* Get a concrete binding customization */
+   /** Get a concrete binding customization */
    BindingCustomization getBindingCustomization(BindingCustomization bindingCustomization);
 
    /** Add a binding customization to this endpoint*/
@@ -128,25 +128,4 @@ public interface Endpoint
 
    /** Set the endpoint metrics for this endpoint */
    void setEndpointMetrics(EndpointMetrics metrics);
-
-   /** Add arbitrary attachments */
-   <T> T addAttachment(Class<T> key, Object value);
-
-   /** Get arbitrary attachments */
-   <T> T getAttachment(Class<T> key);
-   
-   /** Remove arbitrary attachments */
-   <T> T removeAttachment(Class<T> key);
-
-   /** Get an endpoint property */
-   Object getProperty(String key);
-   
-   /** Set an endpoint property */
-   void setProperty(String key, Object value);
-   
-   /** Remove an endpoint property */
-   void removeProperty(String key);
-   
-   /** Get the set of endpoint property names */
-   Set<String> getProperties();
 }

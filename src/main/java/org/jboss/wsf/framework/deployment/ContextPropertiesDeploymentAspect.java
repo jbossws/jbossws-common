@@ -57,7 +57,7 @@ public class ContextPropertiesDeploymentAspect extends DeploymentAspect
       {
          String key = it.next();
          String value = contextProperties.get(key);
-         dep.getContext().setProperty(key, value);
+         dep.setProperty(key, value);
       }
    }
 }

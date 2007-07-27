@@ -53,7 +53,7 @@ public class EndpointNameDeploymentAspect extends DeploymentAspect
          name.append(Endpoint.SEPID_PROPERTY_ENDPOINT + "=" + ep.getShortName());
 
          // Append the JMS destination, for an MDB endpoint
-         UnifiedApplicationMetaData uapp = dep.getContext().getAttachment(UnifiedApplicationMetaData.class);
+         UnifiedApplicationMetaData uapp = dep.getAttachment(UnifiedApplicationMetaData.class);
          if (uapp != null)
          {
             UnifiedBeanMetaData bmd = uapp.getBeanByEjbName(ep.getShortName());

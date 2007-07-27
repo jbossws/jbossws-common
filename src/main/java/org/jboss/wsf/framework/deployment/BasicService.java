@@ -39,7 +39,7 @@ import java.util.List;
  * @author Thomas.Diesler@jboss.com
  * @since 20-Apr-2007 
  */
-public class BasicService implements Service
+public class BasicService extends BasicExtendible implements Service
 {
    private Deployment dep;
    private List<Endpoint> endpoints = new LinkedList<Endpoint>();

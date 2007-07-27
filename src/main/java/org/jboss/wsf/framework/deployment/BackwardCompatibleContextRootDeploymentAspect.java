@@ -72,7 +72,7 @@ public class BackwardCompatibleContextRootDeploymentAspect extends ContextRootDe
    {
       String urlPattern = null;
 
-      UnifiedApplicationMetaData appMetaData = dep.getContext().getAttachment(UnifiedApplicationMetaData.class);
+      UnifiedApplicationMetaData appMetaData = dep.getAttachment(UnifiedApplicationMetaData.class);
       if (appMetaData != null && appMetaData.getBeanByEjbName(ep.getShortName()) != null)
       {
          UnifiedBeanMetaData bmd = appMetaData.getBeanByEjbName(ep.getShortName());
