@@ -47,6 +47,9 @@ public interface Service extends Extendible
    /** Get the list of endpoints */
    List<Endpoint> getEndpoints();
    
+   /** Get an endpoint by name */
+   Endpoint getEndpointByName(String simpleName);
+   
    /** Get the context root for this service */
    String getContextRoot();
    

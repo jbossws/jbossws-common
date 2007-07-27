@@ -69,6 +69,23 @@ public class BasicService extends BasicExtendible implements Service
       return endpoints;
    }
 
+   public Endpoint getEndpointByName(String shortName)
+   {
+      if (shortName == null)
+         throw new IllegalArgumentException("shortName cannot be null");
+      
+      Endpoint retEndpoint = null;
+      for (Endpoint ep : endpoints)
+      {
+         if (ep.getShortName().equals(shortName))
+         {
+            retEndpoint = ep;
+            break;
+         }
+      }
+      return retEndpoint;
+   }
+   
    public String getContextRoot()
    {
       return contextRoot;
