@@ -33,7 +33,7 @@ import java.util.List;
  * @author Thomas.Diesler@jboss.org
  * @since 05-May-2006
  */
-public class EJBArchiveMetaData extends ContainerMetaData
+public class EJBArchiveMetaData
 {
    /** ArrayList<BeanMetaData> for the ejbs */
    private List<EJBMetaData> beans = new ArrayList<EJBMetaData>();

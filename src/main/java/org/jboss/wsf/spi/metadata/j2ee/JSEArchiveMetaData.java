@@ -33,7 +33,7 @@ import java.util.Map;
  * @author Thomas.Diesler@jboss.org
  * @since 05-May-2006
  */
-public class JSEArchiveMetaData extends ContainerMetaData
+public class JSEArchiveMetaData
 {
    // The war context root as specified at the jboss-web.xml descriptor level.
    private String contextRoot;
