@@ -95,7 +95,7 @@ public class WebAppGeneratorDeploymentAspect extends DeploymentAspect
       {
          // TODO: recursive dependency, ohoh
          SPIProvider spiProvider = SPIProviderResolver.getInstance().getProvider();
-         ServerConfig config = spiProvider.getSPI(ServerConfigFactory.class).createServerConfig();
+         ServerConfig config = spiProvider.getSPI(ServerConfigFactory.class).getServerConfig();
          File tmpdir = new File(config.getServerTempDir().getCanonicalPath() + "/deploy");
 
          String deploymentName = dep.getCanonicalName().replace('/', '-');

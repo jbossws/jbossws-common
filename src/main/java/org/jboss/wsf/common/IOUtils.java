@@ -128,7 +128,7 @@ public final class IOUtils
          // TODO: recursive dependency, ohoh
 
          SPIProvider spiProvider = SPIProviderResolver.getInstance().getProvider();
-         ServerConfig config = spiProvider.getSPI(ServerConfigFactory.class).createServerConfig();        
+         ServerConfig config = spiProvider.getSPI(ServerConfigFactory.class).getServerConfig();        
          tmpdir = new File(config.getServerTempDir().getCanonicalPath() + "/jbossws");
          tmpdir.mkdirs();
       }

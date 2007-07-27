@@ -48,7 +48,7 @@ public class EndpointAddressDeploymentAspect extends DeploymentAspect
       
       SPIProvider provider = SPIProviderResolver.getInstance().getProvider();
       ServerConfigFactory spi = provider.getSPI(ServerConfigFactory.class);
-      ServerConfig serverConfig = spi.createServerConfig();
+      ServerConfig serverConfig = spi.getServerConfig();
       
       String host = serverConfig.getWebServiceHost();
       int port = serverConfig.getWebServicePort();

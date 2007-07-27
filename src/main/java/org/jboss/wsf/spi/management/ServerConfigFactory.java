@@ -33,5 +33,5 @@ import org.jboss.wsf.spi.SPIView;
  */
 public abstract class ServerConfigFactory implements SPIView
 {
-   public abstract ServerConfig createServerConfig();
+   public abstract ServerConfig getServerConfig();
 }

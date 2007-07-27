@@ -31,7 +31,7 @@ import org.jboss.wsf.common.KernelAwareSPIFactory;
  */
 public class ServerConfigFactoryImpl extends ServerConfigFactory
 {
-   public ServerConfig createServerConfig()
+   public ServerConfig getServerConfig()
    {
       return new KernelAwareSPIFactory().getKernelProvidedSPI(
         ServerConfig.BEAN_NAME, ServerConfig.class
