@@ -21,43 +21,19 @@
  */
 package org.jboss.wsf.spi.metadata.j2ee;
 
-
-//$Id$
-
+//$Id: UnifiedBeanMetaData.java 3772 2007-07-01 19:29:13Z thomas.diesler@jboss.com $
 
 /**
- * The container independent metadata for session/port-component element from jboss.xml
- * 
+ * The container independent EJB security meta data class  
+ *
  * @author Thomas.Diesler@jboss.org
  * @since 05-May-2006
  */
-public class UnifiedEjbPortComponentMetaData
+public class EJBSecurityMetaData
 {
-   private String portComponentName;
-   private String portComponentURI;
    private String authMethod;
    private String transportGuarantee;
-   private Boolean secureWSDLAccess;
-   
-   public String getPortComponentName()
-   {
-      return portComponentName;
-   }
-
-   public void setPortComponentName(String portComponentName)
-   {
-      this.portComponentName = portComponentName;
-   }
-
-   public String getPortComponentURI()
-   {
-      return portComponentURI;
-   }
-
-   public void setPortComponentURI(String portComponentURI)
-   {
-      this.portComponentURI = portComponentURI;
-   }
+   private boolean secureWSDLAccess;
 
    public String getAuthMethod()
    {
@@ -73,19 +49,20 @@ public class UnifiedEjbPortComponentMetaData
    {
       return transportGuarantee;
    }
-   
+
    public void setTransportGuarantee(String transportGuarantee)
    {
       this.transportGuarantee = transportGuarantee;
    }
 
-   public Boolean getSecureWSDLAccess()
+   public boolean getSecureWSDLAccess()
    {
       return secureWSDLAccess;
    }
 
-   public void setSecureWSDLAccess(Boolean secureWSDLAccess)
+   public void setSecureWSDLAccess(Boolean access)
    {
-      this.secureWSDLAccess = secureWSDLAccess;
+      if (access != null)
+         this.secureWSDLAccess = access;
    }
 }

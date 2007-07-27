@@ -25,11 +25,10 @@ package org.jboss.wsf.framework.deployment;
 
 import java.util.StringTokenizer;
 
-import org.jboss.wsf.spi.metadata.j2ee.UnifiedApplicationMetaData;
-import org.jboss.wsf.spi.metadata.j2ee.UnifiedBeanMetaData;
-import org.jboss.wsf.spi.metadata.j2ee.UnifiedEjbPortComponentMetaData;
 import org.jboss.wsf.spi.deployment.Deployment;
 import org.jboss.wsf.spi.deployment.Endpoint;
+import org.jboss.wsf.spi.metadata.j2ee.EJBMetaData;
+import org.jboss.wsf.spi.metadata.j2ee.EJBArchiveMetaData;
 
 /**
  * A deployer that assigns the context root to the service.
@@ -58,7 +57,7 @@ public class BackwardCompatibleContextRootDeploymentAspect extends ContextRootDe
                {
                   String firstToken = st.nextToken();
                   if (contextRoot != null && contextRoot.equals(firstToken) == false)
-                     throw new IllegalStateException("All endpoints must share the same <context-root>: " + contextRoot + "!=" +  firstToken);
+                     throw new IllegalStateException("All endpoints must share the same <context-root>: " + contextRoot + "!=" + firstToken);
 
                   contextRoot = firstToken;
                }
@@ -72,15 +71,11 @@ public class BackwardCompatibleContextRootDeploymentAspect extends ContextRootDe
    {
       String urlPattern = null;
 
-      UnifiedApplicationMetaData appMetaData = dep.getAttachment(UnifiedApplicationMetaData.class);
+      EJBArchiveMetaData appMetaData = dep.getAttachment(EJBArchiveMetaData.class);
       if (appMetaData != null && appMetaData.getBeanByEjbName(ep.getShortName()) != null)
       {
-         UnifiedBeanMetaData bmd = appMetaData.getBeanByEjbName(ep.getShortName());
-         UnifiedEjbPortComponentMetaData pcmd = bmd.getPortComponent();
-         if (pcmd != null)
-         {
-            urlPattern = pcmd.getPortComponentURI();
-         }
+         EJBMetaData bmd = appMetaData.getBeanByEjbName(ep.getShortName());
+         urlPattern = bmd.getPortComponentURI();
       }
 
       return urlPattern;

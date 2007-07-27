@@ -45,9 +45,9 @@ import org.jboss.wsf.spi.deployment.SecurityHandler;
 import org.jboss.wsf.spi.deployment.WSFDeploymentException;
 import org.jboss.wsf.spi.management.ServerConfig;
 import org.jboss.wsf.spi.management.ServerConfigFactory;
-import org.jboss.wsf.spi.metadata.j2ee.UnifiedApplicationMetaData;
-import org.jboss.wsf.spi.metadata.j2ee.UnifiedBeanMetaData;
-import org.jboss.wsf.spi.metadata.j2ee.UnifiedEjbPortComponentMetaData;
+import org.jboss.wsf.spi.metadata.j2ee.EJBArchiveMetaData;
+import org.jboss.wsf.spi.metadata.j2ee.EJBMetaData;
+import org.jboss.wsf.spi.metadata.j2ee.EJBSecurityMetaData;
 
 /**
  * A deployer that generates a webapp for an EJB endpoint 
@@ -180,16 +180,16 @@ public class WebAppGeneratorDeploymentAspect extends DeploymentAspect
                secureWSDLAccess = anWebContext.secureWSDLAccess();
          }
 
-         UnifiedApplicationMetaData appMetaData = dep.getAttachment(UnifiedApplicationMetaData.class);
+         EJBArchiveMetaData appMetaData = dep.getAttachment(EJBArchiveMetaData.class);
          if (appMetaData != null && appMetaData.getBeanByEjbName(ejbName) != null)
          {
-            UnifiedBeanMetaData bmd = appMetaData.getBeanByEjbName(ejbName);
-            UnifiedEjbPortComponentMetaData pc = bmd.getPortComponent();
-            if (pc != null)
+            EJBMetaData bmd = appMetaData.getBeanByEjbName(ejbName);
+            EJBSecurityMetaData smd = bmd.getSecurityMetaData();
+            if (smd != null)
             {
-               beanAuthMethod = pc.getAuthMethod();
-               transportGuarantee = pc.getTransportGuarantee();
-               secureWSDLAccess = pc.getSecureWSDLAccess();
+               beanAuthMethod = smd.getAuthMethod();
+               transportGuarantee = smd.getTransportGuarantee();
+               secureWSDLAccess = smd.getSecureWSDLAccess();
             }
          }
 

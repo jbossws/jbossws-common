@@ -33,10 +33,10 @@ import java.util.List;
  * @author Thomas.Diesler@jboss.org
  * @since 05-May-2006
  */
-public class UnifiedApplicationMetaData
+public class EJBArchiveMetaData extends ContainerMetaData
 {
    /** ArrayList<BeanMetaData> for the ejbs */
-   private List<UnifiedBeanMetaData> beans = new ArrayList<UnifiedBeanMetaData>();
+   private List<EJBMetaData> beans = new ArrayList<EJBMetaData>();
    /** The optional JBossWS config-name */
    private String configName;
    /** The optional JBossWS config-file */
@@ -48,9 +48,9 @@ public class UnifiedApplicationMetaData
    /** A HashMap<String, String> for webservice description publish locations */
    private PublishLocationAdapter publishLocationAdapter;
 
-   public UnifiedBeanMetaData getBeanByEjbName(String ejbName)
+   public EJBMetaData getBeanByEjbName(String ejbName)
    {
-      for (UnifiedBeanMetaData beanMetaData : beans)
+      for (EJBMetaData beanMetaData : beans)
       {
          if (beanMetaData.getEjbName().equals(ejbName))
          {
@@ -60,12 +60,12 @@ public class UnifiedApplicationMetaData
       return null;
    }
 
-   public Iterator<UnifiedBeanMetaData> getEnterpriseBeans()
+   public Iterator<EJBMetaData> getEnterpriseBeans()
    {
       return beans.iterator();
    }
 
-   public void setEnterpriseBeans(List<UnifiedBeanMetaData> beans)
+   public void setEnterpriseBeans(List<EJBMetaData> beans)
    {
       this.beans = beans;
    }

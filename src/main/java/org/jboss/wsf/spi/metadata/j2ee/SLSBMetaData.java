@@ -22,26 +22,16 @@
 package org.jboss.wsf.spi.metadata.j2ee;
 
 
-// $Id$
+// $Id: UnifiedSessionMetaData.java 3146 2007-05-18 22:55:26Z thomas.diesler@jboss.com $
 
 
 /**
- * The container independent metadata of a message driven bean. 
+ * The container independent metadata of a stateless session bean. 
  *
  * @author Thomas.Diesler@jboss.org
  * @since 05-May-2006
  */
-public class UnifiedMessageDrivenMetaData extends UnifiedBeanMetaData
+public class SLSBMetaData extends EJBMetaData
 {
-   private String destinationJndiName;
 
-   public String getDestinationJndiName()
-   {
-      return destinationJndiName;
-   }
-
-   public void setDestinationJndiName(String destinationJndiName)
-   {
-      this.destinationJndiName = destinationJndiName;
-   }
 }

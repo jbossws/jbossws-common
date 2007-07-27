@@ -22,7 +22,7 @@
 package org.jboss.wsf.spi.metadata.j2ee;
 
 
-// $Id$
+// $Id: UnifiedMessageDrivenMetaData.java 3146 2007-05-18 22:55:26Z thomas.diesler@jboss.com $
 
 
 /**
@@ -31,7 +31,17 @@ package org.jboss.wsf.spi.metadata.j2ee;
  * @author Thomas.Diesler@jboss.org
  * @since 05-May-2006
  */
-public class UnifiedSessionMetaData extends UnifiedBeanMetaData
+public class MDBMetaData extends EJBMetaData
 {
+   private String destinationJndiName;
 
+   public String getDestinationJndiName()
+   {
+      return destinationJndiName;
+   }
+
+   public void setDestinationJndiName(String destinationJndiName)
+   {
+      this.destinationJndiName = destinationJndiName;
+   }
 }

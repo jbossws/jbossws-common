@@ -28,8 +28,8 @@ import org.jboss.wsf.spi.deployment.ArchiveDeployment;
 import org.jboss.wsf.spi.deployment.Deployment;
 import org.jboss.wsf.spi.deployment.DeploymentAspect;
 import org.jboss.wsf.spi.deployment.Endpoint;
-import org.jboss.wsf.spi.metadata.j2ee.UnifiedApplicationMetaData;
-import org.jboss.wsf.spi.metadata.j2ee.UnifiedWebMetaData;
+import org.jboss.wsf.spi.metadata.j2ee.EJBArchiveMetaData;
+import org.jboss.wsf.spi.metadata.j2ee.JSEArchiveMetaData;
 
 /**
  * A deployer that assigns the context root to the service 
@@ -62,7 +62,7 @@ public class ContextRootDeploymentAspect extends DeploymentAspect
       String contextRoot = null;
 
       // #1 Use the explicit context root from the web meta data
-      UnifiedWebMetaData webMetaData = dep.getAttachment(UnifiedWebMetaData.class);
+      JSEArchiveMetaData webMetaData = dep.getAttachment(JSEArchiveMetaData.class);
       if (webMetaData != null)
          contextRoot = webMetaData.getContextRoot();
 
@@ -84,7 +84,7 @@ public class ContextRootDeploymentAspect extends DeploymentAspect
       }
 
       // #3 Use the explicit context root from webservices/context-root
-      UnifiedApplicationMetaData appMetaData = dep.getAttachment(UnifiedApplicationMetaData.class);
+      EJBArchiveMetaData appMetaData = dep.getAttachment(EJBArchiveMetaData.class);
       if (contextRoot == null && appMetaData != null)
       {
          contextRoot = appMetaData.getWebServiceContextRoot();

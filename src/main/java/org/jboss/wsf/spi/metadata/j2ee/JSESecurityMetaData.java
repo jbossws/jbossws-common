@@ -21,6 +21,8 @@
  */
 package org.jboss.wsf.spi.metadata.j2ee;
 
+// $Id$
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -30,27 +32,21 @@ import java.util.HashSet;
  * @author darran.lofthouse@jboss.com
  * @since Oct 22, 2006
  */
-public class UnifiedWebSecurityMetaData
+public class JSESecurityMetaData
 {
-
-   /** The optional security-constraint/user-data-constraint/transport-guarantee */
+   // The optional security-constraint/user-data-constraint/transport-guarantee 
    private String transportGuarantee;
+   // The HashMap for the security-constraint/web-resource-collection elements.
+   private HashMap<String, JSEResourceCollection> webResources = new HashMap<String, JSEResourceCollection>();
 
-   /**
-    * The HashMap for the security-constraint/web-resource-collection 
-    * elements.
-    */
-   private HashMap<String, UnifiedWebResourceCollection> webResources = new HashMap<String, UnifiedWebResourceCollection>();
-
-   public UnifiedWebResourceCollection addWebResource(final String name)
+   public JSEResourceCollection addWebResource(final String name)
    {
-      UnifiedWebResourceCollection wrc = new UnifiedWebResourceCollection(name);
+      JSEResourceCollection wrc = new JSEResourceCollection(name);
       webResources.put(name, wrc);
-
       return wrc;
    }
 
-   public Collection<UnifiedWebResourceCollection> getWebResources()
+   public Collection<JSEResourceCollection> getWebResources()
    {
       return webResources.values();
    }
@@ -65,13 +61,12 @@ public class UnifiedWebSecurityMetaData
       this.transportGuarantee = transportGuarantee;
    }
 
-   public static class UnifiedWebResourceCollection
+   public static class JSEResourceCollection
    {
       private String name;
-      /** The required url-pattern element(s) */
       private HashSet<String> urlPatterns = new HashSet<String>();
 
-      public UnifiedWebResourceCollection(final String name)
+      public JSEResourceCollection(final String name)
       {
          this.name = name;
       }
@@ -91,5 +86,4 @@ public class UnifiedWebSecurityMetaData
          return urlPatterns;
       }
    }
-
 }

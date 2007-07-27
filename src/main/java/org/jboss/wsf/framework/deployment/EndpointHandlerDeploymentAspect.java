@@ -35,9 +35,9 @@ import org.jboss.wsf.spi.invocation.InvocationHandlerFactory;
 import org.jboss.wsf.spi.invocation.InvocationType;
 import org.jboss.wsf.spi.invocation.RequestHandler;
 import org.jboss.wsf.spi.invocation.RequestHandlerFactory;
-import org.jboss.wsf.spi.metadata.j2ee.UnifiedApplicationMetaData;
-import org.jboss.wsf.spi.metadata.j2ee.UnifiedBeanMetaData;
-import org.jboss.wsf.spi.metadata.j2ee.UnifiedMessageDrivenMetaData;
+import org.jboss.wsf.spi.metadata.j2ee.EJBArchiveMetaData;
+import org.jboss.wsf.spi.metadata.j2ee.EJBMetaData;
+import org.jboss.wsf.spi.metadata.j2ee.MDBMetaData;
 
 /**
  * A deployer that assigns the handlers to the Endpoint 
@@ -89,11 +89,11 @@ public class EndpointHandlerDeploymentAspect extends DeploymentAspect
       String key = dep.getType().toString();
 
       // Use a special key for MDB endpoints
-      UnifiedApplicationMetaData uapp = dep.getAttachment(UnifiedApplicationMetaData.class);
+      EJBArchiveMetaData uapp = dep.getAttachment(EJBArchiveMetaData.class);
       if (uapp != null)
       {
-         UnifiedBeanMetaData bmd = uapp.getBeanByEjbName(ep.getShortName());
-         if (bmd instanceof UnifiedMessageDrivenMetaData)
+         EJBMetaData bmd = uapp.getBeanByEjbName(ep.getShortName());
+         if (bmd instanceof MDBMetaData)
          {
             key = "JAXRPC_MDB21";
          }

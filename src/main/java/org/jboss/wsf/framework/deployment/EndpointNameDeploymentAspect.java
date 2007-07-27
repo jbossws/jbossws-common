@@ -23,9 +23,9 @@ package org.jboss.wsf.framework.deployment;
 
 //$Id$
 
-import org.jboss.wsf.spi.metadata.j2ee.UnifiedApplicationMetaData;
-import org.jboss.wsf.spi.metadata.j2ee.UnifiedBeanMetaData;
-import org.jboss.wsf.spi.metadata.j2ee.UnifiedMessageDrivenMetaData;
+import org.jboss.wsf.spi.metadata.j2ee.EJBArchiveMetaData;
+import org.jboss.wsf.spi.metadata.j2ee.EJBMetaData;
+import org.jboss.wsf.spi.metadata.j2ee.MDBMetaData;
 import org.jboss.wsf.spi.deployment.DeploymentAspect;
 import org.jboss.wsf.spi.deployment.Deployment;
 import org.jboss.wsf.spi.deployment.Endpoint;
@@ -53,13 +53,13 @@ public class EndpointNameDeploymentAspect extends DeploymentAspect
          name.append(Endpoint.SEPID_PROPERTY_ENDPOINT + "=" + ep.getShortName());
 
          // Append the JMS destination, for an MDB endpoint
-         UnifiedApplicationMetaData uapp = dep.getAttachment(UnifiedApplicationMetaData.class);
+         EJBArchiveMetaData uapp = dep.getAttachment(EJBArchiveMetaData.class);
          if (uapp != null)
          {
-            UnifiedBeanMetaData bmd = uapp.getBeanByEjbName(ep.getShortName());
-            if (bmd instanceof UnifiedMessageDrivenMetaData)
+            EJBMetaData bmd = uapp.getBeanByEjbName(ep.getShortName());
+            if (bmd instanceof MDBMetaData)
             {
-               String destName = ((UnifiedMessageDrivenMetaData)bmd).getDestinationJndiName();
+               String destName = ((MDBMetaData)bmd).getDestinationJndiName();
                name.append(",jms=" + destName);
             }
          }

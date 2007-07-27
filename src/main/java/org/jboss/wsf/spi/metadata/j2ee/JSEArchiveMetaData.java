@@ -33,24 +33,24 @@ import java.util.Map;
  * @author Thomas.Diesler@jboss.org
  * @since 05-May-2006
  */
-public class UnifiedWebMetaData
+public class JSEArchiveMetaData extends ContainerMetaData
 {
-   /** The war context root as specified at the jboss-web.xml descriptor level. */
+   // The war context root as specified at the jboss-web.xml descriptor level.
    private String contextRoot;
-   /** The servlet-mapping <servlet-name, url-pattern> */
+   // The servlet-mapping <servlet-name, url-pattern> 
    private Map<String, String> servletMappings = new HashMap<String, String>();
-   /** The servlet <servlet-name, servlet-class> */
+   // The servlet <servlet-name, servlet-class> 
    private Map<String, String> servletClassNames = new HashMap<String, String>();
-   /** The optional JBossWS config-name */
+   // The optional JBossWS config-name 
    private String configName;
-   /** The optional JBossWS config-file */
+   // The optional JBossWS config-file 
    private String configFile;
-   /** The security-domain value assigned to the application */
+   // The security-domain value assigned to the application 
    private String securityDomain;
-   /** A HashMap<String, String> for webservice description publish locations */
+   // A HashMap<String, String> for webservice description publish locations 
    private PublishLocationAdapter publishLocationAdapter;
-   /** web.xml security-constraints */
-   private List<UnifiedWebSecurityMetaData> securityMetaData;
+   // web.xml security-constraints 
+   private List<JSESecurityMetaData> securityMetaData;
 
    public String getContextRoot()
    {
@@ -112,12 +112,12 @@ public class UnifiedWebMetaData
       this.securityDomain = securityDomain;
    }
 
-   public List<UnifiedWebSecurityMetaData> getSecurityMetaData()
+   public List<JSESecurityMetaData> getSecurityMetaData()
    {
       return securityMetaData;
    }
 
-   public void setSecurityMetaData(List<UnifiedWebSecurityMetaData> securityMetaData)
+   public void setSecurityMetaData(List<JSESecurityMetaData> securityMetaData)
    {
       this.securityMetaData = securityMetaData;
    }

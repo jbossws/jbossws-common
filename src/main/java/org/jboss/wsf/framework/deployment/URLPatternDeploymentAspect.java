@@ -24,13 +24,12 @@ package org.jboss.wsf.framework.deployment;
 //$Id$
 
 import org.jboss.wsf.spi.annotation.WebContext;
-import org.jboss.wsf.spi.metadata.j2ee.UnifiedApplicationMetaData;
-import org.jboss.wsf.spi.metadata.j2ee.UnifiedBeanMetaData;
-import org.jboss.wsf.spi.metadata.j2ee.UnifiedEjbPortComponentMetaData;
-import org.jboss.wsf.spi.metadata.j2ee.UnifiedWebMetaData;
-import org.jboss.wsf.spi.deployment.DeploymentAspect;
 import org.jboss.wsf.spi.deployment.Deployment;
+import org.jboss.wsf.spi.deployment.DeploymentAspect;
 import org.jboss.wsf.spi.deployment.Endpoint;
+import org.jboss.wsf.spi.metadata.j2ee.EJBMetaData;
+import org.jboss.wsf.spi.metadata.j2ee.EJBArchiveMetaData;
+import org.jboss.wsf.spi.metadata.j2ee.JSEArchiveMetaData;
 
 /**
  * A deployer that assigns the URLPattern to endpoints. 
@@ -66,7 +65,7 @@ public class URLPatternDeploymentAspect extends DeploymentAspect
       String urlPattern = null;
 
       // #1 For JSE lookup the url-pattern from the servlet mappings 
-      UnifiedWebMetaData webMetaData = dep.getAttachment(UnifiedWebMetaData.class);
+      JSEArchiveMetaData webMetaData = dep.getAttachment(JSEArchiveMetaData.class);
       if (webMetaData != null)
       {
          String epName = ep.getShortName();
@@ -76,15 +75,11 @@ public class URLPatternDeploymentAspect extends DeploymentAspect
       }
 
       // #2 Use the explicit urlPattern from port-component/port-component-uri
-      UnifiedApplicationMetaData appMetaData = dep.getAttachment(UnifiedApplicationMetaData.class);
+      EJBArchiveMetaData appMetaData = dep.getAttachment(EJBArchiveMetaData.class);
       if (appMetaData != null && appMetaData.getBeanByEjbName(ep.getShortName()) != null)
       {
-         UnifiedBeanMetaData bmd = appMetaData.getBeanByEjbName(ep.getShortName());
-         UnifiedEjbPortComponentMetaData pcmd = bmd.getPortComponent();
-         if (pcmd != null)
-         {
-            urlPattern = pcmd.getPortComponentURI();
-         }
+         EJBMetaData bmd = appMetaData.getBeanByEjbName(ep.getShortName());
+         urlPattern = bmd.getPortComponentURI();
       }
 
       // #3 For EJB use @WebContext.urlPattern 

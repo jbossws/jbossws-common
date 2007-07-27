@@ -21,7 +21,7 @@
  */
 package org.jboss.wsf.spi.metadata.j2ee;
 
-//$Id$
+//$Id: UnifiedBeanMetaData.java 3772 2007-07-01 19:29:13Z thomas.diesler@jboss.com $
 
 /**
  * The container independent common meta data class for the entity, message-driven and session beans. 
@@ -29,27 +29,29 @@ package org.jboss.wsf.spi.metadata.j2ee;
  * @author Thomas.Diesler@jboss.org
  * @since 05-May-2006
  */
-public abstract class UnifiedBeanMetaData
+public abstract class EJBMetaData extends ContainerMetaData
 {
-   /** The ejb-name element specifies an enterprise bean's name. */
+   // The ejb-name element specifies an enterprise bean's name. 
    private String ejbName;
-   /** The ejb-class element contains the fully-qualified name of the enterprise bean's class. */
+   // The ejb-class element contains the fully-qualified name of the enterprise bean's class. 
    private String ejbClass;
-   /** The home element contains the fully-qualified name of the enterprise
-    bean's home interface. */
+   // The home element contains the fully-qualified name of the enterprise bean's home interface. */
    private String homeClass;
-   /** The local-home element contains the fully-qualified name of the
-    enterprise bean's local home interface. */
+   // The local-home element contains the fully-qualified name of the enterprise bean's local home interface. 
    private String localHomeClass;
-   /** The service-endpoint element contains the fully-qualified name of the beans service endpoint interface (SEI) */
-   protected String seiName;
-   /** The JNDI name under with the home interface should be bound */
+   // The service-endpoint element contains the fully-qualified name of the beans service endpoint interface (SEI) 
+   private String seiName;
+   // The JNDI name under with the home interface should be bound 
    private String jndiName;
-   /** The JNDI name under with the local home interface should be bound */
+   // The JNDI name under with the local home interface should be bound 
    private String localJndiName;
-   /** The jboss port-component binding for a ejb webservice */
-   protected UnifiedEjbPortComponentMetaData portComponent;
-
+   // The optional port-component-name
+   private String portComponentName;
+   // The optional port-component-uri
+   private String portComponentURI;
+   // The optional security meta data
+   private EJBSecurityMetaData securityMetaData;
+   
    public String getEjbName()
    {
       return ejbName;
@@ -68,16 +70,6 @@ public abstract class UnifiedBeanMetaData
    public void setEjbClass(String ejbClass)
    {
       this.ejbClass = ejbClass;
-   }
-
-   public UnifiedEjbPortComponentMetaData getPortComponent()
-   {
-      return portComponent;
-   }
-
-   public void setPortComponent(UnifiedEjbPortComponentMetaData portComponent)
-   {
-      this.portComponent = portComponent;
    }
 
    public String getServiceEndpointInterface()
@@ -135,4 +127,33 @@ public abstract class UnifiedBeanMetaData
       this.localJndiName = localJndiName;
    }
 
+   public String getPortComponentName()
+   {
+      return portComponentName;
+   }
+
+   public void setPortComponentName(String portComponentName)
+   {
+      this.portComponentName = portComponentName;
+   }
+
+   public String getPortComponentURI()
+   {
+      return portComponentURI;
+   }
+
+   public void setPortComponentURI(String portComponentURI)
+   {
+      this.portComponentURI = portComponentURI;
+   }
+
+   public EJBSecurityMetaData getSecurityMetaData()
+   {
+      return securityMetaData;
+   }
+
+   public void setSecurityMetaData(EJBSecurityMetaData securityMetaData)
+   {
+      this.securityMetaData = securityMetaData;
+   }
 }
