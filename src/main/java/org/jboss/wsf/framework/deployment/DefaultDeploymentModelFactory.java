@@ -27,14 +27,14 @@ import org.jboss.wsf.spi.deployment.Service;
 import org.jboss.wsf.spi.deployment.Endpoint;
 
 /**
- * @author Thomas.Diesler@jboss.com
- * @since 26-Jul-2007 
+ * @author Heiko.Braun@jboss.com
+ *         Created: Jul 18, 2007
  */
-public class ArchiveDeploymentModelFactory extends DeploymentModelFactory
+public class DefaultDeploymentModelFactory extends DeploymentModelFactory
 {
    public Deployment newDeployment(String simpleName, ClassLoader initialLoader)
    {
-      return new ArchiveDeploymentImpl(simpleName, initialLoader);
+      return new DefaultDeployment(simpleName, initialLoader);
    }
 
    public Service newService()

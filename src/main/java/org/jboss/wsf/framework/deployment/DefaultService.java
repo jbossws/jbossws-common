@@ -23,6 +23,7 @@ package org.jboss.wsf.framework.deployment;
 
 // $Id$
 
+import org.jboss.wsf.framework.DefaultExtensible;
 import org.jboss.wsf.spi.deployment.Service;
 import org.jboss.wsf.spi.deployment.Deployment;
 import org.jboss.wsf.spi.deployment.Endpoint;
@@ -39,13 +40,13 @@ import java.util.List;
  * @author Thomas.Diesler@jboss.com
  * @since 20-Apr-2007 
  */
-public class BasicService extends BasicExtendible implements Service
+public class DefaultService extends DefaultExtensible implements Service
 {
    private Deployment dep;
    private List<Endpoint> endpoints = new LinkedList<Endpoint>();
    private String contextRoot;
 
-   BasicService()
+   DefaultService()
    {
    }
 

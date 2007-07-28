@@ -19,15 +19,31 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.wsf.framework.management;
+package org.jboss.wsf.spi.http;
 
-import javax.management.ObjectName;
+// $Id: HttpServer.java 3959 2007-07-20 14:44:19Z heiko.braun@jboss.com $
 
-import org.jboss.wsf.spi.management.ServerConfig;
-import org.jboss.wsf.common.ObjectNameFactory;
+import javax.xml.ws.Endpoint;
 
-public interface BasicServerConfigMBean extends ServerConfig
+import org.jboss.wsf.spi.Extensible;
+
+/**
+ * An abstract HTTP Server
+ *
+ * @author Thomas.Diesler@jboss.org
+ * @since 07-Jul-2006
+ */
+public interface HttpServer extends Extensible
 {
-   /** The object name in the MBean server */
-   ObjectName OBJECT_NAME = ObjectNameFactory.create("jboss.ws:service=ServerConfig");
+   /** Start an instance of this HTTP server */
+   void start();
+
+   /** Create an HTTP context */
+   HttpContext createContext(String string);
+
+   /** Publish an JAXWS endpoint to the HTTP server */
+   void publish(HttpContext context, Endpoint endpoint);
+
+   /** Destroys an JAXWS endpoint on the HTTP server */
+   void destroy(HttpContext context, Endpoint endpoint);
 }

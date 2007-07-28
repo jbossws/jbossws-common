@@ -33,5 +33,5 @@ import javax.xml.ws.handler.MessageContext;
  */
 public abstract class InvocationHandlerFactory implements SPIView
 {
-   public abstract InvocationHandler createInvocationHandler(InvocationType type);
+   public abstract InvocationHandler newInvocationHandler(InvocationType type);
 }

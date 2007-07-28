@@ -40,7 +40,7 @@ public class EndpointRegistryDeploymentAspect extends DeploymentAspect
    public void create(Deployment dep)
    {
       SPIProvider spiProvider = SPIProviderResolver.getInstance().getProvider();
-      EndpointRegistry registry = spiProvider.getSPI(EndpointRegistryFactory.class).createEndpointRegistry();
+      EndpointRegistry registry = spiProvider.getSPI(EndpointRegistryFactory.class).getEndpointRegistry();
       for (Endpoint ep : dep.getService().getEndpoints())
       {
          registry.register(ep);
@@ -50,7 +50,7 @@ public class EndpointRegistryDeploymentAspect extends DeploymentAspect
    public void destroy(Deployment dep)
    {
       SPIProvider spiProvider = SPIProviderResolver.getInstance().getProvider();
-      EndpointRegistry registry = spiProvider.getSPI(EndpointRegistryFactory.class).createEndpointRegistry();
+      EndpointRegistry registry = spiProvider.getSPI(EndpointRegistryFactory.class).getEndpointRegistry();
             
       for (Endpoint ep : dep.getService().getEndpoints())
       {

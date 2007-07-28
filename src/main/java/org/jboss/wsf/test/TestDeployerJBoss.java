@@ -81,7 +81,7 @@ public class TestDeployerJBoss implements TestDeployer
       Object prevPassword = null;
 
       SPIProvider spiProvider = SPIProviderResolver.getInstance().getProvider();
-      SecurityAdaptor securityAdaptor = spiProvider.getSPI(SecurityAdaptorFactory.class).createSecurityAdapter();
+      SecurityAdaptor securityAdaptor = spiProvider.getSPI(SecurityAdaptorFactory.class).newSecurityAdapter();
       if (username != null || password != null)
       {
          prevUsername = securityAdaptor.getPrincipal();

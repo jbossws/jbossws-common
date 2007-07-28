@@ -126,7 +126,7 @@ public abstract class JMSTransportSupport implements MessageDrivenBean, MessageL
    protected void processSOAPMessage(String fromName, InputStream inputStream, OutputStream outStream) throws SOAPException, IOException, RemoteException
    {
       SPIProvider spiProvider = SPIProviderResolver.getInstance().getProvider();
-      EndpointRegistry epRegistry = spiProvider.getSPI(EndpointRegistryFactory.class).createEndpointRegistry();
+      EndpointRegistry epRegistry = spiProvider.getSPI(EndpointRegistryFactory.class).getEndpointRegistry();
 
       Endpoint endpoint = getEndpointForDestination(epRegistry, fromName);
 

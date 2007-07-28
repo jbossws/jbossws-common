@@ -42,10 +42,10 @@ import org.jboss.wsf.spi.deployment.WSFDeploymentException;
  * @author Thomas.Diesler@jboss.com
  * @since 20-Apr-2007 
  */
-public class BasicDeploymentAspectManager implements DeploymentAspectManager
+public class DeploymentAspectManagerImpl implements DeploymentAspectManager
 {
    // provide logging
-   private static final Logger log = Logger.getLogger(BasicDeploymentAspectManager.class);
+   private static final Logger log = Logger.getLogger(DeploymentAspectManagerImpl.class);
 
    private String name;
    private Set<DeploymentAspect> unsortedAspects = new HashSet<DeploymentAspect>();

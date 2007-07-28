@@ -35,7 +35,7 @@ import org.jboss.wsf.spi.invocation.InvocationHandler;
  * @author Thomas.Diesler@jboss.org
  * @since 31-Oct-2006
  */
-public class BasicLifecycleHandler implements LifecycleHandler
+public class LifecycleHandlerImpl implements LifecycleHandler
 {
    // provide logging
    protected final Logger log = Logger.getLogger(getClass());

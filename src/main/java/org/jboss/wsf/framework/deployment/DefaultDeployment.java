@@ -21,6 +21,7 @@
  */
 package org.jboss.wsf.framework.deployment;
 
+import org.jboss.wsf.framework.DefaultExtensible;
 import org.jboss.wsf.spi.deployment.Deployment;
 import org.jboss.wsf.spi.deployment.Service;
 
@@ -34,7 +35,7 @@ import org.jboss.wsf.spi.deployment.Service;
  * @author Thomas.Diesler@jboss.com
  * @since 20-Apr-2007 
  */
-public class BasicDeployment extends BasicExtendible implements Deployment
+public class DefaultDeployment extends DefaultExtensible implements Deployment
 {
    // The name for this deployment
    private String simpleName;
@@ -49,12 +50,12 @@ public class BasicDeployment extends BasicExtendible implements Deployment
    // The runtime class loader
    private ClassLoader runtimeLoader;
 
-   BasicDeployment(String name, ClassLoader classLoader)
+   DefaultDeployment(String name, ClassLoader classLoader)
    {
       simpleName = name;
       state = DeploymentState.UNDEFINED;
       initialLoader = classLoader;
-      setService(new BasicService());
+      setService(new DefaultService());
    }
 
    public String getSimpleName()

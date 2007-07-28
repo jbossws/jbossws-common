@@ -21,29 +21,17 @@
  */
 package org.jboss.wsf.framework.deployment;
 
-import org.jboss.wsf.spi.deployment.DeploymentModelFactory;
-import org.jboss.wsf.spi.deployment.Deployment;
-import org.jboss.wsf.spi.deployment.Service;
-import org.jboss.wsf.spi.deployment.Endpoint;
+import org.jboss.wsf.spi.deployment.LifecycleHandlerFactory;
+import org.jboss.wsf.spi.deployment.LifecycleHandler;
 
 /**
- * @author Thomas.Diesler@jboss.com
- * @since 26-Jul-2007 
+ * @author Heiko.Braun@jboss.com
+ *         Created: Jul 23, 2007
  */
-public class ArchiveDeploymentModelFactory extends DeploymentModelFactory
+public class DefaultLifecycleHandlerFactory extends LifecycleHandlerFactory
 {
-   public Deployment newDeployment(String simpleName, ClassLoader initialLoader)
+   public LifecycleHandler newLifecylceHandler()
    {
-      return new ArchiveDeploymentImpl(simpleName, initialLoader);
-   }
-
-   public Service newService()
-   {
-      return new DefaultService();
-   }
-
-   public Endpoint newEndpoint()
-   {
-      return new DefaultEndpoint();
+      return new LifecycleHandlerImpl();  
    }
 }

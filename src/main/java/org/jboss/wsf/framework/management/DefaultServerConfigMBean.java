@@ -19,31 +19,15 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.wsf.framework.deployment;
+package org.jboss.wsf.framework.management;
 
-import org.jboss.wsf.spi.deployment.DeploymentModelFactory;
-import org.jboss.wsf.spi.deployment.Deployment;
-import org.jboss.wsf.spi.deployment.Service;
-import org.jboss.wsf.spi.deployment.Endpoint;
+import javax.management.ObjectName;
 
-/**
- * @author Thomas.Diesler@jboss.com
- * @since 26-Jul-2007 
- */
-public class ArchiveDeploymentModelFactory extends DeploymentModelFactory
+import org.jboss.wsf.spi.management.ServerConfig;
+import org.jboss.wsf.common.ObjectNameFactory;
+
+public interface DefaultServerConfigMBean extends ServerConfig
 {
-   public Deployment newDeployment(String simpleName, ClassLoader initialLoader)
-   {
-      return new ArchiveDeploymentImpl(simpleName, initialLoader);
-   }
-
-   public Service newService()
-   {
-      return new DefaultService();
-   }
-
-   public Endpoint newEndpoint()
-   {
-      return new DefaultEndpoint();
-   }
+   /** The object name in the MBean server */
+   ObjectName OBJECT_NAME = ObjectNameFactory.create("jboss.ws:service=ServerConfig");
 }

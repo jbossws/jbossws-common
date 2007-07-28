@@ -34,7 +34,7 @@ import org.jboss.wsf.spi.management.EndpointMetrics;
  * @author Thomas.Diesler@jboss.org
  * @since 14-Dec-2005
  */
-public class BasicEndpointMetrics implements EndpointMetrics
+public class EndpointMetricsImpl implements EndpointMetrics
 {
    private Endpoint endpoint;
 

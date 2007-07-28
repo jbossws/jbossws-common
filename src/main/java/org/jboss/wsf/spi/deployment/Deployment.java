@@ -21,6 +21,8 @@
  */
 package org.jboss.wsf.spi.deployment;
 
+import org.jboss.wsf.spi.Extensible;
+
 // $Id$
 
 /**
@@ -31,7 +33,7 @@ package org.jboss.wsf.spi.deployment;
  * @author Thomas.Diesler@jboss.com
  * @since 20-Apr-2007 
  */
-public interface Deployment extends Extendible
+public interface Deployment extends Extensible
 {
    public enum DeploymentType
    {

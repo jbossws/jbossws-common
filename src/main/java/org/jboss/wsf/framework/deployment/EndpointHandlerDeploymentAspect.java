@@ -75,12 +75,12 @@ public class EndpointHandlerDeploymentAspect extends DeploymentAspect
 
    private RequestHandler getRequestHandler(Deployment dep)
    {
-      return spiProvider.getSPI(RequestHandlerFactory.class).createRequestHandler();
+      return spiProvider.getSPI(RequestHandlerFactory.class).newRequestHandler();
    }
 
    private LifecycleHandler getLifecycleHandler(Deployment dep)
    {
-      return spiProvider.getSPI(LifecycleHandlerFactory.class).createLifecylceHandler();
+      return spiProvider.getSPI(LifecycleHandlerFactory.class).newLifecylceHandler();
    }
 
    private InvocationHandler getInvocationHandler(Endpoint ep)
@@ -100,7 +100,7 @@ public class EndpointHandlerDeploymentAspect extends DeploymentAspect
       }
 
       InvocationType type = InvocationType.valueOf(key);
-      InvocationHandler invocationHandler = spiProvider.getSPI(InvocationHandlerFactory.class).createInvocationHandler(type);
+      InvocationHandler invocationHandler = spiProvider.getSPI(InvocationHandlerFactory.class).newInvocationHandler(type);
       return invocationHandler;
    }
 }

@@ -19,31 +19,19 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.wsf.framework.deployment;
+package org.jboss.wsf.framework.invocation;
 
-import org.jboss.wsf.spi.deployment.DeploymentModelFactory;
-import org.jboss.wsf.spi.deployment.Deployment;
-import org.jboss.wsf.spi.deployment.Service;
-import org.jboss.wsf.spi.deployment.Endpoint;
+import org.jboss.wsf.spi.invocation.ResourceInjectorFactory;
+import org.jboss.wsf.spi.invocation.ResourceInjector;
 
 /**
- * @author Thomas.Diesler@jboss.com
- * @since 26-Jul-2007 
+ * @author Heiko.Braun@jboss.com
+ *         Created: Jul 19, 2007
  */
-public class ArchiveDeploymentModelFactory extends DeploymentModelFactory
+public class DefaultResourceInjectorFactory extends ResourceInjectorFactory
 {
-   public Deployment newDeployment(String simpleName, ClassLoader initialLoader)
+   public ResourceInjector newResourceInjector()
    {
-      return new ArchiveDeploymentImpl(simpleName, initialLoader);
-   }
-
-   public Service newService()
-   {
-      return new DefaultService();
-   }
-
-   public Endpoint newEndpoint()
-   {
-      return new DefaultEndpoint();
+      return new WebServiceContextInjector(); 
    }
 }

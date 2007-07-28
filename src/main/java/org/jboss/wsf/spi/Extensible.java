@@ -19,31 +19,46 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.wsf.framework.deployment;
+package org.jboss.wsf.spi;
 
-import org.jboss.wsf.spi.deployment.DeploymentModelFactory;
-import org.jboss.wsf.spi.deployment.Deployment;
-import org.jboss.wsf.spi.deployment.Service;
-import org.jboss.wsf.spi.deployment.Endpoint;
+//$Id: Deployment.java 3999 2007-07-26 11:33:20Z thomas.diesler@jboss.com $
+
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
 
 /**
+ * A general extendible artifact 
+ * 
  * @author Thomas.Diesler@jboss.com
- * @since 26-Jul-2007 
+ * @since 20-Apr-2007 
  */
-public class ArchiveDeploymentModelFactory extends DeploymentModelFactory
+public interface Extensible
 {
-   public Deployment newDeployment(String simpleName, ClassLoader initialLoader)
-   {
-      return new ArchiveDeploymentImpl(simpleName, initialLoader);
-   }
+   /** Add arbitrary attachments */
+   <T> T addAttachment(Class<T> key, Object value);
+   
+   /** Get arbitrary attachments */
+   <T> Collection<T> getAttachments();
+   
+   /** Get an arbitrary attachment */
+   <T> T getAttachment(Class<T> key);
+   
+   /** Remove arbitrary attachments */
+   <T> T removeAttachment(Class<T> key);
 
-   public Service newService()
-   {
-      return new DefaultService();
-   }
-
-   public Endpoint newEndpoint()
-   {
-      return new DefaultEndpoint();
-   }
+   /** Get an property */
+   Object getProperty(String key);
+   
+   /** Set a property */
+   void setProperty(String key, Object value);
+   
+   /** Remove a property */
+   void removeProperty(String key);
+   
+   /** Get the set of property names */
+   Set<String> getProperties();
+   
+   /** Set a map of properties */
+   void setProperties(Map<String, Object> props);
 }

@@ -25,6 +25,7 @@ package org.jboss.wsf.spi.deployment;
 
 import javax.management.ObjectName;
 
+import org.jboss.wsf.spi.Extensible;
 import org.jboss.wsf.spi.invocation.InvocationHandler;
 import org.jboss.wsf.spi.invocation.RequestHandler;
 import org.jboss.wsf.spi.management.EndpointMetrics;
@@ -35,7 +36,7 @@ import org.jboss.wsf.spi.management.EndpointMetrics;
  * @author Thomas.Diesler@jboss.com
  * @since 20-Apr-2007 
  */
-public interface Endpoint extends Extendible
+public interface Endpoint extends Extensible
 {
    static final String SEPID_DOMAIN = "jboss.ws";
    static final String SEPID_PROPERTY_CONTEXT = "context";

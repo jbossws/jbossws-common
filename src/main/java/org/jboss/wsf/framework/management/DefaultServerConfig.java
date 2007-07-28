@@ -45,9 +45,9 @@ import org.jboss.wsf.common.ObjectNameFactory;
  * @author darran.lofthouse@jboss.com
  * @since 08-May-2006
  */
-public class BasicServerConfig implements BasicServerConfigMBean
+public class DefaultServerConfig implements DefaultServerConfigMBean
 {
-   private static final Logger log = Logger.getLogger(BasicServerConfig.class);
+   private static final Logger log = Logger.getLogger(DefaultServerConfig.class);
 
    // The webservice host name that will be used when updating the wsdl
    private String webServiceHost = UNDEFINED_HOSTNAME;
@@ -168,7 +168,7 @@ public class BasicServerConfig implements BasicServerConfigMBean
       MBeanServer server = getMBeanServer();
       if (server != null)
       {
-         server.registerMBean(this, BasicServerConfigMBean.OBJECT_NAME);
+         server.registerMBean(this, DefaultServerConfigMBean.OBJECT_NAME);
       }
    }
 
@@ -177,7 +177,7 @@ public class BasicServerConfig implements BasicServerConfigMBean
       MBeanServer server = getMBeanServer();
       if (server != null)
       {
-         server.unregisterMBean(BasicServerConfigMBean.OBJECT_NAME);
+         server.unregisterMBean(DefaultServerConfigMBean.OBJECT_NAME);
       }
    }
 

@@ -29,5 +29,5 @@ import org.jboss.wsf.spi.SPIView;
  */
 public abstract class ResourceInjectorFactory implements SPIView
 {
-   public abstract ResourceInjector createResourceInjector();
+   public abstract ResourceInjector newResourceInjector();
 }

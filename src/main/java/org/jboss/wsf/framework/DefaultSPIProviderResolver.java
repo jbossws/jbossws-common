@@ -23,12 +23,19 @@ package org.jboss.wsf.framework;
 
 import org.jboss.logging.Logger;
 import org.jboss.wsf.common.ServiceLoader;
+import org.jboss.wsf.framework.deployment.DefaultDeploymentModelFactory;
+import org.jboss.wsf.framework.deployment.DefaultLifecycleHandlerFactory;
+import org.jboss.wsf.framework.http.DefaultHttpContext;
+import org.jboss.wsf.framework.http.DefaultHttpContextFactory;
+import org.jboss.wsf.framework.invocation.DefaultResourceInjectorFactory;
 import org.jboss.wsf.spi.SPIProvider;
 import org.jboss.wsf.spi.SPIProviderResolver;
 import org.jboss.wsf.spi.WSFException;
 import org.jboss.wsf.spi.deployment.DeploymentAspectManagerFactory;
 import org.jboss.wsf.spi.deployment.DeploymentModelFactory;
 import org.jboss.wsf.spi.deployment.LifecycleHandlerFactory;
+import org.jboss.wsf.spi.http.HttpContextFactory;
+import org.jboss.wsf.spi.http.HttpServerFactory;
 import org.jboss.wsf.spi.invocation.InvocationHandlerFactory;
 import org.jboss.wsf.spi.invocation.RequestHandlerFactory;
 import org.jboss.wsf.spi.invocation.ResourceInjectorFactory;
@@ -68,28 +75,24 @@ public class DefaultSPIProviderResolver extends SPIProviderResolver
 
          if (DeploymentModelFactory.class.equals(spiType))
          {
-            returnType = (T)loadService(spiType, "org.jboss.wsf.framework.deployment.DeploymentModelFactoryImpl");
+            returnType = (T)loadService(spiType, DefaultDeploymentModelFactory.class.getName());
          }
-         else if (ResourceInjectorFactory.class.equals(spiType))
+         else if (HttpContextFactory.class.equals(spiType))
          {
-            returnType = (T)loadService(spiType, "org.jboss.wsf.framework.invocation.ResourceInjectorFactoryImpl");
+            returnType = (T)loadService(spiType, DefaultHttpContextFactory.class.getName());
          }
          else if (LifecycleHandlerFactory.class.equals(spiType))
          {
-            returnType = (T)loadService(spiType, "org.jboss.wsf.framework.deployment.LifecycleHandlerFactoryImpl");
+            returnType = (T)loadService(spiType, DefaultLifecycleHandlerFactory.class.getName());
+         }
+         else if (ResourceInjectorFactory.class.equals(spiType))
+         {
+            returnType = (T)loadService(spiType, DefaultResourceInjectorFactory.class.getName());
          }
 
          // SPI provided by either container or stack integration
 
-         else if (InvocationHandlerFactory.class.equals(spiType))
-         {
-            returnType = (T)loadService(spiType, null);
-         }
          else if (DeploymentAspectManagerFactory.class.equals(spiType))
-         {
-            returnType = (T)loadService(spiType, null);
-         }
-         else if (RequestHandlerFactory.class.equals(spiType))
          {
             returnType = (T)loadService(spiType, null);
          }
@@ -97,11 +100,23 @@ public class DefaultSPIProviderResolver extends SPIProviderResolver
          {
             returnType = (T)loadService(spiType, null);
          }
-         else if (ServerConfigFactory.class.equals(spiType))
+         else if (HttpServerFactory.class.equals(spiType))
+         {
+            returnType = (T)loadService(spiType, null);
+         }
+         else if (InvocationHandlerFactory.class.equals(spiType))
+         {
+            returnType = (T)loadService(spiType, null);
+         }
+         else if (RequestHandlerFactory.class.equals(spiType))
          {
             returnType = (T)loadService(spiType, null);
          }
          else if (SecurityAdaptorFactory.class.equals(spiType))
+         {
+            returnType = (T)loadService(spiType, null);
+         }
+         else if (ServerConfigFactory.class.equals(spiType))
          {
             returnType = (T)loadService(spiType, null);
          }

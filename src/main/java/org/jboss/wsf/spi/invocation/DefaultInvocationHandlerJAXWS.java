@@ -80,7 +80,7 @@ public class DefaultInvocationHandlerJAXWS extends InvocationHandler
          {
             SPIProvider spiProvider = SPIProviderResolver.getInstance().getProvider();
             ResourceInjectorFactory factory = spiProvider.getSPI(ResourceInjectorFactory.class);
-            ResourceInjector injector = factory.createResourceInjector();
+            ResourceInjector injector = factory.newResourceInjector();
             injector.inject(targetBean, wsContext);
          }
 

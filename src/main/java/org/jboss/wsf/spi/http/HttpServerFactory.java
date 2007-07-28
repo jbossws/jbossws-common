@@ -19,31 +19,19 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.wsf.framework.deployment;
+package org.jboss.wsf.spi.http;
 
-import org.jboss.wsf.spi.deployment.DeploymentModelFactory;
-import org.jboss.wsf.spi.deployment.Deployment;
-import org.jboss.wsf.spi.deployment.Service;
-import org.jboss.wsf.spi.deployment.Endpoint;
+import org.jboss.wsf.spi.SPIView;
+
+// $Id: HttpContext.java 1757 2006-12-22 15:40:24Z thomas.diesler@jboss.com $
 
 /**
- * @author Thomas.Diesler@jboss.com
- * @since 26-Jul-2007 
+ * A factory for an abstract HTTP server
+ *
+ * @author Thomas.Diesler@jboss.org
+ * @since 07-Jul-2006
  */
-public class ArchiveDeploymentModelFactory extends DeploymentModelFactory
+public abstract class HttpServerFactory implements SPIView
 {
-   public Deployment newDeployment(String simpleName, ClassLoader initialLoader)
-   {
-      return new ArchiveDeploymentImpl(simpleName, initialLoader);
-   }
-
-   public Service newService()
-   {
-      return new DefaultService();
-   }
-
-   public Endpoint newEndpoint()
-   {
-      return new DefaultEndpoint();
-   }
+   public abstract HttpServer newHttpServer();
 }

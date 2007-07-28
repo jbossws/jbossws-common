@@ -35,5 +35,5 @@ import org.jboss.wsf.spi.SPIView;
  */
 public abstract class SecurityAdaptorFactory implements SPIView
 {
-   public abstract SecurityAdaptor createSecurityAdapter();
+   public abstract SecurityAdaptor newSecurityAdapter();
 }

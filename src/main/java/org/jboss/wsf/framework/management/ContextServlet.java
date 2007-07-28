@@ -60,7 +60,7 @@ public class ContextServlet extends HttpServlet
    {
       super.init(config);
       SPIProvider spiProvider = SPIProviderResolver.getInstance().getProvider();
-      epRegistry = spiProvider.getSPI(EndpointRegistryFactory.class).createEndpointRegistry();      
+      epRegistry = spiProvider.getSPI(EndpointRegistryFactory.class).getEndpointRegistry();      
    }
 
    /** Process GET requests.

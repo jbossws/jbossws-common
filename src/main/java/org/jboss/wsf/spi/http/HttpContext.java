@@ -19,31 +19,21 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.wsf.framework.deployment;
+package org.jboss.wsf.spi.http;
 
-import org.jboss.wsf.spi.deployment.DeploymentModelFactory;
-import org.jboss.wsf.spi.deployment.Deployment;
-import org.jboss.wsf.spi.deployment.Service;
-import org.jboss.wsf.spi.deployment.Endpoint;
+import org.jboss.wsf.spi.Extensible;
+
+// $Id: HttpContext.java 1757 2006-12-22 15:40:24Z thomas.diesler@jboss.com $
 
 /**
- * @author Heiko.Braun@jboss.com
- *         Created: Jul 18, 2007
+ * An abstract HTTP Context
+ *
+ * @author Thomas.Diesler@jboss.org
+ * @since 07-Jul-2006
  */
-public class DeploymentModelFactoryImpl extends DeploymentModelFactory
+public interface HttpContext extends Extensible
 {
-   public Deployment createDeployment(String simpleName, ClassLoader initialLoader)
-   {
-      return new BasicDeployment(simpleName, initialLoader);
-   }
+   HttpServer getHttpServer();
 
-   public Service createService()
-   {
-      return new BasicService();
-   }
-
-   public Endpoint createEndpoint()
-   {
-      return new BasicEndpoint();
-   }
+   String getContextRoot();
 }

@@ -25,6 +25,8 @@ package org.jboss.wsf.spi.deployment;
 
 import java.util.List;
 
+import org.jboss.wsf.spi.Extensible;
+
 /**
  * A general service deployment.
  * 
@@ -33,7 +35,7 @@ import java.util.List;
  * @author Thomas.Diesler@jboss.com
  * @since 20-Apr-2007 
  */
-public interface Service extends Extendible
+public interface Service extends Extensible
 {
    /** Get the deployment this service belongs to */
    Deployment getDeployment();

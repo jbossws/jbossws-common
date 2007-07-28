@@ -19,7 +19,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.wsf.framework.deployment;
+package org.jboss.wsf.framework;
 
 //$Id: BasicDeploymentContext.java 3959 2007-07-20 14:44:19Z heiko.braun@jboss.com $
 
@@ -28,7 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.jboss.wsf.spi.deployment.Extendible;
+import org.jboss.wsf.spi.Extensible;
 
 /**
  * A general extendible artifact 
@@ -36,7 +36,7 @@ import org.jboss.wsf.spi.deployment.Extendible;
  * @author Thomas.Diesler@jboss.com
  * @since 20-Apr-2007 
  */
-public class BasicExtendible implements Extendible
+public class DefaultExtensible implements Extensible
 {
    private Map<Class, Object> attachments = new HashMap<Class, Object>();
    private Map<String, Object> properties = new HashMap<String, Object>();
@@ -79,5 +79,10 @@ public class BasicExtendible implements Extendible
    public void setProperty(String key, Object value)
    {
       properties.put(key, value);
+   }
+
+   public void setProperties(Map<String, Object> props)
+   {
+      properties.putAll(props);
    }
 }

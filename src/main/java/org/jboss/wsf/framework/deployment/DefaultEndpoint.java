@@ -26,6 +26,7 @@ import java.util.List;
 
 import javax.management.ObjectName;
 
+import org.jboss.wsf.framework.DefaultExtensible;
 import org.jboss.wsf.spi.binding.BindingCustomization;
 import org.jboss.wsf.spi.deployment.Endpoint;
 import org.jboss.wsf.spi.deployment.LifecycleHandler;
@@ -41,7 +42,7 @@ import org.jboss.wsf.spi.management.EndpointMetrics;
  * @author Thomas.Diesler@jboss.com
  * @since 20-Apr-2007 
  */
-public class BasicEndpoint extends BasicExtendible implements Endpoint
+public class DefaultEndpoint extends DefaultExtensible implements Endpoint
 {
    private Service service;
    private ObjectName name;
@@ -56,7 +57,7 @@ public class BasicEndpoint extends BasicExtendible implements Endpoint
    private List<BindingCustomization> bindingCustomizsations = new ArrayList<BindingCustomization>();
    private String address;
 
-   BasicEndpoint()
+   DefaultEndpoint()
    {
       this.state = EndpointState.UNDEFINED;
    }

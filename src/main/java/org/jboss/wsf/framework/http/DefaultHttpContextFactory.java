@@ -19,42 +19,24 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.wsf.spi.deployment;
+package org.jboss.wsf.framework.http;
 
-//$Id: Deployment.java 3999 2007-07-26 11:33:20Z thomas.diesler@jboss.com $
+//$Id: HttpContext.java 1757 2006-12-22 15:40:24Z thomas.diesler@jboss.com $
 
-import java.util.Collection;
-import java.util.Set;
+import org.jboss.wsf.spi.SPIView;
+import org.jboss.wsf.spi.http.HttpContext;
+import org.jboss.wsf.spi.http.HttpServer;
 
 /**
- * A general extendible artifact 
- * 
- * @author Thomas.Diesler@jboss.com
- * @since 20-Apr-2007 
+ * A factory for an abstract HTTP Context
+ *
+ * @author Thomas.Diesler@jboss.org
+ * @since 07-Jul-2006
  */
-public interface Extendible
+public class DefaultHttpContextFactory implements SPIView
 {
-   /** Add arbitrary attachments */
-   <T> T addAttachment(Class<T> key, Object value);
-   
-   /** Get arbitrary attachments */
-   <T> Collection<T> getAttachments();
-   
-   /** Get an arbitrary attachment */
-   <T> T getAttachment(Class<T> key);
-   
-   /** Remove arbitrary attachments */
-   <T> T removeAttachment(Class<T> key);
-
-   /** Get an context property */
-   Object getProperty(String key);
-   
-   /** Set an context property */
-   void setProperty(String key, Object value);
-   
-   /** Remove an context property */
-   void removeProperty(String key);
-   
-   /** Get the set of context property names */
-   Set<String> getProperties();
+   public HttpContext newHttpContext(HttpServer server, String contextRoot)
+   {
+      return new DefaultHttpContext(server, contextRoot);
+   }
 }

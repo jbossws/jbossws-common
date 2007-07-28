@@ -19,19 +19,38 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.wsf.framework.deployment;
+package org.jboss.wsf.framework.http;
 
-import org.jboss.wsf.spi.deployment.LifecycleHandlerFactory;
-import org.jboss.wsf.spi.deployment.LifecycleHandler;
+//$Id: HttpContext.java 1757 2006-12-22 15:40:24Z thomas.diesler@jboss.com $
+
+import org.jboss.wsf.framework.DefaultExtensible;
+import org.jboss.wsf.spi.http.HttpContext;
+import org.jboss.wsf.spi.http.HttpServer;
 
 /**
- * @author Heiko.Braun@jboss.com
- *         Created: Jul 23, 2007
+ * An abstract HTTP Context
+ *
+ * @author Thomas.Diesler@jboss.org
+ * @since 07-Jul-2006
  */
-public class LifecycleHandlerFactoryImpl extends LifecycleHandlerFactory
+public class DefaultHttpContext extends DefaultExtensible implements HttpContext
 {
-   public LifecycleHandler createLifecylceHandler()
+   private HttpServer server;
+   private String contextRoot;
+
+   DefaultHttpContext(HttpServer server, String contextRoot)
    {
-      return new BasicLifecycleHandler();  
+      this.server = server;
+      this.contextRoot = contextRoot;
+   }
+
+   public HttpServer getHttpServer()
+   {
+      return server;
+   }
+
+   public String getContextRoot()
+   {
+      return contextRoot;
    }
 }

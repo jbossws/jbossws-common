@@ -29,5 +29,5 @@ import org.jboss.wsf.spi.SPIView;
  */
 public abstract class RequestHandlerFactory implements SPIView
 {
-   public abstract RequestHandler createRequestHandler();
+   public abstract RequestHandler newRequestHandler();
 }

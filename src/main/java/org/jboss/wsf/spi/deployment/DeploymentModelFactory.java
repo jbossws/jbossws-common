@@ -29,8 +29,8 @@ import org.jboss.wsf.spi.SPIView;
  */
 public abstract class DeploymentModelFactory implements SPIView
 {
-   public abstract Deployment createDeployment(String simpleName, ClassLoader initialLoader);
-   public abstract Service createService();
-   public abstract Endpoint createEndpoint();
+   public abstract Deployment newDeployment(String simpleName, ClassLoader initialLoader);
+   public abstract Service newService();
+   public abstract Endpoint newEndpoint();
 
 }

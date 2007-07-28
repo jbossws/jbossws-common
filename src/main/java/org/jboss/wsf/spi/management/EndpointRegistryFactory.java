@@ -23,10 +23,6 @@ package org.jboss.wsf.spi.management;
 
 //$Id$
 
-import org.jboss.kernel.Kernel;
-import org.jboss.kernel.spi.registry.KernelRegistry;
-import org.jboss.kernel.spi.registry.KernelRegistryEntry;
-import org.jboss.ws.integration.KernelLocator;
 import org.jboss.wsf.spi.SPIView;
 
 /**
@@ -37,5 +33,5 @@ import org.jboss.wsf.spi.SPIView;
  */
 public abstract class EndpointRegistryFactory implements SPIView
 {
-   public abstract EndpointRegistry createEndpointRegistry();
+   public abstract EndpointRegistry getEndpointRegistry();
 }

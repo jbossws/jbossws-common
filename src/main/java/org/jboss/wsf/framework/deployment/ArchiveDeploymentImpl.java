@@ -37,14 +37,14 @@ import org.jboss.wsf.spi.deployment.ArchiveDeployment;
  * @author Thomas.Diesler@jboss.com
  * @since 20-Apr-2007 
  */
-public class BasicArchiveDeployment extends BasicDeployment implements ArchiveDeployment
+public class ArchiveDeploymentImpl extends DefaultDeployment implements ArchiveDeployment
 {
    // The optional parent
    private ArchiveDeployment parent;
    // The root file for this deployment
    private UnifiedVirtualFile rootFile;
 
-   BasicArchiveDeployment(String simpleName, ClassLoader classLoader)
+   ArchiveDeploymentImpl(String simpleName, ClassLoader classLoader)
    {
       super(simpleName, classLoader);
    }
