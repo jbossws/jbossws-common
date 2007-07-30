@@ -25,8 +25,8 @@ import org.jboss.logging.Logger;
 import org.jboss.wsf.common.ServiceLoader;
 import org.jboss.wsf.framework.deployment.DefaultDeploymentModelFactory;
 import org.jboss.wsf.framework.deployment.DefaultLifecycleHandlerFactory;
-import org.jboss.wsf.framework.http.DefaultHttpContext;
 import org.jboss.wsf.framework.http.DefaultHttpContextFactory;
+import org.jboss.wsf.framework.http.DefaultHttpServerFactory;
 import org.jboss.wsf.framework.invocation.DefaultResourceInjectorFactory;
 import org.jboss.wsf.spi.SPIProvider;
 import org.jboss.wsf.spi.SPIProviderResolver;
@@ -81,6 +81,10 @@ public class DefaultSPIProviderResolver extends SPIProviderResolver
          {
             returnType = (T)loadService(spiType, DefaultHttpContextFactory.class.getName());
          }
+         else if (HttpServerFactory.class.equals(spiType))
+         {
+            returnType = (T)loadService(spiType, DefaultHttpServerFactory.class.getName());
+         }
          else if (LifecycleHandlerFactory.class.equals(spiType))
          {
             returnType = (T)loadService(spiType, DefaultLifecycleHandlerFactory.class.getName());
@@ -97,10 +101,6 @@ public class DefaultSPIProviderResolver extends SPIProviderResolver
             returnType = (T)loadService(spiType, null);
          }
          else if (EndpointRegistryFactory.class.equals(spiType))
-         {
-            returnType = (T)loadService(spiType, null);
-         }
-         else if (HttpServerFactory.class.equals(spiType))
          {
             returnType = (T)loadService(spiType, null);
          }

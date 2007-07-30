@@ -23,20 +23,19 @@ package org.jboss.wsf.framework.http;
 
 //$Id: HttpContext.java 1757 2006-12-22 15:40:24Z thomas.diesler@jboss.com $
 
-import org.jboss.wsf.spi.http.HttpContext;
-import org.jboss.wsf.spi.http.HttpContextFactory;
 import org.jboss.wsf.spi.http.HttpServer;
+import org.jboss.wsf.spi.http.HttpServerFactory;
 
 /**
- * A factory for an abstract HTTP Context
+ * A factory for an HTTP Server
  *
  * @author Thomas.Diesler@jboss.org
  * @since 07-Jul-2006
  */
-public class DefaultHttpContextFactory extends HttpContextFactory
+public class DefaultHttpServerFactory extends HttpServerFactory
 {
-   public HttpContext newHttpContext(HttpServer server, String contextRoot)
+   public HttpServer newHttpServer()
    {
-      return new DefaultHttpContext(server, contextRoot);
+      return new WebAppDeployingHttpServer();
    }
 }
