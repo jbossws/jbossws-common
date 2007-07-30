@@ -57,9 +57,8 @@ public class DefaultEndpoint extends DefaultExtensible implements Endpoint
    private List<BindingCustomization> bindingCustomizsations = new ArrayList<BindingCustomization>();
    private String address;
 
-   DefaultEndpoint(String shortName, String targetBean)
+   DefaultEndpoint(String targetBean)
    {
-      this.shortName = shortName;
       this.targetBean = targetBean;
       this.state = EndpointState.UNDEFINED;
    }

@@ -42,8 +42,8 @@ public class ArchiveDeploymentModelFactory extends DeploymentModelFactory
       return new DefaultService();
    }
 
-   public Endpoint newEndpoint(String shortName, String targetBean)
+   public Endpoint newEndpoint(String targetBean)
    {
-      return new DefaultEndpoint(shortName, targetBean);
+      return new DefaultEndpoint(targetBean);
    }
 }
