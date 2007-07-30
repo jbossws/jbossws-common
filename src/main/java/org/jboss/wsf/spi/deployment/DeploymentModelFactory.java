@@ -31,6 +31,6 @@ public abstract class DeploymentModelFactory implements SPIView
 {
    public abstract Deployment newDeployment(String simpleName, ClassLoader initialLoader);
    public abstract Service newService();
-   public abstract Endpoint newEndpoint();
+   public abstract Endpoint newEndpoint(String shortName, String targetBean);
 
 }

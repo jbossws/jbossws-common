@@ -62,6 +62,7 @@ public class DefaultService extends DefaultExtensible implements Service
    
    public void addEndpoint(Endpoint endpoint)
    {
+      endpoint.setService(this);
       endpoints.add(endpoint);
    }
 
