@@ -63,6 +63,7 @@ public class DeploymentAspectManagerImpl implements DeploymentAspectManager
 
    public List<DeploymentAspect> getDeploymentAspects()
    {
+      // This cannot be done in 'create' because we add aspects from different MC configurations
       if (sortedAspects == null)
       {
          sortedAspects = new ArrayList<DeploymentAspect>();

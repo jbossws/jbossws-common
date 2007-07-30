@@ -23,6 +23,7 @@ package org.jboss.wsf.framework;
 
 import org.jboss.logging.Logger;
 import org.jboss.wsf.common.ServiceLoader;
+import org.jboss.wsf.framework.deployment.DefaultDeploymentAspectManagerFactory;
 import org.jboss.wsf.framework.deployment.DefaultDeploymentModelFactory;
 import org.jboss.wsf.framework.deployment.DefaultLifecycleHandlerFactory;
 import org.jboss.wsf.framework.http.DefaultHttpContextFactory;
@@ -73,6 +74,10 @@ public class DefaultSPIProviderResolver extends SPIProviderResolver
 
          // SPI provided by framework, default that can be overridden
 
+         if (DeploymentAspectManagerFactory.class.equals(spiType))
+         {
+            returnType = (T)loadService(spiType, DefaultDeploymentAspectManagerFactory.class.getName());
+         }
          if (DeploymentModelFactory.class.equals(spiType))
          {
             returnType = (T)loadService(spiType, DefaultDeploymentModelFactory.class.getName());
@@ -96,10 +101,6 @@ public class DefaultSPIProviderResolver extends SPIProviderResolver
 
          // SPI provided by either container or stack integration
 
-         else if (DeploymentAspectManagerFactory.class.equals(spiType))
-         {
-            returnType = (T)loadService(spiType, null);
-         }
          else if (EndpointRegistryFactory.class.equals(spiType))
          {
             returnType = (T)loadService(spiType, null);
