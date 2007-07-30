@@ -21,13 +21,33 @@
  */
 package org.jboss.wsf.framework.management;
 
-import javax.management.ObjectName;
+import java.util.Date;
 
-import org.jboss.wsf.common.ObjectNameFactory;
-import org.jboss.wsf.spi.management.ServerConfig;
-
-public interface DefaultServerConfigMBean extends ServerConfig
+/**
+ * MBean interface.
+ * @since 15-April-2004
+ */
+public interface ManagedEndpointMBean
 {
-   /** The object name in the MBean server */
-   ObjectName OBJECT_NAME = ObjectNameFactory.create("jboss.ws:service=ServerConfig");
+   void start();
+
+   void stop();
+
+   Date getStartTime();
+
+   Date getStopTime();
+
+   long getMinProcessingTime();
+
+   long getMaxProcessingTime();
+
+   long getAverageProcessingTime();
+
+   long getTotalProcessingTime();
+
+   long getRequestCount();
+
+   long getFaultCount();
+
+   long getResponseCount();
 }

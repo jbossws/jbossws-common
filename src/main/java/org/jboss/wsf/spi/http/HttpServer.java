@@ -35,6 +35,9 @@ import org.jboss.wsf.spi.Extensible;
  */
 public interface HttpServer extends Extensible
 {
+   /** The default bean name */
+   String BEAN_NAME = "WSHTTPServer";
+
    /** Start an instance of this HTTP server */
    void start();
 

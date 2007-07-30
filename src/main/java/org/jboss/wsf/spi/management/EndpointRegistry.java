@@ -28,7 +28,6 @@ import java.util.Set;
 import javax.management.ObjectName;
 
 import org.jboss.wsf.spi.deployment.Endpoint;
-import org.jboss.wsf.common.ObjectNameFactory;
 
 /**
  * A general endpoint registry.
@@ -42,9 +41,6 @@ public interface EndpointRegistry
 {
    /** The bean name in the kernel registry */
    String BEAN_NAME = "WSEndpointRegistry";
-   
-   /** The object name in the MBean server */
-   ObjectName OBJECT_NAME = ObjectNameFactory.create("jboss.ws:service=EndpointRegistry");
 
    /** Get the list of registered endpoints */
    Set<ObjectName> getEndpoints();
@@ -54,13 +50,13 @@ public interface EndpointRegistry
 
    /** Resolve endpoints thrrough a resolve instance **/
    Endpoint resolve(EndpointResolver resolver);
-   
+
    /** True is an endpoint for that name is registered */
    boolean isRegistered(ObjectName epName);
-   
+
    /** Register an endpoint */
    void register(Endpoint endpoint);
-   
+
    /** Unregister an endpoint */
    void unregister(Endpoint endpoint);
 }

@@ -26,17 +26,16 @@ package org.jboss.wsf.framework.management;
 import java.io.File;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Iterator;
 import java.util.Set;
 
 import javax.management.AttributeNotFoundException;
 import javax.management.JMException;
 import javax.management.MBeanServer;
-import javax.management.MBeanServerFactory;
 import javax.management.ObjectName;
 
 import org.jboss.logging.Logger;
 import org.jboss.wsf.common.ObjectNameFactory;
+import org.jboss.wsf.spi.management.ServerConfig;
 
 /**
  * Basic implementation of a ServerConfig 
@@ -45,10 +44,12 @@ import org.jboss.wsf.common.ObjectNameFactory;
  * @author darran.lofthouse@jboss.com
  * @since 08-May-2006
  */
-public class DefaultServerConfig implements DefaultServerConfigMBean
+public class DefaultServerConfig implements DefaultServerConfigMBean, ServerConfig
 {
    private static final Logger log = Logger.getLogger(DefaultServerConfig.class);
 
+   // The MBeanServer
+   private MBeanServer mbeanServer;
    // The webservice host name that will be used when updating the wsdl
    private String webServiceHost = UNDEFINED_HOSTNAME;
    // The webservice port that will be used when updating the wsdl
@@ -57,8 +58,16 @@ public class DefaultServerConfig implements DefaultServerConfigMBean
    private int webServiceSecurePort;
    // Whether we should always modify the soap address to the deployed endpoing location
    private boolean modifySOAPAddress;
-   // The MBeanServer
-   private MBeanServer server;
+
+   public MBeanServer getMbeanServer()
+   {
+      return mbeanServer;
+   }
+
+   public void setMbeanServer(MBeanServer mbeanServer)
+   {
+      this.mbeanServer = mbeanServer;
+   }
 
    public String getWebServiceHost()
    {
@@ -105,9 +114,8 @@ public class DefaultServerConfig implements DefaultServerConfigMBean
    {
       try
       {
-         MBeanServer server = getMBeanServer();
          ObjectName oname = ObjectNameFactory.create("jboss.system:type=ServerConfig");
-         File tmpdir = (File)server.getAttribute(oname, "ServerTempDir");
+         File tmpdir = (File)getMbeanServer().getAttribute(oname, "ServerTempDir");
          return tmpdir;
       }
       catch (JMException e)
@@ -120,9 +128,8 @@ public class DefaultServerConfig implements DefaultServerConfigMBean
    {
       try
       {
-         MBeanServer server = getMBeanServer();
          ObjectName oname = ObjectNameFactory.create("jboss.system:type=ServerConfig");
-         File tmpdir = (File)server.getAttribute(oname, "ServerDataDir");
+         File tmpdir = (File)getMbeanServer().getAttribute(oname, "ServerDataDir");
          return tmpdir;
       }
       catch (JMException e)
@@ -165,20 +172,12 @@ public class DefaultServerConfig implements DefaultServerConfigMBean
 
    public void create() throws Exception
    {
-      MBeanServer server = getMBeanServer();
-      if (server != null)
-      {
-         server.registerMBean(this, DefaultServerConfigMBean.OBJECT_NAME);
-      }
+      getMbeanServer().registerMBean(this, DefaultServerConfigMBean.OBJECT_NAME);
    }
 
    public void destroy() throws Exception
    {
-      MBeanServer server = getMBeanServer();
-      if (server != null)
-      {
-         server.unregisterMBean(DefaultServerConfigMBean.OBJECT_NAME);
-      }
+      getMbeanServer().unregisterMBean(DefaultServerConfigMBean.OBJECT_NAME);
    }
 
    private int getConnectorPort(final String protocol, final boolean secure)
@@ -187,19 +186,18 @@ public class DefaultServerConfig implements DefaultServerConfigMBean
 
       try
       {
-         MBeanServer server = getMBeanServer();
          ObjectName connectors = new ObjectName("jboss.web:type=Connector,*");
 
-         Set connectorNames = server.queryNames(connectors, null);
+         Set connectorNames = getMbeanServer().queryNames(connectors, null);
          for (Object current : connectorNames)
          {
             ObjectName currentName = (ObjectName)current;
 
             try
             {
-               int connectorPort = (Integer)server.getAttribute(currentName, "port");
-               boolean connectorSecure = (Boolean)server.getAttribute(currentName, "secure");
-               String connectorProtocol = (String)server.getAttribute(currentName, "protocol");
+               int connectorPort = (Integer)getMbeanServer().getAttribute(currentName, "port");
+               boolean connectorSecure = (Boolean)getMbeanServer().getAttribute(currentName, "secure");
+               String connectorProtocol = (String)getMbeanServer().getAttribute(currentName, "protocol");
 
                if (protocol.equals(connectorProtocol) && secure == connectorSecure)
                {
@@ -224,17 +222,5 @@ public class DefaultServerConfig implements DefaultServerConfigMBean
       {
          return -1;
       }
-   }
-
-   private MBeanServer getMBeanServer()
-   {
-      if (server == null)
-      {
-         for (Iterator i = MBeanServerFactory.findMBeanServer(null).iterator(); i.hasNext();)
-         {
-            server = (MBeanServer)i.next();
-         }
-      }
-      return server;
    }
 }

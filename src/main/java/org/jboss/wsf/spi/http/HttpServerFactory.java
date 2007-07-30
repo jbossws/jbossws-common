@@ -33,5 +33,5 @@ import org.jboss.wsf.spi.SPIView;
  */
 public abstract class HttpServerFactory implements SPIView
 {
-   public abstract HttpServer newHttpServer();
+   public abstract HttpServer getHttpServer();
 }

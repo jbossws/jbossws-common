@@ -21,13 +21,39 @@
  */
 package org.jboss.wsf.framework.management;
 
-import javax.management.ObjectName;
+//$Id: KernelLocator.java 3137 2007-05-18 13:41:57Z thomas.diesler@jboss.com $
 
-import org.jboss.wsf.common.ObjectNameFactory;
-import org.jboss.wsf.spi.management.ServerConfig;
+import java.util.Iterator;
 
-public interface DefaultServerConfigMBean extends ServerConfig
+import javax.management.MBeanServer;
+import javax.management.MBeanServerFactory;
+
+/**
+ * Locate the single instance of the MBeanServer 
+ * 
+ * @author Thomas.Diesler@jboss.org
+ * @since 30-Jul-2007
+ */
+public class MBeanServerLocator
 {
-   /** The object name in the MBean server */
-   ObjectName OBJECT_NAME = ObjectNameFactory.create("jboss.ws:service=ServerConfig");
+   private MBeanServer mbeanServer;
+
+   public MBeanServer getMbeanServer()
+   {
+      // In jboss-4.2 the MBeanServer cannot be injected
+      if (mbeanServer == null)
+      {
+         for (Iterator i = MBeanServerFactory.findMBeanServer(null).iterator(); i.hasNext();)
+         {
+            mbeanServer = (MBeanServer)i.next();
+            break;
+         }
+      }
+      return mbeanServer;
+   }
+
+   public void setMbeanServer(MBeanServer mbeanServer)
+   {
+      this.mbeanServer = mbeanServer;
+   }
 }

@@ -21,9 +21,9 @@
  */
 package org.jboss.wsf.framework.management;
 
-import org.jboss.wsf.spi.management.ServerConfigFactory;
-import org.jboss.wsf.spi.management.ServerConfig;
 import org.jboss.wsf.common.KernelAwareSPIFactory;
+import org.jboss.wsf.spi.management.ServerConfig;
+import org.jboss.wsf.spi.management.ServerConfigFactory;
 
 /**
  * @author Heiko.Braun@jboss.com
@@ -33,8 +33,6 @@ public class ServerConfigFactoryImpl extends ServerConfigFactory
 {
    public ServerConfig getServerConfig()
    {
-      return new KernelAwareSPIFactory().getKernelProvidedSPI(
-        ServerConfig.BEAN_NAME, ServerConfig.class
-      );
+      return new KernelAwareSPIFactory().getKernelProvidedSPI(ServerConfig.BEAN_NAME, ServerConfig.class);
    }
 }

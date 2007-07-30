@@ -19,23 +19,18 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.wsf.framework.http;
+package org.jboss.wsf.framework.management;
 
-//$Id: HttpContext.java 1757 2006-12-22 15:40:24Z thomas.diesler@jboss.com $
+import javax.management.ObjectName;
 
-import org.jboss.wsf.spi.http.HttpServer;
-import org.jboss.wsf.spi.http.HttpServerFactory;
+import org.jboss.wsf.common.ObjectNameFactory;
 
 /**
- * A factory for an HTTP Server
- *
- * @author Thomas.Diesler@jboss.org
- * @since 07-Jul-2006
+ * MBean interface.
+ * @since 15-April-2004
  */
-public class DefaultHttpServerFactory extends HttpServerFactory
+public interface ManagedEndpointRegistryMBean
 {
-   public HttpServer newHttpServer()
-   {
-      return new WebAppDeployingHttpServer();
-   }
+   /** The object name in the MBean server */
+   ObjectName OBJECT_NAME = ObjectNameFactory.create("jboss.ws:service=EndpointRegistry");
 }
