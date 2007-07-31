@@ -32,9 +32,7 @@ import javax.naming.Context;
 import javax.naming.NamingException;
 
 import org.jboss.logging.Logger;
-import org.jboss.wsf.common.URLLoaderAdapter;
 import org.jboss.wsf.spi.WSFException;
-import org.jboss.wsf.spi.deployment.UnifiedVirtualFile;
 import org.jboss.wsf.spi.metadata.j2ee.serviceref.UnifiedServiceRefMetaData;
 import org.jboss.xb.binding.UnmarshallingContext;
 import org.xml.sax.Attributes;
@@ -60,7 +58,7 @@ public class ServiceRefHandlerImpl implements ServiceRefHandler
    /* binds jaxrpc deployments */
    private ServiceRefBinder jaxrpcBinder;
 
-   /*binds jaxws deployments */
+   /* binds jaxws deployments */
    private ServiceRefBinder jaxwsBinder;
 
    public void setJaxrpcBinder(ServiceRefBinder binder)

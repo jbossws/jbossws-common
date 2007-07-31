@@ -24,6 +24,7 @@ package org.jboss.ws.integration;
 //$Id$
 
 import org.jboss.kernel.Kernel;
+import org.jboss.util.NotImplementedException;
 
 /**
  * @deprecated
@@ -31,15 +32,15 @@ import org.jboss.kernel.Kernel;
  */
 public class KernelLocator 
 {
-   private static Kernel kernel;
-
+   @Deprecated
    public static Kernel getKernel()
    {
-      return KernelLocator.kernel;
+      return org.jboss.wsf.common.KernelLocator.getKernel();
    }
 
+   @Deprecated
    public void setKernel(Kernel kernel)
    {
-      KernelLocator.kernel = kernel;
+      throw new NotImplementedException("Deprecated, use: " + org.jboss.wsf.common.KernelLocator.class.getName());
    }
 }

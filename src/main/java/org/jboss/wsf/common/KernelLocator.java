@@ -31,7 +31,7 @@ import org.jboss.kernel.Kernel;
  * @author Thomas.Diesler@jboss.org
  * @since 12-May-2006
  */
-public class KernelLocator 
+public class KernelLocator
 {
    private static Kernel kernel;
 
