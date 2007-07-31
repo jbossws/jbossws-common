@@ -61,7 +61,7 @@ public class DeploymentAspectManagerImpl implements DeploymentAspectManager
       this.name = name;
    }
 
-   public List<DeploymentAspect> getDeploymentAspects()
+   public synchronized List<DeploymentAspect> getDeploymentAspects()
    {
       // This cannot be done in 'create' because we add aspects from different MC configurations
       if (sortedAspects == null)
