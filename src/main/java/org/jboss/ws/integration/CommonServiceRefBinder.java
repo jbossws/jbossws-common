@@ -21,29 +21,29 @@
  */
 package org.jboss.ws.integration;
 
-import org.jboss.wsf.spi.metadata.j2ee.serviceref.UnifiedServiceRefMetaData;
-import org.jboss.wsf.spi.WSFException;
-import org.jboss.ws.integration.ServiceRefBinder;
-import org.jboss.util.naming.Util;
-import org.jboss.logging.Logger;
-
-import javax.naming.Context;
-import javax.naming.NamingException;
-import javax.naming.Referenceable;
-import javax.xml.ws.WebServiceRef;
-import javax.xml.ws.WebServiceRefs;
-import javax.xml.ws.Service;
-import javax.xml.ws.WebServiceClient;
-import javax.xml.namespace.QName;
-import javax.jws.HandlerChain;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.annotation.Annotation;
-import java.util.List;
-import java.util.ArrayList;
-import java.net.URL;
 import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.jws.HandlerChain;
+import javax.naming.Context;
+import javax.naming.NamingException;
+import javax.naming.Referenceable;
+import javax.xml.namespace.QName;
+import javax.xml.ws.Service;
+import javax.xml.ws.WebServiceClient;
+import javax.xml.ws.WebServiceRef;
+import javax.xml.ws.WebServiceRefs;
+
+import org.jboss.logging.Logger;
+import org.jboss.util.naming.Util;
+import org.jboss.wsf.spi.WSFException;
+import org.jboss.wsf.spi.metadata.j2ee.serviceref.UnifiedServiceRefMetaData;
 
 /**
  * A generic ServiceRefBinder that knows how to deal with JAX-WS services.
@@ -62,19 +62,17 @@ public abstract class CommonServiceRefBinder implements ServiceRefBinder
    // logging support
    private static Logger log = Logger.getLogger(CommonServiceRefBinder.class);
 
-   private ClassLoader loader = null;
-
    public void setupServiceRef(Context encCtx, String encName, AnnotatedElement anElement, UnifiedServiceRefMetaData serviceRef, ClassLoader loader) throws NamingException
    {
       WebServiceRef wsref = null;
 
-      if(null == loader)
+      if (null == loader)
          throw new IllegalArgumentException("There needs to be a classloader available");
 
       // Build the list of @WebServiceRef relevant annotations
       List<WebServiceRef> wsrefList = new ArrayList<WebServiceRef>();
 
-      if(anElement!=null)
+      if (anElement != null)
       {
          for (Annotation an : anElement.getAnnotations())
          {
@@ -118,7 +116,7 @@ public abstract class CommonServiceRefBinder implements ServiceRefBinder
       }
       else
       {
-         if( wsref!=null && (wsref.type() != Object.class) )
+         if (wsref != null && (wsref.type() != Object.class))
             targetClass = wsref.type();
       }
 
@@ -147,7 +145,6 @@ public abstract class CommonServiceRefBinder implements ServiceRefBinder
       // #1 Use the explicit @WebServiceRef.type
       if (wsref != null && wsref.type() != Object.class)
          targetClassName = wsref.type().getName();
-
 
       // #2 Use the target ref type
       if (targetClassName == null && targetClass != null && Service.class.isAssignableFrom(targetClass) == false)
@@ -190,15 +187,15 @@ public abstract class CommonServiceRefBinder implements ServiceRefBinder
       }
 
       // Extract service QName for target service
-      if(null == serviceRef.getServiceQName())
+      if (null == serviceRef.getServiceQName())
       {
          try
          {
             Class serviceClass = loader.loadClass(serviceImplClass);
-            if(serviceClass.getAnnotation(WebServiceClient.class) !=null)
+            if (serviceClass.getAnnotation(WebServiceClient.class) != null)
             {
                WebServiceClient clientDecl = (WebServiceClient)serviceClass.getAnnotation(WebServiceClient.class);
-               serviceRef.setServiceQName( new QName(clientDecl.targetNamespace(), clientDecl.name()));
+               serviceRef.setServiceQName(new QName(clientDecl.targetNamespace(), clientDecl.name()));
             }
          }
          catch (ClassNotFoundException e)
@@ -223,7 +220,5 @@ public abstract class CommonServiceRefBinder implements ServiceRefBinder
     * @return  a Referenceable that can be used by a stack specific {@link javax.naming.spi.ObjectFactory} on the client side
     * to create a web service stub
     * */
-   protected abstract Referenceable buildServiceReferenceable(
-     String serviceImplClass, String targetClassName, UnifiedServiceRefMetaData serviceRef
-   );
+   protected abstract Referenceable buildServiceReferenceable(String serviceImplClass, String targetClassName, UnifiedServiceRefMetaData serviceRef);
 }

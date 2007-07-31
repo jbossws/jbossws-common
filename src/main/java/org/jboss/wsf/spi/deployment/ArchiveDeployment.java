@@ -21,14 +21,10 @@
  */
 package org.jboss.wsf.spi.deployment;
 
+//$Id: Deployment.java 3992 2007-07-25 12:48:59Z thomas.diesler@jboss.com $
+
 import java.io.IOException;
 import java.net.URL;
-
-import org.jboss.ws.integration.UnifiedVirtualFile;
-
-
-// $Id: Deployment.java 3992 2007-07-25 12:48:59Z thomas.diesler@jboss.com $
-
 
 /**
  * A general web service deployment dep. 

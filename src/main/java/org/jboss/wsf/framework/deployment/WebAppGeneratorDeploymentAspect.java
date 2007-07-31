@@ -73,14 +73,20 @@ public class WebAppGeneratorDeploymentAspect extends DeploymentAspect
    @Override
    public void create(Deployment dep)
    {
-      if (dep.getType().toString().endsWith("EJB21"))
+      String typeStr = dep.getType().toString();
+      if (typeStr.endsWith("EJB21"))
       {
          URL webAppURL = generatWebDeployment((ArchiveDeployment)dep, securityHandlerEJB21);
          dep.setProperty("org.jboss.ws.webapp.url", webAppURL);
       }
-      else if (dep.getType().toString().endsWith("EJB3"))
+      else if (typeStr.endsWith("EJB3"))
       {
          URL webAppURL = generatWebDeployment((ArchiveDeployment)dep, securityHandlerEJB3);
+         dep.setProperty("org.jboss.ws.webapp.url", webAppURL);
+      }
+      else 
+      {
+         URL webAppURL = generatWebDeployment((ArchiveDeployment)dep, null);
          dep.setProperty("org.jboss.ws.webapp.url", webAppURL);
       }
    }
@@ -238,7 +244,7 @@ public class WebAppGeneratorDeploymentAspect extends DeploymentAspect
       }
 
       // Optional login-config/auth-method
-      if (authMethod != null)
+      if (authMethod != null && securityHandler != null)
       {
          Element loginConfig = webApp.addElement("login-config");
          loginConfig.addElement("auth-method").addText(authMethod);
@@ -263,7 +269,8 @@ public class WebAppGeneratorDeploymentAspect extends DeploymentAspect
        */
       Element jbossWeb = document.addElement("jboss-web");
 
-      securityHandler.addSecurityDomain(jbossWeb, dep);
+      if (securityHandler != null)
+         securityHandler.addSecurityDomain(jbossWeb, dep);
 
       // Get the context root for this deployment
       String contextRoot = dep.getService().getContextRoot();

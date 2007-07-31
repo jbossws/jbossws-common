@@ -21,12 +21,12 @@
  */
 package org.jboss.ws.integration;
 
+//$Id$
+
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.registry.KernelRegistry;
 import org.jboss.kernel.spi.registry.KernelRegistryEntry;
 import org.jboss.wsf.common.ServiceLoader;
-
-// $Id$
 
 /**
  * A factory for the ServiceRefHandler 

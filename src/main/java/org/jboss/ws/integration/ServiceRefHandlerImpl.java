@@ -23,19 +23,21 @@ package org.jboss.ws.integration;
 
 // $Id$
 
-import org.jboss.logging.Logger;
-import org.jboss.wsf.spi.WSFException;
-import org.jboss.ws.integration.ServiceRefBinder;
-import org.jboss.wsf.spi.metadata.j2ee.serviceref.UnifiedServiceRefMetaData;
-import org.jboss.xb.binding.UnmarshallingContext;
-import org.xml.sax.Attributes;
-
-import javax.naming.Context;
-import javax.naming.NamingException;
 import java.io.File;
 import java.lang.reflect.AnnotatedElement;
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import javax.naming.Context;
+import javax.naming.NamingException;
+
+import org.jboss.logging.Logger;
+import org.jboss.wsf.common.URLLoaderAdapter;
+import org.jboss.wsf.spi.WSFException;
+import org.jboss.wsf.spi.deployment.UnifiedVirtualFile;
+import org.jboss.wsf.spi.metadata.j2ee.serviceref.UnifiedServiceRefMetaData;
+import org.jboss.xb.binding.UnmarshallingContext;
+import org.xml.sax.Attributes;
 
 /**
  * Bind service refs in the client's ENC

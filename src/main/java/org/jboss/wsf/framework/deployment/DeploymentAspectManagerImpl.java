@@ -109,22 +109,33 @@ public class DeploymentAspectManagerImpl implements DeploymentAspectManager
          }
 
          if (allAspects.size() != 0)
-         {
-            Set<String> providedConditions = new HashSet<String>();
-            for (int i = 0; i < sortedAspects.size(); i++)
-            {
-               DeploymentAspect sortedAspect = sortedAspects.get(i);
-               providedConditions.addAll(sortedAspect.getProvidesAsSet());
-            }
-
-            throw new IllegalStateException("Cannot add: " + allAspects + "\n provided: " + providedConditions);
-         }
+            throwSortException(allAspects);
 
          for (DeploymentAspect aspect : sortedAspects)
             log.debug(name + ": " + aspect);
       }
 
       return sortedAspects;
+   }
+
+   private void throwSortException(List<DeploymentAspect> allAspects)
+   {
+      Set<String> providedConditions = new HashSet<String>();
+      for (int i = 0; i < sortedAspects.size(); i++)
+      {
+         DeploymentAspect sortedAspect = sortedAspects.get(i);
+         providedConditions.addAll(sortedAspect.getProvidesAsSet());
+      }
+      
+      String exmsg = "Cannot add deployment aspect(s)";
+      StringBuilder str = new StringBuilder(exmsg + "\nProvided Conditions are: " + providedConditions);
+      for (DeploymentAspect da : allAspects)
+      {
+         str.append("\n   " + da.getClass().getName() + ", requires: " + da.getRequires());
+      }
+
+      log.error(str);
+      throw new IllegalStateException(exmsg);
    }
 
    private int getAspectIndex(DeploymentAspect aspect)

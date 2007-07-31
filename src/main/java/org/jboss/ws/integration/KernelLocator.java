@@ -26,10 +26,8 @@ package org.jboss.ws.integration;
 import org.jboss.kernel.Kernel;
 
 /**
- * Locate the single instance of the kernel 
- * 
- * @author Thomas.Diesler@jboss.org
- * @since 12-May-2006
+ * @deprecated
+ * @see org.jboss.wsf.common.KernelLocator
  */
 public class KernelLocator 
 {

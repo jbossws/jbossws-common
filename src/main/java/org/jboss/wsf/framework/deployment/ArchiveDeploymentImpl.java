@@ -27,9 +27,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.jboss.ws.integration.UnifiedVirtualFile;
 import org.jboss.wsf.spi.deployment.ArchiveDeployment;
-
+import org.jboss.wsf.spi.deployment.UnifiedVirtualFile;
 
 /**
  * A general web service deployment that is based on an archive. 
@@ -102,23 +101,23 @@ public class ArchiveDeploymentImpl extends DefaultDeployment implements ArchiveD
          }
 
          /*
-         if (resourceURL == null)
-         {
-            String deploymentPath = getUrl().toExternalForm();
+          if (resourceURL == null)
+          {
+          String deploymentPath = getUrl().toExternalForm();
 
-            if (deploymentPath.startsWith("jar:") && deploymentPath.endsWith("!/") == false)
-               deploymentPath += "!/";
+          if (deploymentPath.startsWith("jar:") && deploymentPath.endsWith("!/") == false)
+          deploymentPath += "!/";
 
-            if (deploymentPath.startsWith("war:") && deploymentPath.endsWith("!/") == false)
-               deploymentPath += "!/";
+          if (deploymentPath.startsWith("war:") && deploymentPath.endsWith("!/") == false)
+          deploymentPath += "!/";
 
-            if (deploymentPath.endsWith("/") == false)
-               deploymentPath += "/";
+          if (deploymentPath.endsWith("/") == false)
+          deploymentPath += "/";
 
-            // assign a relative URL
-            resourceURL = new URL(deploymentPath + resourcePath);
-         }
-         */
+          // assign a relative URL
+          resourceURL = new URL(deploymentPath + resourcePath);
+          }
+          */
       }
       return resourceURL;
    }

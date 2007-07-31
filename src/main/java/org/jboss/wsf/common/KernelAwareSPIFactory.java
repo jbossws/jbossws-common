@@ -24,7 +24,7 @@ package org.jboss.wsf.common;
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.registry.KernelRegistry;
 import org.jboss.kernel.spi.registry.KernelRegistryEntry;
-import org.jboss.ws.integration.KernelLocator;
+import org.jboss.wsf.common.KernelLocator;
 
 /**
  * @author Heiko.Braun@jboss.com

@@ -31,7 +31,7 @@ import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.registry.KernelRegistry;
 import org.jboss.kernel.spi.registry.KernelRegistryEntry;
 import org.jboss.logging.Logger;
-import org.jboss.ws.integration.KernelLocator;
+import org.jboss.wsf.common.KernelLocator;
 
 /**
  * A deployment aspect that does nothing.

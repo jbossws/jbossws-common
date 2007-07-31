@@ -19,21 +19,24 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.ws.integration;
+package org.jboss.wsf.spi.deployment;
 
-// $Id$
+// $Id: UnifiedVirtualFile.java 3137 2007-05-18 13:41:57Z thomas.diesler@jboss.com $
 
+import java.io.IOException;
+import java.io.Serializable;
 import java.net.URL;
 
 /**
- * @deprecated
- * @see org.jboss.wsf.common.URLLoaderAdapter
+ * An adaptor to a VirtualFile from jboss-vfs.jar
+ * jboss-vfs cannot be used in jboss-4.x because of its dependeny on jboss-common-core.jar
+ *  
+ * @author Thomas.Diesler@jboss.org
+ * @since 05-May-2006
  */
-public class URLLoaderAdapter extends org.jboss.wsf.common.URLLoaderAdapter implements UnifiedVirtualFile
+public interface UnifiedVirtualFile extends Serializable
 {
-   @Deprecated
-   public URLLoaderAdapter(URL rootURL)
-   {
-      super(rootURL);
-   }
+   UnifiedVirtualFile findChild(String child) throws IOException;
+
+   URL toURL();
 }

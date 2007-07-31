@@ -26,6 +26,7 @@ package org.jboss.ws.integration;
 import javax.naming.Context;
 import javax.naming.NamingException;
 
+import org.jboss.wsf.spi.deployment.UnifiedVirtualFile;
 import org.jboss.xb.binding.UnmarshallingContext;
 import org.xml.sax.Attributes;
 

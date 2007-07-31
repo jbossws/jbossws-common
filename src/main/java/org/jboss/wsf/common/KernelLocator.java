@@ -19,21 +19,29 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.ws.integration;
+package org.jboss.wsf.common;
 
-// $Id$
+//$Id: KernelLocator.java 3137 2007-05-18 13:41:57Z thomas.diesler@jboss.com $
 
-import java.net.URL;
+import org.jboss.kernel.Kernel;
 
 /**
- * @deprecated
- * @see org.jboss.wsf.common.URLLoaderAdapter
+ * Locate the single instance of the kernel 
+ * 
+ * @author Thomas.Diesler@jboss.org
+ * @since 12-May-2006
  */
-public class URLLoaderAdapter extends org.jboss.wsf.common.URLLoaderAdapter implements UnifiedVirtualFile
+public class KernelLocator 
 {
-   @Deprecated
-   public URLLoaderAdapter(URL rootURL)
+   private static Kernel kernel;
+
+   public static Kernel getKernel()
    {
-      super(rootURL);
+      return KernelLocator.kernel;
+   }
+
+   public void setKernel(Kernel kernel)
+   {
+      KernelLocator.kernel = kernel;
    }
 }

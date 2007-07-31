@@ -23,20 +23,10 @@ package org.jboss.ws.integration;
 
 // $Id$
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.net.URL;
-
 /**
- * An adaptor to a VirtualFile from jboss-vfs.jar
- * jboss-vfs cannot be used in jboss-4.x because of its dependeny on jboss-common-core.jar
- *  
- * @author Thomas.Diesler@jboss.org
- * @since 05-May-2006
+ * @deprecated
+ * @see org.jboss.wsf.spi.deployment.UnifiedVirtualFile
  */
-public interface UnifiedVirtualFile extends Serializable
+public interface UnifiedVirtualFile extends org.jboss.wsf.spi.deployment.UnifiedVirtualFile
 {
-   UnifiedVirtualFile findChild(String child) throws IOException;
-
-   URL toURL();
 }

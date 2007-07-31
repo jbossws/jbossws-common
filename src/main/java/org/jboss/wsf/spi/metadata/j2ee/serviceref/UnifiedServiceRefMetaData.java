@@ -34,7 +34,7 @@ import javax.xml.ws.WebServiceException;
 
 import org.jboss.logging.Logger;
 import org.jboss.ws.integration.ServiceRefMetaData;
-import org.jboss.ws.integration.UnifiedVirtualFile;
+import org.jboss.wsf.spi.deployment.UnifiedVirtualFile;
 import org.w3c.dom.Element;
 
 /**
@@ -124,7 +124,8 @@ public class UnifiedServiceRefMetaData extends ServiceRefMetaData
             log.warn("Cannot find port component ref: [sei=" + seiName + ",port=" + portQName + "]");
             if (seiName != null)
                addPortComponentRef(pcref);
-            else log.warn("Ingore port component ref without SEI declaration: " + pcref);
+            else
+               log.warn("Ingore port component ref without SEI declaration: " + pcref);
 
             targetPCRef = pcref;
          }
