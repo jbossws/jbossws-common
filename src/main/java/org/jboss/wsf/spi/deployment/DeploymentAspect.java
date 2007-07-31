@@ -47,6 +47,8 @@ public abstract class DeploymentAspect
    // provide logging
    protected final Logger log = Logger.getLogger(getClass());
 
+   public static final String LAST_DEPLOYMENT_ASPECT = "LAST_DEPLOYMENT_ASPECT";
+
    private String provides;
    private String requires;
 

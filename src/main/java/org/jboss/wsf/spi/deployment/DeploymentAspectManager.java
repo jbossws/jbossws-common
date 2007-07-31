@@ -33,16 +33,14 @@ import java.util.List;
  */
 public interface DeploymentAspectManager
 {
-   static final String LAST_DEPLOYMENT_ASPECT = "LAST_DEPLOYMENT_ASPECT";
-
    /** Get the name for this aspect manager */
    String getName();
    
    /** Get the ordered list of registered deployment aspects */
    List<DeploymentAspect> getDeploymentAspects();
    
-   /** Add deployment aspect */
-   void addDeploymentAspect(DeploymentAspect aspect);
+   /** Set the ordered list of registered deployment aspects */
+   void setDeploymentAspects(List<DeploymentAspect> aspects);
    
    /** Deploy a web service */
    void deploy(Deployment dep);

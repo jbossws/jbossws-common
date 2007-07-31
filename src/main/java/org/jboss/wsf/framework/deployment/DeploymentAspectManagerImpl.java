@@ -24,17 +24,17 @@ package org.jboss.wsf.framework.deployment;
 // $Id$
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import org.jboss.logging.Logger;
-import org.jboss.wsf.spi.deployment.Deployment.DeploymentState;
-import org.jboss.wsf.spi.deployment.DeploymentAspectManager;
-import org.jboss.wsf.spi.deployment.DeploymentAspect;
 import org.jboss.wsf.spi.deployment.Deployment;
+import org.jboss.wsf.spi.deployment.DeploymentAspect;
+import org.jboss.wsf.spi.deployment.DeploymentAspectManager;
 import org.jboss.wsf.spi.deployment.WSFDeploymentException;
+import org.jboss.wsf.spi.deployment.Deployment.DeploymentState;
 
 /**
  * A general service deployment manger.
@@ -48,8 +48,8 @@ public class DeploymentAspectManagerImpl implements DeploymentAspectManager
    private static final Logger log = Logger.getLogger(DeploymentAspectManagerImpl.class);
 
    private String name;
-   private Set<DeploymentAspect> unsortedAspects = new HashSet<DeploymentAspect>();
-   private List<DeploymentAspect> sortedAspects;
+   private List<DeploymentAspect> sortedAspects = new ArrayList<DeploymentAspect>();
+   private long deploymentCount;
 
    public String getName()
    {
@@ -61,106 +61,18 @@ public class DeploymentAspectManagerImpl implements DeploymentAspectManager
       this.name = name;
    }
 
-   public synchronized List<DeploymentAspect> getDeploymentAspects()
+   public List<DeploymentAspect> getDeploymentAspects()
    {
-      // This cannot be done in 'create' because we add aspects from different MC configurations
-      if (sortedAspects == null)
-      {
-         sortedAspects = new ArrayList<DeploymentAspect>();
-         List<DeploymentAspect> allAspects = new ArrayList<DeploymentAspect>(unsortedAspects);
-
-         // Add aspects with no requirements first
-         Iterator<DeploymentAspect> itAll = allAspects.iterator();
-         while (itAll.hasNext())
-         {
-            DeploymentAspect aspect = itAll.next();
-            if (aspect.getRequires() == null)
-            {
-               sortedAspects.add(aspect);
-               itAll.remove();
-            }
-         }
-
-         // Add aspects that have requirements that already added aspects provide
-         itAll = allAspects.iterator();
-         while (itAll.hasNext())
-         {
-            DeploymentAspect aspect = itAll.next();
-            int index = getAspectIndex(aspect);
-            if (index != -1)
-            {
-               sortedAspects.add(index, aspect);
-               itAll.remove();
-
-               itAll = allAspects.iterator();
-            }
-         }
-
-         // Add LAST_DEPLOYMENT_ASPECT
-         itAll = allAspects.iterator();
-         while (itAll.hasNext())
-         {
-            DeploymentAspect aspect = itAll.next();
-            if (LAST_DEPLOYMENT_ASPECT.equals(aspect.getRequires()))
-            {
-               sortedAspects.add(aspect);
-               itAll.remove();
-            }
-         }
-
-         if (allAspects.size() != 0)
-            throwSortException(allAspects);
-
-         for (DeploymentAspect aspect : sortedAspects)
-            log.debug(name + ": " + aspect);
-      }
-
-      return sortedAspects;
+      return Collections.unmodifiableList(sortedAspects);
    }
 
-   private void throwSortException(List<DeploymentAspect> allAspects)
+   public void setDeploymentAspects(List<DeploymentAspect> aspects)
    {
-      Set<String> providedConditions = new HashSet<String>();
-      for (int i = 0; i < sortedAspects.size(); i++)
-      {
-         DeploymentAspect sortedAspect = sortedAspects.get(i);
-         providedConditions.addAll(sortedAspect.getProvidesAsSet());
-      }
-      
-      String exmsg = "Cannot add deployment aspect(s)";
-      StringBuilder str = new StringBuilder(exmsg + "\nProvided Conditions are: " + providedConditions);
-      for (DeploymentAspect da : allAspects)
-      {
-         str.append("\n   " + da.getClass().getName() + ", requires: " + da.getRequires());
-      }
+      if (deploymentCount > 0)
+         throw new IllegalStateException("Cannot add deployment aspects");
 
-      log.error(str);
-      throw new IllegalStateException(exmsg);
-   }
-
-   private int getAspectIndex(DeploymentAspect aspect)
-   {
-      int index = -1;
-      Set<String> providedConditions = new HashSet<String>();
-      for (int i = 0; i < sortedAspects.size(); i++)
-      {
-         DeploymentAspect sortedAspect = sortedAspects.get(i);
-         providedConditions.addAll(sortedAspect.getProvidesAsSet());
-         if (providedConditions.containsAll(aspect.getRequiresAsSet()))
-         {
-            index = i + 1;
-            break;
-         }
-      }
-      return index;
-   }
-
-   public void addDeploymentAspect(DeploymentAspect aspect)
-   {
-      if (sortedAspects != null)
-         throw new IllegalStateException("Cannot add deployment aspects to an already sorted list: " + sortedAspects);
-
-      unsortedAspects.add(aspect);
+      sortedAspects.clear();
+      sortedAspects.addAll(aspects);
    }
 
    /**
@@ -179,7 +91,7 @@ public class DeploymentAspectManagerImpl implements DeploymentAspectManager
 
          // Check that all required aspects are met 
          Set<String> requiredSet = aspect.getRequiresAsSet();
-         requiredSet.remove(LAST_DEPLOYMENT_ASPECT);
+         requiredSet.remove(DeploymentAspect.LAST_DEPLOYMENT_ASPECT);
          if (providedConditions.containsAll(requiredSet) == false)
             throw new IllegalStateException("Required conditions '" + aspect.getRequires() + "' not satisfied by '" + providedConditions + "' for: " + aspect);
 
@@ -212,6 +124,8 @@ public class DeploymentAspectManagerImpl implements DeploymentAspectManager
       }
 
       dep.setState(DeploymentState.STARTED);
+      
+      deploymentCount++;
    }
 
    public void undeploy(Deployment dep)
