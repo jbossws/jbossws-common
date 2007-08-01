@@ -23,17 +23,103 @@ package org.jboss.ws.integration;
 
 // $Id$
 
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLClassLoader;
+
 
 /**
- * @deprecated
- * @see org.jboss.wsf.common.URLLoaderAdapter
+ * Load resources through a URLClassLoader.<br>
+ * NOTE: The associated classloader doesn't do parent delegation.
+ *
+ *
+ * @author Heiko.Braun@jboss.org
+ * @since 25.01.2007
  */
-public class URLLoaderAdapter extends org.jboss.wsf.common.URLLoaderAdapter implements UnifiedVirtualFile
+public class URLLoaderAdapter implements UnifiedVirtualFile
 {
-   @Deprecated
+   private URL rootURL;
+   private URL resourceURL;
+   private transient URLClassLoader loader;
+
    public URLLoaderAdapter(URL rootURL)
    {
-      super(rootURL);
+      this.rootURL = rootURL;
+   }
+
+   private URLLoaderAdapter(URL rootURL, URLClassLoader loader, URL resourceURL)
+   {
+      this.rootURL = rootURL;
+      this.resourceURL = resourceURL;
+      this.loader = loader;
+   }
+
+   public UnifiedVirtualFile findChild(String resourcePath) throws IOException
+   {
+      URL resourceURL = null;
+      if (resourcePath != null)
+      {
+         // Try the child as URL
+         try
+         {
+            resourceURL = new URL(resourcePath);
+         }
+         catch (MalformedURLException ex)
+         {
+            // ignore
+         }
+
+         // Try the filename as File
+         if (resourceURL == null)
+         {
+            try
+            {
+               File file = new File(resourcePath);
+               if (file.exists())
+                  resourceURL = file.toURL();
+            }
+            catch (MalformedURLException e)
+            {
+               // ignore
+            }
+         }
+
+         // Try the filename as Resource
+         if (resourceURL == null)
+         {
+            try
+            {
+               resourceURL = getResourceLoader().getResource(resourcePath);
+            }
+            catch (Exception ex)
+            {
+               // ignore
+            }
+         }
+      }
+
+      if (resourceURL == null)
+         throw new IOException("Cannot get URL for: " + resourcePath);
+
+      return new URLLoaderAdapter(rootURL, loader, resourceURL);
+   }
+
+   public URL toURL()
+   {
+      if (resourceURL != null)
+         return resourceURL;
+      else
+         return rootURL;
+   }
+
+   private URLClassLoader getResourceLoader()
+   {
+      if (loader == null)
+      {
+         loader = new URLClassLoader(new URL[] { rootURL });
+      }
+      return loader;
    }
 }

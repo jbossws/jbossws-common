@@ -23,12 +23,12 @@ package org.jboss.wsf.framework.deployment;
 
 //$Id: EndpointAddressDeploymentAspect.java 4018 2007-07-27 06:31:03Z thomas.diesler@jboss.com $
 
-import org.jboss.wsf.common.ResourceLoaderAdapter;
+import org.jboss.ws.integration.ResourceLoaderAdapter;
+import org.jboss.ws.integration.UnifiedVirtualFile;
 import org.jboss.wsf.spi.deployment.ArchiveDeployment;
 import org.jboss.wsf.spi.deployment.Deployment;
 import org.jboss.wsf.spi.deployment.DeploymentAspect;
 import org.jboss.wsf.spi.deployment.Endpoint;
-import org.jboss.wsf.spi.deployment.UnifiedVirtualFile;
 import org.jboss.wsf.spi.deployment.Deployment.DeploymentType;
 
 /**

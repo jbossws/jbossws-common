@@ -27,6 +27,7 @@ import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.registry.KernelRegistry;
 import org.jboss.kernel.spi.registry.KernelRegistryEntry;
 import org.jboss.wsf.common.ServiceLoader;
+import org.jboss.wsf.common.KernelLocator;
 
 /**
  * A factory for the ServiceRefHandler 

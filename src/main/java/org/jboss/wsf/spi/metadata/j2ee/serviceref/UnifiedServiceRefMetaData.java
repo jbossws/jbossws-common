@@ -34,7 +34,7 @@ import javax.xml.ws.WebServiceException;
 
 import org.jboss.logging.Logger;
 import org.jboss.ws.integration.ServiceRefMetaData;
-import org.jboss.wsf.spi.deployment.UnifiedVirtualFile;
+import org.jboss.ws.integration.UnifiedVirtualFile;
 import org.w3c.dom.Element;
 
 /**

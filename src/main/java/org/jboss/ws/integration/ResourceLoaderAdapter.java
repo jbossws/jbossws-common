@@ -23,20 +23,94 @@ package org.jboss.ws.integration;
 
 // $Id$
 
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+
 /**
- * @deprecated
- * @see org.jboss.wsf.common.ResourceLoaderAdapter
+ * The default file adapter loads resources through an associated classloader.
+ * If no classload is set, the the thread context classloader will be used.
+ *
+ * @author Heiko.Braun@jboss.org
+ * @since 25.01.2007
  */
-public class ResourceLoaderAdapter extends org.jboss.wsf.common.ResourceLoaderAdapter implements UnifiedVirtualFile
+public class ResourceLoaderAdapter implements UnifiedVirtualFile
 {
-   @Deprecated
+   private URL resourceURL;
+   private ClassLoader loader;
+
    public ResourceLoaderAdapter()
    {
+      this(Thread.currentThread().getContextClassLoader());
    }
 
-   @Deprecated
    public ResourceLoaderAdapter(ClassLoader loader)
    {
-      super(loader);
+      this.loader = loader;
+   }
+
+   private ResourceLoaderAdapter(ClassLoader loader, URL resourceURL)
+   {
+      this.resourceURL = resourceURL;
+      this.loader = loader;
+   }
+
+   public UnifiedVirtualFile findChild(String resourcePath) throws IOException
+   {
+      URL resourceURL = null;
+      if (resourcePath != null)
+      {
+         // Try the child as URL
+         try
+         {
+            resourceURL = new URL(resourcePath);
+         }
+         catch (MalformedURLException ex)
+         {
+            // ignore
+         }
+
+         // Try the filename as File
+         if (resourceURL == null)
+         {
+            try
+            {
+               File file = new File(resourcePath);
+               if (file.exists())
+                  resourceURL = file.toURL();
+            }
+            catch (MalformedURLException e)
+            {
+               // ignore
+            }
+         }
+
+         // Try the filename as Resource
+         if (resourceURL == null)
+         {
+            try
+            {
+               resourceURL = loader.getResource(resourcePath);
+            }
+            catch (Exception ex)
+            {
+               // ignore
+            }
+         }
+      }
+
+      if (resourceURL == null)
+         throw new IOException("Cannot get URL for: " + resourcePath);
+
+      return new ResourceLoaderAdapter(loader, resourceURL);
+   }
+
+   public URL toURL()
+   {
+      if (null == this.resourceURL)
+         throw new IllegalStateException("UnifiedVirtualFile not initialized");
+      return resourceURL;
    }
 }
