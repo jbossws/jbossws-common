@@ -21,32 +21,11 @@
  */
 package org.jboss.wsf.spi.serviceref;
 
-// $Id$
-
-import javax.naming.Context;
-import javax.naming.NamingException;
-
-import org.jboss.wsf.spi.deployment.UnifiedVirtualFile;
-import org.jboss.xb.binding.UnmarshallingContext;
-import org.xml.sax.Attributes;
-
 /**
- * An implementation of this interface handles all service-ref binding concerns 
- * 
- * @author Thomas.Diesler@jboss.org
- * @since 05-May-2004
+ * @author Thomas.Diesler@jboss.com
+ * @since 01-Aug-2007
  */
-public interface ServiceRefHandler
+public interface ServiceRefBinderFactory
 {
-   final String BEAN_NAME = "WSServiceRefHandler";
-   
-   enum Type {JAXRPC, JAXWS};
-
-   ServiceRefMetaData newServiceRefMetaData();
-
-   Object newChild(ServiceRefElement ref, UnmarshallingContext navigator, String namespaceURI, String localName, Attributes attrs);
-
-   void setValue(ServiceRefElement ref, UnmarshallingContext navigator, String namespaceURI, String localName, String value);
-   
-   void bindServiceRef(Context encCtx, String encName, UnifiedVirtualFile vfsRoot, ClassLoader loader, ServiceRefMetaData sref) throws NamingException;
+   ServiceRefBinder newServiceRefBinder(ServiceRefHandler.Type type);
 }

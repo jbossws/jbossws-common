@@ -21,7 +21,7 @@
  */
 package org.jboss.wsf.framework.serviceref;
 
-//$Id$
+//$Id: ServiceRefHandlerFactory.java 4049 2007-08-01 11:26:30Z thomas.diesler@jboss.com $
 
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.registry.KernelRegistry;
@@ -29,6 +29,7 @@ import org.jboss.kernel.spi.registry.KernelRegistryEntry;
 import org.jboss.wsf.common.ServiceLoader;
 import org.jboss.wsf.common.KernelLocator;
 import org.jboss.wsf.spi.serviceref.ServiceRefHandler;
+import org.jboss.wsf.spi.serviceref.ServiceRefHandlerFactory;
 
 /**
  * A factory for the ServiceRefHandler 
@@ -36,9 +37,9 @@ import org.jboss.wsf.spi.serviceref.ServiceRefHandler;
  * @author Thomas.Diesler@jboss.org
  * @since 05-May-2004
  */
-public abstract class ServiceRefHandlerFactory
+public class DefaultServiceRefHandlerFactory implements ServiceRefHandlerFactory
 {
-   public static ServiceRefHandler getServiceRefHandler()
+   public ServiceRefHandler getServiceRefHandler()
    {
       ServiceRefHandler handler;
       if (KernelLocator.getKernel() != null)
@@ -52,23 +53,16 @@ public abstract class ServiceRefHandlerFactory
       return handler;
    }
 
-   private static ServiceRefHandler getServerSideServiceRefHandler()
+   private ServiceRefHandler getServerSideServiceRefHandler()
    {
       Kernel kernel = KernelLocator.getKernel();
       KernelRegistry registry = kernel.getRegistry();
       KernelRegistryEntry entry = registry.getEntry(ServiceRefHandler.BEAN_NAME);
       ServiceRefHandler handler = (ServiceRefHandler)entry.getTarget();
-
-      // Try legacy JBossAS-4.2 name
-      if (handler == null)
-      {
-         entry = registry.getEntry("ServiceRefHandler");
-         handler = (ServiceRefHandler)entry.getTarget();
-      }
       return handler;
    }
 
-   private static ServiceRefHandler getClientSideServiceRefHandler()
+   private ServiceRefHandler getClientSideServiceRefHandler()
    {
       String propName = ServiceRefHandler.class.getName();
       String defaultImpl = "org.jboss.ws.integration.ServiceRefHandlerImpl";

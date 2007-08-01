@@ -29,6 +29,7 @@ import org.jboss.wsf.framework.deployment.DefaultLifecycleHandlerFactory;
 import org.jboss.wsf.framework.http.DefaultHttpContextFactory;
 import org.jboss.wsf.framework.http.DefaultHttpServerFactory;
 import org.jboss.wsf.framework.invocation.DefaultResourceInjectorFactory;
+import org.jboss.wsf.framework.serviceref.DefaultServiceRefHandlerFactory;
 import org.jboss.wsf.spi.SPIProvider;
 import org.jboss.wsf.spi.SPIProviderResolver;
 import org.jboss.wsf.spi.WSFException;
@@ -44,6 +45,8 @@ import org.jboss.wsf.spi.invocation.SecurityAdaptorFactory;
 import org.jboss.wsf.spi.invocation.WebServiceContextFactory;
 import org.jboss.wsf.spi.management.EndpointRegistryFactory;
 import org.jboss.wsf.spi.management.ServerConfigFactory;
+import org.jboss.wsf.spi.serviceref.ServiceRefBinderFactory;
+import org.jboss.wsf.spi.serviceref.ServiceRefHandlerFactory;
 
 /**
  * @author Heiko.Braun@jboss.com
@@ -98,6 +101,10 @@ public class DefaultSPIProviderResolver extends SPIProviderResolver
          {
             returnType = (T)loadService(spiType, DefaultResourceInjectorFactory.class.getName());
          }
+         else if (ServiceRefHandlerFactory.class.equals(spiType))
+         {
+            returnType = (T)loadService(spiType, DefaultServiceRefHandlerFactory.class.getName());
+         }
 
          // SPI provided by either container or stack integration
 
@@ -118,6 +125,10 @@ public class DefaultSPIProviderResolver extends SPIProviderResolver
             returnType = (T)loadService(spiType, null);
          }
          else if (ServerConfigFactory.class.equals(spiType))
+         {
+            returnType = (T)loadService(spiType, null);
+         }
+         else if (ServiceRefBinderFactory.class.equals(spiType))
          {
             returnType = (T)loadService(spiType, null);
          }

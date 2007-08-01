@@ -19,13 +19,14 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.wsf.framework.serviceref;
+package org.jboss.wsf.spi.serviceref;
 
-import org.jboss.wsf.spi.metadata.j2ee.serviceref.UnifiedServiceRefMetaData;
+import java.lang.reflect.AnnotatedElement;
 
 import javax.naming.Context;
 import javax.naming.NamingException;
-import java.lang.reflect.AnnotatedElement;
+
+import org.jboss.wsf.spi.metadata.j2ee.serviceref.UnifiedServiceRefMetaData;
 
 /**
  * Creates a ServiceReferenceable and binds it to JNDI.
@@ -35,10 +36,9 @@ import java.lang.reflect.AnnotatedElement;
  */
 public interface ServiceRefBinder
 {
-   public final static String JAXRPC_BINDER = "WSServiceRefBinderJAXRPC";
+   final static String BEAN_NAME_JAXRPC = "WSServiceRefBinderJAXRPC";
 
-   public final static String JAXWS_BINDER = "WSServiceRefBinderJAXWS";
+   final static String BEAN_NAME_JAXWS = "WSServiceRefBinderJAXWS";
 
-   void setupServiceRef(Context encCtx, String encName, AnnotatedElement anElement, UnifiedServiceRefMetaData serviceRef, ClassLoader loader)
-     throws NamingException;
+   void setupServiceRef(Context encCtx, String encName, AnnotatedElement anElement, UnifiedServiceRefMetaData serviceRef, ClassLoader loader) throws NamingException;
 }
