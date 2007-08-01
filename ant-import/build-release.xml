@@ -29,7 +29,7 @@
     </copy>
     <copy tofile="${jboss.repository.dir}/jbossws-spi/${repository.id}/component-info.xml" file="${spi.etc.dir}/component-info.xml" filtering="true" overwrite="true">
       <filterset>
-        <filtersfile file="${build.dir}/version.properties"/>
+        <filtersfile file="${spi.dir}/version.properties"/>
       </filterset>
     </copy>
     

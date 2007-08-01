@@ -3,25 +3,21 @@
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3.8.1"/>
-	<classpathentry kind="lib" path="thirdparty/jboss-common-core.jar"/>
-	<classpathentry kind="lib" path="thirdparty/jboss-container.jar"/>
-	<classpathentry kind="lib" path="thirdparty/jboss-dependency.jar"/>
-	<classpathentry kind="lib" path="thirdparty/jboss-deployers.jar" sourcepath="thirdparty/jboss-deployers-src.zip"/>
+	<classpathentry kind="lib" path="thirdparty/activation.jar"/>
+	<classpathentry kind="lib" path="thirdparty/dom4j.jar"/>
+	<classpathentry kind="lib" path="thirdparty/getopt.jar"/>
+	<classpathentry kind="lib" path="thirdparty/jaxb-api.jar"/>
+	<classpathentry kind="lib" path="thirdparty/jaxrpc-api.jar"/>
+	<classpathentry kind="lib" path="thirdparty/jaxws-api.jar"/>
 	<classpathentry kind="lib" path="thirdparty/jboss-logging-log4j.jar"/>
 	<classpathentry kind="lib" path="thirdparty/jboss-logging-spi.jar"/>
 	<classpathentry kind="lib" path="thirdparty/jboss-microcontainer.jar"/>
 	<classpathentry kind="lib" path="thirdparty/jboss-xml-binding.jar"/>
-	<classpathentry kind="lib" path="thirdparty/jaxws-api.jar"/>
-	<classpathentry kind="lib" path="thirdparty/jsr181-api.jar"/>
+	<classpathentry kind="lib" path="thirdparty/jboss-xml-binding-sources.jar"/>
 	<classpathentry kind="lib" path="thirdparty/servlet-api.jar"/>
-	<classpathentry kind="lib" path="thirdparty/junit.jar"/>
-	<classpathentry kind="lib" path="thirdparty/activation.jar"/>
+	<classpathentry kind="lib" path="thirdparty/jboss-common-core.jar"/>
+	<classpathentry kind="lib" path="thirdparty/jboss-dependency.jar"/>
 	<classpathentry kind="lib" path="thirdparty/jboss-javaee.jar"/>
-	<classpathentry kind="lib" path="thirdparty/jaxrpc-api.jar"/>
-	<classpathentry kind="lib" path="thirdparty/dom4j.jar"/>
 	<classpathentry kind="lib" path="thirdparty/ant.jar"/>
-	<classpathentry kind="lib" path="thirdparty/getopt.jar"/>
-	<classpathentry kind="lib" path="thirdparty/saaj-api.jar"/>
-	<classpathentry kind="lib" path="thirdparty/jaxb-api.jar"/>
 	<classpathentry kind="output" path="output/eclipse"/>
 </classpath>

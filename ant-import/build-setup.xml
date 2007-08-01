@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ====================================================================== -->
+<!--                                                                        -->
+<!--  JBoss, the OpenSource J2EE webOS                                      -->
+<!--                                                                        -->
+<!--  Distributable under LGPL license.                                     -->
+<!--  See terms of license at http://www.gnu.org.                           -->
+<!--                                                                        -->
+<!-- ====================================================================== -->
+
+<!-- $Id: build-setup.xml 3576 2007-06-14 09:23:52Z thomas.diesler@jboss.com $ -->
+
+<project>
+  
+  <!-- ================================================================== -->
+  <!-- Setup                                                              -->
+  <!-- ================================================================== -->
+	
+  <property name="spi.dir" value="${basedir}"/>
+  
+  <!-- Check if ant.properties is available -->
+  <available property="ant.properties.available" file="${spi.dir}/ant.properties"/>
+  <fail message="Cannot find ant.properties. Did you copy/edit ant.properties.example?" unless="ant.properties.available"/>
+  
+  <property file="${spi.dir}/ant.properties"/>
+  <property file="${spi.dir}/version.properties"/>
+  
+  <!-- JDK Detection -->
+  <available classname="java.lang.Enum" property="HAVE_JDK_1.5"/>
+  <available classname="java.io.Console" property="HAVE_JDK_1.6"/>
+  
+  <fail message="JDK1.5 or above is required" unless="HAVE_JDK_1.5"/>
+  
+  <!-- ================================================================== -->
+  <!-- Initialization                                                     -->
+  <!-- ================================================================== -->
+  
+  <target name="prepare">
+    <tstamp>
+      <format property="build.id" pattern="yyyyMMddHHmm"/>
+    </tstamp>
+  </target>
+  
+</project>
