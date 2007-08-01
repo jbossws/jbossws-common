@@ -26,7 +26,6 @@ package org.jboss.wsf.spi.deployment;
 import java.io.IOException;
 import java.net.URL;
 
-import org.jboss.ws.integration.UnifiedVirtualFile;
 
 /**
  * A general web service deployment dep. 

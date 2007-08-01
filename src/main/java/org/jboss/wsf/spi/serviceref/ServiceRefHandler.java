@@ -19,37 +19,32 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.ws.integration;
+package org.jboss.wsf.spi.serviceref;
 
 // $Id$
 
-import java.io.Serializable;
+import javax.naming.Context;
+import javax.naming.NamingException;
 
-import org.w3c.dom.Element;
+import org.jboss.wsf.spi.deployment.UnifiedVirtualFile;
+import org.jboss.xb.binding.UnmarshallingContext;
+import org.xml.sax.Attributes;
 
 /**
- * An abstract service-ref meta data object.
+ * An implementation of this interface handles all service-ref binding concerns 
  * 
  * @author Thomas.Diesler@jboss.org
- * @since 08-Mar-2007
+ * @since 05-May-2004
  */
-public abstract class ServiceRefMetaData extends ServiceRefElement implements Serializable
+public interface ServiceRefHandler
 {
-   public abstract String getServiceRefName();
+   final String BEAN_NAME = "WSServiceRefHandler";
+   
+   ServiceRefMetaData newServiceRefMetaData();
 
-   public abstract void setServiceRefName(String name);
+   Object newChild(ServiceRefElement ref, UnmarshallingContext navigator, String namespaceURI, String localName, Attributes attrs);
 
-   public abstract Object getAnnotatedElement();
-
-   public abstract void setAnnotatedElement(Object anElement);
-
-   public abstract boolean isProcessed();
-
-   public abstract void setProcessed(boolean flag);
-
-   public abstract void importStandardXml(Element element);
-
-   public abstract void importJBossXml(Element element);
-
-   public abstract void merge(ServiceRefMetaData targetRef);
+   void setValue(ServiceRefElement ref, UnmarshallingContext navigator, String namespaceURI, String localName, String value);
+   
+   void bindServiceRef(Context encCtx, String encName, UnifiedVirtualFile vfsRoot, ClassLoader loader, ServiceRefMetaData sref) throws NamingException;
 }

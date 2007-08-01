@@ -27,8 +27,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.jboss.ws.integration.UnifiedVirtualFile;
 import org.jboss.wsf.spi.deployment.ArchiveDeployment;
+import org.jboss.wsf.spi.deployment.UnifiedVirtualFile;
 
 /**
  * A general web service deployment that is based on an archive. 

@@ -19,15 +19,17 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.ws.integration;
+package org.jboss.wsf.framework.deployment;
 
-// $Id$
+// $Id: URLLoaderAdapter.java 3830 2007-07-09 17:01:33Z heiko.braun@jboss.com $
 
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+
+import org.jboss.wsf.spi.deployment.UnifiedVirtualFile;
 
 
 /**

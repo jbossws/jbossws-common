@@ -19,7 +19,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.ws.integration;
+package org.jboss.wsf.framework.serviceref;
 
 //$Id$
 
@@ -28,6 +28,7 @@ import org.jboss.kernel.spi.registry.KernelRegistry;
 import org.jboss.kernel.spi.registry.KernelRegistryEntry;
 import org.jboss.wsf.common.ServiceLoader;
 import org.jboss.wsf.common.KernelLocator;
+import org.jboss.wsf.spi.serviceref.ServiceRefHandler;
 
 /**
  * A factory for the ServiceRefHandler 

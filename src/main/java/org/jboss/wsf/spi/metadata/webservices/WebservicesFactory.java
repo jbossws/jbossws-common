@@ -30,7 +30,7 @@ import java.net.URL;
 import javax.xml.ws.WebServiceException;
 
 import org.jboss.logging.Logger;
-import org.jboss.ws.integration.UnifiedVirtualFile;
+import org.jboss.wsf.spi.deployment.UnifiedVirtualFile;
 import org.jboss.wsf.spi.metadata.j2ee.serviceref.UnifiedHandlerChainMetaData;
 import org.jboss.wsf.spi.metadata.j2ee.serviceref.UnifiedHandlerChainsMetaData;
 import org.jboss.wsf.spi.metadata.j2ee.serviceref.UnifiedHandlerMetaData;

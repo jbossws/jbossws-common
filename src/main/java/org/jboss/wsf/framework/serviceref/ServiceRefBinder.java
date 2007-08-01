@@ -19,31 +19,26 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.ws.integration;
+package org.jboss.wsf.framework.serviceref;
 
-// $Id$
+import org.jboss.wsf.spi.metadata.j2ee.serviceref.UnifiedServiceRefMetaData;
 
 import javax.naming.Context;
 import javax.naming.NamingException;
-
-import org.jboss.xb.binding.UnmarshallingContext;
-import org.xml.sax.Attributes;
+import java.lang.reflect.AnnotatedElement;
 
 /**
- * An implementation of this interface handles all service-ref binding concerns 
- * 
- * @author Thomas.Diesler@jboss.org
- * @since 05-May-2004
+ * Creates a ServiceReferenceable and binds it to JNDI.
+ *
+ * @author Heiko.Braun@jboss.com
+ *         Created: Jul 11, 2007
  */
-public interface ServiceRefHandler
+public interface ServiceRefBinder
 {
-   final String BEAN_NAME = "WSServiceRefHandler";
-   
-   ServiceRefMetaData newServiceRefMetaData();
+   public final static String JAXRPC_BINDER = "WSServiceRefBinderJAXRPC";
 
-   Object newChild(ServiceRefElement ref, UnmarshallingContext navigator, String namespaceURI, String localName, Attributes attrs);
+   public final static String JAXWS_BINDER = "WSServiceRefBinderJAXWS";
 
-   void setValue(ServiceRefElement ref, UnmarshallingContext navigator, String namespaceURI, String localName, String value);
-   
-   void bindServiceRef(Context encCtx, String encName, UnifiedVirtualFile vfsRoot, ClassLoader loader, ServiceRefMetaData sref) throws NamingException;
+   void setupServiceRef(Context encCtx, String encName, AnnotatedElement anElement, UnifiedServiceRefMetaData serviceRef, ClassLoader loader)
+     throws NamingException;
 }

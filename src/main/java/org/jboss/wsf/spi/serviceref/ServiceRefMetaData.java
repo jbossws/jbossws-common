@@ -19,24 +19,37 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.ws.integration;
+package org.jboss.wsf.spi.serviceref;
 
 // $Id$
 
-import java.io.IOException;
 import java.io.Serializable;
-import java.net.URL;
+
+import org.w3c.dom.Element;
 
 /**
- * An adaptor to a VirtualFile from jboss-vfs.jar
- * jboss-vfs cannot be used in jboss-4.x because of its dependeny on jboss-common-core.jar
- *  
+ * An abstract service-ref meta data object.
+ * 
  * @author Thomas.Diesler@jboss.org
- * @since 05-May-2006
+ * @since 08-Mar-2007
  */
-public interface UnifiedVirtualFile extends Serializable
+public abstract class ServiceRefMetaData extends ServiceRefElement implements Serializable
 {
-   UnifiedVirtualFile findChild(String child) throws IOException;
+   public abstract String getServiceRefName();
 
-   URL toURL();
+   public abstract void setServiceRefName(String name);
+
+   public abstract Object getAnnotatedElement();
+
+   public abstract void setAnnotatedElement(Object anElement);
+
+   public abstract boolean isProcessed();
+
+   public abstract void setProcessed(boolean flag);
+
+   public abstract void importStandardXml(Element element);
+
+   public abstract void importJBossXml(Element element);
+
+   public abstract void merge(ServiceRefMetaData targetRef);
 }

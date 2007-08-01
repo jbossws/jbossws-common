@@ -21,15 +21,16 @@
 */
 package org.jboss.wsf.spi.metadata.j2ee.serviceref;
 
+//$Id$
 
-// $Id$
+import org.jboss.wsf.spi.serviceref.ServiceRefElement;
 
 
 /**
  * @author Thomas.Diesler@jboss.org
  * @since 06-May-2004
  */
-public class UnifiedCallPropertyMetaData extends org.jboss.ws.integration.ServiceRefElement
+public class UnifiedCallPropertyMetaData extends ServiceRefElement
 {
    // The required <prop-name> element
    private String propName;

@@ -29,7 +29,7 @@ import java.util.List;
 import javax.xml.namespace.QName;
 import javax.xml.ws.handler.PortInfo;
 
-import org.jboss.ws.integration.ServiceRefElement;
+import org.jboss.wsf.spi.serviceref.ServiceRefElement;
 
 /** The unified metdata data for a handler chain element
  * 

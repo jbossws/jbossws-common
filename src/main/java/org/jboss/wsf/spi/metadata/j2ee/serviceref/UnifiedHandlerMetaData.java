@@ -30,13 +30,13 @@ import java.util.Set;
 
 import javax.xml.namespace.QName;
 
-import org.jboss.ws.integration.ServiceRefElement;
+import org.jboss.wsf.spi.serviceref.ServiceRefElement;
 import org.w3c.dom.Element;
 
-/** The unified metdata data for a handler element
+/** 
+ * The unified metdata data for a handler element
  * 
  * @author Thomas.Diesler@jboss.org
- * @version $Revision$
  */
 public class UnifiedHandlerMetaData extends ServiceRefElement
 {
