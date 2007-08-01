@@ -72,7 +72,7 @@
     <mkdir dir="${spi.output.etc.dir}"/>
     <copy todir="${spi.output.etc.dir}" filtering="yes">
       <fileset dir="${spi.etc.dir}"/>
-      <fileset dir="${build.dir}/etc">
+      <fileset dir="${spi.etc.dir}">
         <include name="default.mf"/>
   	  </fileset>
       <filterset>
