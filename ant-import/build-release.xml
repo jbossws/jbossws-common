@@ -19,12 +19,11 @@
 
     <!-- jboss/jbossws-spi -->
     <property name="jboss.repository.dir" value="${jboss.local.repository}/jboss"/>
-    <mkdir dir="${jboss.repository.dir}/jbossws/${repository.id}/lib"/>
+    <mkdir dir="${jboss.repository.dir}/jbossws-spi/${repository.id}/lib"/>
     <copy todir="${jboss.repository.dir}/jbossws-spi/${repository.id}/lib" overwrite="true">
       <fileset dir="${spi.output.lib.dir}">
         <include name="jbossws-spi.jar"/>
         <include name="jbossws-spi-src.zip"/>
-        <include name="jbossws-spi-scripts.zip"/>
 	  </fileset>
     </copy>
     <copy tofile="${jboss.repository.dir}/jbossws-spi/${repository.id}/component-info.xml" file="${spi.etc.dir}/component-info.xml" filtering="true" overwrite="true">

@@ -6,20 +6,6 @@
     licenseType="lgpl">
     
     <artifact id="jbossws-spi.jar"/>
-    <artifact id="jbossws-spi-scripts.zip"/>
-    
-    <import componentref="sun-jaxb">
-      <compatible version="@sun-jaxb@"/>
-    </import>
-    
-    <import componentref="sun-jaxws">
-      <compatible version="@sun-jaxws@"/>
-    </import>
-    
-    <import componentref="woodstox">
-      <compatible version="@woodstox@"/>
-      <compatible version="@woodstox@-brew"/>
-    </import>
     
     <export>
       <include input="jbossws-spi.jar"/>
