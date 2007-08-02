@@ -23,8 +23,6 @@ package org.jboss.wsf.spi.tools.cmd;
 
 import gnu.getopt.Getopt;
 import gnu.getopt.LongOpt;
-import org.jboss.wsf.spi.tools.WSContractProvider;
-import org.jboss.wsf.common.JavaUtils;
 
 import java.io.File;
 import java.io.PrintStream;
@@ -33,6 +31,8 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.jboss.wsf.spi.tools.WSContractProvider;
 
 /**
  * WSProvideTask is a cmd line tool that generates portable JAX-WS artifacts
@@ -157,7 +157,11 @@ public class WSProvide
    
    private int generate(String endpoint)
    {
-      if (!JavaUtils.isLoaded(endpoint, loader))
+      try
+      {
+         loader.loadClass(endpoint);
+      }
+      catch (ClassNotFoundException e)
       {
          System.err.println("Error: Could not load class [" + endpoint + "]. Did you specify a valid --classpath?");
          return 1;

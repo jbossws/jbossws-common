@@ -21,13 +21,12 @@
  */
 package org.jboss.wsf.spi.invocation;
 
-import org.jboss.wsf.common.JavaUtils;
-import org.jboss.wsf.spi.deployment.Endpoint;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.UndeclaredThrowableException;
 
 import javax.management.MBeanException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.UndeclaredThrowableException;
+
+import org.jboss.wsf.spi.deployment.Endpoint;
 
 /**
  * Handles invocations on endpoints.
@@ -38,7 +37,6 @@ import java.lang.reflect.UndeclaredThrowableException;
  */
 public abstract class InvocationHandler
 {
-   
    /** Create a container specific invocation **/
    public abstract Invocation createInvocation();
 
@@ -47,25 +45,6 @@ public abstract class InvocationHandler
 
    /** Initilize the invocation handler **/
    public abstract void init(Endpoint ep);
-
-   protected Method getImplMethod(Class implClass, Method seiMethod) throws ClassNotFoundException, NoSuchMethodException
-   {
-      String methodName = seiMethod.getName();
-      Class[] paramTypes = seiMethod.getParameterTypes();
-      for (int i = 0; i < paramTypes.length; i++)
-      {
-         Class paramType = paramTypes[i];
-         if (JavaUtils.isPrimitive(paramType) == false)
-         {
-            String paramTypeName = paramType.getName();
-            paramType = JavaUtils.loadJavaType(paramTypeName);
-            paramTypes[i] = paramType;
-         }
-      }
-
-      Method implMethod = implClass.getMethod(methodName, paramTypes);
-      return implMethod;
-   }
 
    protected void handleInvocationException(Throwable th) throws Exception
    {
