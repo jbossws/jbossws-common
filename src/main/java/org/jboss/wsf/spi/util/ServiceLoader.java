@@ -19,7 +19,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.wsf.common;
+package org.jboss.wsf.spi.util;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -31,7 +31,7 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Properties;
 
-// $Id$
+// $Id: ServiceLoader.java 3959 2007-07-20 14:44:19Z heiko.braun@jboss.com $
 
 /**
  * Load a service class using this ordered lookup procedure

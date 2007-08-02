@@ -19,29 +19,15 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.wsf.spi;
+package org.jboss.wsf.spi.metadata.j2ee.serviceref;
 
-import org.jboss.wsf.spi.util.ServiceLoader;
-
+// $Id: ServiceRefMetaDataParser.java 3959 2007-07-20 14:44:19Z heiko.braun@jboss.com $
 
 /**
- * Locates an SPIProvider.
- *
- * @author Heiko.Braun@jboss.com
- *         Created: Jul 18, 2007
+ * @author Thomas.Diesler@jboss.org
+ * @since 02-Aug-2007
  */
-public abstract class SPIProviderResolver
+public interface ServiceRefMetaDataParserFactory
 {
-   public final static String DEFAULT_SPI_PROVIDER_RESOLVER = "org.jboss.wsf.framework.DefaultSPIProviderResolver";
-
-   public static SPIProviderResolver getInstance()
-   {
-      return (SPIProviderResolver) ServiceLoader.loadService(
-          SPIProviderResolver.class.getName(),
-          DEFAULT_SPI_PROVIDER_RESOLVER
-      );
-   }
-
-   public abstract SPIProvider getProvider();
-
+   ServiceRefMetaDataParser getServiceRefMetaDataParser();
 }

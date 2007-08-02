@@ -3,7 +3,7 @@ package org.jboss.wsf.spi.tools;
 import java.io.File;
 import java.io.PrintStream;
 
-import org.jboss.wsf.common.ServiceLoader;
+import org.jboss.wsf.spi.util.ServiceLoader;
 
 /**
  * WSContractProvider is responsible for generating the required portable

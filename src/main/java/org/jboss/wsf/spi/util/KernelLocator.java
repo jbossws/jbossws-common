@@ -19,7 +19,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.wsf.common;
+package org.jboss.wsf.spi.util;
 
 //$Id: KernelLocator.java 3137 2007-05-18 13:41:57Z thomas.diesler@jboss.com $
 

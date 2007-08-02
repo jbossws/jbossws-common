@@ -30,6 +30,8 @@ import java.util.Set;
 
 import javax.xml.namespace.QName;
 
+import org.jboss.wsf.spi.SPIProvider;
+import org.jboss.wsf.spi.SPIProviderResolver;
 import org.jboss.wsf.spi.serviceref.ServiceRefElement;
 import org.w3c.dom.Element;
 
@@ -136,7 +138,9 @@ public class UnifiedHandlerMetaData extends ServiceRefElement
 
    public void importStandardXml(Element root)
    {
-      new ServiceRefMetaDataParser().importStandardXml(root, this);
+      SPIProvider provider = SPIProviderResolver.getInstance().getProvider();
+      ServiceRefMetaDataParserFactory factory = provider.getSPI(ServiceRefMetaDataParserFactory.class);
+      factory.getServiceRefMetaDataParser().importStandardXml(root, this);
    }
 
    public String toString()

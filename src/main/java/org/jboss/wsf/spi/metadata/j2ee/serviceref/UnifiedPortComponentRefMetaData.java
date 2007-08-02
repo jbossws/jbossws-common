@@ -28,6 +28,8 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
+import org.jboss.wsf.spi.SPIProvider;
+import org.jboss.wsf.spi.SPIProviderResolver;
 import org.jboss.wsf.spi.serviceref.ServiceRefElement;
 import org.w3c.dom.Element;
 
@@ -179,12 +181,16 @@ public class UnifiedPortComponentRefMetaData extends ServiceRefElement
 
    public void importStandardXml(Element root)
    {
-      new ServiceRefMetaDataParser().importStandardXml(root, this);
+      SPIProvider provider = SPIProviderResolver.getInstance().getProvider();
+      ServiceRefMetaDataParserFactory factory = provider.getSPI(ServiceRefMetaDataParserFactory.class);
+      factory.getServiceRefMetaDataParser().importStandardXml(root, this);
    }
 
    public void importJBossXml(Element root)
    {
-      new ServiceRefMetaDataParser().importJBossXml(root, this);
+      SPIProvider provider = SPIProviderResolver.getInstance().getProvider();
+      ServiceRefMetaDataParserFactory factory = provider.getSPI(ServiceRefMetaDataParserFactory.class);
+      factory.getServiceRefMetaDataParser().importJBossXml(root, this);
    }
 
    public boolean matches(String seiName, QName portName)

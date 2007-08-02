@@ -33,6 +33,8 @@ import javax.xml.namespace.QName;
 import javax.xml.ws.WebServiceException;
 
 import org.jboss.logging.Logger;
+import org.jboss.wsf.spi.SPIProvider;
+import org.jboss.wsf.spi.SPIProviderResolver;
 import org.jboss.wsf.spi.deployment.UnifiedVirtualFile;
 import org.jboss.wsf.spi.serviceref.ServiceRefMetaData;
 import org.w3c.dom.Element;
@@ -393,13 +395,17 @@ public class UnifiedServiceRefMetaData extends ServiceRefMetaData
    @Override
    public void importStandardXml(Element root)
    {
-      new ServiceRefMetaDataParser().importStandardXml(root, this);
+      SPIProvider provider = SPIProviderResolver.getInstance().getProvider();
+      ServiceRefMetaDataParserFactory factory = provider.getSPI(ServiceRefMetaDataParserFactory.class);
+      factory.getServiceRefMetaDataParser().importStandardXml(root, this);
    }
 
    @Override
    public void importJBossXml(Element root)
    {
-      new ServiceRefMetaDataParser().importJBossXml(root, this);
+      SPIProvider provider = SPIProviderResolver.getInstance().getProvider();
+      ServiceRefMetaDataParserFactory factory = provider.getSPI(ServiceRefMetaDataParserFactory.class);
+      factory.getServiceRefMetaDataParser().importJBossXml(root, this);
    }
 
    public String toString()
