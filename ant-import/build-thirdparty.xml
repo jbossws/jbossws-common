@@ -21,8 +21,8 @@
   
   <target name="thirdparty-init" depends="prepare">
     
-    <property name="thirdparty.dir" value="${spi.dir}/thirdparty"/>
-    <checksum file="${spi.dir}/version.properties" fileext=".md5" verifyproperty="checksum.ok"/>
+    <property name="thirdparty.dir" value="${common.dir}/thirdparty"/>
+    <checksum file="${common.dir}/version.properties" fileext=".md5" verifyproperty="checksum.ok"/>
     <condition property="force.thirdparty">
       <or>
         <not>
@@ -50,6 +50,7 @@
     <get src="${jboss.repository}/jboss/microcontainer/${jboss-microcontainer}/lib/jboss-microcontainer.jar" dest="${thirdparty.dir}/jboss-microcontainer.jar" usetimestamp="true" verbose="true"/>
     <get src="${jboss.repository}/jboss/microcontainer/${jboss-microcontainer}/lib/jboss-microcontainer-src.zip" dest="${thirdparty.dir}/jboss-microcontainer-src.zip" usetimestamp="true" verbose="true"/>
     <get src="${jboss.repository}/jboss/jboss-javaee/${jboss-javaee}/lib/jboss-javaee.jar" dest="${thirdparty.dir}/jboss-javaee.jar" usetimestamp="true" verbose="true"/>
+    <get src="${jboss.repository}/jboss/jbossws-spi/${jbossws-spi}/lib/jbossws-spi.jar" dest="${thirdparty.dir}/jbossws-spi.jar" usetimestamp="true" verbose="true"/>
     <get src="${jboss.repository}/jboss/jbossxb/${jboss-jbossxb}/lib/jboss-xml-binding.jar" dest="${thirdparty.dir}/jboss-xml-binding.jar" usetimestamp="true" verbose="true"/>
     <get src="${jboss.repository}/jboss/jbossxb/${jboss-jbossxb}/lib/jboss-xml-binding-sources.jar" dest="${thirdparty.dir}/jboss-xml-binding-sources.jar" usetimestamp="true" verbose="true"/>
     <get src="${jboss.repository}/sun-jaf/${sun-jaf}/lib/activation.jar" dest="${thirdparty.dir}/activation.jar" usetimestamp="true" verbose="true"/>
@@ -57,13 +58,13 @@
     <get src="${jboss.repository}/sun-jaxws/${sun-jaxws}/lib/jaxws-api.jar" dest="${thirdparty.dir}/jaxws-api.jar" usetimestamp="true" verbose="true"/>
     <get src="${jboss.repository}/sun-jaxrpc/${sun-jaxrpc}/lib/jaxrpc-api.jar" dest="${thirdparty.dir}/jaxrpc-api.jar" usetimestamp="true" verbose="true"/>
     <get src="${jboss.repository}/sun-servlet/${sun-servlet}/lib/servlet-api.jar" dest="${thirdparty.dir}/servlet-api.jar" usetimestamp="true" verbose="true"/>
-    <checksum file="${spi.dir}/version.properties" fileext=".md5"/>
+    <checksum file="${common.dir}/version.properties" fileext=".md5"/>
   </target>
   
   <target name="thirdparty-classpath" depends="thirdparty-get">
     
-    <!-- The compile classpath for jbossws spi -->
-    <path id="spi.thirdparty.classpath">
+    <!-- The compile classpath for jbossws common -->
+    <path id="common.thirdparty.classpath">
       <pathelement location="${thirdparty.dir}/activation.jar"/>
       <pathelement location="${thirdparty.dir}/dom4j.jar"/>
       <pathelement location="${thirdparty.dir}/getopt.jar"/>
@@ -73,6 +74,7 @@
       <pathelement location="${thirdparty.dir}/jboss-javaee.jar"/>
       <pathelement location="${thirdparty.dir}/jboss-microcontainer.jar"/>
       <pathelement location="${thirdparty.dir}/jboss-xml-binding.jar"/>
+      <pathelement location="${thirdparty.dir}/jbossws-spi.jar"/>
       <pathelement location="${thirdparty.dir}/jaxws-api.jar"/>
       <pathelement location="${thirdparty.dir}/jaxb-api.jar"/>
       <pathelement location="${thirdparty.dir}/jaxrpc-api.jar"/>

@@ -17,14 +17,14 @@
   <!-- Setup                                                              -->
   <!-- ================================================================== -->
 	
-  <property name="spi.dir" value="${basedir}"/>
+  <property name="common.dir" value="${basedir}"/>
   
   <!-- Check if ant.properties is available -->
-  <available property="ant.properties.available" file="${spi.dir}/ant.properties"/>
+  <available property="ant.properties.available" file="${common.dir}/ant.properties"/>
   <fail message="Cannot find ant.properties. Did you copy/edit ant.properties.example?" unless="ant.properties.available"/>
   
-  <property file="${spi.dir}/ant.properties"/>
-  <property file="${spi.dir}/version.properties"/>
+  <property file="${common.dir}/ant.properties"/>
+  <property file="${common.dir}/version.properties"/>
   
   <!-- JDK Detection -->
   <available classname="java.lang.Enum" property="HAVE_JDK_1.5"/>

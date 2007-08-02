@@ -17,18 +17,18 @@
   <target name="release" depends="jars" 
     description="Release to jboss.local.repository">
 
-    <!-- jboss/jbossws-spi -->
+    <!-- jboss/jbossws-common -->
     <property name="jboss.repository.dir" value="${jboss.local.repository}/jboss"/>
-    <mkdir dir="${jboss.repository.dir}/jbossws-spi/${repository.id}/lib"/>
-    <copy todir="${jboss.repository.dir}/jbossws-spi/${repository.id}/lib" overwrite="true">
-      <fileset dir="${spi.output.lib.dir}">
-        <include name="jbossws-spi.jar"/>
-        <include name="jbossws-spi-src.zip"/>
+    <mkdir dir="${jboss.repository.dir}/jbossws-common/${repository.id}/lib"/>
+    <copy todir="${jboss.repository.dir}/jbossws-common/${repository.id}/lib" overwrite="true">
+      <fileset dir="${common.output.lib.dir}">
+        <include name="jbossws-common.jar"/>
+        <include name="jbossws-common-src.zip"/>
 	  </fileset>
     </copy>
-    <copy tofile="${jboss.repository.dir}/jbossws-spi/${repository.id}/component-info.xml" file="${spi.etc.dir}/component-info.xml" filtering="true" overwrite="true">
+    <copy tofile="${jboss.repository.dir}/jbossws-common/${repository.id}/component-info.xml" file="${common.etc.dir}/component-info.xml" filtering="true" overwrite="true">
       <filterset>
-        <filtersfile file="${spi.dir}/version.properties"/>
+        <filtersfile file="${common.dir}/version.properties"/>
       </filterset>
     </copy>
     

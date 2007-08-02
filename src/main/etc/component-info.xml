@@ -1,14 +1,14 @@
-<project name="jboss/jbossws-spi">
+<project name="jboss/jbossws-common">
 	
-  <component id="jboss/jbossws-spi" 
+  <component id="jboss/jbossws-common" 
     description="JBossWS SPI" 
     version="@repository.id@" 
     licenseType="lgpl">
     
-    <artifact id="jbossws-spi.jar"/>
+    <artifact id="jbossws-common.jar"/>
     
     <export>
-      <include input="jbossws-spi.jar"/>
+      <include input="jbossws-common.jar"/>
     </export>
     
   </component>
