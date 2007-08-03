@@ -12,5 +12,7 @@
 	<classpathentry kind="lib" path="thirdparty/jboss-common-core.jar"/>
 	<classpathentry kind="lib" path="thirdparty/jboss-dependency.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/spi"/>
+	<classpathentry kind="lib" path="thirdparty/jboss-javaee.jar"/>
+	<classpathentry kind="lib" path="thirdparty/saaj-api.jar"/>
 	<classpathentry kind="output" path="output/eclipse"/>
 </classpath>
