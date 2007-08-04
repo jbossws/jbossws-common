@@ -44,9 +44,9 @@ import org.jboss.wsf.spi.management.ServerConfig;
  * @author darran.lofthouse@jboss.com
  * @since 08-May-2006
  */
-public class DefaultServerConfig implements DefaultServerConfigMBean, ServerConfig
+public abstract class AbstractServerConfig implements AbstractServerConfigMBean, ServerConfig
 {
-   private static final Logger log = Logger.getLogger(DefaultServerConfig.class);
+   private static final Logger log = Logger.getLogger(AbstractServerConfig.class);
 
    // The MBeanServer
    private MBeanServer mbeanServer;
@@ -172,12 +172,12 @@ public class DefaultServerConfig implements DefaultServerConfigMBean, ServerConf
 
    public void create() throws Exception
    {
-      getMbeanServer().registerMBean(this, DefaultServerConfigMBean.OBJECT_NAME);
+      getMbeanServer().registerMBean(this, AbstractServerConfigMBean.OBJECT_NAME);
    }
 
    public void destroy() throws Exception
    {
-      getMbeanServer().unregisterMBean(DefaultServerConfigMBean.OBJECT_NAME);
+      getMbeanServer().unregisterMBean(AbstractServerConfigMBean.OBJECT_NAME);
    }
 
    private int getConnectorPort(final String protocol, final boolean secure)
