@@ -1,11 +1,15 @@
 <project name="jboss/jbossws-common">
 	
   <component id="jboss/jbossws-common" 
-    description="JBossWS SPI" 
+    description="JBossWS Common" 
     version="@repository.id@" 
     licenseType="lgpl">
     
     <artifact id="jbossws-common.jar"/>
+    
+    <import componentref="jboss/jbossws-spi">
+      <compatible version="@jbossws-spi@"/>
+    </import>
     
     <export>
       <include input="jbossws-common.jar"/>
