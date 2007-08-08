@@ -30,8 +30,4 @@ public interface AbstractServerConfigMBean extends ServerConfig
 {
    /** The object name in the MBean server */
    ObjectName OBJECT_NAME = ObjectNameFactory.create("jboss.ws:service=ServerConfig");
-   
-   String getImplementationTitle();
-
-   String getImplementationVersion();
 }
