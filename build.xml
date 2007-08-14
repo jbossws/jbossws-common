@@ -68,7 +68,7 @@
   <!-- Compile etc files (manifests and such) -->
   <target name="compile-etc" depends="init">
     <mkdir dir="${common.output.etc.dir}"/>
-    <copy todir="${common.output.etc.dir}" filtering="yes">
+    <copy todir="${common.output.etc.dir}" filtering="yes" overwrite="true">
       <fileset dir="${common.etc.dir}">
         <include name="default.mf"/>
   	  </fileset>
