@@ -181,12 +181,21 @@ public class JBossWSTestHelper
             ObjectName oname = ObjectNameFactory.create("jboss.system:type=ServerConfig");
             jbossVersion = (String)getServer().getAttribute(oname, "SpecificationVersion");
             if (jbossVersion.startsWith("5.0"))
+            {
                jbossVersion = "jboss50";
+            }
             else if (jbossVersion.startsWith("4.2"))
+            {
                jbossVersion = "jboss42";
+            }
             else if (jbossVersion.startsWith("4.0"))
+            {
                jbossVersion = "jboss40";
-            else throw new RuntimeException("Unsupported jboss version: " + jbossVersion);
+            }
+            else
+            {
+               log.warn("Unsupported jboss version: " + jbossVersion);
+            }
          }
          catch (Throwable th)
          {
@@ -194,7 +203,9 @@ public class JBossWSTestHelper
          }
 
          if (jbossVersion != null && jbossVersion.equals(integrationTarget) == false)
-            throw new IllegalStateException("Integration target mismatch, using: " + jbossVersion);
+         {
+            log.warn("Integration target mismatch, using: " + integrationTarget);
+         }
       }
       return integrationTarget;
    }
