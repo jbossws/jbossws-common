@@ -6,6 +6,7 @@
     licenseType="lgpl">
     
     <artifact id="jbossws-common.jar"/>
+    <artifact id="jbossws-common-src.zip"/>
     
     <import componentref="jboss/jbossws-spi">
       <compatible version="@jbossws-spi@"/>
