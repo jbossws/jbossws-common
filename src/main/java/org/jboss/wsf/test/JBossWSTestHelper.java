@@ -32,7 +32,6 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
-import javax.xml.ws.Dispatch;
 import javax.xml.ws.Service;
 import javax.xml.ws.Service.Mode;
 import javax.xml.ws.soap.SOAPBinding;
@@ -73,25 +72,25 @@ public class JBossWSTestHelper
       getDeployer().undeploy(url);
    }
 
-   /** True, if -Djbossws.integration.target=jboss50 */
+   /** True, if -Djbossws.integration.target=jboss50x */
    public boolean isTargetJBoss50()
    {
       String target = getIntegrationTarget();
-      return "jboss50".equals(target);
+      return target.startsWith("jboss50");
    }
 
-   /** True, if -Djbossws.integration.target=jboss42 */
+   /** True, if -Djbossws.integration.target=jboss42x */
    public boolean isTargetJBoss42()
    {
       String target = getIntegrationTarget();
-      return "jboss42".equals(target);
+      return target.startsWith("jboss42");
    }
 
-   /** True, if -Djbossws.integration.target=jboss40 */
+   /** True, if -Djbossws.integration.target=jboss40x */
    public boolean isTargetJBoss40()
    {
       String target = getIntegrationTarget();
-      return "jboss40".equals(target);
+      return target.startsWith("jboss40");
    }
 
    public boolean isIntegrationNative()
