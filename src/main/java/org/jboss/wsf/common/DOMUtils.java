@@ -28,9 +28,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
@@ -69,10 +70,10 @@ public final class DOMUtils
    private static Logger log = Logger.getLogger(DOMUtils.class);
 
    // All elements created by the same thread are created by the same builder and belong to the same doc
-   private static ThreadLocal documentThreadLocal = new ThreadLocal();
-   private static ThreadLocal builderThreadLocal = new ThreadLocal()
+   private static ThreadLocal<Document> documentThreadLocal = new ThreadLocal<Document>();
+   private static ThreadLocal<DocumentBuilder> builderThreadLocal = new ThreadLocal<DocumentBuilder>()
    {
-      protected Object initialValue()
+      protected DocumentBuilder initialValue()
       {
          try
          {
@@ -118,12 +119,11 @@ public final class DOMUtils
    {
    }
 
-   /** Initialise the the DocumentBuilder
+   /** Initialize the DocumentBuilder
     */
    public static DocumentBuilder getDocumentBuilder()
    {
-      DocumentBuilder builder = (DocumentBuilder)builderThreadLocal.get();
-      return builder;
+      return builderThreadLocal.get();
    }
 
    /** Parse the given XML string and return the root Element
@@ -147,13 +147,11 @@ public final class DOMUtils
    {
       try
       {
-         Document doc = getDocumentBuilder().parse(xmlStream);
-         Element root = doc.getDocumentElement();
-         return root;
+         return getDocumentBuilder().parse(xmlStream).getDocumentElement();
       }
-      catch (SAXException e)
+      catch (SAXException se)
       {
-         throw new IOException(e.toString());
+         throw new IOException(se.toString());
       }
    }
 
@@ -163,13 +161,11 @@ public final class DOMUtils
    {
       try
       {
-         Document doc = getDocumentBuilder().parse(source);
-         Element root = doc.getDocumentElement();
-         return root;
+         return getDocumentBuilder().parse(source).getDocumentElement();
       }
-      catch (SAXException e)
+      catch (SAXException se)
       {
-         throw new IOException(e.toString());
+         throw new IOException(se.toString());
       }
    }
 
@@ -401,6 +397,24 @@ public final class DOMUtils
       }
    }
 
+   /** True if the node has text child elements only
+    */
+   public static boolean hasTextChildNodesOnly(Node node)
+   {
+      NodeList nodeList = node.getChildNodes();
+      if (nodeList.getLength() == 0)
+         return false;
+      
+      for (int i = 0; i < nodeList.getLength(); i++)
+      {
+         Node acksToChildNode = nodeList.item(i);
+         if (acksToChildNode.getNodeType() != Node.TEXT_NODE)
+            return false;
+      }
+
+      return true;
+   }
+
    /** True if the node has child elements
     */
    public static boolean hasChildElements(Node node)
@@ -417,15 +431,15 @@ public final class DOMUtils
 
    /** Gets child elements
     */
-   public static Iterator getChildElements(Node node)
+   public static Iterator<Element> getChildElements(Node node)
    {
-      ArrayList list = new ArrayList();
+      List<Element> list = new LinkedList<Element>();
       NodeList nlist = node.getChildNodes();
       for (int i = 0; i < nlist.getLength(); i++)
       {
          Node child = nlist.item(i);
          if (child.getNodeType() == Node.ELEMENT_NODE)
-            list.add(child);
+            list.add((Element)child);
       }
       return list.iterator();
    }
@@ -494,10 +508,20 @@ public final class DOMUtils
    {
       return getChildElementsIntern(node, nodeName);
    }
-
-   private static Iterator getChildElementsIntern(Node node, QName nodeName)
+   
+   public static List<Element> getChildElementsAsList(Node node, String nodeName)
    {
-      ArrayList list = new ArrayList();
+      return getChildElementsAsListIntern(node, new QName(nodeName));
+   }
+   
+   public static List<Element> getChildElementsAsList(Node node, QName nodeName)
+   {
+      return getChildElementsAsListIntern(node, nodeName);
+   }
+   
+   private static List<Element> getChildElementsAsListIntern(Node node, QName nodeName)
+   {
+      List<Element> list = new LinkedList<Element>();
       NodeList nlist = node.getChildNodes();
       for (int i = 0; i < nlist.getLength(); i++)
       {
@@ -506,7 +530,7 @@ public final class DOMUtils
          {
             if (nodeName == null)
             {
-               list.add(child);
+               list.add((Element)child);
             }
             else
             {
@@ -521,12 +545,17 @@ public final class DOMUtils
                }
                if (qname.equals(nodeName))
                {
-                  list.add(child);
+                  list.add((Element)child);
                }
             }
          }
       }
-      return list.iterator();
+      return list;
+   }
+
+   private static Iterator getChildElementsIntern(Node node, QName nodeName)
+   {
+      return getChildElementsAsListIntern(node, nodeName).iterator();
    }
 
    /** Gets parent element or null if there is none
@@ -540,7 +569,7 @@ public final class DOMUtils
    /** Get the owner document that is associated with the current thread */
    public static Document getOwnerDocument()
    {
-      Document doc = (Document)documentThreadLocal.get();
+      Document doc = documentThreadLocal.get();
       if (doc == null)
       {
          doc = getDocumentBuilder().newDocument();
