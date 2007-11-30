@@ -181,8 +181,10 @@ public class JBossWSTestHelper
             jbossVersion = (String)getServer().getAttribute(oname, "SpecificationVersion");
             if (jbossVersion.startsWith("5.0"))
                jbossVersion = "jboss50";
-            else if (jbossVersion.startsWith("4.2"))
+            else if (jbossVersion.startsWith("4.2"))               
                jbossVersion = "jboss42";
+            else if (jbossVersion.startsWith("4.3"))
+               jbossVersion = "jboss42";            
             else if (jbossVersion.startsWith("4.0"))
                jbossVersion = "jboss40";
             else throw new RuntimeException("Unsupported jboss version: " + jbossVersion);
