@@ -105,7 +105,7 @@ public class JBossWSTestHelper
       return vendor.indexOf("Sun") != -1;
    }
 
-   public boolean isIntegrationXFire()
+   public boolean isIntegrationCXF()
    {
       String vendor = getImplementationVendor();
       return vendor.indexOf("Apache") != -1;

@@ -92,9 +92,9 @@ public abstract class JBossWSTest extends TestCase
       return delegate.isIntegrationSunRI();
    }
 
-   public boolean isIntegrationXFire()
+   public boolean isIntegrationCXF()
    {
-      return delegate.isIntegrationXFire();
+      return delegate.isIntegrationCXF();
    }
 
    /** Deploy the given archive
