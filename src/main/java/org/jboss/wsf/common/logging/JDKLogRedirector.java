@@ -19,78 +19,72 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.wsf.common.log;
+package org.jboss.wsf.common.logging;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
-import java.util.logging.Filter;
-import java.util.logging.LogRecord;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Handler;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 /**
- * A log filter allowing logging of LogRecord depending on the
- * namespace of the Logger they have been collected by. 
+ * Redirects JDK Logger output to the JBoss Logger.
  * 
  * @author Alessio Soldano, <alessio.soldano@javalinux.it>
  * @author Stefano Maestri, <stefano.maestri@javalinux.it>
+ * @author Thomas.Diesler@jboss.com
  * @since 14-Jun-2007
- *
  */
-public class NamespaceFilter implements Filter
+public class JDKLogRedirector
 {
-
-   private Set<String> namespaces;
-   private boolean show;
-
-   public NamespaceFilter(boolean show)
-   {
-      this.show = show;
-   }
-
-   public boolean isLoggable(LogRecord record)
-   {
-      String loggerName = record.getLoggerName();
-      if (loggerName == null)
-      {
-         return true;
-      }
-      else
-      {
-         for (String ns : namespaces)
-         {
-            if (loggerName.startsWith(ns))
-            {
-               return show;
-            }
-         }
-         return !show;
-      }
-   }
+   private List<String> namespaces = new LinkedList<String>();
 
    public void addNamespace(String ns)
    {
-      if (namespaces == null)
-         namespaces = new LinkedHashSet<String>();
       namespaces.add(ns);
    }
 
-   public Set<String> getNamespaces()
+   public List<String> getNamespaces()
    {
       return namespaces;
    }
 
-   public void setNamespaces(Set<String> namespaces)
+   public void setNamespaces(List<String> namespaces)
    {
       this.namespaces = namespaces;
    }
 
-   public boolean isShow()
+   public void start()
    {
-      return show;
+      removeRootConsoleHandler();
+      addNamespaceHandlers();
    }
 
-   public void setShow(boolean show)
+   private void removeRootConsoleHandler()
    {
-      this.show = show;
+      LogManager logManager = LogManager.getLogManager();
+      Logger root = logManager.getLogger("");
+      while (root.getParent() != null)
+         root = root.getParent();
+
+      Handler[] handlers = root.getHandlers();
+      for (int i = 0; i < handlers.length; i++)
+      {
+         Handler handler = handlers[i];
+         if (handler instanceof ConsoleHandler)
+            root.removeHandler(handler);
+      }
    }
 
+   private void addNamespaceHandlers()
+   {
+      LogManager logManager = LogManager.getLogManager();
+      for (String ns : namespaces)
+      {
+         JDKLogger log = new JDKLogger(ns);
+         log.addHandler(new JDKLogHandler());
+         logManager.addLogger(log);
+      }
+   }
 }
