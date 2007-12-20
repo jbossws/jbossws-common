@@ -54,30 +54,32 @@ public class JDKLogHandler extends Handler
       {
          Logger logger = getJBossLogger(record);
          Level level = record.getLevel();
+         Throwable th = record.getThrown();
+         
          if (level == Level.FINER || level == Level.FINEST)
          {
             String msg = getMessage(record);
-            logger.trace(msg);
+            logger.trace(msg, th);
          }
          else if (level == Level.FINE)
          {
             String msg = getMessage(record);
-            logger.debug(msg);
+            logger.debug(msg, th);
          }
-         else if (level == Level.INFO || level == Level.CONFIG)
+         else if (level == Level.INFO || level == Level.CONFIG || level == Level.ALL)
          {
             String msg = getMessage(record);
-            logger.info(msg);
+            logger.info(msg, th);
          }
          else if (level == Level.WARNING)
          {
             String msg = getMessage(record);
-            logger.warn(msg);
+            logger.warn(msg, th);
          }
          else if (level == Level.SEVERE)
          {
             String msg = getMessage(record);
-            logger.error(msg);
+            logger.error(msg, th);
          }
          else if (level == Level.OFF)
          {
@@ -126,7 +128,7 @@ public class JDKLogHandler extends Handler
       {
          isLoggable = logger.isInfoEnabled();
       }
-      else if (level == Level.SEVERE || level == Level.WARNING)
+      else if (level == Level.SEVERE || level == Level.WARNING || level == Level.ALL)
       {
          isLoggable = true;
       }

@@ -24,8 +24,10 @@ package org.jboss.wsf.common.logging;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.ConsoleHandler;
+import java.util.logging.Filter;
 import java.util.logging.Handler;
 import java.util.logging.LogManager;
+import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 /**
@@ -57,11 +59,11 @@ public class JDKLogRedirector
 
    public void start()
    {
-      removeRootConsoleHandler();
+      modifyRootLogger();
       addNamespaceHandlers();
    }
 
-   private void removeRootConsoleHandler()
+   private void modifyRootLogger()
    {
       LogManager logManager = LogManager.getLogManager();
       Logger root = logManager.getLogger("");
@@ -73,7 +75,22 @@ public class JDKLogRedirector
       {
          Handler handler = handlers[i];
          if (handler instanceof ConsoleHandler)
-            root.removeHandler(handler);
+         {
+            Filter filter = new Filter()
+            {
+               public boolean isLoggable(LogRecord record)
+               {
+                  String name = record.getLoggerName();
+                  for (String ns : namespaces)
+                  {
+                     if (name.startsWith(ns))
+                        return false;
+                  }
+                  return true;
+               }
+            };
+            handler.setFilter(filter);
+         }
       }
    }
 
