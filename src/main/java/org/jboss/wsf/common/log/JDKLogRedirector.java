@@ -23,81 +23,26 @@ package org.jboss.wsf.common.log;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Filter;
+import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
-import java.util.logging.Level;
-
-import org.jboss.logging.Logger;
-import org.jboss.wsf.common.log.JBossLogHandler;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 /**
  * Redirects JDK Logger output to the JBoss Logger.
  * 
  * @author Alessio Soldano, <alessio.soldano@javalinux.it>
  * @author Stefano Maestri, <stefano.maestri@javalinux.it>
+ * @author Thomas.Diesler@jboss.com
  * @since 14-Jun-2007
- *
  */
 public class JDKLogRedirector
 {
    private List<String> namespaces = new LinkedList<String>();
 
-   public JDKLogRedirector()
-   {
-   }
-
-   public void changeHandlers()
-   {
-      for (String ns : namespaces)
-      {
-         changeHandler(ns);
-      }
-   }
-
-   /**
-    * Modifies the jdk root logger in order not to log records coming from
-    * loggers with the provided namespace; these records are then logged
-    * through the JBoss Logger.
-    * 
-    * @param ns
-    */
-   public void changeHandler(String ns)
-   {
-      if (ns == null)
-         ns = "";
-      Logger.getLogger(this.getClass()).info("Changing current root logger's log handlers to hide logs with namespace " + ns);
-      java.util.logging.Logger jdkRootLogger = java.util.logging.Logger.getLogger("");
-      Handler[] handlers = jdkRootLogger.getHandlers();
-      for (int i = 0; i < handlers.length; i++)
-      {
-         Handler handler = handlers[i];
-         if (!(handler instanceof JBossLogHandler))
-         {
-            StringBuffer sb = new StringBuffer("Disableing handler ");
-            sb.append(handler).append(" with level ").append(handler.getLevel());
-            Logger.getLogger(this.getClass()).debug(sb);
-            Filter f = handler.getFilter();
-            if (f != null && f instanceof NamespaceFilter)
-            {
-               ((NamespaceFilter)f).addNamespace(ns);
-            }
-            else
-            {
-               NamespaceFilter nsFilter = new NamespaceFilter(false);
-               nsFilter.addNamespace(ns);
-               handler.setFilter(nsFilter);
-            }
-         }
-      }
-      Handler jbossLogHandler = new JBossLogHandler();
-      jbossLogHandler.setLevel(Level.ALL);
-      java.util.logging.Logger.getLogger(ns).addHandler(jbossLogHandler);
-   }
-
    public void addNamespace(String ns)
    {
       namespaces.add(ns);
-      changeHandler(ns);
    }
 
    public List<String> getNamespaces()
@@ -108,6 +53,38 @@ public class JDKLogRedirector
    public void setNamespaces(List<String> namespaces)
    {
       this.namespaces = namespaces;
-      changeHandlers();
+   }
+
+   public void start()
+   {
+      removeRootConsoleHandler();
+      addNamespaceHandlers();
+   }
+
+   private void removeRootConsoleHandler()
+   {
+      LogManager logManager = LogManager.getLogManager();
+      Logger root = logManager.getLogger("");
+      while (root.getParent() != null)
+         root = root.getParent();
+
+      Handler[] handlers = root.getHandlers();
+      for (int i = 0; i < handlers.length; i++)
+      {
+         Handler handler = handlers[i];
+         if (handler instanceof ConsoleHandler)
+            root.removeHandler(handler);
+      }
+   }
+
+   private void addNamespaceHandlers()
+   {
+      LogManager logManager = LogManager.getLogManager();
+      for (String ns : namespaces)
+      {
+         JDKLogger log = new JDKLogger(ns);
+         log.addHandler(new JDKLogHandler());
+         logManager.addLogger(log);
+      }
    }
 }

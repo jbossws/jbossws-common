@@ -24,7 +24,6 @@ package org.jboss.wsf.common.log;
 // $Id$
 
 import java.util.logging.Level;
-import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 /**
@@ -33,38 +32,24 @@ import java.util.logging.Logger;
  * @author Thomas.Diesler@jboss.com
  * @since 18-Dec-2007
  */
-public class JBossLogManager extends LogManager
+public class JDKLogger extends Logger
 {
-   @Override
-   public synchronized Logger getLogger(String name)
+   protected JDKLogger(String name)
    {
-      Logger logger = super.getLogger(name);
-      if (logger == null)
-         logger = new JBossLogger(name);
+      super(name, null);
 
-      logger.addHandler(new JBossLogHandler());
-      return logger;
-   }
-
-   static class JBossLogger extends Logger
-   {
-      protected JBossLogger(String name)
+      org.jboss.logging.Logger jbl = org.jboss.logging.Logger.getLogger(name);
+      if (jbl.isTraceEnabled())
       {
-         super(name, null);
-         
-         org.jboss.logging.Logger jbl = org.jboss.logging.Logger.getLogger(name);
-         if (jbl.isTraceEnabled())
-         {
-            setLevel(Level.FINEST);
-         }
-         else if (jbl.isDebugEnabled())
-         {
-            setLevel(Level.FINE);
-         }
-         else if (jbl.isInfoEnabled())
-         {
-            setLevel(Level.INFO);
-         }
+         setLevel(Level.FINEST);
+      }
+      else if (jbl.isDebugEnabled())
+      {
+         setLevel(Level.FINE);
+      }
+      else if (jbl.isInfoEnabled())
+      {
+         setLevel(Level.INFO);
       }
    }
 }

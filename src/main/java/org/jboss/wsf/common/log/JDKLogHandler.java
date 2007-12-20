@@ -40,9 +40,9 @@ import org.jboss.logging.Logger;
  * @author Thomas.Diesler@jboss.com
  * @since 14-Jun-2007
  */
-public class JBossLogHandler extends Handler
+public class JDKLogHandler extends Handler
 {
-   public JBossLogHandler()
+   public JDKLogHandler()
    {
       super.setFormatter(new SimpleFormatter());
    }
