@@ -21,6 +21,8 @@
  */
 package org.jboss.wsf.common.log;
 
+// $Id$
+
 import java.util.logging.ErrorManager;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -35,12 +37,11 @@ import org.jboss.logging.Logger;
  * 
  * @author Alessio Soldano, <alessio.soldano@javalinux.it>
  * @author Stefano Maestri, <stefano.maestri@javalinux.it>
+ * @author Thomas.Diesler@jboss.com
  * @since 14-Jun-2007
- *
  */
 public class JBossLogHandler extends Handler
 {
-
    public JBossLogHandler()
    {
       super.setFormatter(new SimpleFormatter());
@@ -49,11 +50,50 @@ public class JBossLogHandler extends Handler
    @Override
    public void publish(LogRecord record)
    {
-      if (!isLoggable(record))
+      if (isLoggable(record))
       {
-         return;
+         Logger logger = getJBossLogger(record);
+         Level level = record.getLevel();
+         if (level == Level.FINER || level == Level.FINEST)
+         {
+            String msg = getMessage(record);
+            logger.trace(msg);
+         }
+         else if (level == Level.FINE)
+         {
+            String msg = getMessage(record);
+            logger.debug(msg);
+         }
+         else if (level == Level.INFO || level == Level.CONFIG)
+         {
+            String msg = getMessage(record);
+            logger.info(msg);
+         }
+         else if (level == Level.WARNING)
+         {
+            String msg = getMessage(record);
+            logger.warn(msg);
+         }
+         else if (level == Level.SEVERE)
+         {
+            String msg = getMessage(record);
+            logger.error(msg);
+         }
+         else if (level == Level.OFF)
+         {
+            // do nothing
+         }
       }
-      String msg;
+   }
+
+   private Logger getJBossLogger(LogRecord record)
+   {
+      return Logger.getLogger(record.getLoggerName());
+   }
+
+   private String getMessage(LogRecord record)
+   {
+      String msg = null;
       try
       {
          msg = getFormatter().formatMessage(record);
@@ -62,43 +102,35 @@ public class JBossLogHandler extends Handler
       {
          // We don't want to throw an exception here, but we
          // report the exception to any registered ErrorManager.
-         reportError(null, ex, ErrorManager.FORMAT_FAILURE);
-         return;
+         reportError("Cannot obtain message from log record", ex, ErrorManager.FORMAT_FAILURE);
       }
-      if (record.getLevel() == Level.INFO)
-      {
-         Logger.getLogger(record.getSourceClassName()).info(msg);
-      }
-      else if (record.getLevel() == Level.SEVERE)
-      {
-         Logger.getLogger(record.getSourceClassName()).error(msg);
-      }
-      else if (record.getLevel() == Level.WARNING)
-      {
-         Logger.getLogger(record.getSourceClassName()).warn(msg);
-      }
-      else if (record.getLevel() == Level.FINE)
-      {
-         Logger.getLogger(record.getSourceClassName()).debug(msg);
-      }
-      else if (record.getLevel() == Level.FINER || record.getLevel() == Level.FINEST)
-      {
-         Logger.getLogger(record.getSourceClassName()).trace(msg);
-      }
-      else
-      {
-         Logger.getLogger(record.getSourceClassName()).debug(msg);
-      }
+      return msg;
    }
 
    @Override
    public boolean isLoggable(LogRecord record)
    {
-      if (record == null)
+      Logger logger = getJBossLogger(record);
+      Level level = record.getLevel();
+
+      boolean isLoggable = false;
+      if (level == Level.FINER || level == Level.FINEST)
       {
-         return false;
+         isLoggable = logger.isTraceEnabled();
       }
-      return super.isLoggable(record);
+      else if (level == Level.FINE)
+      {
+         isLoggable = logger.isDebugEnabled();
+      }
+      else if (level == Level.INFO || level == Level.CONFIG)
+      {
+         isLoggable = logger.isInfoEnabled();
+      }
+      else if (level == Level.SEVERE || level == Level.WARNING)
+      {
+         isLoggable = true;
+      }
+      return isLoggable;
    }
 
    @Override

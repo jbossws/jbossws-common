@@ -41,17 +41,30 @@ public class JBossLogManager extends LogManager
       Logger logger = super.getLogger(name);
       if (logger == null)
          logger = new JBossLogger(name);
-      
+
       logger.addHandler(new JBossLogHandler());
       return logger;
    }
-   
+
    static class JBossLogger extends Logger
    {
       protected JBossLogger(String name)
       {
          super(name, null);
-         setLevel(Level.FINEST);
+         
+         org.jboss.logging.Logger jbl = org.jboss.logging.Logger.getLogger(name);
+         if (jbl.isTraceEnabled())
+         {
+            setLevel(Level.FINEST);
+         }
+         else if (jbl.isDebugEnabled())
+         {
+            setLevel(Level.FINE);
+         }
+         else if (jbl.isInfoEnabled())
+         {
+            setLevel(Level.INFO);
+         }
       }
    }
 }
