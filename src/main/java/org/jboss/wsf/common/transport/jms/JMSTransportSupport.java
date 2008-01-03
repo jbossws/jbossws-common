@@ -55,6 +55,7 @@ import org.jboss.util.NestedRuntimeException;
 import org.jboss.wsf.spi.SPIProvider;
 import org.jboss.wsf.spi.SPIProviderResolver;
 import org.jboss.wsf.spi.deployment.Endpoint;
+import org.jboss.wsf.spi.deployment.Endpoint.EndpointState;
 import org.jboss.wsf.spi.invocation.InvocationContext;
 import org.jboss.wsf.spi.invocation.RequestHandler;
 import org.jboss.wsf.spi.management.EndpointRegistry;
@@ -150,6 +151,25 @@ public abstract class JMSTransportSupport implements MessageDrivenBean, MessageL
          throw new IllegalStateException("Cannot find endpoint for: " + fromName);
 
       log.debug("dipatchMessage: " + endpoint.getName());
+      
+      // [JBWS-1324]: workaround to prevent message processing before endpoint is started
+      EndpointState state = endpoint.getState();
+      ObjectName name = endpoint.getName();
+      long startTime = System.currentTimeMillis(); 
+      log.debug(name + " is in state: " + state);
+      while (state != EndpointState.STARTED && (System.currentTimeMillis() - startTime < 60000))
+      {
+         try
+         {
+            Thread.sleep(1000);
+            state = endpoint.getState();
+            log.debug(name + " is now in state: " + state);
+         }
+         catch (InterruptedException e)
+         {
+            throw new EJBException(e);
+         }
+      }
 
       RequestHandler reqHandler = endpoint.getRequestHandler();
 
