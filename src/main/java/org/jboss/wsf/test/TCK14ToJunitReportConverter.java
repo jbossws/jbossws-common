@@ -97,30 +97,52 @@ public final class TCK14ToJunitReportConverter
       }
    }
    
+   /**
+    * Converts TCK log to Junit report file
+    * @param pckg package of the test
+    * @param f TCK report file
+    * @throws IOException if some I/O problem occurs
+    */
    private static void convertFile(String pckg, File f) throws IOException
    {
       BufferedReader reader = new BufferedReader(new FileReader(f));
       StringBuilder sb = new StringBuilder();
-      String line = reader.readLine();
-      boolean passed = false;
-      while (line != null)
+      boolean testPassed = false;
+      try
       {
-         if (line.trim().length() > 0)
+         String line = reader.readLine();
+         while (line != null)
          {
+            if ((line.trim().length() > 0) && testPassed)
+            {
+               // TCK test passed if and only if the last line in log is 'test result: Passed'
+               testPassed = false; 
+            }
             sb.append(line);
             sb.append("\n");
-            passed = false;
+            if (line.indexOf("test result: Passed") != -1)
+            {
+               testPassed = true;
+            }
+            line = reader.readLine();
          }
-         if (line.indexOf("test result: Passed") != -1)
-         {
-            passed = true;
-         }
-         line = reader.readLine();
       }
-      createReport(sb.toString(), passed, pckg, f);
+      finally
+      {
+         reader.close();
+      }
+      createJunitReport(sb.toString(), testPassed, pckg, f);
    }
    
-   private static void createReport(String consoleOutput, boolean passed, String pckg, File file) throws IOException
+   /**
+    * Flushes Junit report to the file system
+    * @param consoleOutput TCK log
+    * @param passed indicates whether TCK test passed
+    * @param pckg test package
+    * @param file TCK log file
+    * @throws IOException if some I/O problem occurs
+    */
+   private static void createJunitReport(String consoleOutput, boolean passed, String pckg, File file) throws IOException
    {
       String fileName = file.getName().substring(0, file.getName().length() - 4);
       StringBuilder sb = new StringBuilder();
@@ -133,11 +155,17 @@ public final class TCK14ToJunitReportConverter
       sb.append("  <system-err><![CDATA[]]></system-err>" + nl);
       sb.append("</testsuite>" + nl);
       File junitReportFile = new File(junitReportDir, "TEST-" + pckg.replace('/', '.') + "." + fileName + ".xml");
-      System.out.println("Creating JUnit report file " + junitReportFile.getAbsolutePath());
-      FileOutputStream os = new FileOutputStream(junitReportFile);
-      os.write(sb.toString().getBytes());
-      os.flush();
-      os.close();
+      System.out.println("Creating JUnit report file: " + junitReportFile.getAbsolutePath());
+      FileOutputStream os = null;
+      try
+      {
+         os = new FileOutputStream(junitReportFile);
+         os.write(sb.toString().getBytes());
+      }
+      finally
+      {
+         if (os != null) os.close();
+      }
    }
    
    private static String replace(String oldString, String newString, String data)
