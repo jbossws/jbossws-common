@@ -87,9 +87,9 @@ public abstract class JBossWSTest extends TestCase
 
    }
 
-   public boolean isIntegrationSunRI()
+   public boolean isIntegrationMetro()
    {
-      return delegate.isIntegrationSunRI();
+      return delegate.isIntegrationMetro();
    }
 
    public boolean isIntegrationCXF()

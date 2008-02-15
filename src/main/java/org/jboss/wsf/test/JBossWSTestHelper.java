@@ -99,7 +99,7 @@ public class JBossWSTestHelper
       return vendor.indexOf("JBoss") != -1;
    }
 
-   public boolean isIntegrationSunRI()
+   public boolean isIntegrationMetro()
    {
       String vendor = getImplementationVendor();
       return vendor.indexOf("Sun") != -1;
