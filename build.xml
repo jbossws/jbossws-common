@@ -61,6 +61,7 @@
     <javac srcdir="${common.java.dir}" sourcepath="" destdir="${common.output.classes.dir}" encoding="utf-8" debug="${javac.debug}" verbose="${javac.verbose}"
       deprecation="${javac.deprecation}" failonerror="${javac.fail.onerror}" source="1.5" target="1.5">
       <include name="org/jboss/wsf/**"/>
+      <include name="org/jboss/ws/**"/>
       <classpath refid="common.thirdparty.classpath"/>
     </javac>
   </target>
@@ -102,6 +103,7 @@
     <jar jarfile="${common.output.lib.dir}/jbossws-common.jar" manifest="${common.output.etc.dir}/default.mf">
       <fileset dir="${common.output.classes.dir}">
         <include name="org/jboss/wsf/**"/>
+      	<include name="org/jboss/ws/**"/>
       </fileset>
     </jar>
     

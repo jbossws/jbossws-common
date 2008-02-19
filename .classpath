@@ -14,5 +14,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/spi"/>
 	<classpathentry kind="lib" path="thirdparty/jboss-javaee.jar"/>
 	<classpathentry kind="lib" path="thirdparty/saaj-api.jar"/>
+	<classpathentry kind="lib" path="thirdparty/ant.jar"/>
 	<classpathentry kind="output" path="output/eclipse"/>
 </classpath>
