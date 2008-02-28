@@ -67,6 +67,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.jboss.logging.Logger;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -587,6 +588,10 @@ public class DOMWriter
                break;
             }
             case '\r':
+            {
+               str.append("&#xD;");
+               break;
+            }
             case '\n':
             {
                if (canonical)
