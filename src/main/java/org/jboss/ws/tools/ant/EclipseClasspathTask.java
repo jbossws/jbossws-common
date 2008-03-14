@@ -47,6 +47,9 @@ public class EclipseClasspathTask extends Task
 {
    private String pathId;
    private String excludesFile;
+   private String outputFile;
+   private String srcPath; 
+   private String srcOutput;
 
    @Override
    public void execute() throws BuildException
@@ -59,7 +62,8 @@ public class EclipseClasspathTask extends Task
          List<String> excludes = getExcludes();
          StringBuffer sb = new StringBuffer();
          generateContent(sb, excludes, pathElements);
-         BufferedWriter out = new BufferedWriter(new FileWriter(new File(getProject().getBaseDir(), ".classpath")));
+         File file = outputFile != null ? new File(outputFile) : new File(getProject().getBaseDir(), ".classpath");
+         BufferedWriter out = new BufferedWriter(new FileWriter(file));
          out.write(sb.toString());
          out.close();
       }
@@ -74,17 +78,32 @@ public class EclipseClasspathTask extends Task
    {
       sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
       sb.append("<classpath>\n");
+      sb.append("<classpathentry ");
       if (excludes != null && !excludes.isEmpty())
       {
-         sb.append("<classpathentry excluding=\"");
+         sb.append("excluding=\"");
          for (Iterator<String> it = excludes.iterator(); it.hasNext();)
          {
             sb.append(it.next());
             if (it.hasNext())
                sb.append("|");
          }
-         sb.append("\" kind=\"src\" path=\"tests/java\"/>\n");
+         sb.append("\" ");
       }
+      sb.append("kind=\"src\" ");
+      if (srcOutput != null)
+      {
+         sb.append("output=\"");
+         sb.append(srcOutput);
+         sb.append("\" ");
+      }
+      if (srcPath != null)
+      {
+         sb.append("path=\"");
+         sb.append(srcPath);
+         sb.append("\" ");
+      }
+      sb.append("/>\n");
       sb.append("<classpathentry kind=\"con\" path=\"org.eclipse.jdt.launching.JRE_CONTAINER\"/>\n");
       for (int i = 0; i < libs.length; i++)
       {
@@ -102,21 +121,24 @@ public class EclipseClasspathTask extends Task
    private List<String> getExcludes() throws IOException
    {
       List<String> excludes = new LinkedList<String>();
-      BufferedReader in = null;
-      try
+      if (excludesFile != null)
       {
-         in = new BufferedReader(new FileReader(excludesFile));
-         String str;
-         while ((str = in.readLine()) != null)
+         BufferedReader in = null;
+         try
          {
-            if (str.length() > 0 & !str.startsWith("#"))
-               excludes.add(str);
+            in = new BufferedReader(new FileReader(excludesFile));
+            String str;
+            while ((str = in.readLine()) != null)
+            {
+               if (str.length() > 0 & !str.startsWith("#"))
+                  excludes.add(str);
+            }
          }
-      }
-      finally
-      {
-         if (in != null)
-            in.close();
+         finally
+         {
+            if (in != null)
+               in.close();
+         }
       }
       return excludes;
    }
@@ -142,6 +164,21 @@ public class EclipseClasspathTask extends Task
    public void setExcludesFile(String excludesFile)
    {
       this.excludesFile = excludesFile;
+   }
+
+   public void setOutputFile(String outputFile)
+   {
+      this.outputFile = outputFile;
+   }
+
+   public void setSrcPath(String srcPath)
+   {
+      this.srcPath = srcPath;
+   }
+
+   public void setSrcOutput(String srcOutput)
+   {
+      this.srcOutput = srcOutput;
    }
 
 }
