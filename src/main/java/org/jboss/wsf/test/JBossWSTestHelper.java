@@ -76,39 +76,39 @@ public class JBossWSTestHelper
    public boolean isTargetJBoss50()
    {
       String target = getIntegrationTarget();
-      return target.startsWith("jboss50");
+      return "jboss50".startsWith(target);
    }
 
    /** True, if -Djbossws.integration.target=jboss42x */
    public boolean isTargetJBoss42()
    {
       String target = getIntegrationTarget();
-      return target.startsWith("jboss42");
+      return "jboss42".startsWith(target);
    }
 
    /** True, if -Djbossws.integration.target=jboss40x */
    public boolean isTargetJBoss40()
    {
       String target = getIntegrationTarget();
-      return target.startsWith("jboss40");
+      return "jboss40".startsWith(target);
    }
 
    public boolean isIntegrationNative()
    {
       String vendor = getImplementationVendor();
-      return vendor.indexOf("JBoss") != -1;
+      return "JBoss".indexOf(vendor) != -1;
    }
 
    public boolean isIntegrationMetro()
    {
       String vendor = getImplementationVendor();
-      return vendor.indexOf("Sun") != -1;
+      return "Sun".indexOf(vendor) != -1;
    }
 
    public boolean isIntegrationCXF()
    {
       String vendor = getImplementationVendor();
-      return vendor.indexOf("Apache") != -1;
+      return "Apache".indexOf(vendor) != -1;
    }
 
    private String getImplementationVendor()
