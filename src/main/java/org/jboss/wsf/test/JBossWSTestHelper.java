@@ -76,63 +76,54 @@ public class JBossWSTestHelper
    public boolean isTargetJBoss50()
    {
       String target = getIntegrationTarget();
-      return "jboss50".startsWith(target);
+      return target.startsWith("jboss50");
    }
 
    /** True, if -Djbossws.integration.target=jboss42x */
    public boolean isTargetJBoss42()
    {
       String target = getIntegrationTarget();
-      return "jboss42".startsWith(target);
+      return target.startsWith("jboss42");
    }
 
    /** True, if -Djbossws.integration.target=jboss40x */
    public boolean isTargetJBoss40()
    {
       String target = getIntegrationTarget();
-      return "jboss40".startsWith(target);
+      return target.startsWith("jboss40");
    }
 
    public boolean isIntegrationNative()
    {
       String vendor = getImplementationVendor();
-      
-      // http://issues.apache.org/jira/browse/CXF-1506
       if (vendor == null)
       {
          System.out.println("FIXME: [CXF-1506] - No Implementation-Vendor in manifest");
          return false;
       }
-      
-      return "JBoss".indexOf(vendor) != -1;
+      return vendor.indexOf("JBoss") != -1;
    }
 
    public boolean isIntegrationMetro()
    {
       String vendor = getImplementationVendor();
-      
-      // http://issues.apache.org/jira/browse/CXF-1506
       if (vendor == null)
       {
          System.out.println("FIXME: [CXF-1506] - No Implementation-Vendor in manifest");
          return false;
       }
-      
-      return "Sun".indexOf(vendor) != -1;
+      return vendor.indexOf("Sun") != -1;
    }
 
    public boolean isIntegrationCXF()
    {
       String vendor = getImplementationVendor();
-      
-      // http://issues.apache.org/jira/browse/CXF-1506
       if (vendor == null)
       {
          System.out.println("FIXME: [CXF-1506] - No Implementation-Vendor in manifest");
          return true;
       }
-      
-      return vendor == null || "Apache".indexOf(vendor) != -1;
+      return vendor.indexOf("Apache") != -1;
    }
 
    private String getImplementationVendor()
