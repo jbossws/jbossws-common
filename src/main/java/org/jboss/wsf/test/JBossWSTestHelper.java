@@ -96,12 +96,28 @@ public class JBossWSTestHelper
    public boolean isIntegrationNative()
    {
       String vendor = getImplementationVendor();
+      
+      // http://issues.apache.org/jira/browse/CXF-1506
+      if (vendor == null)
+      {
+         System.out.println("FIXME: [CXF-1506] - No Implementation-Vendor in manifest");
+         return false;
+      }
+      
       return "JBoss".indexOf(vendor) != -1;
    }
 
    public boolean isIntegrationMetro()
    {
       String vendor = getImplementationVendor();
+      
+      // http://issues.apache.org/jira/browse/CXF-1506
+      if (vendor == null)
+      {
+         System.out.println("FIXME: [CXF-1506] - No Implementation-Vendor in manifest");
+         return false;
+      }
+      
       return "Sun".indexOf(vendor) != -1;
    }
 
@@ -112,7 +128,7 @@ public class JBossWSTestHelper
       // http://issues.apache.org/jira/browse/CXF-1506
       if (vendor == null)
       {
-         System.out.println("FIXME: [CXF-1506]");
+         System.out.println("FIXME: [CXF-1506] - No Implementation-Vendor in manifest");
          return true;
       }
       
