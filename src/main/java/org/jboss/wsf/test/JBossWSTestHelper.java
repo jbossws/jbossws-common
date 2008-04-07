@@ -108,7 +108,15 @@ public class JBossWSTestHelper
    public boolean isIntegrationCXF()
    {
       String vendor = getImplementationVendor();
-      return "Apache".indexOf(vendor) != -1;
+      
+      // http://issues.apache.org/jira/browse/CXF-1506
+      if (vendor == null)
+      {
+         System.out.println("FIXME: [CXF-1506]");
+         return true;
+      }
+      
+      return vendor == null || "Apache".indexOf(vendor) != -1;
    }
 
    private String getImplementationVendor()
