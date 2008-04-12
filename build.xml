@@ -12,140 +12,70 @@
 <!-- $Id$ -->
 
 <project name="JBossWS-Common" default="main" basedir=".">
+
+   <!-- ================================================================== -->
+   <!-- Setup                                                              -->
+   <!-- ================================================================== -->
+
+   <property name="common.dir" value="${basedir}"/>
+   <property name="common.etc.dir" value="${common.dir}/src/main/etc"/>
+   <property name="common.target.dir" value="${common.dir}/target"/>
+
+   <!-- ================================================================== -->
+   <!-- Initialization                                                     -->
+   <!-- ================================================================== -->
+
+    <target name="init">
+      
+      <!-- Check if ant.properties is available -->
+      <available property="ant.properties.available" file="${basedir}/ant.properties"/>
+      <fail message="Cannot find ant.properties. Did you copy/edit ant.properties.example?" unless="ant.properties.available"/>
+      
+      <property file="${common.dir}/ant.properties"/>
+      
+      <xmlproperty file="${common.dir}/pom.xml"/>
+      <property name="version.id" value="${project.version}"/>      
+      <property name="repository.id" value="${project.version}"/>      
+      
+      <echo message="version.id=${version.id}"/>
+      <echo message="repository.id=${repository.id}"/>
+    </target>
+
+   <!-- ================================================================== -->
+   <!-- Installation                                                       -->
+   <!-- ================================================================== -->
   
-  <import file="${basedir}/ant-import/build-setup.xml"/>
-  <import file="${basedir}/ant-import/build-release.xml"/>
-  <import file="${basedir}/ant-import/build-thirdparty.xml"/>
-  
-  <!-- ================================================================== -->
-  <!-- Setup                                                              -->
-  <!-- ================================================================== -->
-  
-  <property name="common.src.dir" value="${common.dir}/src/main"/>
-  <property name="common.etc.dir" value="${common.src.dir}/etc"/>
-  <property name="common.java.dir" value="${common.src.dir}/java"/>
-  <property name="common.resources.dir" value="${common.src.dir}/resources"/>
-  <property name="common.output.dir" value="${common.dir}/output"/>
-  <property name="common.output.apidocs.dir" value="${common.output.dir}/apidocs"/>
-  <property name="common.output.etc.dir" value="${common.output.dir}/etc"/>
-  <property name="common.output.classes.dir" value="${common.output.dir}/classes"/>
-  <property name="common.output.lib.dir" value="${common.output.dir}/lib"/>
-  
-  <!-- ================================================================== -->
-  <!-- Initialization                                                     -->
-  <!-- ================================================================== -->
-  
-  <target name="init" depends="prepare,thirdparty-classpath">
-  </target>
-  
-  <!-- ================================================================== -->
-  <!-- Compile                                                            -->
-  <!-- ================================================================== -->
-  
-  <!--
-  | Compile everything.
-  |
-  | This target should depend on other compile-* targets for each
-  | different type of compile that needs to be performed, short of
-  | documentation compiles.
-  -->
-  
-  <target name="compile" depends="init,compile-classes,compile-etc" 
-    description="Compile all source files."/>
-  
-  <!-- Compile java sources -->
-  <target name="compile-classes" depends="init">
-  
-    <!-- Compile common classes with jdk1.5 -->
-    <mkdir dir="${common.output.classes.dir}"/>
-    <javac srcdir="${common.java.dir}" sourcepath="" destdir="${common.output.classes.dir}" encoding="utf-8" debug="${javac.debug}" verbose="${javac.verbose}"
-      deprecation="${javac.deprecation}" failonerror="${javac.fail.onerror}" source="1.5" target="1.5">
-      <include name="org/jboss/wsf/**"/>
-      <include name="org/jboss/ws/**"/>
-      <classpath refid="common.thirdparty.classpath"/>
-    </javac>
-  </target>
-  
-  <!-- Compile etc files (manifests and such) -->
-  <target name="compile-etc" depends="init">
-    <mkdir dir="${common.output.etc.dir}"/>
-    <copy todir="${common.output.etc.dir}" filtering="yes" overwrite="true">
-      <fileset dir="${common.etc.dir}">
-        <include name="default.mf"/>
-  	  </fileset>
+  <!-- Install to jboss.local.repository -->
+  <target name="install" depends="init" description="Install to jboss.local.repository">
+
+    <!-- Check if the target jar is available -->
+    <available property="jbossws.common.jar.available" file="${common.target.dir}/jbossws-common-${version.id}.jar"/>
+    <fail message="Cannot find jbossws-common-${version.id}.jar. Did you run 'mvn package'?" unless="jbossws.common.jar.available"/>
+    
+    <!-- Check if the source jar is available -->
+    <available property="jbossws.common.sources.jar.available" file="${common.target.dir}/jbossws-common-${version.id}-sources.jar"/>
+    <fail message="Cannot find jbossws-common-${version.id}-sources.jar. Did you run 'mvn source:jar'?" unless="jbossws.common.sources.jar.available"/>
+    
+    <!-- jboss/jbossws-common -->
+    <property name="jboss.repository.dir" value="${jboss.local.repository}/jboss"/>
+    <mkdir dir="${jboss.repository.dir}/jbossws-common/${repository.id}/lib"/>
+    <copy file="${common.target.dir}/jbossws-common-${version.id}.jar" tofile="${jboss.repository.dir}/jbossws-common/${repository.id}/lib/jbossws-common.jar" overwrite="true"/>
+    <copy file="${common.target.dir}/jbossws-common-${version.id}-sources.jar" tofile="${jboss.repository.dir}/jbossws-common/${repository.id}/lib/jbossws-common-src.jar" overwrite="true"/>
+    <copy tofile="${jboss.repository.dir}/jbossws-common/${repository.id}/component-info.xml" file="${common.etc.dir}/component-info.xml" filtering="true" overwrite="true">
       <filterset>
-        <filter token="java.vm.version" value="${java.vm.version}"/>
-        <filter token="java.vm.vendor" value="${java.vm.vendor}"/>
-        <filter token="build.id" value="${build.id}"/>
-        <filter token="implementation.version" value="jbossws-${version.id}"/>
         <filtersfile file="${common.dir}/version.properties"/>
       </filterset>
     </copy>
-  </target>
-  
-  <!-- ================================================================== -->
-  <!-- Archives                                                           -->
-  <!-- ================================================================== -->
-  
-  <!--
-  | Build all jar files.
-  -->
-  <target name="jars" depends="compile,module-jars" description="Builds all jar files.">
-  </target>
-  
-  <!--
-  |  Build all jar files.
-  -->
-  <target name="module-jars">
-    
-    <!-- Build jbossws-common.jar -->
-    <mkdir dir="${common.output.lib.dir}"/>
-    <jar jarfile="${common.output.lib.dir}/jbossws-common.jar" manifest="${common.output.etc.dir}/default.mf">
-      <fileset dir="${common.output.classes.dir}">
-        <include name="org/jboss/wsf/**"/>
-      	<include name="org/jboss/ws/**"/>
-      </fileset>
-    </jar>
-    
-    <!-- Build jbossws-common-src.zip -->
-    <zip zipfile="${common.output.lib.dir}/jbossws-common-src.zip" >
-      <fileset dir="${common.java.dir}"/>
-    </zip>
-
-  </target>
-  
-  <!-- ================================================================== -->
-  <!-- Documentation                                                      -->
-  <!-- ================================================================== -->
-
-   <!-- Generate the JavaDoc -->
-   <target name="javadoc" depends="init" description="Generate the Javadoc">
-
-      <mkdir dir="${common.output.apidocs.dir}"/>
-      <javadoc destdir="${common.output.apidocs.dir}" author="true" version="true" use="true" windowtitle="JBossWS API">
-         <classpath refid="common.thirdparty.classpath"/>
-         <packageset dir="${common.java.dir}" defaultexcludes="yes">
-            <include name="org/jboss/ws/**"/>
-            <include name="org/jboss/wsf/**"/>
-         </packageset>
-         <doctitle><![CDATA[<h1>JBoss Web Service Framework - SPI</h1>]]></doctitle>
-         <tag name="todo" scope="all" description="To do:"/>         
-      </javadoc>
    </target>
   
-  <target name="clean" depends="prepare" description="Cleans up most generated files.">
-    <delete dir="${common.output.dir}"/>
+  <!-- ================================================================== -->
+  <!-- Miscellaneous                                                      -->
+  <!-- ================================================================== -->
+
+  <target name="clean" depends="init" description="Cleans up most generated files.">
+    <delete dir="${common.target.dir}"/>
   </target>
-  
-  <target name="clobber" depends="clean" description="Cleans up all generated files.">
-    <delete dir="${common.dir}/thirdparty"/>
-  </target>
-  
-  <target name="main" description="Executes the default target (most)." depends="most"/>
-  
-  <target name="most" description="Builds almost everything." depends="jars"/>
-  
-  <target name="all" description="Create a distribution zip file" depends="main">
-  </target>
-  
+
+   <target name="main" description="Executes the default target (install)." depends="install"/>
+
 </project>

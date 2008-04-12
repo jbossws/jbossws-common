@@ -3,17 +3,7 @@
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3.8.1"/>
-	<classpathentry kind="lib" path="thirdparty/activation.jar"/>
-	<classpathentry kind="lib" path="thirdparty/jaxb-api.jar"/>
-	<classpathentry kind="lib" path="thirdparty/jaxrpc-api.jar"/>
-	<classpathentry kind="lib" path="thirdparty/jaxws-api.jar"/>
-	<classpathentry kind="lib" path="thirdparty/jboss-logging-spi.jar"/>
-	<classpathentry kind="lib" path="thirdparty/jboss-microcontainer.jar"/>
-	<classpathentry kind="lib" path="thirdparty/jboss-common-core.jar"/>
-	<classpathentry kind="lib" path="thirdparty/jboss-dependency.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/spi"/>
-	<classpathentry kind="lib" path="thirdparty/jboss-javaee.jar"/>
-	<classpathentry kind="lib" path="thirdparty/saaj-api.jar"/>
-	<classpathentry kind="lib" path="thirdparty/ant.jar"/>
-	<classpathentry kind="output" path="output/eclipse"/>
+	<classpathentry kind="var" path="M2_REPO/org/jboss/logging/jboss-logging-spi/2.0.5.GA/jboss-logging-spi-2.0.5.GA.jar"/>
+	<classpathentry kind="output" path="target/eclipse"/>
 </classpath>
