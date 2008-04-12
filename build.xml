@@ -61,11 +61,7 @@
     <mkdir dir="${jboss.repository.dir}/jbossws-common/${repository.id}/lib"/>
     <copy file="${common.target.dir}/jbossws-common-${version.id}.jar" tofile="${jboss.repository.dir}/jbossws-common/${repository.id}/lib/jbossws-common.jar" overwrite="true"/>
     <copy file="${common.target.dir}/jbossws-common-${version.id}-sources.jar" tofile="${jboss.repository.dir}/jbossws-common/${repository.id}/lib/jbossws-common-src.jar" overwrite="true"/>
-    <copy tofile="${jboss.repository.dir}/jbossws-common/${repository.id}/component-info.xml" file="${common.etc.dir}/component-info.xml" filtering="true" overwrite="true">
-      <filterset>
-        <filtersfile file="${common.dir}/version.properties"/>
-      </filterset>
-    </copy>
+    <copy file="${common.target.dir}/etc/component-info.xml" tofile="${jboss.repository.dir}/jbossws-common/${repository.id}/component-info.xml" overwrite="true"/>
    </target>
   
   <!-- ================================================================== -->
