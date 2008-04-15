@@ -36,7 +36,6 @@ import javax.xml.ws.Service;
 import javax.xml.ws.Service.Mode;
 import javax.xml.ws.soap.SOAPBinding;
 
-import org.jboss.logging.Logger;
 import org.jboss.wsf.common.ObjectNameFactory;
 
 /**
@@ -47,14 +46,13 @@ import org.jboss.wsf.common.ObjectNameFactory;
  */
 public class JBossWSTestHelper
 {
-   // provide logging
-   private static Logger log = Logger.getLogger(JBossWSTestHelper.class);
-
    private static MBeanServerConnection server;
    private static String integrationTarget;
    private static String implVendor;
    private static String implTitle;
    private static String implVersion;
+   private static String testArchiveDir;
+   private static String testResourcesDir;
 
    /** Deploy the given archive
     */
@@ -216,33 +214,62 @@ public class JBossWSTestHelper
    /** Try to discover the URL for the deployment archive */
    public URL getArchiveURL(String archive) throws MalformedURLException
    {
-      URL url = null;
       try
       {
-         url = new URL(archive);
+         return (new URL(archive));
       }
       catch (MalformedURLException ignore)
       {
          // ignore
       }
 
-      if (url == null)
+      File file = new File(archive);
+      if (file.exists())
+         return file.toURL();
+
+      file = new File(getTestArchiveDir() + "/" + archive);
+      if (file.exists())
+         return file.toURL();
+
+      throw new IllegalArgumentException("Cannot obtain URL for: " + archive);
+   }
+   
+   /** Try to discover the URL for the test resource */
+   public URL getResourceURL(String resource) throws MalformedURLException
+   {
+      try
       {
-         File file = new File(archive);
-         if (file.exists())
-            url = file.toURL();
+         return (new URL(resource));
+      }
+      catch (MalformedURLException ignore)
+      {
+         // ignore
       }
 
-      if (url == null)
-      {
-         File file = new File("libs/" + archive);
-         if (file.exists())
-            url = file.toURL();
-      }
+      File file = new File(resource);
+      if (file.exists())
+         return file.toURL();
 
-      if (url == null)
-         throw new IllegalArgumentException("Cannot obtain URL for: " + archive);
+      file = new File(getTestResourcesDir() + "/" + resource);
+      if (file.exists())
+         return file.toURL();
 
-      return url;
+      throw new IllegalArgumentException("Cannot obtain URL for: " + resource);
+   }
+
+   public static String getTestArchiveDir()
+   {
+      if (testArchiveDir == null)
+         testArchiveDir = System.getProperty("test.archive.directory");
+      
+      return testArchiveDir;
+   }
+
+   public static String getTestResourcesDir()
+   {
+      if (testResourcesDir == null)
+         testResourcesDir = System.getProperty("test.resources.directory");
+      
+      return testResourcesDir;
    }
 }
