@@ -212,7 +212,7 @@ public class JBossWSTestHelper
          }
 
          if (integrationTarget.startsWith(jbossVersion) == false)
-            throw new IllegalStateException("Integration target mismatch: " + integrationTarget + ".startsWith(" + jbossVersion + ") == false");
+            throw new IllegalStateException("Integration target mismatch: " + integrationTarget + ".startsWith(" + jbossVersion + ")");
       }
       return integrationTarget;
    }
