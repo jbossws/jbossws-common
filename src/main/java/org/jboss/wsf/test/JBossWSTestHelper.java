@@ -46,6 +46,11 @@ import org.jboss.wsf.common.ObjectNameFactory;
  */
 public class JBossWSTestHelper
 {
+   private static final String SYSPROP_JBOSSWS_INTEGRATION_TARGET = "jbossws.integration.target";
+   private static final String SYSPROP_JBOSS_BIND_ADDRESS = "jboss.bind.address";
+   private static final String SYSPROP_TEST_ARCHIVE_DIRECTORY = "test.archive.directory";
+   private static final String SYSPROP_TEST_RESOURCES_DIRECTORY = "test.resources.directory";
+   
    private static MBeanServerConnection server;
    private static String integrationTarget;
    private static String implVendor;
@@ -149,7 +154,7 @@ public class JBossWSTestHelper
     */
    public static String getServerHost()
    {
-      String hostName = System.getProperty("jboss.bind.address", "localhost");
+      String hostName = System.getProperty(SYSPROP_JBOSS_BIND_ADDRESS, "localhost");
       return hostName;
    }
 
@@ -181,7 +186,7 @@ public class JBossWSTestHelper
    {
       if (integrationTarget == null)
       {
-         integrationTarget = System.getProperty("jbossws.integration.target");
+         integrationTarget = System.getProperty(SYSPROP_JBOSSWS_INTEGRATION_TARGET);
 
          if (integrationTarget == null)
             throw new IllegalStateException("Cannot obtain jbossws.integration.target");
@@ -198,7 +203,8 @@ public class JBossWSTestHelper
                jbossVersion = "jboss42";
             else if (jbossVersion.startsWith("4.0"))
                jbossVersion = "jboss40";
-            else throw new RuntimeException("Unsupported jboss version: " + jbossVersion);
+            else
+               throw new RuntimeException("Unsupported jboss version: " + jbossVersion);
          }
          catch (Throwable th)
          {
@@ -231,9 +237,10 @@ public class JBossWSTestHelper
       if (file.exists())
          return file.toURL();
 
-      throw new IllegalArgumentException("Cannot obtain URL for: " + archive);
+      String notSet = (getTestArchiveDir() == null ? " System property '" + SYSPROP_TEST_ARCHIVE_DIRECTORY + "' not set." : "");
+      throw new IllegalArgumentException("Cannot obtain '" + getTestArchiveDir() + "/" + archive + "'." + notSet);
    }
-   
+
    /** Try to discover the URL for the test resource */
    public URL getResourceURL(String resource) throws MalformedURLException
    {
@@ -254,22 +261,23 @@ public class JBossWSTestHelper
       if (file.exists())
          return file.toURL();
 
-      throw new IllegalArgumentException("Cannot obtain URL for: " + resource);
+      String notSet = (getTestResourcesDir() == null ? " System property '" + SYSPROP_TEST_RESOURCES_DIRECTORY + "' not set." : "");
+      throw new IllegalArgumentException("Cannot obtain '" + getTestResourcesDir() + "/" + resource + "'." + notSet);
    }
 
    public static String getTestArchiveDir()
    {
       if (testArchiveDir == null)
-         testArchiveDir = System.getProperty("test.archive.directory");
-      
+         testArchiveDir = System.getProperty(SYSPROP_TEST_ARCHIVE_DIRECTORY);
+
       return testArchiveDir;
    }
 
    public static String getTestResourcesDir()
    {
       if (testResourcesDir == null)
-         testResourcesDir = System.getProperty("test.resources.directory");
-      
+         testResourcesDir = System.getProperty(SYSPROP_TEST_RESOURCES_DIRECTORY);
+
       return testResourcesDir;
    }
 }
