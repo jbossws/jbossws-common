@@ -1,11 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
+  
+  <name>JBoss Web Services - Common</name>
   <groupId>org.jboss.ws</groupId>
   <artifactId>jbossws-common</artifactId>
   <packaging>jar</packaging>
+  
   <version>3.0.0-SNAPSHOT</version>
-  <name>JBoss Web Services - Common</name>
+  
   <organization>
     <name>JBoss, a division of Red Hat</name>
     <url>http://www.jboss.org</url>
@@ -78,6 +81,24 @@
             </manifest>
           </archive>
         </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>install</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <tasks>
+                <property name="version.id" value="${project.version}"/>
+                <property name="jboss.local.repository" value="${jboss.local.repository}"/>
+                <ant antfile="src/main/ant/build-install.xml" target="install"/>
+              </tasks>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
