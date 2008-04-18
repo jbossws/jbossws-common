@@ -211,8 +211,8 @@ public class JBossWSTestHelper
             // ignore, we are not running on jboss-4.2 or greater
          }
 
-         if (jbossVersion != null && integrationTarget.startsWith(jbossVersion) == false)
-            throw new IllegalStateException("Integration target mismatch, using: " + jbossVersion);
+         if (integrationTarget.startsWith(jbossVersion) == false)
+            throw new IllegalStateException("Integration target mismatch: " + integrationTarget + ".startsWith(" + jbossVersion + ") == false");
       }
       return integrationTarget;
    }
