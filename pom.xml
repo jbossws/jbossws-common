@@ -9,49 +9,71 @@
   
   <version>3.0.0-SNAPSHOT</version>
   
-  <organization>
-    <name>JBoss, a division of Red Hat</name>
-    <url>http://www.jboss.org</url>
-  </organization>
-  <url>http://maven.apache.org</url>
+  <!-- Parent -->
+  <parent>
+    <groupId>org.jboss.ws</groupId>
+    <artifactId>jbossws-parent</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
   
   <!-- Properties -->
   <properties>
     <jbossws.spi>3.0.0-SNAPSHOT</jbossws.spi>
+    <jboss.common.version>1.2.1.GA</jboss.common.version>
+    <jboss.microcontainer.version>1.0.2</jboss.microcontainer.version>
   </properties>
   
   <!-- Dependencies -->
   <dependencies>
+    
+    <!-- jbossws dependencies -->
+    <dependency>
+      <groupId>org.jboss.ws</groupId>
+      <artifactId>jbossws-spi</artifactId>
+      <version>${jbossws.spi}</version>
+    </dependency>
+    
+    <!-- provided apis -->
     <dependency>
       <groupId>javax.xml.ws</groupId>
       <artifactId>jaxws-api</artifactId>
       <version>2.1</version>
       <scope>provided</scope>
     </dependency>
+    
+    <!-- jboss provided -->    
+    <dependency>
+      <groupId>jboss.common</groupId>
+      <artifactId>jboss-common</artifactId>
+      <version>${jboss.common.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.microcontainer</groupId>
+      <artifactId>jboss-dependency</artifactId>
+      <version>${jboss.microcontainer.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.microcontainer</groupId>
+      <artifactId>jboss-microcontainer</artifactId>
+      <version>${jboss.microcontainer.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    
+    <!-- transitve dependencies -->
     <dependency>
       <groupId>org.apache.ant</groupId>
       <artifactId>ant</artifactId>
       <version>1.7.0</version>
     </dependency>
     <dependency>
-      <groupId>org.jboss.microcontainer</groupId>
-      <artifactId>jboss-kernel</artifactId>
-      <version>2.0.0.Beta4</version>
-      <scope>provided</scope>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
     </dependency>
-    <dependency>
-      <groupId>org.jboss.ws</groupId>
-      <artifactId>jbossws-spi</artifactId>
-      <version>${jbossws.spi}</version>
-    </dependency>
+    
   </dependencies>
-  
-  <!-- Parent -->
-  <parent>
-    <groupId>org.jboss</groupId>
-    <artifactId>jboss-parent</artifactId>
-    <version>3</version>
-  </parent>
   
   <!-- Plugins -->
   <build>
@@ -63,25 +85,6 @@
       </resource>
     </resources>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>1.5</source>
-          <target>1.5</target>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifest>
-              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-            </manifest>
-          </archive>
-        </configuration>
-      </plugin>
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
         <executions>
