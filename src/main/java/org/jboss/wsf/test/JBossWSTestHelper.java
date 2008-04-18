@@ -189,7 +189,7 @@ public class JBossWSTestHelper
          integrationTarget = System.getProperty(SYSPROP_JBOSSWS_INTEGRATION_TARGET);
 
          if (integrationTarget == null)
-            throw new IllegalStateException("Cannot obtain jbossws.integration.target");
+            throw new IllegalStateException("Cannot obtain system property: " + SYSPROP_JBOSSWS_INTEGRATION_TARGET);
 
          // Read the JBoss SpecificationVersion
          String jbossVersion = null;
