@@ -9,7 +9,7 @@
     <artifact id="jbossws-common-sources.jar"/>
     
     <import componentref="jboss/jbossws-spi">
-      <compatible version="${jbossws-spi}"/>
+      <compatible version="${jbossws.spi.version}"/>
     </import>
     
     <export>

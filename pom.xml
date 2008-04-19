@@ -18,7 +18,7 @@
   
   <!-- Properties -->
   <properties>
-    <jbossws.spi>3.0.0-SNAPSHOT</jbossws.spi>
+    <jbossws.spi.version>3.0.0-SNAPSHOT</jbossws.spi.version>
     <jboss.common.version>1.2.1.GA</jboss.common.version>
     <jboss.microcontainer.version>1.0.2</jboss.microcontainer.version>
   </properties>
@@ -30,7 +30,7 @@
     <dependency>
       <groupId>org.jboss.ws</groupId>
       <artifactId>jbossws-spi</artifactId>
-      <version>${jbossws.spi}</version>
+      <version>${jbossws.spi.version}</version>
     </dependency>
     
     <!-- provided apis -->
