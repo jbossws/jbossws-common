@@ -242,24 +242,15 @@ public class JBossWSTestHelper
    }
 
    /** Try to discover the URL for the test resource */
-   public URL getResourceURL(String resource) throws MalformedURLException
+   public File getResourceFile(String resource)
    {
-      try
-      {
-         return (new URL(resource));
-      }
-      catch (MalformedURLException ignore)
-      {
-         // ignore
-      }
-
       File file = new File(resource);
       if (file.exists())
-         return file.toURL();
+         return file;
 
       file = new File(getTestResourcesDir() + "/" + resource);
       if (file.exists())
-         return file.toURL();
+         return file;
 
       String notSet = (getTestResourcesDir() == null ? " System property '" + SYSPROP_TEST_RESOURCES_DIRECTORY + "' not set." : "");
       throw new IllegalArgumentException("Cannot obtain '" + getTestResourcesDir() + "/" + resource + "'." + notSet);

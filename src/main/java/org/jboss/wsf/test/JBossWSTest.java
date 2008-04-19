@@ -21,6 +21,7 @@
  */
 package org.jboss.wsf.test;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -118,9 +119,15 @@ public abstract class JBossWSTest extends TestCase
       return delegate.getServerHost();
    }
 
+   public File getResourceFile(String resource)
+   {
+      return delegate.getResourceFile(resource);
+   }
+
    public URL getResourceURL(String resource) throws MalformedURLException
    {
-      return delegate.getResourceURL(resource);
+      File file = delegate.getResourceFile(resource);
+      return (file != null ? file.toURL() : null);
    }
 
    /** Get the client's env context for a given name.
