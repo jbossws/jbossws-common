@@ -157,23 +157,10 @@ public abstract class JBossWSTest extends TestCase
       return getInitialContext("jbossws-client");
    }
 
-   public boolean hasJDK15()
-   {
-      try
-      {
-         Class.forName("java.lang.Enum");
-         return true;
-      }
-      catch (ClassNotFoundException ex)
-      {
-         return false;
-      }
-   }
-
    public static void assertEquals(Element expElement, Element wasElement, boolean ignoreWhitespace)
    {
-      normalizeWhitspace(expElement, ignoreWhitespace);
-      normalizeWhitspace(wasElement, ignoreWhitespace);
+      normalizeWhitespace(expElement, ignoreWhitespace);
+      normalizeWhitespace(wasElement, ignoreWhitespace);
       String expStr = DOMWriter.printNode(expElement, false);
       String wasStr = DOMWriter.printNode(wasElement, false);
       if (expStr.equals(wasStr) == false)
@@ -279,7 +266,7 @@ public abstract class JBossWSTest extends TestCase
 
    /** Removes whitespace text nodes if they have an element sibling.
     */
-   private static void normalizeWhitspace(Element element, boolean ignoreWhitespace)
+   private static void normalizeWhitespace(Element element, boolean ignoreWhitespace)
    {
       boolean hasChildElement = false;
       ArrayList toDetach = new ArrayList();
@@ -297,7 +284,7 @@ public abstract class JBossWSTest extends TestCase
          }
          if (node.getNodeType() == Node.ELEMENT_NODE)
          {
-            normalizeWhitspace((Element)node, ignoreWhitespace);
+            normalizeWhitespace((Element)node, ignoreWhitespace);
             hasChildElement = true;
          }
       }
