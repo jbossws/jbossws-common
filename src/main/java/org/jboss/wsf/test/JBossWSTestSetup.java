@@ -21,6 +21,8 @@
  */
 package org.jboss.wsf.test;
 
+import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -30,11 +32,11 @@ import java.util.StringTokenizer;
 import javax.management.MBeanServerConnection;
 import javax.naming.NamingException;
 
-import org.jboss.logging.Logger;
-
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestSuite;
+
+import org.jboss.logging.Logger;
 
 /**
  * A test setup that deploys/undeploys archives
@@ -46,7 +48,7 @@ public class JBossWSTestSetup extends TestSetup
 {
    // provide logging
    private static Logger log = Logger.getLogger(JBossWSTestSetup.class);
-   
+
    private JBossWSTestHelper delegate = new JBossWSTestHelper();
    private String[] archives = new String[0];
 
@@ -67,6 +69,26 @@ public class JBossWSTestSetup extends TestSetup
       super(test);
    }
 
+   public File getArchiveFile(String archive)
+   {
+      return delegate.getArchiveFile(archive);
+   }
+
+   public URL getArchiveURL(String archive) throws MalformedURLException
+   {
+      return delegate.getArchiveFile(archive).toURL();
+   }
+
+   public File getResourceFile(String resource)
+   {
+      return delegate.getResourceFile(resource);
+   }
+
+   public URL getResourceURL(String resource) throws MalformedURLException
+   {
+      return delegate.getResourceFile(resource).toURL();
+   }
+
    private void getArchiveArray(String archiveList)
    {
       if (archiveList != null)
@@ -84,7 +106,7 @@ public class JBossWSTestSetup extends TestSetup
       // verify integration target
       String integrationTarget = delegate.getIntegrationTarget();
       log.debug("Integration target: " + integrationTarget);
-      
+
       List clientJars = new ArrayList();
       for (int i = 0; i < archives.length; i++)
       {
@@ -101,7 +123,7 @@ public class JBossWSTestSetup extends TestSetup
 
          if (archive.endsWith("-client.jar"))
          {
-            URL archiveURL = delegate.getArchiveURL(archive);
+            URL archiveURL = getArchiveURL(archive);
             clientJars.add(archiveURL);
          }
       }
@@ -128,7 +150,7 @@ public class JBossWSTestSetup extends TestSetup
          delegate.undeploy(archive);
       }
    }
-   
+
    public MBeanServerConnection getServer() throws NamingException
    {
       return delegate.getServer();

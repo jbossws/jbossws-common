@@ -119,6 +119,16 @@ public abstract class JBossWSTest extends TestCase
       return delegate.getServerHost();
    }
 
+   public File getArchiveFile(String archive)
+   {
+      return delegate.getArchiveFile(archive);
+   }
+
+   public URL getArchiveURL(String archive) throws MalformedURLException
+   {
+      return delegate.getArchiveFile(archive).toURL();
+   }
+
    public File getResourceFile(String resource)
    {
       return delegate.getResourceFile(resource);
@@ -126,8 +136,7 @@ public abstract class JBossWSTest extends TestCase
 
    public URL getResourceURL(String resource) throws MalformedURLException
    {
-      File file = delegate.getResourceFile(resource);
-      return (file != null ? file.toURL() : null);
+      return delegate.getResourceFile(resource).toURL();
    }
 
    /** Get the client's env context for a given name.

@@ -22,7 +22,6 @@
 package org.jboss.wsf.test;
 
 import java.io.File;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Hashtable;
 
@@ -50,7 +49,7 @@ public class JBossWSTestHelper
    private static final String SYSPROP_JBOSS_BIND_ADDRESS = "jboss.bind.address";
    private static final String SYSPROP_TEST_ARCHIVE_DIRECTORY = "test.archive.directory";
    private static final String SYSPROP_TEST_RESOURCES_DIRECTORY = "test.resources.directory";
-   
+
    private static MBeanServerConnection server;
    private static String integrationTarget;
    private static String implVendor;
@@ -63,7 +62,7 @@ public class JBossWSTestHelper
     */
    public void deploy(String archive) throws Exception
    {
-      URL url = getArchiveURL(archive);
+      URL url = getArchiveFile(archive).toURL();
       getDeployer().deploy(url);
    }
 
@@ -71,7 +70,7 @@ public class JBossWSTestHelper
     */
    public void undeploy(String archive) throws Exception
    {
-      URL url = getArchiveURL(archive);
+      URL url = getArchiveFile(archive).toURL();
       getDeployer().undeploy(url);
    }
 
@@ -203,8 +202,7 @@ public class JBossWSTestHelper
                jbossVersion = "jboss42";
             else if (jbossVersion.startsWith("4.0"))
                jbossVersion = "jboss40";
-            else
-               throw new RuntimeException("Unsupported jboss version: " + jbossVersion);
+            else throw new RuntimeException("Unsupported jboss version: " + jbossVersion);
          }
          catch (Throwable th)
          {
@@ -218,24 +216,15 @@ public class JBossWSTestHelper
    }
 
    /** Try to discover the URL for the deployment archive */
-   public URL getArchiveURL(String archive) throws MalformedURLException
+   public File getArchiveFile(String archive)
    {
-      try
-      {
-         return (new URL(archive));
-      }
-      catch (MalformedURLException ignore)
-      {
-         // ignore
-      }
-
       File file = new File(archive);
       if (file.exists())
-         return file.toURL();
+         return file;
 
       file = new File(getTestArchiveDir() + "/" + archive);
       if (file.exists())
-         return file.toURL();
+         return file;
 
       String notSet = (getTestArchiveDir() == null ? " System property '" + SYSPROP_TEST_ARCHIVE_DIRECTORY + "' not set." : "");
       throw new IllegalArgumentException("Cannot obtain '" + getTestArchiveDir() + "/" + archive + "'." + notSet);
