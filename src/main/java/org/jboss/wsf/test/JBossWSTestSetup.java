@@ -52,7 +52,7 @@ public class JBossWSTestSetup extends TestSetup
    private JBossWSTestHelper delegate = new JBossWSTestHelper();
    private String[] archives = new String[0];
 
-   public JBossWSTestSetup(Class testClass, String archiveList)
+   public JBossWSTestSetup(Class<?> testClass, String archiveList)
    {
       super(new TestSuite(testClass));
       getArchiveArray(archiveList);
@@ -107,7 +107,7 @@ public class JBossWSTestSetup extends TestSetup
       String integrationTarget = delegate.getIntegrationTarget();
       log.debug("Integration target: " + integrationTarget);
 
-      List clientJars = new ArrayList();
+      List<URL> clientJars = new ArrayList<URL>();
       for (int i = 0; i < archives.length; i++)
       {
          String archive = archives[i];
@@ -128,14 +128,14 @@ public class JBossWSTestSetup extends TestSetup
          }
       }
 
-      // add the client jars to the classloader
+      // add client jars to the class loader
       if (!clientJars.isEmpty())
       {
          ClassLoader parent = Thread.currentThread().getContextClassLoader();
          URL[] urls = new URL[clientJars.size()];
          for (int i = 0; i < clientJars.size(); i++)
          {
-            urls[i] = (URL)clientJars.get(i);
+            urls[i] = clientJars.get(i);
          }
          URLClassLoader cl = new URLClassLoader(urls, parent);
          Thread.currentThread().setContextClassLoader(cl);
@@ -153,6 +153,6 @@ public class JBossWSTestSetup extends TestSetup
 
    public MBeanServerConnection getServer() throws NamingException
    {
-      return delegate.getServer();
+      return JBossWSTestHelper.getServer();
    }
 }

@@ -21,17 +21,12 @@
  */
 package org.jboss.wsf.test;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.net.URL;
 import java.security.Principal;
 
-import javax.management.InstanceNotFoundException;
-import javax.management.MBeanException;
 import javax.management.MBeanServerConnection;
-import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
-import javax.management.ReflectionException;
 
 import org.jboss.wsf.spi.invocation.SecurityAdaptor;
 import org.jboss.wsf.spi.invocation.SecurityAdaptorFactory;
@@ -104,6 +99,7 @@ public class TestDeployerJBoss implements TestDeployer
       }
    }
 
+   @SuppressWarnings("serial")
    public static class SimplePrincipal implements Principal, Serializable
    {
       private String name;

@@ -180,6 +180,7 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
       getMbeanServer().unregisterMBean(AbstractServerConfigMBean.OBJECT_NAME);
    }
 
+   @SuppressWarnings("unchecked")
    private int getConnectorPort(final String protocol, final boolean secure)
    {
       int port = -1;

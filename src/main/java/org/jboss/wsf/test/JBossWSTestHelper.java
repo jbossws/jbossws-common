@@ -153,10 +153,10 @@ public class JBossWSTestHelper
     */
    public static String getServerHost()
    {
-      String hostName = System.getProperty(SYSPROP_JBOSS_BIND_ADDRESS, "localhost");
-      return hostName;
+      return System.getProperty(SYSPROP_JBOSS_BIND_ADDRESS, "localhost");
    }
 
+   @SuppressWarnings("unchecked")
    public static MBeanServerConnection getServer()
    {
       if (server == null)

@@ -66,7 +66,7 @@ public abstract class JBossWSTest extends TestCase
 
    public MBeanServerConnection getServer() throws NamingException
    {
-      return delegate.getServer();
+      return JBossWSTestHelper.getServer();
    }
 
    public boolean isTargetJBoss50()
@@ -116,7 +116,7 @@ public abstract class JBossWSTest extends TestCase
 
    public String getServerHost()
    {
-      return delegate.getServerHost();
+      return JBossWSTestHelper.getServerHost();
    }
 
    public File getArchiveFile(String archive)
@@ -141,6 +141,7 @@ public abstract class JBossWSTest extends TestCase
 
    /** Get the client's env context for a given name.
     */
+   @SuppressWarnings("unchecked")
    protected InitialContext getInitialContext(String clientName) throws NamingException
    {
       InitialContext iniCtx = new InitialContext();
@@ -269,9 +270,8 @@ public abstract class JBossWSTest extends TestCase
    private static void normalizeWhitespace(Element element, boolean ignoreWhitespace)
    {
       boolean hasChildElement = false;
-      ArrayList toDetach = new ArrayList();
+      ArrayList<Node> toDetach = new ArrayList<Node>();
 
-      String nodeName = element.getNodeName();
       NodeList childNodes = element.getChildNodes();
       for (int i = 0; i < childNodes.getLength(); i++)
       {
@@ -292,11 +292,11 @@ public abstract class JBossWSTest extends TestCase
       // remove whitespace nodes
       if (hasChildElement || ignoreWhitespace)
       {
-         Iterator it = toDetach.iterator();
+         Iterator<Node> it = toDetach.iterator();
          while (it.hasNext())
          {
-            Node node = (Node)it.next();
-            element.removeChild(node);
+            Node whiteSpaceNode = it.next();
+            element.removeChild(whiteSpaceNode);
          }
       }
    }
