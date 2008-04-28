@@ -31,7 +31,6 @@ import java.net.URLClassLoader;
 
 import org.jboss.wsf.spi.deployment.UnifiedVirtualFile;
 
-
 /**
  * Load resources through a URLClassLoader.<br>
  * NOTE: The associated classloader doesn't do parent delegation.

@@ -21,6 +21,8 @@
  */
 package org.jboss.wsf.test;
 
+// $Id$
+
 import java.io.File;
 import java.net.URL;
 import java.util.Hashtable;

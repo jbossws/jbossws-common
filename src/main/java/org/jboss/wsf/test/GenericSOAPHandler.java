@@ -21,6 +21,8 @@
  */
 package org.jboss.wsf.test;
 
+// $Id$
+
 import javax.xml.ws.handler.LogicalMessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.namespace.QName;

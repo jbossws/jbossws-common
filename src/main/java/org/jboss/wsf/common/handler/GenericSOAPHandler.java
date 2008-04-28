@@ -30,7 +30,6 @@ import javax.xml.namespace.QName;
 import javax.xml.ws.handler.LogicalMessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 
-
 /**
  * A generic jaxws soap handler
  *

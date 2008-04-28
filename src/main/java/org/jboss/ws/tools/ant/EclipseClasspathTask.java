@@ -21,6 +21,8 @@
  */
 package org.jboss.ws.tools.ant;
 
+// $Id$
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;

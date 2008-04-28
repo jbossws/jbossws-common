@@ -26,8 +26,6 @@ package org.jboss.wsf.common.handler;
 import javax.xml.ws.handler.LogicalHandler;
 import javax.xml.ws.handler.LogicalMessageContext;
 
-
-
 /**
  * A generic jaxws logical handler
  *

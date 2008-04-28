@@ -30,7 +30,6 @@ import java.net.URL;
 
 import org.jboss.wsf.spi.deployment.UnifiedVirtualFile;
 
-
 /**
  * The default file adapter loads resources through an associated classloader.
  * If no classload is set, the the thread context classloader will be used.

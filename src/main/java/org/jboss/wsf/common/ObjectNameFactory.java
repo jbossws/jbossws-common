@@ -21,6 +21,8 @@
  */
 package org.jboss.wsf.common;
 
+// $Id$
+
 import java.util.Hashtable;
 
 import javax.management.MalformedObjectNameException;
