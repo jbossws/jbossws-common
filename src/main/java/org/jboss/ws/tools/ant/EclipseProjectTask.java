@@ -39,6 +39,7 @@ import org.apache.tools.ant.Task;
 public class EclipseProjectTask extends Task
 {
    private String projectName;
+   private String outputFile;
 
    @Override
    public void execute() throws BuildException
@@ -47,7 +48,12 @@ public class EclipseProjectTask extends Task
       {
          StringBuffer sb = new StringBuffer();
          generateContent(sb);
-         BufferedWriter out = new BufferedWriter(new FileWriter(new File(getProject().getBaseDir(), ".project")));
+         File file;
+         if (outputFile != null)
+            file = new File(outputFile);
+         else
+            file = new File(getProject().getBaseDir(), ".project");
+         BufferedWriter out = new BufferedWriter(new FileWriter(file));
          out.write(sb.toString());
          out.close();
       }
@@ -83,5 +89,10 @@ public class EclipseProjectTask extends Task
    public void setProjectName(String projectName)
    {
       this.projectName = projectName;
+   }
+
+   public void setOutputFile(String outputFile)
+   {
+      this.outputFile = outputFile;
    }
 }
