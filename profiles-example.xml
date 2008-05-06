@@ -12,7 +12,9 @@
     <profile>
       <id>user-profile</id>
       <activation>
-        <activeByDefault>true</activeByDefault>
+        <property>
+          <name>user.name</name>
+        </property>
       </activation>
       <properties>
         <!-- The location of the legacy jboss repository -->
