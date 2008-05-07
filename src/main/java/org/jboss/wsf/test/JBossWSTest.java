@@ -136,6 +136,19 @@ public abstract class JBossWSTest extends TestCase
       return delegate.getResourceFile(resource);
    }
 
+   public static File createResourceFile(String filename)
+   {
+      File resDir = new File(JBossWSTestHelper.getTestResourcesDir());
+      File file = new File( resDir.getAbsolutePath() + File.separator + filename);
+      return file;
+   }
+
+   public static File createResourceFile(File parent, String filename)
+   {
+      File file = new File( parent, filename);
+      return file;
+   }
+
    public URL getResourceURL(String resource) throws MalformedURLException
    {
       return delegate.getResourceFile(resource).toURL();
