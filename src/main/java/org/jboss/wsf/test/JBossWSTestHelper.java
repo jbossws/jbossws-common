@@ -24,12 +24,17 @@ package org.jboss.wsf.test;
 // $Id$
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Hashtable;
 
+import javax.management.AttributeNotFoundException;
+import javax.management.InstanceNotFoundException;
+import javax.management.MBeanException;
 import javax.management.MBeanServerConnection;
 import javax.management.ObjectName;
+import javax.management.ReflectionException;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.xml.namespace.QName;
@@ -199,15 +204,22 @@ public class JBossWSTestHelper
          {
             ObjectName oname = ObjectNameFactory.create("jboss.system:type=ServerConfig");
             jbossVersion = (String)getServer().getAttribute(oname, "SpecificationVersion");
+            if (jbossVersion == null)
+               throw new IllegalStateException("Cannot obtain jboss version");
+            
             if (jbossVersion.startsWith("5.0"))
                jbossVersion = "jboss50";
             else if (jbossVersion.startsWith("4.2"))
                jbossVersion = "jboss42";
             else if (jbossVersion.startsWith("4.0"))
                jbossVersion = "jboss40";
-            else throw new RuntimeException("Unsupported jboss version: " + jbossVersion);
+            else throw new IllegalStateException("Unsupported jboss version: " + jbossVersion);
          }
-         catch (Throwable th)
+         catch (IllegalStateException ex)
+         {
+            throw ex;
+         }
+         catch (Exception ex)
          {
             // ignore, we are not running on jboss-4.2 or greater
          }
