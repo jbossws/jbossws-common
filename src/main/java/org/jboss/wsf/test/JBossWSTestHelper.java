@@ -24,6 +24,7 @@ package org.jboss.wsf.test;
 // $Id$
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Hashtable;
 
@@ -218,6 +219,12 @@ public class JBossWSTestHelper
    }
 
    /** Try to discover the URL for the deployment archive */
+   public URL getArchiveURL(String archive) throws MalformedURLException
+   {
+      return getArchiveFile(archive).toURL();
+   }
+   
+   /** Try to discover the File for the deployment archive */
    public File getArchiveFile(String archive)
    {
       File file = new File(archive);
@@ -233,6 +240,12 @@ public class JBossWSTestHelper
    }
 
    /** Try to discover the URL for the test resource */
+   public URL getResourceURL(String resource) throws MalformedURLException
+   {
+      return getResourceFile(resource).toURL();
+   }
+   
+   /** Try to discover the File for the test resource */
    public File getResourceFile(String resource)
    {
       File file = new File(resource);

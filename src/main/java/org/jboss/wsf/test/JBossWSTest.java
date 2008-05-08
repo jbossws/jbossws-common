@@ -128,7 +128,7 @@ public abstract class JBossWSTest extends TestCase
 
    public URL getArchiveURL(String archive) throws MalformedURLException
    {
-      return delegate.getArchiveFile(archive).toURL();
+      return delegate.getArchiveURL(archive);
    }
 
    public File getResourceFile(String resource)
@@ -136,22 +136,22 @@ public abstract class JBossWSTest extends TestCase
       return delegate.getResourceFile(resource);
    }
 
-   public static File createResourceFile(String filename)
-   {
-      File resDir = new File(JBossWSTestHelper.getTestResourcesDir());
-      File file = new File( resDir.getAbsolutePath() + File.separator + filename);
-      return file;
-   }
-
-   public static File createResourceFile(File parent, String filename)
-   {
-      File file = new File( parent, filename);
-      return file;
-   }
-
    public URL getResourceURL(String resource) throws MalformedURLException
    {
-      return delegate.getResourceFile(resource).toURL();
+      return delegate.getResourceURL(resource);
+   }
+
+   public File createResourceFile(String filename)
+   {
+      File resDir = new File(JBossWSTestHelper.getTestResourcesDir());
+      File file = new File(resDir.getAbsolutePath() + File.separator + filename);
+      return file;
+   }
+
+   public File createResourceFile(File parent, String filename)
+   {
+      File file = new File(parent, filename);
+      return file;
    }
 
    /** Get the client's env context for a given name.
@@ -210,7 +210,8 @@ public abstract class JBossWSTest extends TestCase
          assertEqualsArray((float[])exp, (float[])was);
       else if (exp instanceof double[] && was instanceof double[])
          assertEqualsArray((double[])exp, (double[])was);
-      else TestCase.assertEquals(exp, was);
+      else
+         TestCase.assertEquals(exp, was);
    }
 
    private static void assertEqualsArray(Object[] exp, Object[] was)
