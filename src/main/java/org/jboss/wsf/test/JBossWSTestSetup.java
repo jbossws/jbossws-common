@@ -53,6 +53,7 @@ public class JBossWSTestSetup extends TestSetup
 
    private JBossWSTestHelper delegate = new JBossWSTestHelper();
    private String[] archives = new String[0];
+   private ClassLoader originalClassLoader;
 
    public JBossWSTestSetup(Class<?> testClass, String archiveList)
    {
@@ -130,10 +131,11 @@ public class JBossWSTestSetup extends TestSetup
          }
       }
 
+      ClassLoader parent = Thread.currentThread().getContextClassLoader();
+      originalClassLoader = parent;
       // add client jars to the class loader
       if (!clientJars.isEmpty())
       {
-         ClassLoader parent = Thread.currentThread().getContextClassLoader();
          URL[] urls = new URL[clientJars.size()];
          for (int i = 0; i < clientJars.size(); i++)
          {
@@ -150,6 +152,7 @@ public class JBossWSTestSetup extends TestSetup
       {
          String archive = archives[archives.length - i - 1];
          delegate.undeploy(archive);
+         Thread.currentThread().setContextClassLoader(originalClassLoader);
       }
    }
 
