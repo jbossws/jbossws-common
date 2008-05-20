@@ -24,17 +24,12 @@ package org.jboss.wsf.test;
 // $Id$
 
 import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Hashtable;
 
-import javax.management.AttributeNotFoundException;
-import javax.management.InstanceNotFoundException;
-import javax.management.MBeanException;
 import javax.management.MBeanServerConnection;
 import javax.management.ObjectName;
-import javax.management.ReflectionException;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.xml.namespace.QName;
@@ -106,53 +101,53 @@ public class JBossWSTestHelper
    public boolean isIntegrationNative()
    {
       String vendor = getImplementationVendor();
-      if (vendor == null)
-      {
-         System.out.println("FIXME: [CXF-1506] - No Implementation-Vendor in manifest");
-         return false;
-      }
-      return vendor.indexOf("JBoss") != -1;
+      return vendor.toLowerCase().indexOf("jboss") != -1;
    }
 
    public boolean isIntegrationMetro()
    {
       String vendor = getImplementationVendor();
-      if (vendor == null)
-      {
-         System.out.println("FIXME: [CXF-1506] - No Implementation-Vendor in manifest");
-         return false;
-      }
-      return vendor.indexOf("Sun") != -1;
+      return vendor.toLowerCase().indexOf("sun") != -1;
    }
 
    public boolean isIntegrationCXF()
    {
       String vendor = getImplementationVendor();
-      if (vendor == null)
-      {
-         System.out.println("FIXME: [CXF-1506] - No Implementation-Vendor in manifest");
-         return true;
-      }
-      return vendor.indexOf("Apache") != -1;
+      return vendor.toLowerCase().indexOf("cxf") != -1;
    }
 
    private String getImplementationVendor()
    {
       if (implVendor == null)
       {
-         Service service = Service.create(new QName("dummyService"));
-         Object obj = service.getHandlerResolver();
-         if (obj == null)
-         {
-            service.addPort(new QName("dummyPort"), SOAPBinding.SOAP11HTTP_BINDING, "http://dummy-address");
-            obj = service.createDispatch(new QName("dummyPort"), Source.class, Mode.PAYLOAD);
-         }
+         Object obj = getImplementationObject();
          implVendor = obj.getClass().getPackage().getImplementationVendor();
+         if (implVendor == null)
+            implVendor = getImplementationPackage();
+         
          implTitle = obj.getClass().getPackage().getImplementationTitle();
          implVersion = obj.getClass().getPackage().getImplementationVersion();
+         
          System.out.println(implVendor + ", " + implTitle + ", " + implVersion);
       }
       return implVendor;
+   }
+
+   private Object getImplementationObject()
+   {
+      Service service = Service.create(new QName("dummyService"));
+      Object obj = service.getHandlerResolver();
+      if (obj == null)
+      {
+         service.addPort(new QName("dummyPort"), SOAPBinding.SOAP11HTTP_BINDING, "http://dummy-address");
+         obj = service.createDispatch(new QName("dummyPort"), Source.class, Mode.PAYLOAD);
+      }
+      return obj;
+   }
+
+   private String getImplementationPackage()
+   {
+      return getImplementationObject().getClass().getPackage().getName();
    }
 
    /**
@@ -206,7 +201,7 @@ public class JBossWSTestHelper
             jbossVersion = (String)getServer().getAttribute(oname, "SpecificationVersion");
             if (jbossVersion == null)
                throw new IllegalStateException("Cannot obtain jboss version");
-            
+
             if (jbossVersion.startsWith("5.0"))
                jbossVersion = "jboss50";
             else if (jbossVersion.startsWith("4.2"))
@@ -235,7 +230,7 @@ public class JBossWSTestHelper
    {
       return getArchiveFile(archive).toURL();
    }
-   
+
    /** Try to discover the File for the deployment archive */
    public File getArchiveFile(String archive)
    {
@@ -256,7 +251,7 @@ public class JBossWSTestHelper
    {
       return getResourceFile(resource).toURL();
    }
-   
+
    /** Try to discover the File for the test resource */
    public File getResourceFile(String resource)
    {
