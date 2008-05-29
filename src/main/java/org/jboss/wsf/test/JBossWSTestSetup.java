@@ -148,10 +148,16 @@ public class JBossWSTestSetup extends TestSetup
 
    protected void tearDown() throws Exception
    {
-      for (int i = 0; i < archives.length; i++)
+      try
       {
-         String archive = archives[archives.length - i - 1];
-         delegate.undeploy(archive);
+         for (int i = 0; i < archives.length; i++)
+         {
+            String archive = archives[archives.length - i - 1];
+            delegate.undeploy(archive);
+         }
+      }
+      finally
+      {
          Thread.currentThread().setContextClassLoader(originalClassLoader);
       }
    }
