@@ -113,7 +113,7 @@ public class JBossWSTestHelper
    public boolean isIntegrationCXF()
    {
       String vendor = getImplementationVendor();
-      return vendor.toLowerCase().indexOf("cxf") != -1;
+      return vendor.toLowerCase().indexOf("apache") != -1;
    }
 
    private String getImplementationVendor()
