@@ -1,7 +1,0 @@
-#
-# A sample ant properties file
-#
-# $Id: ant.properties.example 3995 2007-07-26 08:52:45Z thomas.diesler@jboss.com $
-
-# JBossWS local repository
-jboss.local.repository=/home/tdiesler/svn/jboss.local.repository
