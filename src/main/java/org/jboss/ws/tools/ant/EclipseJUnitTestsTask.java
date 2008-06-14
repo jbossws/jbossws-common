@@ -47,6 +47,8 @@ public class EclipseJUnitTestsTask extends Task
 {
    private String projectName;
    private String projectWorkingDir; // the Eclipse project working dir, i.e. the output dir
+   private String testResourcesDir; //the dir containing the resources files
+   private String testLibsDir; //the dir containing the libs files
    private String srcDir; // the tests src dir
    private String integrationTarget;
    private String jbossHome;
@@ -111,12 +113,14 @@ public class EclipseJUnitTestsTask extends Task
       conf.putStringAttribute("org.eclipse.jdt.launching.PROJECT_ATTR", projectName);
       // computing the userDir; please note we get the relative path since we use the Eclipse $workspace_loc variable
       String userDir = "${workspace_loc:" + projectName + "}/" + absoluteToRelativePath(projectWorkingDir);
-      conf.putStringAttribute("org.eclipse.jdt.launching.VM_ARGUMENTS", getVMArguments(userDir));
+      String resourcesDir = "${workspace_loc:" + projectName + "}/" + absoluteToRelativePath(testResourcesDir);
+      String libsDir = "${workspace_loc:" + projectName + "}/" + absoluteToRelativePath(testLibsDir);
+      conf.putStringAttribute("org.eclipse.jdt.launching.VM_ARGUMENTS", getVMArguments(userDir, resourcesDir, libsDir));
       conf.putStringAttribute("org.eclipse.jdt.launching.WORKING_DIRECTORY", userDir);
       return conf;
    }
 
-   private String getVMArguments(String userDir)
+   private String getVMArguments(String userDir, String resourcesDir, String libsDir)
    {
       StringBuffer sb = new StringBuffer();
       sb.append("-Djbossws.integration.target=").append(integrationTarget);
@@ -131,6 +135,8 @@ public class EclipseJUnitTestsTask extends Task
       sb.append("-Duser.dir=").append(userDir);
       sb.append("&#10;-Djboss.home=").append(jbossHome);
       sb.append("&#10;-Djdk.home=${env_var:JAVA_HOME}");
+      sb.append("&#10;-Dtest.archive.directory=").append(libsDir);
+      sb.append("&#10;-Dtest.resources.directory=").append(resourcesDir);
       return sb.toString();
    }
 
@@ -180,6 +186,16 @@ public class EclipseJUnitTestsTask extends Task
    public void setEndorsedDir(String endorsedDir)
    {
       this.endorsedDir = endorsedDir;
+   }
+
+   public void setTestResourcesDir(String testResourcesDir)
+   {
+      this.testResourcesDir = testResourcesDir;
+   }
+
+   public void setTestLibsDir(String testLibsDir)
+   {
+      this.testLibsDir = testLibsDir;
    }
 
    private class LaunchConfiguration
