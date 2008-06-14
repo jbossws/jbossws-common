@@ -109,7 +109,7 @@ public class EclipseClasspathTask extends Task
       sb.append("<classpathentry kind=\"con\" path=\"org.eclipse.jdt.launching.JRE_CONTAINER\"/>\n");
       for (int i = 0; i < libs.length; i++)
       {
-         if (new File(libs[i]).exists())
+         if (new File(libs[i]).exists() && libs[i].endsWith(".jar")) //jar files only can be used as lib entry
          {
             sb.append("<classpathentry kind=\"lib\" path=\"");
             sb.append(absoluteToRelativePath(libs[i]));
