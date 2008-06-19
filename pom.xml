@@ -29,7 +29,7 @@
   
   <!-- Properties -->
   <properties>
-    <jbossws.spi.version>1.0.5-SNAPSHOT</jbossws.spi.version>
+    <jbossws.spi.version>1.0.4.GA</jbossws.spi.version>
     <jboss.common.version>1.2.1.GA</jboss.common.version>
     <jboss.microcontainer.version>1.0.2</jboss.microcontainer.version>
   </properties>
