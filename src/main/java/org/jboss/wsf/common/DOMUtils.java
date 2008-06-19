@@ -113,6 +113,12 @@ public final class DOMUtils
       }
    };
 
+   public static void clearThreadLocals()
+   {
+      documentThreadLocal.remove();
+      builderThreadLocal.remove();
+   }
+
    // Hide the constructor
    private DOMUtils()
    {

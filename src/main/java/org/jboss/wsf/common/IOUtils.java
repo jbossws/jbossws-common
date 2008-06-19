@@ -63,12 +63,22 @@ public final class IOUtils
     */
    public static void copyStream(OutputStream outs, InputStream ins) throws IOException
    {
-      byte[] bytes = new byte[1024];
-      int r = ins.read(bytes);
-      while (r > 0)
+      try
       {
-         outs.write(bytes, 0, r);
-         r = ins.read(bytes);
+         byte[] bytes = new byte[1024];
+         int r = ins.read(bytes);
+         while (r > 0)
+         {
+            outs.write(bytes, 0, r);
+            r = ins.read(bytes);
+         }
+      }
+      catch (IOException e)
+      {
+         throw e;
+      }
+      finally{
+         ins.close();
       }
    }
 
@@ -76,13 +86,23 @@ public final class IOUtils
     */
    public static void copyReader(OutputStream outs, Reader reader) throws IOException
    {
-      OutputStreamWriter writer = new OutputStreamWriter(outs);
-      char[] bytes = new char[1024];
-      int r = reader.read(bytes);
-      while (r > 0)
+      try
       {
-         writer.write(bytes, 0, r);
-         r = reader.read(bytes);
+         OutputStreamWriter writer = new OutputStreamWriter(outs);
+         char[] bytes = new char[1024];
+         int r = reader.read(bytes);
+         while (r > 0)
+         {
+            writer.write(bytes, 0, r);
+            r = reader.read(bytes);
+         }
+      }
+      catch (IOException e)
+      {
+         throw e;
+      }
+      finally{
+         reader.close();
       }
    }
 
@@ -106,17 +126,27 @@ public final class IOUtils
     */
    public static InputStream transformReader(Reader reader) throws IOException
    {
-      int capacity = 1024;
-      char[] charBuffer = new char[capacity];
-      StringBuffer strBuffer = new StringBuffer(capacity);
-
-      int len = reader.read(charBuffer, 0, capacity);
-      while (len > 0)
+      try
       {
-         strBuffer.append(charBuffer, 0, len);
-         len = reader.read(charBuffer, 0, capacity);
+         int capacity = 1024;
+         char[] charBuffer = new char[capacity];
+         StringBuffer strBuffer = new StringBuffer(capacity);
+
+         int len = reader.read(charBuffer, 0, capacity);
+         while (len > 0)
+         {
+            strBuffer.append(charBuffer, 0, len);
+            len = reader.read(charBuffer, 0, capacity);
+         }
+         return new ByteArrayInputStream(strBuffer.toString().getBytes());
       }
-      return new ByteArrayInputStream(strBuffer.toString().getBytes());
+      catch (IOException e)
+      {
+         throw e;
+      }
+      finally{
+         reader.close();
+      }
    }
 
    public static File createTempDirectory() throws IOException
