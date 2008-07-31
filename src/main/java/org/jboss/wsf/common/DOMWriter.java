@@ -80,6 +80,7 @@ import org.w3c.dom.NodeList;
  * @author Andy Clark, IBM
  * @author Thomas.Diesler@jboss.org
  */
+@SuppressWarnings("unchecked")
 public class DOMWriter
 {
    // Print writer

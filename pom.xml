@@ -30,7 +30,7 @@
   <!-- Properties -->
   <properties>
     <jbossws.spi.version>1.0.4.GA</jbossws.spi.version>
-    <jboss.common.version>1.2.1.GA</jboss.common.version>
+    <jboss.common.version>2.2.7.GA</jboss.common.version>
     <jboss.microcontainer.version>1.0.2</jboss.microcontainer.version>
   </properties>
   
@@ -54,8 +54,8 @@
     
     <!-- jboss provided -->    
     <dependency>
-      <groupId>jboss.common</groupId>
-      <artifactId>jboss-common</artifactId>
+      <groupId>org.jboss</groupId>
+      <artifactId>jboss-common-core</artifactId>
       <version>${jboss.common.version}</version>
       <scope>provided</scope>
     </dependency>
