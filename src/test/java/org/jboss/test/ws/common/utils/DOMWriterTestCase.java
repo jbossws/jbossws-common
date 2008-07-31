@@ -258,4 +258,16 @@ public class DOMWriterTestCase extends TestCase
       String xmlOut = DOMWriter.printNode(root, false);
       assertEquals(xmlIn, xmlOut);
    }
+ 
+   public void testWhiteSpaceRemove() throws Exception
+   {
+      String xmlIn = "<Hello> <Sub>World</Sub> </Hello>";
+      Element root = DOMUtils.parse(xmlIn);
+      root.normalize();
+      
+      StringWriter strwr = new StringWriter();
+      new DOMWriter(strwr).setIgnoreWhitespace(true).print(root);
+      String xmlOut = strwr.toString();
+      assertEquals("<Hello><Sub>World</Sub></Hello>", xmlOut);
+   }
 }

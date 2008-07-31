@@ -90,6 +90,8 @@ public class DOMWriter
    private boolean prettyprint;
    // True, if the XML declaration should be written
    private boolean writeXMLDeclaration;
+   // True, if whitespace should be ignored
+   private boolean ignoreWhitespace;
    // Explicit character set encoding
    private String charsetName;
    // indent for the pretty printer
@@ -168,6 +170,21 @@ public class DOMWriter
       return this;
    }
 
+   public boolean isIgnoreWhitespace()
+   {
+      return ignoreWhitespace;
+   }
+
+   /**
+    * Set whether whitespace should be ignored.
+    * The default is false.
+    */
+   public DOMWriter setIgnoreWhitespace(boolean ignoreWhitespace)
+   {
+      this.ignoreWhitespace = ignoreWhitespace;
+      return this;
+   }
+   
    /**
     * Set wheter subelements should have their namespaces completed.
     * Setting this to false may lead to invalid XML fragments.
@@ -211,6 +228,9 @@ public class DOMWriter
 
    public void print(Node node)
    {
+      if (prettyprint && ignoreWhitespace)
+         throw new IllegalStateException("Cannot pretty print and ignore whitespace");
+      
       rootNode = node;
       printInternal(node, false);
    }
@@ -412,8 +432,14 @@ public class DOMWriter
          case Node.TEXT_NODE:
          {
             String text = normalize(node.getNodeValue(), canonical);
-            if (prettyprint == false || text.trim().length() > 0)
+            if (text.trim().length() > 0)
+            {
                out.print(text);
+            }
+            else if (prettyprint == false && ignoreWhitespace == false)
+            {
+               out.print(text);
+            }
             break;
          }
 
@@ -587,10 +613,6 @@ public class DOMWriter
                break;
             }
             case '\r':
-            {
-               str.append("&#xD;");
-               break;
-            }
             case '\n':
             {
                if (canonical)
