@@ -55,8 +55,6 @@
  */
 package org.jboss.wsf.common;
 
-// $Id$
-
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -79,7 +77,6 @@ import org.w3c.dom.NodeList;
  *
  * @author Andy Clark, IBM
  * @author Thomas.Diesler@jboss.org
- * @version $Revision$
  */
 public class DOMWriter
 {

@@ -21,8 +21,6 @@
  */
 package org.jboss.wsf.common.logging;
 
-// $Id$
-
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.ConsoleHandler;

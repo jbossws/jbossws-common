@@ -21,8 +21,6 @@
  */
 package org.jboss.wsf.test;
 
-// $Id$
-
 import java.io.Serializable;
 import java.net.URL;
 import java.security.Principal;

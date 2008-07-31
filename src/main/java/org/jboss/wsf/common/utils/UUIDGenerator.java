@@ -21,8 +21,6 @@
 */
 package org.jboss.wsf.common.utils;
 
-//$Id$
-
 import java.security.SecureRandom;
 
 /**

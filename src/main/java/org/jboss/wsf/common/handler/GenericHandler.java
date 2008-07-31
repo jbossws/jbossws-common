@@ -21,8 +21,6 @@
  */
 package org.jboss.wsf.common.handler;
 
-// $Id$
-
 import javax.xml.ws.handler.Handler;
 import javax.xml.ws.handler.MessageContext;
 

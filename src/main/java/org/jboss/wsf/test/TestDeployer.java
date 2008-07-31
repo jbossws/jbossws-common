@@ -21,8 +21,6 @@
  */
 package org.jboss.wsf.test;
 
-// $Id$
-
 import java.net.URL;
 
 /**

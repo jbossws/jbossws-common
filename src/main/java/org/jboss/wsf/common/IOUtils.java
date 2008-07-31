@@ -21,8 +21,6 @@
  */
 package org.jboss.wsf.common;
 
-// $Id$
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;

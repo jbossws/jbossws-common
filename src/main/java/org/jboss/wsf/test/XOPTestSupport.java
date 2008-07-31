@@ -21,8 +21,6 @@
  */
 package org.jboss.wsf.test;
 
-// $Id$
-
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.io.ByteArrayInputStream;

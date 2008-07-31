@@ -21,8 +21,6 @@
  */
 package org.jboss.ws.tools.ant;
 
-//$Id$
-
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 

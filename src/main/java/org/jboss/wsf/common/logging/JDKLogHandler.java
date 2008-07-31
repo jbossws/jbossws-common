@@ -21,8 +21,6 @@
  */
 package org.jboss.wsf.common.logging;
 
-// $Id$
-
 import java.util.logging.ErrorManager;
 import java.util.logging.Handler;
 import java.util.logging.Level;

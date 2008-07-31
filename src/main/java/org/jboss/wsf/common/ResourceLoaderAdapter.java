@@ -21,8 +21,6 @@
  */
 package org.jboss.wsf.common;
 
-// $Id: ResourceLoaderAdapter.java 3137 2007-05-18 13:41:57Z thomas.diesler@jboss.com $
-
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;

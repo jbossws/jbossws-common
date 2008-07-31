@@ -21,8 +21,6 @@
  */
 package org.jboss.wsf.common.handler;
 
-// $Id$
-
 import java.util.HashSet;
 import java.util.Set;
 

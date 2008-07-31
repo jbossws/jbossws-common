@@ -21,8 +21,6 @@
  */
 package org.jboss.wsf.common.management;
 
-//$Id$
-
 import javax.management.ObjectName;
 
 import org.jboss.wsf.common.ObjectNameFactory;

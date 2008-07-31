@@ -21,8 +21,6 @@
  */
 package org.jboss.wsf.common.management;
 
-//$Id$
-
 import java.io.File;
 import java.net.InetAddress;
 import java.net.UnknownHostException;

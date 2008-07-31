@@ -21,8 +21,6 @@
  */
 package org.jboss.wsf.common;
 
-// $Id$
-
 import java.lang.reflect.*;
 import java.util.HashMap;
 import java.util.HashSet;

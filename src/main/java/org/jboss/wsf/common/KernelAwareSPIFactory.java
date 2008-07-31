@@ -21,8 +21,6 @@
  */
 package org.jboss.wsf.common;
 
-// $Id$
-
 import org.jboss.kernel.Kernel;
 import org.jboss.kernel.spi.registry.KernelRegistry;
 import org.jboss.kernel.spi.registry.KernelRegistryEntry;
