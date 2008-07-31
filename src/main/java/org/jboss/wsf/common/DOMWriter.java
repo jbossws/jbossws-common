@@ -55,6 +55,8 @@
  */
 package org.jboss.wsf.common;
 
+// $Id$
+
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
