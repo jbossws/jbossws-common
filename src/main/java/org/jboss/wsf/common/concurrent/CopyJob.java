@@ -116,8 +116,8 @@ public final class CopyJob implements Runnable
             {
                try
                {
+                  this.wait( 50 ); // guard
                   if ( this.terminated ) return;
-                  this.wait( 10 ); // guard
                }
                catch ( InterruptedException ie )
                {
