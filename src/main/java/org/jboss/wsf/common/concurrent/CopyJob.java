@@ -23,7 +23,7 @@ package org.jboss.wsf.common.concurrent;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintStream;
+import java.io.OutputStream;
 
 /**
  * Sample usage:
@@ -54,7 +54,7 @@ public final class CopyJob implements Runnable
    /**
     * Output stream to write data to.
     */
-   private final PrintStream os;
+   private final OutputStream os;
    /**
     * Whether this job is terminated.
     */
@@ -65,7 +65,7 @@ public final class CopyJob implements Runnable
     * @param is input stream to read data from
     * @param os output stream to write data to
     */
-   public CopyJob( InputStream is, PrintStream os )
+   public CopyJob( InputStream is, OutputStream os )
    {
       super();
       
@@ -89,11 +89,11 @@ public final class CopyJob implements Runnable
       }
       catch ( IOException ioe )
       {
-         ioe.printStackTrace( this.os );
+         ioe.printStackTrace(System.err);
       }
       finally
       {
-         try { this.is.close(); } catch ( IOException ioe ) { ioe.printStackTrace( this.os ); }
+         try { this.is.close(); } catch ( IOException ioe ) { ioe.printStackTrace( System.err ); }
       }
    }
 
@@ -103,7 +103,7 @@ public final class CopyJob implements Runnable
     * @param os output stream to write data to
     * @throws IOException if I/O error occurs
     */
-   private void copy( final InputStream is, final PrintStream os ) throws IOException
+   private void copy( final InputStream is, final OutputStream os ) throws IOException
    {
       final byte[] buffer = new byte[ 512 ];
       int countOfBytes = -1;
@@ -121,7 +121,7 @@ public final class CopyJob implements Runnable
                }
                catch ( InterruptedException ie )
                {
-                  ie.printStackTrace( os );
+                  ie.printStackTrace( System.err );
                }
             }
          }
