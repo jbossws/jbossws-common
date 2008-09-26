@@ -21,7 +21,11 @@
  */
 package org.jboss.wsf.test;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -38,6 +42,7 @@ import junit.framework.TestCase;
 
 import org.jboss.logging.Logger;
 import org.jboss.wsf.common.DOMWriter;
+import org.jboss.wsf.common.concurrent.CopyJob;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -62,6 +67,91 @@ public abstract class JBossWSTest extends TestCase
    public JBossWSTest(String name)
    {
       super(name);
+   }
+   
+   /**
+    * Execute <b>command</b> in separate process.
+    * @param command command to execute
+    * @throws IOException if I/O error occurs
+    */
+   public void executeCommand(String command) throws IOException
+   {
+      this.executeCommand(command, null, null);
+   }
+   
+   /**
+    * Execute <b>command</b> in separate process. If process will fail, display custom <b>message</b> in assertion.
+    * @param command command to execute
+    * @param message message to display if assertion fails
+    * @throws IOException if I/O error occurs
+    */
+   public void executeCommand(String command, String message) throws IOException
+   {
+      this.executeCommand(command, null, message);
+   }
+   
+   /**
+    * Execute <b>command</b> in separate process, copy process input to <b>os</b>.
+    * @param command command to execute
+    * @param os output stream to copy process input to. If null, <b>System.out</b> will be used
+    * @throws IOException if I/O error occurs
+    */
+   public void executeCommand(String command, OutputStream os) throws IOException
+   {
+      this.executeCommand(command, os, null);
+   }
+
+   /**
+    * Execute <b>command</b> in separate process, copy process input to <b>os</b>. If process will fail, display custom <b>message</b> in assertion.
+    * @param command command to execute
+    * @param os output stream to copy process input to. If null, <b>System.out</b> will be used
+    * @param message message to display if assertion fails
+    * @throws IOException if I/O error occurs
+    */
+   public void executeCommand(String command, OutputStream os, String message) throws IOException
+   {
+      if ( command == null )
+         throw new NullPointerException( "Command cannot be null" );
+      
+      System.out.println("Executing command: " + command);
+
+      Process p = Runtime.getRuntime().exec(command);
+      CopyJob job = new CopyJob(p.getInputStream(), os == null ? System.out : os);
+      // unfortunately the following thread is needed (otherwise it will not work on windows)
+      new Thread( job ).start();
+      int statusCode = -1;
+      try
+      {
+         statusCode = p.waitFor();
+      }
+      catch (InterruptedException ie)
+      {
+         ie.printStackTrace(System.err);
+      }
+      finally
+      {
+         job.kill();
+         p.destroy();
+      }
+
+      // check status code
+      if (statusCode != 0)
+      {
+         System.out.println("Error stream");
+         System.out.println();
+         BufferedReader in = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+         StringBuffer buffer = new StringBuffer();
+         String line;
+         while ((line = in.readLine()) != null) {
+           buffer.append(line + "\n");
+         }
+         System.out.println(buffer.toString());
+         System.out.println();
+         System.out.println();
+      }
+      
+      String fallbackMessage = "Process did exit with status " + statusCode; 
+      assertTrue(message != null ? message : fallbackMessage, statusCode == 0);
    }
 
    public MBeanServerConnection getServer() throws NamingException
