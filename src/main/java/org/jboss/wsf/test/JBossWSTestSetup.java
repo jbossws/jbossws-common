@@ -133,14 +133,4 @@ public class JBossWSTestSetup extends TestSetup
    {
       return delegate.getServer();
    }
-
-   public void login()
-   {
-      delegate.login();
-   }
-
-   public void logout()
-   {
-      delegate.logout();
-   }
 }
