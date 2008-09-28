@@ -21,10 +21,8 @@
  */
 package org.jboss.wsf.test;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -42,6 +40,7 @@ import junit.framework.TestCase;
 
 import org.jboss.logging.Logger;
 import org.jboss.wsf.common.DOMWriter;
+import org.jboss.wsf.common.IOUtils;
 import org.jboss.wsf.common.concurrent.CopyJob;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -137,17 +136,10 @@ public abstract class JBossWSTest extends TestCase
       // check status code
       if (statusCode != 0)
       {
-         System.out.println("Error stream");
-         System.out.println();
-         BufferedReader in = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-         StringBuffer buffer = new StringBuffer();
-         String line;
-         while ((line = in.readLine()) != null) {
-           buffer.append(line + "\n");
-         }
-         System.out.println(buffer.toString());
-         System.out.println();
-         System.out.println();
+         System.err.println("Error stream");
+         System.err.println();
+         IOUtils.copyStream(System.err, p.getErrorStream());
+         System.err.println();
       }
       
       String fallbackMessage = "Process did exit with status " + statusCode; 
