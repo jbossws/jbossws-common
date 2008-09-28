@@ -66,6 +66,16 @@ public abstract class JBossWSTest extends TestCase
       return delegate.getServer();
    }
 
+   public void login()
+   {
+      delegate.login();
+   }
+
+   public void logout()
+   {
+      delegate.logout();
+   }
+
    public boolean isTargetJBoss50()
    {
       return delegate.isTargetJBoss50();

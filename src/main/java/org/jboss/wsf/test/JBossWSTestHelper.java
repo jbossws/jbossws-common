@@ -30,6 +30,13 @@ import javax.management.MBeanServerConnection;
 import javax.management.ObjectName;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.security.auth.callback.Callback;
+import javax.security.auth.callback.CallbackHandler;
+import javax.security.auth.callback.NameCallback;
+import javax.security.auth.callback.PasswordCallback;
+import javax.security.auth.callback.UnsupportedCallbackException;
+import javax.security.auth.login.LoginContext;
+import javax.security.auth.login.LoginException;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 import javax.xml.ws.Dispatch;
@@ -56,6 +63,9 @@ public class JBossWSTestHelper
    private static String implVendor;
    private static String implTitle;
    private static String implVersion;
+   private static LoginContext loginContext;
+   private static String user = System.getProperty("jmx.authentication.username");
+   private static String pass = System.getProperty("jmx.authentication.password");
 
    /** Deploy the given archive
     */
@@ -160,6 +170,30 @@ public class JBossWSTestHelper
       return server;
    }
 
+   public static void login()
+   {
+      try
+      {
+         if (loginContext == null)
+         {        
+            loginContext = new LoginContext("Login", new AppCallbackHandler(user, pass));  
+         }
+         loginContext.login();
+      }
+      catch (LoginException le)
+      {
+         throw new RuntimeException("Cannot login to server with username:[" + user + "], password:[" + pass + "]", le);
+      }
+   }
+   
+   public static void logout()
+   {
+      if (loginContext != null)
+      {
+         try { loginContext.logout(); } catch (LoginException ex) { }
+      }
+   }
+
    private TestDeployer getDeployer()
    {
       return new TestDeployerJBoss(getServer());
@@ -241,5 +275,45 @@ public class JBossWSTestHelper
          throw new IllegalArgumentException("Cannot obtain URL for: " + archive);
 
       return url;
+   }
+
+   public static class AppCallbackHandler implements CallbackHandler 
+   {
+      
+      private String username;
+      private String password;
+
+      public AppCallbackHandler(String usern, String passw)
+      {
+         this.username = usern;
+         this.password = passw;
+      }
+
+      public void handle(Callback[] callbacks) throws java.io.IOException, UnsupportedCallbackException
+      {
+         for (int i = 0; i < callbacks.length; i++)
+         {
+            if (callbacks[i] instanceof NameCallback) 
+            {
+               NameCallback nc = (NameCallback) callbacks[i];
+               if (password == null)
+                  nc.setName("anonymous");
+               else
+                  nc.setName(username);
+            }
+            else if (callbacks[i] instanceof PasswordCallback)
+            {
+               PasswordCallback pc = (PasswordCallback) callbacks[i];
+               if (password != null)
+               {
+                  pc.setPassword(password.toCharArray());
+               }		
+            }
+            else
+            {
+               throw new UnsupportedCallbackException(callbacks[i], "Unrecognized Callback");
+            }
+         }
+      }
    }
 }
