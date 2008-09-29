@@ -41,7 +41,6 @@ import junit.framework.TestCase;
 import org.jboss.logging.Logger;
 import org.jboss.wsf.common.DOMWriter;
 import org.jboss.wsf.common.IOUtils;
-import org.jboss.wsf.common.concurrent.CopyJob;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -54,9 +53,7 @@ import org.w3c.dom.NodeList;
  */
 public abstract class JBossWSTest extends TestCase
 {
-   // provide logging
    protected Logger log = Logger.getLogger(getClass().getName());
-
    private JBossWSTestHelper delegate = new JBossWSTestHelper();
 
    public JBossWSTest()
@@ -109,19 +106,23 @@ public abstract class JBossWSTest extends TestCase
     */
    public void executeCommand(String command, OutputStream os, String message) throws IOException
    {
-      if ( command == null )
+      if (command == null)
          throw new NullPointerException( "Command cannot be null" );
       
       System.out.println("Executing command: " + command);
-
       Process p = Runtime.getRuntime().exec(command);
-      CopyJob job = new CopyJob(p.getInputStream(), os == null ? System.out : os);
-      // unfortunately the following thread is needed (otherwise it will not work on windows)
-      new Thread( job ).start();
-      int statusCode = -1;
+      System.out.println("Process input stream:");
+      IOUtils.copyStream(os == null ? System.out : os, p.getInputStream());
       try
       {
-         statusCode = p.waitFor();
+         int statusCode = p.waitFor();
+         if (statusCode != 0)
+         {
+            System.err.println("Process error stream:");
+            IOUtils.copyStream(System.err, p.getErrorStream());
+         }
+         String fallbackMessage = "Process did exit with status " + statusCode; 
+         assertTrue(message != null ? message : fallbackMessage, statusCode == 0);
       }
       catch (InterruptedException ie)
       {
@@ -129,21 +130,8 @@ public abstract class JBossWSTest extends TestCase
       }
       finally
       {
-         job.kill();
          p.destroy();
       }
-
-      // check status code
-      if (statusCode != 0)
-      {
-         System.err.println("Error stream");
-         System.err.println();
-         IOUtils.copyStream(System.err, p.getErrorStream());
-         System.err.println();
-      }
-      
-      String fallbackMessage = "Process did exit with status " + statusCode; 
-      assertTrue(message != null ? message : fallbackMessage, statusCode == 0);
    }
 
    public MBeanServerConnection getServer() throws NamingException
@@ -262,7 +250,6 @@ public abstract class JBossWSTest extends TestCase
       if (expStr.equals(wasStr) == false)
       {
          System.out.println("\nExp: " + expStr + "\nWas: " + wasStr);
-         Logger.getLogger(JBossWSTest.class).error("\nExp: " + expStr + "\nWas: " + wasStr);
       }
       assertEquals(expStr, wasStr);
    }
