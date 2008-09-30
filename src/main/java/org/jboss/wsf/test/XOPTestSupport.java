@@ -24,15 +24,17 @@ package org.jboss.wsf.test;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.activation.DataHandler;
 import javax.xml.transform.stream.StreamSource;
+
+import org.jboss.wsf.common.IOUtils;
 
 /**
  * @author Heiko Braun <heiko.braun@jboss.com>
@@ -43,20 +45,9 @@ public class XOPTestSupport
 
    public static byte[] getBytesFromFile(File file) throws IOException
    {
-      InputStream is = new FileInputStream(file);
-
-      long length = file.length();
-      byte[] bytes = new byte[(int)length];
-
-      int offset = 0;
-      int numRead = 0;
-      while (offset < bytes.length && (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0)
-      {
-         offset += numRead;
-      }
-
-      is.close();
-      return bytes;
+      ByteArrayOutputStream baos = new ByteArrayOutputStream();
+      IOUtils.copyStream(baos, new FileInputStream(file));
+      return baos.toByteArray();
    }
 
    public static Image createTestImage(File imgFile)
