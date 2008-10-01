@@ -208,13 +208,9 @@ public class JBossWSTestHelper
                jbossVersion = "jboss40";
             else throw new IllegalStateException("Unsupported jboss version: " + jbossVersion);
          }
-         catch (IllegalStateException ex)
-         {
-            throw ex;
-         }
          catch (Exception ex)
          {
-            // ignore, we are not running on jboss-4.2 or greater
+            throw new RuntimeException(ex);
          }
 
          if (integrationTarget.startsWith(jbossVersion) == false)
