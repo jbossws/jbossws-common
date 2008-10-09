@@ -113,8 +113,22 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
       try
       {
          ObjectName oname = ObjectNameFactory.create("jboss.system:type=ServerConfig");
-         File tmpdir = (File)getMbeanServer().getAttribute(oname, "ServerTempDir");
-         return tmpdir;
+         File dir = (File)getMbeanServer().getAttribute(oname, "ServerTempDir");
+         return dir;
+      }
+      catch (JMException e)
+      {
+         return null;
+      }
+   }
+   
+   public File getHomeDir()
+   {
+      try
+      {
+         ObjectName oname = ObjectNameFactory.create("jboss.system:type=ServerConfig");
+         File dir = (File)getMbeanServer().getAttribute(oname, "HomeDir");
+         return dir;
       }
       catch (JMException e)
       {
@@ -127,8 +141,8 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
       try
       {
          ObjectName oname = ObjectNameFactory.create("jboss.system:type=ServerConfig");
-         File tmpdir = (File)getMbeanServer().getAttribute(oname, "ServerDataDir");
-         return tmpdir;
+         File dir = (File)getMbeanServer().getAttribute(oname, "ServerDataDir");
+         return dir;
       }
       catch (JMException e)
       {
