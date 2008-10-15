@@ -135,6 +135,7 @@ public class EclipseJUnitTestsTask extends Task
       sb.append("&#10;-Djdk.home=${env_var:JAVA_HOME}");
       sb.append("&#10;-Dtest.archive.directory=").append(libsDir);
       sb.append("&#10;-Dtest.resources.directory=").append(resourcesDir);
+      sb.append("&#10;-Dbinary.distribution=true");
       return sb.toString();
    }
 
