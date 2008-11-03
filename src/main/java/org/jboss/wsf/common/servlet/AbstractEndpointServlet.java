@@ -154,8 +154,7 @@ public abstract class AbstractEndpointServlet extends HttpServlet
 
          if (this.endpoint.getState() != EndpointState.STARTED) // [JBWS-2338] TODO fix this hack preventing exceptions
          {
-            this.aspectsManager.create(dep, null);
-            this.aspectsManager.start(dep, null);
+            this.aspectsManager.deploy(dep);
          }
       }
    }
@@ -175,8 +174,7 @@ public abstract class AbstractEndpointServlet extends HttpServlet
          {
             try
             {
-               this.aspectsManager.stop(dep, null);
-               this.aspectsManager.destroy(dep, null);
+               this.aspectsManager.undeploy(dep);
             }
             finally
             {
