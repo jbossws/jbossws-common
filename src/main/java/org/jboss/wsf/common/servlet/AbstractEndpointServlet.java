@@ -31,13 +31,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.jboss.wsf.common.ObjectNameFactory;
-import org.jboss.wsf.spi.DeploymentAspectManagerLocator;
 import org.jboss.wsf.spi.SPIProvider;
 import org.jboss.wsf.spi.SPIProviderResolver;
 import org.jboss.wsf.spi.deployment.Deployment;
-import org.jboss.wsf.spi.deployment.DeploymentAspectManager;
 import org.jboss.wsf.spi.deployment.Endpoint;
-import org.jboss.wsf.spi.deployment.Endpoint.EndpointState;
 import org.jboss.wsf.spi.invocation.EndpointAssociation;
 import org.jboss.wsf.spi.invocation.RequestHandler;
 import org.jboss.wsf.spi.management.EndpointRegistry;
@@ -48,8 +45,6 @@ import javax.xml.ws.WebServiceException;
 
 /**
  * A cross stack webservice endpoint servlet.
- * Backward compatible mode is used on JBoss AS 4.2 series.
- * Not backward compatible mode is used on JBoss AS 5.0 series
  * @author thomas.diesler@jboss.org
  * @author heiko.braun@jboss.com
  * @author richard.opalka@jboss.com
@@ -57,12 +52,9 @@ import javax.xml.ws.WebServiceException;
 public abstract class AbstractEndpointServlet extends HttpServlet
 {
 
-   private static final String PROPERTY_NAME = "org.jboss.ws.webapp.ServletAspectManagerName";
    private final SPIProvider spiProvider = SPIProviderResolver.getInstance().getProvider();
    protected Endpoint endpoint;
    private EndpointRegistry epRegistry;
-   private DeploymentAspectManager aspectsManager;
-   private boolean backwardCompatibilityMode;
    
    /**
     * Constructor
@@ -78,22 +70,6 @@ public abstract class AbstractEndpointServlet extends HttpServlet
       super.init(servletConfig);
       this.initRegistry();
       this.initServiceEndpoint(servletConfig);
-   }
-   
-   /**
-    * Servlet lifecycle destroy method
-    */
-   public final void destroy()
-   {
-      try
-      {
-         this.stopAspectManager();
-         this.stopEndpoint();
-      }
-      finally
-      {
-         super.destroy();
-      }
    }
    
    /**
@@ -124,100 +100,6 @@ public abstract class AbstractEndpointServlet extends HttpServlet
    }
    
    /**
-    * Initializes aspect manager if not backward compatible mode
-    */
-   private void initAspectManager()
-   {
-      final String managerName = (String)this.endpoint.getService().getDeployment().getProperty(PROPERTY_NAME);
-      if (managerName == null)
-      {
-         this.backwardCompatibilityMode = true;
-      }
-      
-      if (!this.backwardCompatibilityMode)
-      {
-         final DeploymentAspectManagerLocator locator = this.spiProvider.getSPI(DeploymentAspectManagerLocator.class);
-         this.aspectsManager = locator.locateDeploymentAspectManager(managerName);
-      }
-   }
-   
-   /**
-    * Starts servlet related aspects if not backward compatible mode
-    */
-   private void startAspectManager()
-   {
-      if (!this.backwardCompatibilityMode)
-      {
-         this.assertCorrectState();
-
-         final Deployment dep = this.endpoint.getService().getDeployment();
-
-         if (this.endpoint.getState() != EndpointState.STARTED) // [JBWS-2338] TODO fix this hack preventing exceptions
-         {
-            this.aspectsManager.deploy(dep);
-         }
-      }
-   }
-   
-   /**
-    * Stops servlet related aspects if not backward compatible mode
-    */
-   private void stopAspectManager()
-   {
-      if (!this.backwardCompatibilityMode)
-      {
-         this.assertCorrectState();
-
-         final Deployment dep = this.endpoint.getService().getDeployment();
-
-         if (this.endpoint.getState() == EndpointState.STARTED) // [JBWS-2338] TODO fix this hack preventing exceptions
-         {
-            try
-            {
-               this.aspectsManager.undeploy(dep);
-            }
-            finally
-            {
-               this.aspectsManager = null;
-            }
-         }
-      }
-   }
-
-   /**
-    * Fires endpoint start event if not backward compatible mode
-    */
-   private void startEndpoint()
-   {
-      if (!this.backwardCompatibilityMode)
-      {
-         Deployment dep = this.endpoint.getService().getDeployment();
-         for (Endpoint ep : dep.getService().getEndpoints())
-         {
-            ep.getLifecycleHandler().start(ep); // [JBWS-2338] TODO fix this hack preventing exceptions
-         }
-      }
-   }
-
-   /**
-    * Fires endpoint stop event if not backward compatible mode
-    */
-   private void stopEndpoint()
-   {
-      if (!this.backwardCompatibilityMode)
-      {
-         if (this.endpoint.getState() == EndpointState.STARTED)
-         {
-            Deployment dep = this.endpoint.getService().getDeployment();
-            for (Endpoint ep : dep.getService().getEndpoints())
-            {
-               ep.getLifecycleHandler().stop(ep); // [JBWS-2338] TODO fix this hack preventing exceptions
-            }
-         }
-      }
-   }
-   
-   /**
     * Abstract method that must be overriden by each stack servlet endpoint
     * @param servletContext servlet context
     * @param servletName servlet name
@@ -231,11 +113,8 @@ public abstract class AbstractEndpointServlet extends HttpServlet
    private void initServiceEndpoint(ServletConfig servletConfig)
    {
       this.initEndpoint(servletConfig.getServletContext().getContextPath(), getServletName());
-      this.initAspectManager();
       this.setRuntimeLoader();
-      this.startAspectManager();
       this.postInit(servletConfig);
-      this.startEndpoint();
    }
 
    /**
@@ -281,16 +160,4 @@ public abstract class AbstractEndpointServlet extends HttpServlet
          dep.setRuntimeClassLoader(classLoader);
       }
    }
-   
-   /**
-    * Asserts this object correct state
-    */
-   private void assertCorrectState()
-   {
-      if (this.endpoint == null || this.aspectsManager == null)
-      {
-         throw new IllegalStateException();
-      }
-   }
-   
 }
