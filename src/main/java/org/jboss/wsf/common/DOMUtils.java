@@ -73,7 +73,7 @@ public final class DOMUtils
    // All elements created by the same thread are created by the same builder and belong to the same doc
    private static ThreadLocal<Document> documentThreadLocal = new ThreadLocal<Document>();
    private static ThreadLocal<DocumentBuilder> builderThreadLocal = new ThreadLocal<DocumentBuilder>() {
-      protected Object initialValue()
+      protected DocumentBuilder initialValue()
       {
          try
          {
