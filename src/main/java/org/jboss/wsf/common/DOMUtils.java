@@ -68,10 +68,11 @@ public final class DOMUtils
 {
    private static Logger log = Logger.getLogger(DOMUtils.class);
 
+   private static final String DISABLE_DEFERRED_NODE_EXPANSION = "org.jboss.ws.disable_deferred_node_expansion";
+
    // All elements created by the same thread are created by the same builder and belong to the same doc
    private static ThreadLocal<Document> documentThreadLocal = new ThreadLocal<Document>();
-   private static ThreadLocal<DocumentBuilder> builderThreadLocal = new ThreadLocal<DocumentBuilder>()
-   {
+   private static ThreadLocal<DocumentBuilder> builderThreadLocal = new ThreadLocal<DocumentBuilder>() {
       protected DocumentBuilder initialValue()
       {
          try
@@ -79,6 +80,13 @@ public final class DOMUtils
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             factory.setValidating(false);
             factory.setNamespaceAware(true);
+
+            boolean disableDeferredNodeExpansion = Boolean.getBoolean(DISABLE_DEFERRED_NODE_EXPANSION);
+            if (disableDeferredNodeExpansion == true)
+            {
+               factory.setFeature("http://apache.org/xml/features/dom/defer-node-expansion", false);
+            }
+
             DocumentBuilder builder = factory.newDocumentBuilder();
             setEntityResolver(builder);
             return builder;
@@ -315,7 +323,8 @@ public final class DOMUtils
       String attr = null;
       if ("".equals(attrName.getNamespaceURI()))
          attr = el.getAttribute(attrName.getLocalPart());
-      else attr = el.getAttributeNS(attrName.getNamespaceURI(), attrName.getLocalPart());
+      else
+         attr = el.getAttributeNS(attrName.getNamespaceURI(), attrName.getLocalPart());
 
       if ("".equals(attr))
          attr = null;
@@ -426,7 +435,7 @@ public final class DOMUtils
       NodeList nodeList = node.getChildNodes();
       if (nodeList.getLength() == 0)
          return false;
-      
+
       for (int i = 0; i < nodeList.getLength(); i++)
       {
          Node acksToChildNode = nodeList.item(i);
@@ -484,7 +493,7 @@ public final class DOMUtils
       }
       return (hasTextContent ? buffer.toString() : null);
    }
-   
+
    /** Gets the first child element
     */
    public static Element getFirstChildElement(Node node)
@@ -505,14 +514,14 @@ public final class DOMUtils
    {
       return getFirstChildElement(node, nodeName, false);
    }
-   
+
    /** Gets the first child element for a given local name without namespace
     */
    public static Element getFirstChildElement(Node node, String nodeName, boolean recursive)
    {
       return getFirstChildElementIntern(node, new QName(nodeName), recursive);
    }
-   
+
    /** Gets the first child element for a given qname
     */
    public static Element getFirstChildElement(Node node, QName nodeName)
@@ -544,14 +553,14 @@ public final class DOMUtils
    {
       return getChildElements(node, nodeName, false);
    }
-   
+
    /** Gets the child elements for a given local name without namespace
     */
    public static Iterator getChildElements(Node node, String nodeName, boolean recursive)
    {
       return getChildElementsIntern(node, new QName(nodeName), recursive);
    }
-   
+
    /** Gets the child element for a given qname
     */
    public static Iterator getChildElements(Node node, QName nodeName)
@@ -565,30 +574,31 @@ public final class DOMUtils
    {
       return getChildElementsIntern(node, nodeName, recursive);
    }
-   
+
    public static List<Element> getChildElementsAsList(Node node, String nodeName)
    {
       return getChildElementsAsList(node, nodeName, false);
    }
-   
+
    public static List<Element> getChildElementsAsList(Node node, String nodeName, boolean recursive)
    {
       return getChildElementsAsListIntern(node, new QName(nodeName), recursive);
    }
-   
+
    public static List<Element> getChildElementsAsList(Node node, QName nodeName)
    {
       return getChildElementsAsList(node, nodeName, false);
    }
-   
+
    public static List<Element> getChildElementsAsList(Node node, QName nodeName, boolean recursive)
    {
       return getChildElementsAsListIntern(node, nodeName, recursive);
    }
-   
+
    private static List<Element> getChildElementsAsListIntern(Node node, QName nodeName, boolean recursive)
    {
       List<Element> list = new LinkedList<Element>();
+
       NodeList nlist = node.getChildNodes();
       for (int i = 0; i < nlist.getLength(); i++)
       {
@@ -600,7 +610,7 @@ public final class DOMUtils
       }
       return list;
    }
-   
+
    private static void search(List<Element> list, Element baseElement, QName nodeName, boolean recursive)
    {
       if (nodeName == null)
@@ -636,7 +646,7 @@ public final class DOMUtils
          }
       }
    }
-   
+
    private static Iterator getChildElementsIntern(Node node, QName nodeName, boolean recursive)
    {
       return getChildElementsAsListIntern(node, nodeName, recursive).iterator();
