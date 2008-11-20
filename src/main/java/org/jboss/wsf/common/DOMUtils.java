@@ -68,10 +68,11 @@ public final class DOMUtils
 {
    private static Logger log = Logger.getLogger(DOMUtils.class);
 
+   private static final String DISABLE_DEFERRED_NODE_EXPANSION = "org.jboss.ws.disable_deferred_node_expansion";
+
    // All elements created by the same thread are created by the same builder and belong to the same doc
-   private static ThreadLocal documentThreadLocal = new ThreadLocal();
-   private static ThreadLocal builderThreadLocal = new ThreadLocal()
-   {
+   private static ThreadLocal<Document> documentThreadLocal = new ThreadLocal<Document>();
+   private static ThreadLocal<DocumentBuilder> builderThreadLocal = new ThreadLocal<DocumentBuilder>() {
       protected Object initialValue()
       {
          try
@@ -79,6 +80,13 @@ public final class DOMUtils
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             factory.setValidating(false);
             factory.setNamespaceAware(true);
+
+            boolean disableDeferredNodeExpansion = Boolean.getBoolean(DISABLE_DEFERRED_NODE_EXPANSION);
+            if (disableDeferredNodeExpansion == true)
+            {
+               factory.setFeature("http://apache.org/xml/features/dom/defer-node-expansion", false);
+            }
+
             DocumentBuilder builder = factory.newDocumentBuilder();
             setEntityResolver(builder);
             return builder;
