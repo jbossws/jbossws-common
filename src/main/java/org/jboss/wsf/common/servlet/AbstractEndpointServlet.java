@@ -22,6 +22,8 @@
 package org.jboss.wsf.common.servlet;
 
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.management.ObjectName;
 import javax.servlet.ServletConfig;
@@ -30,7 +32,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.jboss.logging.Logger;
 import org.jboss.wsf.common.ObjectNameFactory;
+import org.jboss.wsf.common.javax.JavaxAnnotationHelper;
+import org.jboss.wsf.common.javax.PreDestroyHolder;
 import org.jboss.wsf.spi.SPIProvider;
 import org.jboss.wsf.spi.SPIProviderResolver;
 import org.jboss.wsf.spi.deployment.Deployment;
@@ -52,9 +57,13 @@ import javax.xml.ws.WebServiceException;
 public abstract class AbstractEndpointServlet extends HttpServlet
 {
 
+   // provide logging
+   private static final Logger log = Logger.getLogger(AbstractEndpointServlet.class);
+
    private final SPIProvider spiProvider = SPIProviderResolver.getInstance().getProvider();
    protected Endpoint endpoint;
    private EndpointRegistry epRegistry;
+   private List<PreDestroyHolder> preDestroyRegistry = new LinkedList<PreDestroyHolder>();
    
    /**
     * Constructor
@@ -72,6 +81,28 @@ public abstract class AbstractEndpointServlet extends HttpServlet
       this.initServiceEndpoint(servletConfig);
    }
    
+   @Override
+   public void destroy()
+   {
+      synchronized(this.preDestroyRegistry)
+      {
+         for (PreDestroyHolder holder : this.preDestroyRegistry)
+         {
+            try
+            {
+               JavaxAnnotationHelper.callPreDestroyMethod(holder.getObject());
+            }
+            catch (Exception exception)
+            {
+               log.error(exception.getMessage(), exception);
+            }
+         }
+         this.preDestroyRegistry.clear();
+         this.preDestroyRegistry = null;
+      }
+      super.destroy();
+   }
+
    /**
     * Serves the requests
     */
@@ -83,10 +114,27 @@ public abstract class AbstractEndpointServlet extends HttpServlet
          EndpointAssociation.setEndpoint(endpoint);
          RequestHandler requestHandler = endpoint.getRequestHandler();
          requestHandler.handleHttpRequest(endpoint, req, res, getServletContext());
+         registerForPreDestroy(endpoint);
       }
       finally
       {
          EndpointAssociation.removeEndpoint();
+      }
+   }
+   
+   private void registerForPreDestroy(Endpoint ep)
+   {
+      PreDestroyHolder holder = (PreDestroyHolder)ep.getAttachment(PreDestroyHolder.class);
+      if (holder != null)
+      {
+         synchronized(this.preDestroyRegistry)
+         {
+            if (!this.preDestroyRegistry.contains(holder))
+            {
+               this.preDestroyRegistry.add(holder);
+            }
+         }
+         ep.removeAttachment(PreDestroyHolder.class);
       }
    }
 
@@ -160,4 +208,5 @@ public abstract class AbstractEndpointServlet extends HttpServlet
          dep.setRuntimeClassLoader(classLoader);
       }
    }
+   
 }
