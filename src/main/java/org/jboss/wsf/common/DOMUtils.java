@@ -551,6 +551,17 @@ public final class DOMUtils
       return (parent instanceof Element ? (Element)parent : null);
    }
 
+   /** Peek at the owner document without creating a new one if not set. */
+   public static Document peekOwnerDocument()
+   {
+      return documentThreadLocal.get();
+   }
+   
+   public static void setOwnerDocument(Document doc)
+   {
+      documentThreadLocal.set(doc);
+   }
+   
    /** Get the owner document that is associated with the current thread */
    public static Document getOwnerDocument()
    {
