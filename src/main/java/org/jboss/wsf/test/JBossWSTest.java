@@ -141,7 +141,7 @@ public abstract class JBossWSTest extends TestCase
 
    public boolean isTargetJBoss5()
    {
-      return isTargetJBoss51() || isTargetJBoss50();
+      return delegate.isTargetJBoss5();
    }
 
    public boolean isTargetJBoss51()
@@ -156,7 +156,7 @@ public abstract class JBossWSTest extends TestCase
 
    public boolean isTargetJBoss4()
    {
-      return isTargetJBoss42() || isTargetJBoss40();
+      return delegate.isTargetJBoss4();
    }
 
    public boolean isTargetJBoss42()

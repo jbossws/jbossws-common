@@ -75,6 +75,12 @@ public class JBossWSTestHelper
       getDeployer().undeploy(url);
    }
 
+   /** True, if -Djbossws.integration.target=jboss5x */
+   public boolean isTargetJBoss5()
+   {
+      return isTargetJBoss51() || isTargetJBoss50();
+   }
+
    /** True, if -Djbossws.integration.target=jboss50x */
    public boolean isTargetJBoss50()
    {
@@ -87,6 +93,12 @@ public class JBossWSTestHelper
    {
       String target = getIntegrationTarget();
       return target.startsWith("jboss51");
+   }
+
+   /** True, if -Djbossws.integration.target=jboss4x */
+   public boolean isTargetJBoss4()
+   {
+      return isTargetJBoss42() || isTargetJBoss40();
    }
 
    /** True, if -Djbossws.integration.target=jboss42x */
