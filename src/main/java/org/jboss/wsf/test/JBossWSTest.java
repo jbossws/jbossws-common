@@ -139,9 +139,24 @@ public abstract class JBossWSTest extends TestCase
       return JBossWSTestHelper.getServer();
    }
 
+   public boolean isTargetJBoss5()
+   {
+      return isTargetJBoss51() || isTargetJBoss50();
+   }
+
+   public boolean isTargetJBoss51()
+   {
+      return delegate.isTargetJBoss51();
+   }
+
    public boolean isTargetJBoss50()
    {
       return delegate.isTargetJBoss50();
+   }
+
+   public boolean isTargetJBoss4()
+   {
+      return isTargetJBoss42() || isTargetJBoss40();
    }
 
    public boolean isTargetJBoss42()
