@@ -82,6 +82,13 @@ public class JBossWSTestHelper
       return target.startsWith("jboss50");
    }
 
+   /** True, if -Djbossws.integration.target=jboss51x */
+   public boolean isTargetJBoss51()
+   {
+      String target = getIntegrationTarget();
+      return target.startsWith("jboss51");
+   }
+
    /** True, if -Djbossws.integration.target=jboss42x */
    public boolean isTargetJBoss42()
    {
