@@ -207,7 +207,9 @@ public class JBossWSTestHelper
             if (jbossVersion == null)
                throw new IllegalStateException("Cannot obtain jboss version");
 
-            if (jbossVersion.startsWith("5.0"))
+            if (jbossVersion.startsWith("5.1"))
+               jbossVersion = "jboss51";
+            else if (jbossVersion.startsWith("5.0"))
                jbossVersion = "jboss50";
             else if (jbossVersion.startsWith("4.2"))
                jbossVersion = "jboss42";
