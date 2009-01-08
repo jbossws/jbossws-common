@@ -114,6 +114,19 @@ public class JBossWSTestHelper
       String target = getIntegrationTarget();
       return target.startsWith("jboss40");
    }
+   
+   /** True, if -Djbossws.integration.target=jboss6x */
+   public boolean isTargetJBoss6()
+   {
+      String target = getIntegrationTarget();
+      return target.startsWith("jboss6");
+   }
+   
+   /** True, if -Djbossws.integration.target=jboss5x */
+   public boolean isTargetJBoss5OrGreater()
+   {
+      return isTargetJBoss5() || isTargetJBoss6();
+   }
 
    public boolean isIntegrationNative()
    {
@@ -223,6 +236,8 @@ public class JBossWSTestHelper
                jbossVersion = "jboss51";
             else if (jbossVersion.startsWith("5.0"))
                jbossVersion = "jboss50";
+            else if (jbossVersion.startsWith("6.0"))
+               jbossVersion = "jboss60";
             else if (jbossVersion.startsWith("4.2"))
                jbossVersion = "jboss42";
             else if (jbossVersion.startsWith("4.0"))
