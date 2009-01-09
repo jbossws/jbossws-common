@@ -143,6 +143,11 @@ public abstract class JBossWSTest extends TestCase
    {
       return delegate.isTargetJBoss5();
    }
+   
+   public boolean isTargetJBoss5OrGreater()
+   {
+      return delegate.isTargetJBoss5OrGreater();
+   }
 
    public boolean isTargetJBoss51()
    {
