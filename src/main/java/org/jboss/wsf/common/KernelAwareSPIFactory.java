@@ -21,22 +21,22 @@
  */
 package org.jboss.wsf.common;
 
-import org.jboss.kernel.Kernel;
-import org.jboss.kernel.spi.registry.KernelRegistry;
-import org.jboss.kernel.spi.registry.KernelRegistryEntry;
+import org.jboss.dependency.spi.ControllerContext;
+import org.jboss.kernel.spi.dependency.KernelController;
 import org.jboss.wsf.spi.util.KernelLocator;
 
 /**
+ * SPI factory delegating to kernel for bean lookups
+ * @author richard.opalka@jboss.com
  * @author Heiko.Braun@jboss.com
- *         Created: Jul 19, 2007
  */
 public class KernelAwareSPIFactory
 {
+   @SuppressWarnings("unchecked")
    public <T> T getKernelProvidedSPI(String beanName, Class<T> spiArtifact)
    {
-      Kernel kernel = KernelLocator.getKernel();
-      KernelRegistry registry = kernel.getRegistry();
-      KernelRegistryEntry entry = registry.getEntry(beanName);
-      return (T)entry.getTarget();
+      KernelController controller = KernelLocator.getKernel().getController();
+      ControllerContext ctx = controller.getInstalledContext(beanName);
+      return (T)ctx.getTarget();
    }
 }
