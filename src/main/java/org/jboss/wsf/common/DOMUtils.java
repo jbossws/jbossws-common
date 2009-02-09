@@ -169,6 +169,10 @@ public final class DOMUtils
       {
          throw new IOException(e.toString());
       }
+      finally
+      {
+         xmlStream.close();
+      }
    }
 
    /** Parse the given input source and return the root Element
@@ -184,6 +188,19 @@ public final class DOMUtils
       catch (SAXException e)
       {
          throw new IOException(e.toString());
+      }
+      finally
+      {
+         InputStream is = source.getByteStream();
+         if (is != null)
+         {
+            is.close();
+         }
+         Reader r = source.getCharacterStream();
+         if (r != null)
+         {
+            r.close();
+         }
       }
    }
 
