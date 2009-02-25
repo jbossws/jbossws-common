@@ -41,6 +41,7 @@ import junit.framework.TestCase;
 import org.jboss.logging.Logger;
 import org.jboss.wsf.common.DOMWriter;
 import org.jboss.wsf.common.IOUtils;
+import org.jboss.wsf.common.concurrent.CopyJob;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -111,16 +112,16 @@ public abstract class JBossWSTest extends TestCase
       
       System.out.println("Executing command: " + command);
       Process p = Runtime.getRuntime().exec(command);
+      CopyJob inputStreamJob = new CopyJob(p.getInputStream(), os == null ? System.out : os);
+      CopyJob errorStreamJob = new CopyJob(p.getErrorStream(), System.err);
+      // unfortunately the following threads are needed because of Windows behavior
       System.out.println("Process input stream:");
-      IOUtils.copyStream(os == null ? System.out : os, p.getInputStream());
+      System.err.println("Process error stream:");
+      new Thread( inputStreamJob ).start();
+      new Thread( errorStreamJob ).start();
       try
       {
          int statusCode = p.waitFor();
-         if (statusCode != 0)
-         {
-            System.err.println("Process error stream:");
-            IOUtils.copyStream(System.err, p.getErrorStream());
-         }
          String fallbackMessage = "Process did exit with status " + statusCode; 
          assertTrue(message != null ? message : fallbackMessage, statusCode == 0);
       }
@@ -130,6 +131,8 @@ public abstract class JBossWSTest extends TestCase
       }
       finally
       {
+         inputStreamJob.kill();
+         errorStreamJob.kill();
          p.destroy();
       }
    }
