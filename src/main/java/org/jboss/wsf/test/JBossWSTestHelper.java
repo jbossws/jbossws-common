@@ -227,8 +227,8 @@ public class JBossWSTestHelper
          String jbossVersion = null;
          try
          {
-            ObjectName oname = ObjectNameFactory.create("jboss.system:type=ServerConfig");
-            jbossVersion = (String)getServer().getAttribute(oname, "SpecificationVersion");
+            ObjectName oname = ObjectNameFactory.create("jboss.system:type=Server");
+            jbossVersion = (String)getServer().getAttribute(oname, "VersionNumber");
             if (jbossVersion == null)
                throw new IllegalStateException("Cannot obtain jboss version");
 
