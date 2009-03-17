@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Enumeration;
+import java.util.Properties;
 
 import org.jboss.logging.Logger;
 import org.jboss.util.xml.JBossEntityResolver;
@@ -44,18 +46,45 @@ public class JBossWSEntityResolver extends JBossEntityResolver
 
    public JBossWSEntityResolver()
    {
-      registerEntity("urn:jboss:jaxrpc-config:2.0", "schema/jaxrpc-config_2_0.xsd");
-      registerEntity("urn:jboss:jaxws-config:2.0", "schema/jaxws-config_2_0.xsd");
-      registerEntity("http://java.sun.com/xml/ns/javaee", "schema/javaee_web_services_1_2.xsd");
-      registerEntity("http://www.w3.org/2005/08/addressing", "schema/ws-addr.xsd");
-      registerEntity("http://schemas.xmlsoap.org/ws/2004/08/eventing", "eventing.xsd");
-      registerEntity("http://www.w3.org/2002/06/soap-encoding", "soap-encoding_200206.xsd");
-      registerEntity("http://schemas.xmlsoap.org/soap/encoding/", "soap-encoding_1_1.xsd");
-      registerEntity("http://www.ibm.com/webservices/xsd/j2ee_web_services_client_1_1.xsd", "j2ee_web_services_client_1_1.xsd");
-      registerEntity("http://www.ibm.com/webservices/xsd/j2ee_web_services_1_1.xsd", "j2ee_web_services_1_1.xsd");
-      registerEntity("http://www.ibm.com/webservices/xsd/j2ee_jaxrpc_mapping_1_1.xsd", "j2ee_jaxrpc_mapping_1_1.xsd");
-      registerEntity("http://ws-i.org/profiles/basic/1.1/swaref.xsd", "schema/swaref.xsd");
+	  this("META-INF/jbossws-entities.properties");
    }
+   
+   public JBossWSEntityResolver(final String entitiesResource)
+   {
+      super();
+	   // get stream
+      InputStream is = this.getClass().getClassLoader().getResourceAsStream(entitiesResource);
+	   if (is == null)
+		   throw new IllegalArgumentException("Resource " + entitiesResource + " not found");
+
+	   // load props
+	   Properties props = new Properties();
+	   try
+	   {
+	       props.load(is);
+	   }
+	   catch (IOException ioe)
+	   {
+		   log.error("Cannot read resource: " + entitiesResource, ioe);
+	   }
+	   finally
+	   {
+		   try { is.close(); } catch (IOException ioe) {} // ignore
+	   }
+
+	   if (props.size() == 0)
+		   throw new IllegalArgumentException("Resource " + entitiesResource + " have no mappings defined");
+	   
+	   // register entities
+	   String key = null, val = null;
+	   for (Enumeration<Object> keys = props.keys(); keys.hasMoreElements();)
+	   {
+		   key = (String)keys.nextElement();
+		   val = props.getProperty(key);
+		   registerEntity(key, val);
+	   }
+   }
+   
 
    public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException
    {
