@@ -48,6 +48,8 @@ import org.jboss.wsf.spi.deployment.UnifiedVirtualFile;
  */
 public class URLLoaderAdapter implements UnifiedVirtualFile
 {
+   private static final long serialVersionUID = 8263115387770740414L;
+   
    private URL rootURL;
    private URL resourceURL;
    private transient URLClassLoader loader;
