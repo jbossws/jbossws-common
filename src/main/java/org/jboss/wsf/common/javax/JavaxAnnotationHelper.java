@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source.
- * Copyright 2006, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2009, Red Hat Middleware LLC, and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -23,43 +23,43 @@ package org.jboss.wsf.common.javax;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Collection;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
+import javax.naming.InitialContext;
 
 import org.jboss.logging.Logger;
-import org.jboss.util.NotImplementedException;
+import org.jboss.wsf.common.javax.finders.InjectionFieldFinder;
+import org.jboss.wsf.common.javax.finders.InjectionMethodFinder;
+import org.jboss.wsf.common.javax.finders.PostConstructMethodFinder;
+import org.jboss.wsf.common.javax.finders.PreDestroyMethodFinder;
+import org.jboss.wsf.common.javax.finders.ResourceFieldFinder;
+import org.jboss.wsf.common.javax.finders.ResourceMethodFinder;
+import org.jboss.wsf.common.reflection.ClassProcessor;
+import org.jboss.wsf.spi.metadata.injection.InjectionMetaData;
+import org.jboss.wsf.spi.metadata.injection.InjectionsMetaData;
 
 /**
  * A helper class for <b>javax.annotation</b> annotations. 
- * @author richard.opalka@jboss.com
+ * 
+ * @author ropalka@redhat.com
  */
 public final class JavaxAnnotationHelper
 {
    
-   private static Logger log = Logger.getLogger(JavaxAnnotationHelper.class);
-   private static final Object[] noArgs = new Object[] {};
+   private static final Logger LOG = Logger.getLogger(JavaxAnnotationHelper.class);
+   private static final String JNDI_PREFIX = "java:comp/env/";
+   private static final ClassProcessor<Method> POST_CONSTRUCT_METHOD_FINDER = new PostConstructMethodFinder();
+   private static final ClassProcessor<Method> PRE_DESTROY_METHOD_FINDER = new PreDestroyMethodFinder();
+   private static final ClassProcessor<Method> RESOURCE_METHOD_FINDER = new ResourceMethodFinder();
+   private static final ClassProcessor<Field> RESOURCE_FIELD_FINDER = new ResourceFieldFinder();
    
    /**
-    * Constructor
+    * Forbidden constructor.
     */
    private JavaxAnnotationHelper()
    {
-      // forbidden inheritance
-   }
-   
-   /**
-    * @see JavaxAnnotationHelper#callPreDestroyMethod(Object, ClassLoader)
-    * @param instance to inject resource on
-    * @throws Exception if some error occurs
-    */
-   public static void injectResources(Object instance) throws Exception
-   {
-      injectResources(instance, Thread.currentThread().getContextClassLoader());
+      super();
    }
    
    /**
@@ -68,262 +68,253 @@ public final class JavaxAnnotationHelper
     * applied to a field or method, the container will inject an instance of the requested resource into the
     * application component when the component is initialized. If the annotation is applied to the component class,
     * the annotation declares a resource that the application will look up at runtime.
+    * 
     * @param instance to inject resource on
-    * @param classLoader to check whether javax.annotation annotations are available
+    * @param injections injections metadata
     * @throws Exception if some error occurs
     */
-   public static void injectResources(Object instance, ClassLoader classLoader) throws Exception
+   public static void injectResources(Object instance, InjectionsMetaData injections) throws Exception
    {
       if (instance == null)
          throw new IllegalArgumentException("Object instance cannot be null");
-      if (classLoader == null)
-         throw new IllegalArgumentException("ClassLoader cannot be null");
+      if (injections == null)
+         throw new IllegalArgumentException("Injections metadata cannot be null");
       
-      try
-      {
-         classLoader.loadClass("javax.annotation.Resource");
-      }
-      catch (Throwable th)
-      {
-         log.debug("Cannot inject resources: " + th.toString());
-         return;
-      }
-
       Class<?> instanceClass = instance.getClass();
       
-      // handle Resource injection on types
-      if (instanceClass.isAnnotationPresent(Resource.class))
-         throw new NotImplementedException("@Resource not implemented for: " + instanceClass.getName());
-      
-      // handle Resource injection on fields
-      for (Field field : getAllDeclaredFields(instanceClass))
-      {
-         if (field.isAnnotationPresent(Resource.class))
-            throw new NotImplementedException("@Resource not implemented for: " + instanceClass.getName());
-      }
-      
-      // handle Resource injection on methods
-      for (Method method : getAllDeclaredMethods(instanceClass))
-      {
-         if (method.isAnnotationPresent(Resource.class))
-            throw new NotImplementedException("@Resource not implemented for: " + instanceClass.getName());
-      }
-   }
-   
-   /**
-    * @see JavaxAnnotationHelper#callPreDestroyMethod(Object, ClassLoader)
-    * @param instance to invoke pre destroy method on
-    * @throws Exception if some error occurs
-    */
-   public static void callPreDestroyMethod(Object instance) throws Exception
-   {
-      callPreDestroyMethod(instance, Thread.currentThread().getContextClassLoader());
-   }
-   
-   /**
-    * The PreDestroy annotation is used on methods as a callback notification to signal that the instance
-    * is in the process of being removed by the container. The method annotated with PreDestroy is typically
-    * used to release resources that it has been holding. This annotation MUST be supported by all container
-    * managed objects that support PostConstruct except the application client container in Java EE 5.
-    * The method on which the PreDestroy annotation is applied MUST fulfill all of the following criteria:
-    * <ul>
-    *   <li>The method MUST NOT have any parameters.
-    *   <li>The return type of the method MUST be void.
-    *   <li>The method MUST NOT throw a checked exception.
-    *   <li>The method on which PreDestroy is applied MAY be public, protected, package private or private.
-    *   <li>The method MUST NOT be static.
-    *   <li>The method MAY be final.
-    *   <li>If the method throws an unchecked exception it is ignored.
-    * </ul>
-    * @param instance to invoke pre destroy method on
-    * @param classLoader to check whether javax.annotation annotations are available
-    * @throws Exception if some error occurs
-    */
-   public static void callPreDestroyMethod(Object instance, ClassLoader classLoader) throws Exception
-   {
-      if (instance == null)
-         throw new IllegalArgumentException("Object instance cannot be null");
-      if (classLoader == null)
-         throw new IllegalArgumentException("ClassLoader cannot be null");
-      
-      try
-      {
-         classLoader.loadClass("javax.annotation.PreDestroy");
-      }
-      catch (Throwable th)
-      {
-         log.debug("Cannot call pre destroy: " + th.toString());
-         return;
-      }
+      InitialContext ctx = new InitialContext();
 
-      Method targetMethod = null;
-      for (Method method : getAllDeclaredMethods(instance.getClass()))
+      // inject descriptor driven annotations
+      Collection<InjectionMetaData> injectionMDs = injections.getInjectionsMetaData(instanceClass);
+      for (InjectionMetaData injectionMD : injectionMDs)
       {
-         if (method.isAnnotationPresent(PreDestroy.class))
+         Method method = getMethod(injectionMD, instanceClass);
+         if (method != null)
          {
-            if (targetMethod == null)
+            // inject descriptor driven annotated method
+            inject(instance, method, injectionMD.getEnvEntryName(), ctx);
+         }
+         else
+         {
+            Field field = getField(injectionMD, instanceClass);
+            if (field != null)
             {
-               targetMethod = method;
+               // inject descriptor driven annotated field
+               inject(instance, field, injectionMD.getEnvEntryName(), ctx);
             }
             else
             {
-               throw new RuntimeException("Only one method can be annotated with javax.annotation.PreDestroy annotation");
+               throw new RuntimeException("Cannot find injection target for: " + injectionMD);
             }
          }
       }
-      
-      if (targetMethod != null)
-      {
-         // Ensure all method preconditions
-         assertNoParameters(targetMethod);
-         assertVoidReturnType(targetMethod);
-         assertNoCheckedExceptionsAreThrown(targetMethod);
-         assertNotStatic(targetMethod);
 
-         // Finally call annotated method
-         invokeMethod(targetMethod, instance);
+      // inject @Resource annotated methods
+      Collection<Method> resourceAnnotatedMethods = RESOURCE_METHOD_FINDER.process(instanceClass);
+      for(Method method : resourceAnnotatedMethods)
+      {
+         inject(instance, method, method.getAnnotation(Resource.class).name(), ctx);
+      }
+      
+      // inject @Resource annotated fields
+      Collection<Field> resourceAnnotatedFields = RESOURCE_FIELD_FINDER.process(instanceClass);
+      for (Field field : resourceAnnotatedFields)
+      {
+         inject(instance, field, field.getAnnotation(Resource.class).name(), ctx);
       }
    }
    
    /**
-    * @see JavaxAnnotationHelper#callPostConstructMethod(Object, ClassLoader)
-    * @param instance to invoke post construct method on
+    * Calls @PostConstruct annotated method if exists.
+    * 
+    * @param instance to invoke @PostConstruct annotated method on
     * @throws Exception if some error occurs
+    * @see org.jboss.wsf.common.javax.finders.PostConstructMethodFinder
+    * @see javax.annotation.PostConstruct
     */
    public static void callPostConstructMethod(Object instance) throws Exception
    {
-      callPostConstructMethod(instance, Thread.currentThread().getContextClassLoader());
+      if (instance == null)
+         throw new IllegalArgumentException("Object instance cannot be null");
+
+      Collection<Method> methods = POST_CONSTRUCT_METHOD_FINDER.process(instance.getClass());
+      
+      if (methods.size() > 0)
+      {
+         Method method = methods.iterator().next();
+         LOG.debug("Calling @PostConstruct annotated method: " + method);
+         invokeMethod(instance, method, null);
+      }
    }
    
    /**
-    * The PostConstruct annotation is used on a method that needs to be executed after dependency injection is done
-    * to perform any initialization. This method MUST be invoked before the class is put into service. This annotation
-    * MUST be supported on all classes that support dependency injection. The method annotated with PostConstruct MUST
-    * be invoked even if the class does not request any resources to be injected. Only one method can be annotated with
-    * this annotation. The method on which the PostConstruct annotation is applied MUST fulfill all of the following criteria:
-    * <ul>
-    *   <li>The method MUST NOT have any parameters.
-    *   <li>The return type of the method MUST be void.
-    *   <li>The method MUST NOT throw a checked exception.
-    *   <li>The method on which PostConstruct is applied MAY be public, protected, package private or private.
-    *   <li>The method MUST NOT be static.
-    *   <li>The method MAY be final.
-    *   <li>If the method throws an unchecked exception the class MUST NOT be put into service.
-    * </ul> 
-    * @param instance to invoke post construct method on
-    * @param classLoader to check whether javax.annotation annotations are available
+    * Calls @PreDestroy annotated method if exists.
+    * 
+    * @param instance to invoke @PreDestroy annotated method on
     * @throws Exception if some error occurs
+    * @see org.jboss.wsf.common.javax.finders.PreDestroyMethodFinder
+    * @see javax.annotation.PreDestroy
     */
-   public static void callPostConstructMethod(Object instance, ClassLoader classLoader) throws Exception
+   public static void callPreDestroyMethod(Object instance) throws Exception
    {
       if (instance == null)
          throw new IllegalArgumentException("Object instance cannot be null");
-      if (classLoader == null)
-         throw new IllegalArgumentException("ClassLoader cannot be null");
+
+      Collection<Method> methods = PRE_DESTROY_METHOD_FINDER.process(instance.getClass());
+      
+      if (methods.size() > 0)
+      {
+         Method method = methods.iterator().next();
+         LOG.debug("Calling @PreDestroy annotated method: " + method);
+         invokeMethod(instance, method, null);
+      }
+   }
+   
+   /**
+    * Injects @Resource annotated method.
+    * 
+    * @param method to invoke
+    * @param instance to invoke method on
+    * @param resourceName resource name
+    * @param cxt JNDI context
+    * @throws Exception if any error occurs
+    * @see org.jboss.wsf.common.javax.finders.ResourceMethodFinder
+    */
+   private static void inject(final Object instance, final Method method, String resourceName, InitialContext ctx) throws Exception
+   {
+      final String beanName = convertToBeanName(method.getName()); 
+      final Object value = ctx.lookup(getName(resourceName, beanName));
+
+      LOG.debug("Injecting method: " + method);
+      invokeMethod(instance, method, new Object[] {value});
+   }
+   
+   /**
+    * Injects @Resource annotated field.
+    * 
+    * @param field to set
+    * @param instance to modify field on
+    * @param resourceName resource name
+    * @param cxt JNDI context
+    * @throws Exception if any error occurs
+    * @see org.jboss.wsf.common.javax.finders.ResourceFieldFinder
+    */
+   private static void inject(final Object instance, final Field field, String resourceName, InitialContext ctx) throws Exception
+   {
+      final String beanName = field.getName();
+      final Object value = ctx.lookup(getName(resourceName, beanName));
+      
+      LOG.debug("Injecting field: " + field);
+      setField(instance, field, value);
+   }
+
+   /**
+    * Translates "setBeanName" to "beanName" string.
+    * 
+    * @param methodName to translate
+    * @return bean name
+    */
+   private static String convertToBeanName(final String methodName)
+   {
+      return Character.toLowerCase(methodName.charAt(3)) + methodName.substring(4);
+   }
+   
+   /**
+    * Returns full JNDI name.
+    * 
+    * @param resourceName to be used if specified
+    * @param beanName fallback bean name to be used
+    * @return JNDI full name
+    */
+   private static String getName(final String resourceName, final String beanName)
+   {
+      return JNDI_PREFIX + (resourceName.length() > 0 ? resourceName : beanName);
+   }
+   
+   /**
+    * Invokes method on object with specified arguments.
+    * 
+    * @param instance to invoke method on
+    * @param method method to invoke
+    * @param args arguments to pass
+    * @throws Exception if any error occurs
+    */
+   private static void invokeMethod(final Object instance, final Method method, final Object[] args) throws Exception
+   {
+      boolean accessability = method.isAccessible();
       
       try
       {
-         classLoader.loadClass("javax.annotation.PostConstruct");
+         method.setAccessible(true);
+         method.invoke(instance, args);
       }
-      catch (Throwable th)
+      catch (Exception e)
       {
-         log.debug("Cannot call post construct: " + th.toString());
-         return;
+         LOG.error(e.getMessage(), e);
+         throw e; // propagate
       }
-
-      Method targetMethod = null;
-      for (Method method : getAllDeclaredMethods(instance.getClass()))
+      finally
       {
-         if (method.isAnnotationPresent(PostConstruct.class))
-         {
-            if (targetMethod == null)
-            {
-               targetMethod = method;
-            }
-            else
-            {
-               throw new RuntimeException("Only one method can be annotated with javax.annotation.PostConstruct annotation");
-            }
-         }
+         method.setAccessible(accessability);
       }
+   }
+   
+   /**
+    * Sets field on object with specified value.
+    * 
+    * @param instance to set field on
+    * @param field to set
+    * @param value to be set
+    * @throws Exception if any error occurs
+    */
+   private static void setField(final Object instance, final Field field, final Object value) throws Exception
+   {
+      boolean accessability = field.isAccessible();
       
-      if (targetMethod != null)
+      try
       {
-         // Ensure all method preconditions
-         assertNoParameters(targetMethod);
-         assertVoidReturnType(targetMethod);
-         assertNoCheckedExceptionsAreThrown(targetMethod);
-         assertNotStatic(targetMethod);
-
-         // Finally call annotated method
-         invokeMethod(targetMethod, instance);
+         field.setAccessible(true);
+         field.set(instance, value);
+      }
+      catch (Exception e)
+      {
+         LOG.error(e.getMessage(), e);
+         throw e; // propagate
+      }
+      finally
+      {
+         field.setAccessible(accessability);
       }
    }
    
-   private static List<Method> getAllDeclaredMethods(Class<?> clazz)
+   /**
+    * Returns method that matches the descriptor injection metadata or null if not found.
+    * 
+    * @param injectionMD descriptor injection metadata
+    * @param clazz to process
+    * @return method that matches the criteria or null if not found
+    * @see org.jboss.wsf.common.javax.finders.InjectionMethodFinder
+    */
+   private static Method getMethod(InjectionMetaData injectionMD, Class<?> clazz)
    {
-      List<Method> retVal = new LinkedList<Method>();
-      while (clazz != null)
-      {
-         for (Method m : clazz.getDeclaredMethods())
-         {
-            retVal.add(m);
-         }
-         clazz = clazz.getSuperclass();
-      }
-      return retVal;
+      Collection<Method> result = new InjectionMethodFinder(injectionMD).process(clazz);
+      
+      return result.isEmpty() ? null : result.iterator().next();
    }
    
-   private static List<Field> getAllDeclaredFields(Class<?> clazz)
+   /**
+    * Returns field that matches the descriptor injection metadata or null if not found.
+    * 
+    * @param injectionMD descriptor injection metadata
+    * @param clazz to process
+    * @return field that matches the criteria or null if not found
+    * @see org.jboss.wsf.common.javax.finders.InjectionFieldFinder
+    */
+   private static Field getField(InjectionMetaData injectionMD, Class<?> clazz)
    {
-      List<Field> retVal = new LinkedList<Field>();
-      while (clazz != null)
-      {
-         for (Field f : clazz.getDeclaredFields())
-         {
-            retVal.add(f);
-         }
-         clazz = clazz.getSuperclass();
-      }
-      return retVal;
-   }
-   
-   private static void invokeMethod(Method m, Object instance) throws Exception
-   {
-      if (!m.isAccessible())
-      {
-         m.setAccessible(true);
-      }
-      m.invoke(instance, noArgs);
-   }
-   
-   private static void assertNoParameters(Method m) 
-   {
-      if (m.getParameterTypes().length != 0)
-         throw new RuntimeException("Method annotated with javax.annotation annotations have to be parameterless");
-   }
-
-   private static void assertVoidReturnType(Method m) 
-   {
-      if ((!m.getReturnType().equals(Void.class)) && (!m.getReturnType().equals(Void.TYPE)))
-         throw new RuntimeException("Method annotated with javax.annotation annotations have to return void");
-   }
-
-   private static void assertNoCheckedExceptionsAreThrown(Method m) 
-   {
-      Class<?>[] declaredExceptions = m.getExceptionTypes();
-      for (int i = 0; i < declaredExceptions.length; i++)
-      {
-         Class<?> exception = declaredExceptions[i];
-         if (!exception.isAssignableFrom(RuntimeException.class))
-            throw new RuntimeException("Method annotated with javax.annotation annotations cannot throw checked exceptions");
-      }
-   }
-
-   private static void assertNotStatic(Method m) 
-   {
-      if (Modifier.isStatic(m.getModifiers()))
-         throw new RuntimeException("Method annotated with javax.annotation annotations cannot be static");
+      Collection<Field> result = new InjectionFieldFinder(injectionMD).process(clazz);
+      
+      return result.isEmpty() ? null : result.iterator().next();
    }
    
 }
