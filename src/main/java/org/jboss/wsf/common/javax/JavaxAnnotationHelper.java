@@ -77,34 +77,35 @@ public final class JavaxAnnotationHelper
    {
       if (instance == null)
          throw new IllegalArgumentException("Object instance cannot be null");
-      if (injections == null)
-         throw new IllegalArgumentException("Injections metadata cannot be null");
       
       Class<?> instanceClass = instance.getClass();
       
       InitialContext ctx = new InitialContext();
 
       // inject descriptor driven annotations
-      Collection<InjectionMetaData> injectionMDs = injections.getInjectionsMetaData(instanceClass);
-      for (InjectionMetaData injectionMD : injectionMDs)
+      if (injections != null)
       {
-         Method method = getMethod(injectionMD, instanceClass);
-         if (method != null)
+         Collection<InjectionMetaData> injectionMDs = injections.getInjectionsMetaData(instanceClass);
+         for (InjectionMetaData injectionMD : injectionMDs)
          {
-            // inject descriptor driven annotated method
-            inject(instance, method, injectionMD.getEnvEntryName(), ctx);
-         }
-         else
-         {
-            Field field = getField(injectionMD, instanceClass);
-            if (field != null)
+            Method method = getMethod(injectionMD, instanceClass);
+            if (method != null)
             {
-               // inject descriptor driven annotated field
-               inject(instance, field, injectionMD.getEnvEntryName(), ctx);
+               // inject descriptor driven annotated method
+               inject(instance, method, injectionMD.getEnvEntryName(), ctx);
             }
             else
             {
-               throw new RuntimeException("Cannot find injection target for: " + injectionMD);
+               Field field = getField(injectionMD, instanceClass);
+               if (field != null)
+               {
+                  // inject descriptor driven annotated field
+                  inject(instance, field, injectionMD.getEnvEntryName(), ctx);
+               }
+               else
+               {
+                  throw new RuntimeException("Cannot find injection target for: " + injectionMD);
+               }
             }
          }
       }
