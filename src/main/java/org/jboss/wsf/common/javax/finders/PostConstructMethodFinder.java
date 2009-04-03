@@ -46,7 +46,7 @@ import javax.annotation.PostConstruct;
 public final class PostConstructMethodFinder
 extends AbstractPostConstructPreDestroyAnnotatedMethodFinder<PostConstruct>
 {
-   
+
    /**
     * Constructor.
     */
@@ -54,5 +54,5 @@ extends AbstractPostConstructPreDestroyAnnotatedMethodFinder<PostConstruct>
    {
       super(PostConstruct.class);
    }
-   
+
 }

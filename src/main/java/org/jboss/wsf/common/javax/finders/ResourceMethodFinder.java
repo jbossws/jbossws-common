@@ -45,7 +45,7 @@ import org.jboss.wsf.common.reflection.AnnotatedMethodFinder;
 public final class ResourceMethodFinder
 extends AnnotatedMethodFinder<Resource>
 {
-   
+
    /**
     * Parameter type to accept/ignore.
     */
@@ -55,20 +55,20 @@ extends AnnotatedMethodFinder<Resource>
     * <ul>
     *   <li><b>true</b> means include only methods with <b>accept</b> parameter,
     *   <li><b>false</b> means exclude all methods with <b>accept</b> parameter
-    * </ul> 
+    * </ul>
     */
    private final boolean include;
-   
+
    /**
     * Constructor.
-    * 
+    *
     * @param accept filtering class
     * @param include whether include/exclude filtering class
     */
    public ResourceMethodFinder(final Class<?> accept, boolean include)
    {
       super(Resource.class);
-      
+
       this.accept = accept;
       this.include = include;
    }
@@ -92,7 +92,7 @@ extends AnnotatedMethodFinder<Resource>
    public boolean matches(Method method)
    {
       final boolean matches = super.matches(method);
-      
+
       if (matches)
       {
          // processing @Resource annotated method

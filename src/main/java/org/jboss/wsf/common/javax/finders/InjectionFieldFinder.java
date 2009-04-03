@@ -22,7 +22,6 @@
 package org.jboss.wsf.common.javax.finders;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.Collection;
 
 import org.jboss.wsf.common.reflection.FieldFinder;
@@ -36,22 +35,22 @@ import org.jboss.wsf.spi.metadata.injection.InjectionMetaData;
 public final class InjectionFieldFinder
 extends FieldFinder
 {
-   
+
    /**
     * Descriptor injection metadata.
     */
    private final InjectionMetaData injectionMD;
-   
+
    /**
     * Constructor.
-    * 
+    *
     * @param injectionMD descriptor injection metadata
     */
    public InjectionFieldFinder(final InjectionMetaData injectionMD)
    {
       if (injectionMD == null)
          throw new IllegalArgumentException("Injection metadata cannot be null");
-      
+
       this.injectionMD = injectionMD;
    }
 
@@ -72,7 +71,7 @@ extends FieldFinder
             return true;
          }
       }
-      
+
       return false;
    }
 
@@ -80,7 +79,7 @@ extends FieldFinder
    public void validate(final Collection<Field> fields)
    {
       super.validate(fields);
-      
+
       if (fields.size() > 2)
       {
          throw new RuntimeException("More than one field found matching the criteria: " + injectionMD);
@@ -91,10 +90,10 @@ extends FieldFinder
    public void validate(final Field field)
    {
       super.validate(field);
-      
+
       ReflectionUtils.assertNotVoidType(field);
       ReflectionUtils.assertNotStatic(field);
       ReflectionUtils.assertNotPrimitiveType(field);
    }
-   
+
 }

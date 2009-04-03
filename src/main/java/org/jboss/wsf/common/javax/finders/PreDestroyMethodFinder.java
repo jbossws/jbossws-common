@@ -46,7 +46,7 @@ import javax.annotation.PreDestroy;
 public final class PreDestroyMethodFinder
 extends AbstractPostConstructPreDestroyAnnotatedMethodFinder<PreDestroy>
 {
-   
+
    /**
     * Constructor.
     */
@@ -54,5 +54,5 @@ extends AbstractPostConstructPreDestroyAnnotatedMethodFinder<PreDestroy>
    {
       super(PreDestroy.class);
    }
-   
+
 }

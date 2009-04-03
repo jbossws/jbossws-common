@@ -29,31 +29,32 @@ public final class PreDestroyHolder
 {
    private final Object object;
    private final int hashCode;
-   
+
    public PreDestroyHolder(Object object)
    {
       super();
       this.hashCode = System.identityHashCode(object);
       this.object = object;
    }
-   
+
    public final Object getObject()
    {
       return this.object;
    }
-   
+
    public final boolean equals(Object o)
    {
       if (o instanceof PreDestroyHolder)
       {
          return ((PreDestroyHolder)o).hashCode == this.hashCode;
       }
-      
+
       return false;
    }
-   
+
    public final int hashCode()
    {
       return this.hashCode;
    }
+
 }

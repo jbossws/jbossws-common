@@ -35,22 +35,22 @@ import org.jboss.wsf.spi.metadata.injection.InjectionMetaData;
 public final class InjectionMethodFinder
 extends MethodFinder
 {
-   
+
    /**
     * Descriptor injection metadata.
     */
    private final InjectionMetaData injectionMD;
-   
+
    /**
     * Constructor.
-    * 
+    *
     * @param injectionMD descriptor injection metadata
     */
    public InjectionMethodFinder(final InjectionMetaData injectionMD)
    {
       if (injectionMD == null)
          throw new IllegalArgumentException("Injection metadata cannot be null");
-      
+
       this.injectionMD = injectionMD;
    }
 
@@ -77,7 +77,7 @@ extends MethodFinder
             }
          }
       }
-      
+
       return false;
    }
 
@@ -85,7 +85,7 @@ extends MethodFinder
    public void validate(final Collection<Method> methods)
    {
       super.validate(methods);
-      
+
       if (methods.size() > 2)
       {
          throw new RuntimeException("More than one method found matching the criteria: " + injectionMD);
@@ -96,7 +96,7 @@ extends MethodFinder
    public void validate(final Method method)
    {
       super.validate(method);
-      
+
       ReflectionUtils.assertVoidReturnType(method);
       ReflectionUtils.assertOneParameter(method);
       ReflectionUtils.assertNoPrimitiveParameters(method);
@@ -104,5 +104,5 @@ extends MethodFinder
       ReflectionUtils.assertNoCheckedExceptionsAreThrown(method);
       ReflectionUtils.assertNotStatic(method);
    }
-   
+
 }

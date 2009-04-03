@@ -38,7 +38,7 @@ extends AnnotatedMethodFinder<A>
 
    /**
     * Constructor.
-    * 
+    *
     * @param annotationClass annotation.
     */
    AbstractPostConstructPreDestroyAnnotatedMethodFinder(final Class<A> annotationClass)
@@ -67,5 +67,5 @@ extends AnnotatedMethodFinder<A>
       ReflectionUtils.assertNoCheckedExceptionsAreThrown(method, annotation);
       ReflectionUtils.assertNotStatic(method, annotation);
    }
-   
+
 }

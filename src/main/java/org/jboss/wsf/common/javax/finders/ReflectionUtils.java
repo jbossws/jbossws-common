@@ -34,7 +34,7 @@ import java.util.Collection;
  */
 final class ReflectionUtils
 {
-   
+
    /**
     * Constructor.
     */
@@ -42,10 +42,10 @@ final class ReflectionUtils
    {
       super();
    }
-   
+
    /**
     * Asserts method don't declare primitive parameters.
-    * 
+    *
     * @param method to validate
     * @param annotation annotation to propagate in exception message
     */
@@ -59,20 +59,20 @@ final class ReflectionUtils
          }
       }
    }
-   
+
    /**
     * Asserts method don't declare primitive parameters.
-    * 
+    *
     * @param method to validate
     */
    public static void assertNoPrimitiveParameters(final Method method)
    {
       assertNoPrimitiveParameters(method, null);
    }
-   
+
    /**
     * Asserts field is not of primitive type.
-    * 
+    *
     * @param method to validate
     * @param annotation annotation to propagate in exception message
     */
@@ -83,20 +83,20 @@ final class ReflectionUtils
          throw new RuntimeException("Field " + getAnnotationMessage(annotation) + "can't be of primitive type: " + field);
       }
    }
-   
+
    /**
     * Asserts field is not of primitive type.
-    * 
+    *
     * @param method to validate
     */
    public static void assertNotPrimitiveType(final Field field)
    {
       assertNotPrimitiveType(field, null);
    }
-   
+
    /**
     * Asserts method have no parameters.
-    * 
+    *
     * @param method to validate
     * @param annotation annotation to propagate in exception message
     */
@@ -107,10 +107,10 @@ final class ReflectionUtils
          throw new RuntimeException("Method " + getAnnotationMessage(annotation) + "have to have no parameters: " + method);
       }
    }
-   
+
    /**
     * Asserts method have no parameters.
-    * 
+    *
     * @param method to validate
     */
    public static void assertNoParameters(final Method method)
@@ -120,7 +120,7 @@ final class ReflectionUtils
 
    /**
     * Asserts method return void.
-    * 
+    *
     * @param method to validate
     * @param annotation annotation to propagate in exception message
     */
@@ -131,20 +131,20 @@ final class ReflectionUtils
          throw new RuntimeException("Method " + getAnnotationMessage(annotation) + "have to return void: " + method);
       }
    }
-   
+
    /**
     * Asserts method return void.
-    * 
+    *
     * @param method to validate
     */
    public static void assertVoidReturnType(final Method method) 
    {
       assertVoidReturnType(method, null);
    }
-   
+
    /**
     * Asserts field isn't of void type.
-    * 
+    *
     * @param field to validate
     * @param annotation annotation to propagate in exception message
     */
@@ -158,7 +158,7 @@ final class ReflectionUtils
 
    /**
     * Asserts field isn't of void type.
-    * 
+    *
     * @param field to validate
     */
    public static void assertNotVoidType(final Field field)
@@ -168,7 +168,7 @@ final class ReflectionUtils
 
    /**
     * Asserts method don't throw checked exceptions.
-    * 
+    *
     * @param method to validate
     * @param annotation annotation to propagate in exception message
     */
@@ -187,7 +187,7 @@ final class ReflectionUtils
 
    /**
     * Asserts method don't throw checked exceptions.
-    * 
+    *
     * @param method to validate
     */
    public static void assertNoCheckedExceptionsAreThrown(final Method method) 
@@ -197,7 +197,7 @@ final class ReflectionUtils
 
    /**
     * Asserts method is not static.
-    * 
+    *
     * @param method to validate
     * @param annotation annotation to propagate in exception message
     */
@@ -211,7 +211,7 @@ final class ReflectionUtils
 
    /**
     * Asserts method is not static.
-    * 
+    *
     * @param method to validate
     */
    public static void assertNotStatic(final Method method) 
@@ -221,7 +221,7 @@ final class ReflectionUtils
 
    /**
     * Asserts field is not static.
-    * 
+    *
     * @param field to validate
     * @param annotation annotation to propagate in exception message
     */
@@ -235,7 +235,7 @@ final class ReflectionUtils
 
    /**
     * Asserts field is not static.
-    * 
+    *
     * @param field to validate
     */
    public static void assertNotStatic(final Field field) 
@@ -245,7 +245,7 @@ final class ReflectionUtils
 
    /**
     * Asserts method have exactly one parameter.
-    * 
+    *
     * @param method to validate
     * @param annotation annotation to propagate in exception message
     */
@@ -256,20 +256,20 @@ final class ReflectionUtils
          throw new RuntimeException("Method " + getAnnotationMessage(annotation) + "have to declare exactly one parameter: " + method);
       }
    }
-   
+
    /**
     * Asserts method have exactly one parameter.
-    * 
+    *
     * @param method to validate
     */
    public static void assertOneParameter(final Method method)
    {
       assertOneParameter(method, null);
    }
-   
+
    /**
     * Asserts valid Java Beans setter method name.
-    * 
+    *
     * @param method to validate
     * @param annotation annotation to propagate in exception message
     */
@@ -279,26 +279,26 @@ final class ReflectionUtils
       final boolean correctMethodNameLength = methodName.length() > 3;
       final boolean isSetterMethodName = methodName.startsWith("set");
       final boolean isUpperCasedPropertyName = correctMethodNameLength ? Character.isUpperCase(methodName.charAt(3)) : false;
-      
+
       if (!correctMethodNameLength || !isSetterMethodName || !isUpperCasedPropertyName)
       {
          throw new RuntimeException("Method " + getAnnotationMessage(annotation) + "doesn't follow Java Beans setter method name: " + method);
       }
    }
-   
+
    /**
     * Asserts valid Java Beans setter method name.
-    * 
+    *
     * @param method to validate
     */
    public static void assertValidSetterName(final Method method)
    {
       assertValidSetterName(method, null);
    }
-   
+
    /**
     * Asserts only one method is annotated with annotation.
-    * 
+    *
     * @param method collection of methods to validate
     * @param annotation annotation to propagate in exception message
     */
@@ -309,20 +309,20 @@ final class ReflectionUtils
          throw new RuntimeException("Only one method " + getAnnotationMessage(annotation) + "can exist");
       }
    }
-   
+
    /**
     * Asserts only one method is annotated with annotation.
-    * 
+    *
     * @param method collection of methods to validate
     */
    public static void assertOnlyOneMethod(final Collection<Method> methods)
    {
       assertOnlyOneMethod(methods, null);
    }
-   
+
    /**
     * Constructs annotation message. If annotation class is null it returns empty string.
-    * 
+    *
     * @param annotation to construct message for
     * @return annotation message or empty string
     */
@@ -330,5 +330,5 @@ final class ReflectionUtils
    {
       return annotation == null ? "" : "annotated with @" + annotation + " annotation "; 
    }
-   
+
 }
