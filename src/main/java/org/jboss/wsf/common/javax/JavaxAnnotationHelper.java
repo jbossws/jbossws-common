@@ -83,18 +83,6 @@ public final class JavaxAnnotationHelper
 
       Class<?> instanceClass = instance.getClass();
 
-      // TODO: remove this check once AS 42x support is removed
-      try
-      {
-         instanceClass.getClassLoader().loadClass("javax.annotation.Resource");
-      }
-      catch (Throwable th)
-      {
-         LOG.warn("Cannot inject resources: ", th);
-         return;
-      }
-      // TODO: end
-
       InitialContext ctx = new InitialContext();
 
       // inject descriptor driven annotations
@@ -212,18 +200,6 @@ public final class JavaxAnnotationHelper
       if (instance == null)
          throw new IllegalArgumentException("Object instance cannot be null");
 
-      // TODO: remove this check once AS 42x support is removed
-      try
-      {
-         instance.getClass().getClassLoader().loadClass("javax.annotation.PostConstruct");
-      }
-      catch (Throwable th)
-      {
-         LOG.warn("Cannot call post construct: ", th);
-         return;
-      }
-      // TODO: end
-
       Collection<Method> methods = POST_CONSTRUCT_METHOD_FINDER.process(instance.getClass());
 
       if (methods.size() > 0)
@@ -253,18 +229,6 @@ public final class JavaxAnnotationHelper
    {
       if (instance == null)
          throw new IllegalArgumentException("Object instance cannot be null");
-
-      // TODO: remove this check once AS 42x support is removed
-      try
-      {
-         instance.getClass().getClassLoader().loadClass("javax.annotation.PreDestroy");
-      }
-      catch (Throwable th)
-      {
-         LOG.warn("Cannot call pre destroy: ", th);
-         return;
-      }
-      // TODO: end
 
       Collection<Method> methods = PRE_DESTROY_METHOD_FINDER.process(instance.getClass());
 
