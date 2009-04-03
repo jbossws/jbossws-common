@@ -47,11 +47,30 @@ extends AnnotatedMethodFinder<Resource>
 {
    
    /**
-    * Constructor.
+    * Parameter type to accept/ignore.
     */
-   public ResourceMethodFinder()
+   private final Class<?> accept;
+   /**
+    * If <b>accept</b> field is not null then:
+    * <ul>
+    *   <li><b>true</b> means include only methods with <b>accept</b> parameter,
+    *   <li><b>false</b> means exclude all methods with <b>accept</b> parameter
+    * </ul> 
+    */
+   private final boolean include;
+   
+   /**
+    * Constructor.
+    * 
+    * @param accept filtering class
+    * @param include whether include/exclude filtering class
+    */
+   public ResourceMethodFinder(final Class<?> accept, boolean include)
    {
       super(Resource.class);
+      
+      this.accept = accept;
+      this.include = include;
    }
 
    @Override
@@ -72,13 +91,25 @@ extends AnnotatedMethodFinder<Resource>
    @Override
    public boolean matches(Method method)
    {
-      if (super.matches(method))
-      {
-         // don't match @Resource annotated methods accepting WebServiceContext parameter
-         return !method.getParameterTypes()[0].equals(WebServiceContext.class);
-      }
+      final boolean matches = super.matches(method);
       
-      return false;
+      if (matches)
+      {
+         // processing @Resource annotated method
+         if (this.accept != null)
+         {
+            // filtering
+            if (method.getParameterTypes().length == 1)
+            {
+               final Class<?> param = method.getParameterTypes()[0];
+               final boolean parameterMatch = this.accept.equals(param);
+               // include/exclude filtering
+               return this.include ? parameterMatch : !parameterMatch;
+            }
+         }
+      }
+
+      return matches;
    }
 
 }
