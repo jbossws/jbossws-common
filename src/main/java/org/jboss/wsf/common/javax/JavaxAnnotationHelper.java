@@ -80,46 +80,47 @@ public final class JavaxAnnotationHelper
    {
       if (instance == null)
          throw new IllegalArgumentException("Object instance cannot be null");
-      if (injections == null)
-         throw new IllegalArgumentException("Injections metadata cannot be null");
       
       Class<?> instanceClass = instance.getClass();
       
       InitialContext ctx = new InitialContext();
 
       // inject descriptor driven annotations
-      Collection<InjectionMetaData> injectionMDs = injections.getInjectionsMetaData(instanceClass);
-      for (InjectionMetaData injectionMD : injectionMDs)
+      if (injections != null)
       {
-         Method method = getMethod(injectionMD, instanceClass);
-         if (method != null)
+         Collection<InjectionMetaData> injectionMDs = injections.getInjectionsMetaData(instanceClass);
+         for (InjectionMetaData injectionMD : injectionMDs)
          {
-            try
-            {
-               inject(instance, method, injectionMD.getEnvEntryName(), ctx);
-            }
-            catch (Exception e)
-            {
-               LOG.warn("Cannot inject method (descriptor driven injection): " + injectionMD, e);
-            }
-         }
-         else
-         {
-            Field field = getField(injectionMD, instanceClass);
-            if (field != null)
+            Method method = getMethod(injectionMD, instanceClass);
+            if (method != null)
             {
                try
                {
-                  inject(instance, field, injectionMD.getEnvEntryName(), ctx);
+                  inject(instance, method, injectionMD.getEnvEntryName(), ctx);
                }
                catch (Exception e)
                {
-                  LOG.warn("Cannot inject field (descriptor driven injection): " + injectionMD, e);
+                  LOG.warn("Cannot inject method (descriptor driven injection): " + injectionMD, e);
                }
             }
             else
             {
-               LOG.warn("Cannot find injection target for: " + injectionMD);
+               Field field = getField(injectionMD, instanceClass);
+               if (field != null)
+               {
+                  try
+                  {
+                     inject(instance, field, injectionMD.getEnvEntryName(), ctx);
+                  }
+                  catch (Exception e)
+                  {
+                     LOG.warn("Cannot inject field (descriptor driven injection): " + injectionMD, e);
+                  }
+               }
+               else
+               {
+                  LOG.warn("Cannot find injection target for: " + injectionMD);
+               }
             }
          }
       }
