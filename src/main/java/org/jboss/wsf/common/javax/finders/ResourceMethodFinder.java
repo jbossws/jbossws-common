@@ -24,6 +24,7 @@ package org.jboss.wsf.common.javax.finders;
 import java.lang.reflect.Method;
 
 import javax.annotation.Resource;
+import javax.xml.ws.WebServiceContext;
 
 import org.jboss.wsf.common.reflection.AnnotatedMethodFinder;
 
@@ -66,6 +67,18 @@ extends AnnotatedMethodFinder<Resource>
       ReflectionUtils.assertValidSetterName(method, annotation);
       ReflectionUtils.assertNoCheckedExceptionsAreThrown(method, annotation);
       ReflectionUtils.assertNotStatic(method, annotation);
+   }
+
+   @Override
+   public boolean matches(Method method)
+   {
+      if (super.matches(method))
+      {
+         // don't match @Resource annotated methods accepting WebServiceContext parameter
+         return !method.getParameterTypes()[0].equals(WebServiceContext.class);
+      }
+      
+      return false;
    }
 
 }

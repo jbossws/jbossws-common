@@ -22,8 +22,10 @@
 package org.jboss.wsf.common.javax.finders;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 import javax.annotation.Resource;
+import javax.xml.ws.WebServiceContext;
 
 import org.jboss.wsf.common.reflection.AnnotatedFieldFinder;
 
@@ -63,6 +65,18 @@ extends AnnotatedFieldFinder<Resource>
       ReflectionUtils.assertNotVoidType(field, annotation);
       ReflectionUtils.assertNotStatic(field, annotation);
       ReflectionUtils.assertNotPrimitiveType(field, annotation);
+   }
+
+   @Override
+   public boolean matches(Field field)
+   {
+      if (super.matches(field))
+      {
+         // don't match @Resource annotated fields of type WebServiceContext
+         return !field.getType().equals(WebServiceContext.class);
+      }
+      
+      return false;
    }
 
 }
