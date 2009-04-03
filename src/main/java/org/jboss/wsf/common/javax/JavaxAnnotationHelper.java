@@ -76,51 +76,50 @@ public final class JavaxAnnotationHelper
     * @param injections injections metadata
     * @throws Exception if some error occurs
     */
-   public static void injectResources(Object instance, InjectionsMetaData injections) throws Exception
+   public static void injectResources(final Object instance, final InjectionsMetaData injections) throws Exception
    {
       if (instance == null)
          throw new IllegalArgumentException("Object instance cannot be null");
+      if (injections == null)
+         throw new IllegalArgumentException("Injections metadata cannot be null");
       
       Class<?> instanceClass = instance.getClass();
       
       InitialContext ctx = new InitialContext();
 
       // inject descriptor driven annotations
-      if (injections != null)
+      Collection<InjectionMetaData> injectionMDs = injections.getInjectionsMetaData(instanceClass);
+      for (InjectionMetaData injectionMD : injectionMDs)
       {
-         Collection<InjectionMetaData> injectionMDs = injections.getInjectionsMetaData(instanceClass);
-         for (InjectionMetaData injectionMD : injectionMDs)
+         Method method = getMethod(injectionMD, instanceClass);
+         if (method != null)
          {
-            Method method = getMethod(injectionMD, instanceClass);
-            if (method != null)
+            try
+            {
+               inject(instance, method, injectionMD.getEnvEntryName(), ctx);
+            }
+            catch (Exception e)
+            {
+               LOG.warn("Cannot inject method (descriptor driven injection): " + injectionMD, e);
+            }
+         }
+         else
+         {
+            Field field = getField(injectionMD, instanceClass);
+            if (field != null)
             {
                try
                {
-                  inject(instance, method, injectionMD.getEnvEntryName(), ctx);
+                  inject(instance, field, injectionMD.getEnvEntryName(), ctx);
                }
                catch (Exception e)
                {
-                  LOG.warn("Cannot inject method (descriptor driven injection): " + injectionMD, e);
+                  LOG.warn("Cannot inject field (descriptor driven injection): " + injectionMD, e);
                }
             }
             else
             {
-               Field field = getField(injectionMD, instanceClass);
-               if (field != null)
-               {
-                  try
-                  {
-                     inject(instance, field, injectionMD.getEnvEntryName(), ctx);
-                  }
-                  catch (Exception e)
-                  {
-                     LOG.warn("Cannot inject field (descriptor driven injection): " + injectionMD, e);
-                  }
-               }
-               else
-               {
-                  LOG.warn("Cannot find injection target for: " + injectionMD);
-               }
+               LOG.warn("Cannot find injection target for: " + injectionMD);
             }
          }
       }
@@ -154,7 +153,7 @@ public final class JavaxAnnotationHelper
       }
    }
    
-   public static void injectWebServiceContext(Object instance, WebServiceContext ctx)
+   public static void injectWebServiceContext(final Object instance, final WebServiceContext ctx)
    {
       final Class<?> instanceClass = instance.getClass();
       
@@ -195,7 +194,7 @@ public final class JavaxAnnotationHelper
     * @see org.jboss.wsf.common.javax.finders.PostConstructMethodFinder
     * @see javax.annotation.PostConstruct
     */
-   public static void callPostConstructMethod(Object instance) throws Exception
+   public static void callPostConstructMethod(final Object instance) throws Exception
    {
       if (instance == null)
          throw new IllegalArgumentException("Object instance cannot be null");
@@ -225,7 +224,7 @@ public final class JavaxAnnotationHelper
     * @see org.jboss.wsf.common.javax.finders.PreDestroyMethodFinder
     * @see javax.annotation.PreDestroy
     */
-   public static void callPreDestroyMethod(Object instance) throws Exception
+   public static void callPreDestroyMethod(final Object instance) throws Exception
    {
       if (instance == null)
          throw new IllegalArgumentException("Object instance cannot be null");
@@ -257,7 +256,8 @@ public final class JavaxAnnotationHelper
     * @throws Exception if any error occurs
     * @see org.jboss.wsf.common.javax.finders.ResourceMethodFinder
     */
-   private static void inject(final Object instance, final Method method, String resourceName, InitialContext ctx) throws Exception
+   private static void inject(final Object instance, final Method method, final String resourceName, final InitialContext ctx)
+   throws Exception
    {
       final String beanName = convertToBeanName(method.getName()); 
       final Object value = ctx.lookup(getName(resourceName, beanName));
@@ -276,7 +276,8 @@ public final class JavaxAnnotationHelper
     * @throws Exception if any error occurs
     * @see org.jboss.wsf.common.javax.finders.ResourceFieldFinder
     */
-   private static void inject(final Object instance, final Field field, String resourceName, InitialContext ctx) throws Exception
+   private static void inject(final Object instance, final Field field, final String resourceName, final InitialContext ctx)
+   throws Exception
    {
       final String beanName = field.getName();
       final Object value = ctx.lookup(getName(resourceName, beanName));
@@ -316,7 +317,8 @@ public final class JavaxAnnotationHelper
     * @param args arguments to pass
     * @throws Exception if any error occurs
     */
-   private static void invokeMethod(final Object instance, final Method method, final Object[] args) throws Exception
+   private static void invokeMethod(final Object instance, final Method method, final Object[] args)
+   throws Exception
    {
       boolean accessability = method.isAccessible();
       
@@ -339,7 +341,8 @@ public final class JavaxAnnotationHelper
     * @param value to be set
     * @throws Exception if any error occurs
     */
-   private static void setField(final Object instance, final Field field, final Object value) throws Exception
+   private static void setField(final Object instance, final Field field, final Object value)
+   throws Exception
    {
       boolean accessability = field.isAccessible();
       
@@ -362,9 +365,9 @@ public final class JavaxAnnotationHelper
     * @return method that matches the criteria or null if not found
     * @see org.jboss.wsf.common.javax.finders.InjectionMethodFinder
     */
-   private static Method getMethod(InjectionMetaData injectionMD, Class<?> clazz)
+   private static Method getMethod(final InjectionMetaData injectionMD, final Class<?> clazz)
    {
-      Collection<Method> result = new InjectionMethodFinder(injectionMD).process(clazz);
+      final Collection<Method> result = new InjectionMethodFinder(injectionMD).process(clazz);
       
       return result.isEmpty() ? null : result.iterator().next();
    }
@@ -377,9 +380,9 @@ public final class JavaxAnnotationHelper
     * @return field that matches the criteria or null if not found
     * @see org.jboss.wsf.common.javax.finders.InjectionFieldFinder
     */
-   private static Field getField(InjectionMetaData injectionMD, Class<?> clazz)
+   private static Field getField(final InjectionMetaData injectionMD, final Class<?> clazz)
    {
-      Collection<Field> result = new InjectionFieldFinder(injectionMD).process(clazz);
+      final Collection<Field> result = new InjectionFieldFinder(injectionMD).process(clazz);
       
       return result.isEmpty() ? null : result.iterator().next();
    }
