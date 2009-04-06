@@ -30,6 +30,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
 
 import javax.management.MBeanServerConnection;
 import javax.naming.Context;
@@ -40,7 +44,6 @@ import junit.framework.TestCase;
 
 import org.jboss.logging.Logger;
 import org.jboss.wsf.common.DOMWriter;
-import org.jboss.wsf.common.IOUtils;
 import org.jboss.wsf.common.concurrent.CopyJob;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -73,7 +76,7 @@ public abstract class JBossWSTest extends TestCase
     */
    public void executeCommand(String command) throws IOException
    {
-      this.executeCommand(command, null, null);
+      this.executeCommand(command, null, null, null);
    }
    
    /**
@@ -84,7 +87,7 @@ public abstract class JBossWSTest extends TestCase
     */
    public void executeCommand(String command, String message) throws IOException
    {
-      this.executeCommand(command, null, message);
+      this.executeCommand(command, null, message, null);
    }
    
    /**
@@ -95,7 +98,7 @@ public abstract class JBossWSTest extends TestCase
     */
    public void executeCommand(String command, OutputStream os) throws IOException
    {
-      this.executeCommand(command, os, null);
+      this.executeCommand(command, os, null, null);
    }
 
    /**
@@ -107,11 +110,63 @@ public abstract class JBossWSTest extends TestCase
     */
    public void executeCommand(String command, OutputStream os, String message) throws IOException
    {
+      this.executeCommand(command, os, message, null);
+   }
+
+   /**
+    * Execute <b>command</b> in separate process, copy process input to <b>os</b>. If process will fail, display custom <b>message</b> in assertion.
+    * @param command command to execute
+    * @param os output stream to copy process input to. If null, <b>System.out</b> will be used
+    * @param message message to display if assertion fails
+    * @param env environment
+    * @throws IOException if I/O error occurs
+    */
+   public void executeCommand(String command, OutputStream os, String message, Map<String, String> env) throws IOException
+   {
       if (command == null)
          throw new NullPointerException( "Command cannot be null" );
       
       System.out.println("Executing command: " + command);
-      Process p = Runtime.getRuntime().exec(command);
+      log.debug("Executing command: " + command);
+      
+      StringTokenizer st = new StringTokenizer(command, " \t\r");
+      List<String> tokenizedCommand = new LinkedList<String>();
+      while (st.hasMoreTokens())
+      {
+         // PRECONDITION: command doesn't contain whitespaces in the paths
+         tokenizedCommand.add(st.nextToken());
+      }
+      
+      try
+      {
+         this.executeCommand(tokenizedCommand, os, message, env);
+      }
+      catch (IOException e)
+      {
+         log.warn("Make sure there are no whitespaces in command paths", e);
+         throw e;
+      }
+   }
+
+   /**
+    * Execute <b>command</b> in separate process, copy process input to <b>os</b>. If process will fail, display custom <b>message</b> in assertion.
+    * @param command command to execute
+    * @param os output stream to copy process input to. If null, <b>System.out</b> will be used
+    * @param message message to display if assertion fails
+    * @param env environment
+    * @throws IOException if I/O error occurs
+    */
+   private void executeCommand(List<String> command, OutputStream os, String message, Map<String, String> env) throws IOException
+   {
+      ProcessBuilder pb = new ProcessBuilder(command);
+      if (env != null)
+      {
+         for (String variable : env.keySet())
+         {
+            pb.environment().put(variable, env.get(variable));
+         }
+      }
+      Process p = pb.start();
       CopyJob inputStreamJob = new CopyJob(p.getInputStream(), os == null ? System.out : os);
       CopyJob errorStreamJob = new CopyJob(p.getErrorStream(), System.err);
       // unfortunately the following threads are needed because of Windows behavior
