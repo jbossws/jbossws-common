@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Enumeration;
 import java.util.Properties;
 
@@ -37,7 +39,7 @@ import org.xml.sax.SAXException;
  * Dynamically register the JBossWS entities.
  *
  * @author Thomas.Diesler@jboss.org
- * @since 02-Aug-2006
+ * @author Richard.Opalka@jboss.org
  */
 public class JBossWSEntityResolver extends JBossEntityResolver
 {
@@ -52,39 +54,53 @@ public class JBossWSEntityResolver extends JBossEntityResolver
    public JBossWSEntityResolver(final String entitiesResource)
    {
       super();
-	   // get stream
-      InputStream is = this.getClass().getClassLoader().getResourceAsStream(entitiesResource);
-	   if (is == null)
-		   throw new IllegalArgumentException("Resource " + entitiesResource + " not found");
-
-	   // load props
-	   Properties props = new Properties();
-	   try
-	   {
-	       props.load(is);
-	   }
-	   catch (IOException ioe)
-	   {
-		   log.error("Cannot read resource: " + entitiesResource, ioe);
-	   }
-	   finally
-	   {
-		   try { is.close(); } catch (IOException ioe) {} // ignore
-	   }
-
-	   if (props.size() == 0)
-		   throw new IllegalArgumentException("Resource " + entitiesResource + " have no mappings defined");
-	   
+    
+      // load entities
+      Properties props = loadEntitiesMappingFromClasspath(entitiesResource);
+      if (props.size() == 0)
+         throw new IllegalArgumentException("No entities mapping defined in resource file: " + entitiesResource);
+      
 	   // register entities
 	   String key = null, val = null;
 	   for (Enumeration<Object> keys = props.keys(); keys.hasMoreElements();)
 	   {
 		   key = (String)keys.nextElement();
 		   val = props.getProperty(key);
+		   
 		   registerEntity(key, val);
 	   }
    }
    
+   private Properties loadEntitiesMappingFromClasspath(final String entitiesResource)
+   {
+      return AccessController.doPrivileged(new PrivilegedAction<Properties>()
+      {
+         public Properties run()
+         {
+            InputStream is = this.getClass().getClassLoader().getResourceAsStream(entitiesResource);
+            // get stream
+            if (is == null)
+               throw new IllegalArgumentException("Resource " + entitiesResource + " not found");
+
+            // load props
+            Properties props = new Properties();
+            try
+            {
+               props.load(is);
+            }
+            catch (IOException ioe)
+            {
+               log.error("Cannot read resource: " + entitiesResource, ioe);
+            }
+            finally
+            {
+               try { is.close(); } catch (IOException ioe) {} // ignore
+            }
+
+            return props;
+         }
+      });
+   }
 
    public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException
    {
