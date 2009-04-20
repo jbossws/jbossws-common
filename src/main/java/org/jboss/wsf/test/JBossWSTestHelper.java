@@ -42,7 +42,7 @@ import org.jboss.wsf.common.ObjectNameFactory;
  * A JBossWS test helper that deals with test deployment/undeployment, etc.
  *
  * @author Thomas.Diesler@jboss.org
- * @since 14-Oct-2004
+ * @author ropalka@redhat.com
  */
 public class JBossWSTestHelper
 {
@@ -95,37 +95,24 @@ public class JBossWSTestHelper
       return target.startsWith("jboss51");
    }
 
-   /** True, if -Djbossws.integration.target=jboss4x */
-   public boolean isTargetJBoss4()
-   {
-      return isTargetJBoss42() || isTargetJBoss40();
-   }
-
-   /** True, if -Djbossws.integration.target=jboss42x */
-   public boolean isTargetJBoss42()
-   {
-      String target = getIntegrationTarget();
-      return target.startsWith("jboss42");
-   }
-
-   /** True, if -Djbossws.integration.target=jboss40x */
-   public boolean isTargetJBoss40()
-   {
-      String target = getIntegrationTarget();
-      return target.startsWith("jboss40");
-   }
-   
    /** True, if -Djbossws.integration.target=jboss6x */
    public boolean isTargetJBoss6()
    {
-      String target = getIntegrationTarget();
-      return target.startsWith("jboss6");
+      return isTargetJBoss61() || isTargetJBoss60();
    }
    
-   /** True, if -Djbossws.integration.target=jboss5x */
-   public boolean isTargetJBoss5OrGreater()
+   /** True, if -Djbossws.integration.target=jboss60x */
+   public boolean isTargetJBoss60()
    {
-      return isTargetJBoss5() || isTargetJBoss6();
+      String target = getIntegrationTarget();
+      return target.startsWith("jboss60");
+   }
+
+   /** True, if -Djbossws.integration.target=jboss61x */
+   public boolean isTargetJBoss61()
+   {
+      String target = getIntegrationTarget();
+      return target.startsWith("jboss61");
    }
 
    public boolean isIntegrationNative()
@@ -236,12 +223,10 @@ public class JBossWSTestHelper
                jbossVersion = "jboss51";
             else if (jbossVersion.startsWith("5.0"))
                jbossVersion = "jboss50";
+            else if (jbossVersion.startsWith("6.1"))
+               jbossVersion = "jboss61";
             else if (jbossVersion.startsWith("6.0"))
                jbossVersion = "jboss60";
-            else if (jbossVersion.startsWith("4.2"))
-               jbossVersion = "jboss42";
-            else if (jbossVersion.startsWith("4.0"))
-               jbossVersion = "jboss40";
             else throw new IllegalStateException("Unsupported jboss version: " + jbossVersion);
          }
          catch (Exception ex)
@@ -252,6 +237,7 @@ public class JBossWSTestHelper
          if (integrationTarget.startsWith(jbossVersion) == false)
             throw new IllegalStateException("Integration target mismatch: " + integrationTarget + ".startsWith(" + jbossVersion + ")");
       }
+      
       return integrationTarget;
    }
 

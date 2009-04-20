@@ -53,7 +53,7 @@ import org.w3c.dom.NodeList;
  * Base class for JBossWS test cases
  *
  * @author Thomas.Diesler@jboss.org
- * @since 14-Oct-2004
+ * @author ropalka@redhat.com
  */
 public abstract class JBossWSTest extends TestCase
 {
@@ -202,11 +202,6 @@ public abstract class JBossWSTest extends TestCase
       return delegate.isTargetJBoss5();
    }
    
-   public boolean isTargetJBoss5OrGreater()
-   {
-      return delegate.isTargetJBoss5OrGreater();
-   }
-
    public boolean isTargetJBoss51()
    {
       return delegate.isTargetJBoss51();
@@ -217,19 +212,19 @@ public abstract class JBossWSTest extends TestCase
       return delegate.isTargetJBoss50();
    }
 
-   public boolean isTargetJBoss4()
+   public boolean isTargetJBoss6()
    {
-      return delegate.isTargetJBoss4();
+      return delegate.isTargetJBoss6();
+   }
+   
+   public boolean isTargetJBoss61()
+   {
+      return delegate.isTargetJBoss61();
    }
 
-   public boolean isTargetJBoss42()
+   public boolean isTargetJBoss60()
    {
-      return delegate.isTargetJBoss42();
-   }
-
-   public boolean isTargetJBoss40()
-   {
-      return delegate.isTargetJBoss40();
+      return delegate.isTargetJBoss60();
    }
 
    public boolean isIntegrationNative()
