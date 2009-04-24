@@ -85,6 +85,7 @@ public final class DOMUtils
             if (disableDeferredNodeExpansion == true)
             {
                factory.setFeature("http://apache.org/xml/features/dom/defer-node-expansion", false);
+               factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
             }
 
             DocumentBuilder builder = factory.newDocumentBuilder();
