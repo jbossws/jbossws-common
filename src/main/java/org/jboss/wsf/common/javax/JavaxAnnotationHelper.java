@@ -26,7 +26,7 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 
 import javax.annotation.Resource;
-import javax.naming.InitialContext;
+import javax.naming.Context;
 import javax.xml.ws.WebServiceContext;
 
 import org.jboss.logging.Logger;
@@ -49,7 +49,6 @@ public final class JavaxAnnotationHelper
 {
 
    private static final Logger LOG = Logger.getLogger(JavaxAnnotationHelper.class);
-   private static final String JNDI_PREFIX = "java:comp/env/";
    private static final ClassProcessor<Method> POST_CONSTRUCT_METHOD_FINDER = new PostConstructMethodFinder();
    private static final ClassProcessor<Method> PRE_DESTROY_METHOD_FINDER = new PreDestroyMethodFinder();
    private static final ClassProcessor<Method> RESOURCE_METHOD_FINDER = new ResourceMethodFinder(WebServiceContext.class, false);
@@ -80,47 +79,48 @@ public final class JavaxAnnotationHelper
    {
       if (instance == null)
          throw new IllegalArgumentException("Object instance cannot be null");
+      
+      if (injections == null)
+         return;
 
       Class<?> instanceClass = instance.getClass();
 
-      InitialContext ctx = new InitialContext();
-
       // inject descriptor driven annotations
-      if (injections != null)
+      final Context ctx = injections.getContext();
+      final String envPrefix = injections.getContextRoot();
+
+      Collection<InjectionMetaData> injectionMDs = injections.getInjectionsMetaData(instanceClass);
+      for (InjectionMetaData injectionMD : injectionMDs)
       {
-         Collection<InjectionMetaData> injectionMDs = injections.getInjectionsMetaData(instanceClass);
-         for (InjectionMetaData injectionMD : injectionMDs)
+         Method method = getMethod(injectionMD, instanceClass);
+         if (method != null)
          {
-            Method method = getMethod(injectionMD, instanceClass);
-            if (method != null)
+            try
+            {
+               inject(instance, method, injectionMD.getEnvEntryName(), ctx, envPrefix);
+            }
+            catch (Exception e)
+            {
+               LOG.warn("Cannot inject method (descriptor driven injection): " + injectionMD, e);
+            }
+         }
+         else
+         {
+            Field field = getField(injectionMD, instanceClass);
+            if (field != null)
             {
                try
                {
-                  inject(instance, method, injectionMD.getEnvEntryName(), ctx);
+                  inject(instance, field, injectionMD.getEnvEntryName(), ctx, envPrefix);
                }
                catch (Exception e)
                {
-                  LOG.warn("Cannot inject method (descriptor driven injection): " + injectionMD, e);
+                  LOG.warn("Cannot inject field (descriptor driven injection): " + injectionMD, e);
                }
             }
             else
             {
-               Field field = getField(injectionMD, instanceClass);
-               if (field != null)
-               {
-                  try
-                  {
-                     inject(instance, field, injectionMD.getEnvEntryName(), ctx);
-                  }
-                  catch (Exception e)
-                  {
-                     LOG.warn("Cannot inject field (descriptor driven injection): " + injectionMD, e);
-                  }
-               }
-               else
-               {
-                  LOG.warn("Cannot find injection target for: " + injectionMD);
-               }
+               LOG.warn("Cannot find injection target for: " + injectionMD);
             }
          }
       }
@@ -131,7 +131,7 @@ public final class JavaxAnnotationHelper
       {
          try
          {
-            inject(instance, method, method.getAnnotation(Resource.class).name(), ctx);
+            inject(instance, method, method.getAnnotation(Resource.class).name(), ctx, envPrefix);
          }
          catch (Exception e)
          {
@@ -145,7 +145,7 @@ public final class JavaxAnnotationHelper
       {
          try
          {
-            inject(instance, field, field.getAnnotation(Resource.class).name(), ctx);
+            inject(instance, field, field.getAnnotation(Resource.class).name(), ctx, envPrefix);
          }
          catch (Exception e)
          {
@@ -250,18 +250,19 @@ public final class JavaxAnnotationHelper
    /**
     * Injects @Resource annotated method.
     *
-    * @param method to invoke
     * @param instance to invoke method on
+    * @param method to invoke
     * @param resourceName resource name
     * @param cxt JNDI context
+    * @param envPrefix JNDI environment prefix
     * @throws Exception if any error occurs
     * @see org.jboss.wsf.common.javax.finders.ResourceMethodFinder
     */
-   private static void inject(final Object instance, final Method method, final String resourceName, final InitialContext ctx)
+   private static void inject(final Object instance, final Method method, final String resourceName, final Context ctx, final String envPrefix)
    throws Exception
    {
       final String beanName = convertToBeanName(method.getName()); 
-      final Object value = ctx.lookup(getName(resourceName, beanName));
+      final Object value = ctx.lookup(envPrefix + getName(resourceName, beanName));
 
       LOG.debug("Injecting method: " + method);
       invokeMethod(instance, method, new Object[] {value});
@@ -274,14 +275,15 @@ public final class JavaxAnnotationHelper
     * @param instance to modify field on
     * @param resourceName resource name
     * @param cxt JNDI context
+    * @param envPrefix JNDI environment prefix
     * @throws Exception if any error occurs
     * @see org.jboss.wsf.common.javax.finders.ResourceFieldFinder
     */
-   private static void inject(final Object instance, final Field field, final String resourceName, final InitialContext ctx)
+   private static void inject(final Object instance, final Field field, final String resourceName, final Context ctx, final String envPrefix)
    throws Exception
    {
       final String beanName = field.getName();
-      final Object value = ctx.lookup(getName(resourceName, beanName));
+      final Object value = ctx.lookup(envPrefix + getName(resourceName, beanName));
 
       LOG.debug("Injecting field: " + field);
       setField(instance, field, value);
@@ -307,7 +309,7 @@ public final class JavaxAnnotationHelper
     */
    private static String getName(final String resourceName, final String beanName)
    {
-      return JNDI_PREFIX + (resourceName.length() > 0 ? resourceName : beanName);
+      return resourceName.length() > 0 ? resourceName : beanName;
    }
 
    /**
