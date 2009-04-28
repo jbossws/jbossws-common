@@ -78,24 +78,34 @@ public final class DOMUtils
    private static ThreadLocal<DocumentBuilder> builderThreadLocal = new ThreadLocal<DocumentBuilder>() {
       protected DocumentBuilder initialValue()
       {
+         DocumentBuilderFactory factory = null;
          try
          {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory = DocumentBuilderFactory.newInstance();
             factory.setValidating(false);
             factory.setNamespaceAware(true);
 
-            boolean disableDeferredNodeExpansion = Boolean.getBoolean(DISABLE_DEFERRED_NODE_EXPANSION);
-            factory.setFeature(DEFER_NODE_EXPANSION_FEATURE, !disableDeferredNodeExpansion);
-            factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-            factory.setFeature(DISALLOW_DOCTYPE_DECL_FEATURE, true);
+            try
+            {
+               factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+               factory.setFeature(DISALLOW_DOCTYPE_DECL_FEATURE, true);
+               if (Boolean.getBoolean(DISABLE_DEFERRED_NODE_EXPANSION))
+               {
+                  factory.setFeature(DEFER_NODE_EXPANSION_FEATURE, false);
+               }
+            }
+            catch (ParserConfigurationException pce)
+            {
+               log.error(pce);
+            }
 
             DocumentBuilder builder = factory.newDocumentBuilder();
             setEntityResolver(builder);
             return builder;
          }
-         catch (ParserConfigurationException e)
+         catch (Exception e)
          {
-            log.error(e);
+            throw new RuntimeException("Unable to create document builder", e);
          }
       }
 
