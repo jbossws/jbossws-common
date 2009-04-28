@@ -70,6 +70,8 @@ public final class DOMUtils
    private static Logger log = Logger.getLogger(DOMUtils.class);
 
    private static final String DISABLE_DEFERRED_NODE_EXPANSION = "org.jboss.ws.disable_deferred_node_expansion";
+   private static final String DEFER_NODE_EXPANSION_FEATURE = "http://apache.org/xml/features/dom/defer-node-expansion";
+   private static final String DISALLOW_DOCTYPE_DECL_FEATURE = "http://apache.org/xml/features/disallow-doctype-decl";
 
    // All elements created by the same thread are created by the same builder and belong to the same doc
    private static ThreadLocal<Document> documentThreadLocal = new ThreadLocal<Document>();
@@ -83,11 +85,9 @@ public final class DOMUtils
             factory.setNamespaceAware(true);
 
             boolean disableDeferredNodeExpansion = Boolean.getBoolean(DISABLE_DEFERRED_NODE_EXPANSION);
-            if (disableDeferredNodeExpansion == true)
-            {
-               factory.setFeature("http://apache.org/xml/features/dom/defer-node-expansion", false);
-            }
+            factory.setFeature(DEFER_NODE_EXPANSION_FEATURE, !disableDeferredNodeExpansion);
             factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+            factory.setFeature(DISALLOW_DOCTYPE_DECL_FEATURE, true);
 
             DocumentBuilder builder = factory.newDocumentBuilder();
             setEntityResolver(builder);
@@ -95,7 +95,7 @@ public final class DOMUtils
          }
          catch (ParserConfigurationException e)
          {
-            throw new RuntimeException("Failed to create DocumentBuilder", e);
+            log.error(e);
          }
       }
 
