@@ -33,6 +33,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -69,6 +70,7 @@ public final class DOMUtils
    private static Logger log = Logger.getLogger(DOMUtils.class);
 
    private static final String DISABLE_DEFERRED_NODE_EXPANSION = "org.jboss.ws.disable_deferred_node_expansion";
+   private static final String DEFER_NODE_EXPANSION_FEATURE = "http://apache.org/xml/features/dom/defer-node-expansion";
 
    // All elements created by the same thread are created by the same builder and belong to the same doc
    private static ThreadLocal<Document> documentThreadLocal = new ThreadLocal<Document>();
@@ -81,10 +83,17 @@ public final class DOMUtils
             factory.setValidating(false);
             factory.setNamespaceAware(true);
 
-            boolean disableDeferredNodeExpansion = Boolean.getBoolean(DISABLE_DEFERRED_NODE_EXPANSION);
-            if (disableDeferredNodeExpansion == true)
+            try
             {
-               factory.setFeature("http://apache.org/xml/features/dom/defer-node-expansion", false);
+               factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+               if (Boolean.getBoolean(DISABLE_DEFERRED_NODE_EXPANSION))
+               {
+                  factory.setFeature(DEFER_NODE_EXPANSION_FEATURE, false);
+               }
+            }
+            catch (ParserConfigurationException pce)
+            {
+               log.error(pce);
             }
 
             DocumentBuilder builder = factory.newDocumentBuilder();
