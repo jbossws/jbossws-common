@@ -88,7 +88,6 @@ public final class DOMUtils
             try
             {
                factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-               factory.setFeature(DISALLOW_DOCTYPE_DECL_FEATURE, true);
                if (Boolean.getBoolean(DISABLE_DEFERRED_NODE_EXPANSION))
                {
                   factory.setFeature(DEFER_NODE_EXPANSION_FEATURE, false);
