@@ -73,13 +73,20 @@ public final class JavaxAnnotationHelper
    }
 
    /**
-    * The Resource annotation marks a resource that is needed by the application. This annotation may be applied
+    * The resource annotations mark resources that are needed by the application. These annotations may be applied
     * to an application component class, or to fields or methods of the component class. When the annotation is
     * applied to a field or method, the container will inject an instance of the requested resource into the
     * application component when the component is initialized. If the annotation is applied to the component class,
     * the annotation declares a resource that the application will look up at runtime.
+    * 
+    * This method handles the following injection types:
+    * <ul>
+    *   <li>Descriptor specified injections</li>
+    *   <li>@Resource annotated methods and fields</li>
+    *   <li>@EJB annotated methods and fields</li>
+    * </ul>  
     *
-    * @param instance to inject resource on
+    * @param instance to inject resources on
     * @param injections injections metadata
     * @throws Exception if some error occurs
     */
