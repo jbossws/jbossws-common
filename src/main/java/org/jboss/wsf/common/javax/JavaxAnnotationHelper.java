@@ -26,10 +26,14 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 
 import javax.annotation.Resource;
+import javax.ejb.EJB;
 import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.xml.ws.WebServiceContext;
 
 import org.jboss.logging.Logger;
+import org.jboss.wsf.common.javax.finders.EJBFieldFinder;
+import org.jboss.wsf.common.javax.finders.EJBMethodFinder;
 import org.jboss.wsf.common.javax.finders.InjectionFieldFinder;
 import org.jboss.wsf.common.javax.finders.InjectionMethodFinder;
 import org.jboss.wsf.common.javax.finders.PostConstructMethodFinder;
@@ -41,18 +45,22 @@ import org.jboss.wsf.spi.metadata.injection.InjectionMetaData;
 import org.jboss.wsf.spi.metadata.injection.InjectionsMetaData;
 
 /**
- * A helper class for <b>javax.annotation</b> annotations.
+ * An injection helper class for <b>javax.*</b> annotations.
  *
- * @author ropalka@redhat.com
+ * @author <a href="mailto:richard.opalka@jboss.org">Richard Opalka</a>
  */
 public final class JavaxAnnotationHelper
 {
 
    private static final Logger LOG = Logger.getLogger(JavaxAnnotationHelper.class);
+   private static final String POJO_JNDI_PREFIX = "java:comp/env/";
+
    private static final ClassProcessor<Method> POST_CONSTRUCT_METHOD_FINDER = new PostConstructMethodFinder();
    private static final ClassProcessor<Method> PRE_DESTROY_METHOD_FINDER = new PreDestroyMethodFinder();
    private static final ClassProcessor<Method> RESOURCE_METHOD_FINDER = new ResourceMethodFinder(WebServiceContext.class, false);
    private static final ClassProcessor<Field> RESOURCE_FIELD_FINDER = new ResourceFieldFinder(WebServiceContext.class, false);
+   private static final ClassProcessor<Method> EJB_METHOD_FINDER = new EJBMethodFinder();
+   private static final ClassProcessor<Field> EJB_FIELD_FINDER = new EJBFieldFinder();
    private static final ClassProcessor<Method> WEB_SERVICE_CONTEXT_METHOD_FINDER = new ResourceMethodFinder(WebServiceContext.class, true);
    private static final ClassProcessor<Field> WEB_SERVICE_CONTEXT_FIELD_FINDER = new ResourceFieldFinder(WebServiceContext.class, true);
 
@@ -83,73 +91,155 @@ public final class JavaxAnnotationHelper
       if (injections == null)
          return;
 
-      Class<?> instanceClass = instance.getClass();
+      // get JNDI context
+      Context ctx = injections.getContext();
+      if (ctx == null)
+      {
+         ctx = (Context)new InitialContext().lookup(POJO_JNDI_PREFIX);
+      }
 
       // inject descriptor driven annotations
-      final Context ctx = injections.getContext();
-      final String envPrefix = injections.getContextRoot();
-
-      Collection<InjectionMetaData> injectionMDs = injections.getInjectionsMetaData(instanceClass);
+      final Collection<InjectionMetaData> injectionMDs = injections.getInjectionsMetaData(instance.getClass());
       for (InjectionMetaData injectionMD : injectionMDs)
       {
-         Method method = getMethod(injectionMD, instanceClass);
-         if (method != null)
+         injectDescriptorDrivenInjections(instance, ctx, injectionMD);
+      }
+
+      // inject @Resource annotated methods and fields
+      injectResourceAnnotatedMethods(instance, ctx);
+      injectResourceAnnotatedFields(instance, ctx);
+
+      // inject @EJB annotated methods and fields
+      injectEJBAnnotatedMethods(instance, ctx);
+      injectEJBAnnotatedFields(instance, ctx);
+   }
+
+   /**
+    * Performs descriptor driven injections.
+    * @param instance to operate on
+    * @param ctx JNDI context
+    * @param envPrefix env prefix to be used
+    * @param injectionMD injections metadata
+    */
+   private static void injectDescriptorDrivenInjections(final Object instance, final Context ctx, final InjectionMetaData injectionMD)
+   {
+      Method method = getMethod(injectionMD, instance.getClass());
+      if (method != null)
+      {
+         try
+         {
+            inject(instance, method, injectionMD.getEnvEntryName(), ctx);
+         }
+         catch (Exception e)
+         {
+            LOG.error("Cannot inject method (descriptor driven injection): " + injectionMD, e);
+         }
+      }
+      else
+      {
+         Field field = getField(injectionMD, instance.getClass());
+         if (field != null)
          {
             try
             {
-               inject(instance, method, injectionMD.getEnvEntryName(), ctx, envPrefix);
+               inject(instance, field, injectionMD.getEnvEntryName(), ctx);
             }
             catch (Exception e)
             {
-               LOG.warn("Cannot inject method (descriptor driven injection): " + injectionMD, e);
+               LOG.error("Cannot inject field (descriptor driven injection): " + injectionMD, e);
             }
          }
          else
          {
-            Field field = getField(injectionMD, instanceClass);
-            if (field != null)
-            {
-               try
-               {
-                  inject(instance, field, injectionMD.getEnvEntryName(), ctx, envPrefix);
-               }
-               catch (Exception e)
-               {
-                  LOG.warn("Cannot inject field (descriptor driven injection): " + injectionMD, e);
-               }
-            }
-            else
-            {
-               LOG.warn("Cannot find injection target for: " + injectionMD);
-            }
+            LOG.error("Cannot find injection target for: " + injectionMD);
          }
       }
+   }
 
-      // inject @Resource annotated methods
-      Collection<Method> resourceAnnotatedMethods = RESOURCE_METHOD_FINDER.process(instanceClass);
-      for(Method method : resourceAnnotatedMethods)
-      {
-         try
-         {
-            inject(instance, method, method.getAnnotation(Resource.class).name(), ctx, envPrefix);
-         }
-         catch (Exception e)
-         {
-            LOG.warn("Cannot inject @Resource annotated method: " + method, e);
-         }
-      }
-
-      // inject @Resource annotated fields
-      Collection<Field> resourceAnnotatedFields = RESOURCE_FIELD_FINDER.process(instanceClass);
+   /**
+    * Injects @Resource annotated fields
+    * @param instance to operate on
+    * @param ctx JNDI context
+    * @param envPrefix environment prefix to be used
+    */
+   private static void injectResourceAnnotatedFields(final Object instance, final Context ctx)
+   {
+      Collection<Field> resourceAnnotatedFields = RESOURCE_FIELD_FINDER.process(instance.getClass());
       for (Field field : resourceAnnotatedFields)
       {
          try
          {
-            inject(instance, field, field.getAnnotation(Resource.class).name(), ctx, envPrefix);
+            inject(instance, field, field.getAnnotation(Resource.class).name(), ctx);
          }
          catch (Exception e)
          {
-            LOG.warn("Cannot inject @Resource annotated field: " + field, e);
+            LOG.error("Cannot inject field annotated with @Resource annotation: " + field, e);
+         }
+      }
+   }
+
+   /**
+    * Injects @Resource annotated methods
+    * @param instance to operate on
+    * @param ctx JNDI context
+    * @param envPrefix environment prefix to be used
+    */
+   private static void injectResourceAnnotatedMethods(final Object instance, final Context ctx)
+   {
+      Collection<Method> resourceAnnotatedMethods = RESOURCE_METHOD_FINDER.process(instance.getClass());
+      for(Method method : resourceAnnotatedMethods)
+      {
+         try
+         {
+            inject(instance, method, method.getAnnotation(Resource.class).name(), ctx);
+         }
+         catch (Exception e)
+         {
+            LOG.error("Cannot inject method annotated with @Resource annotation: " + method, e);
+         }
+      }
+   }
+
+   /**
+    * Injects @EJB annotated fields
+    * @param instance to operate on
+    * @param ctx JNDI context
+    * @param envPrefix environment prefix to be used
+    */
+   private static void injectEJBAnnotatedFields(final Object instance, final Context ctx)
+   {
+      final Collection<Field> ejbAnnotatedFields = EJB_FIELD_FINDER.process(instance.getClass());
+      for (Field field : ejbAnnotatedFields)
+      {
+         try
+         {
+            inject(instance, field, field.getAnnotation(EJB.class).name(), ctx);
+         }
+         catch (Exception e)
+         {
+            LOG.error("Cannot inject field annotated with @EJB annotation: " + field, e);
+         }
+      }
+   }
+
+   /**
+    * Injects @EJB annotated methods
+    * @param instance to operate on
+    * @param ctx JNDI context
+    * @param envPrefix environment prefix to be used
+    */
+   private static void injectEJBAnnotatedMethods(final Object instance, final Context ctx)
+   {
+      final Collection<Method> ejbAnnotatedMethods = EJB_METHOD_FINDER.process(instance.getClass());
+      for(Method method : ejbAnnotatedMethods)
+      {
+         try
+         {
+            inject(instance, method, method.getAnnotation(EJB.class).name(), ctx);
+         }
+         catch (Exception e)
+         {
+            LOG.error("Cannot inject method annotated with @EJB annotation: " + method, e);
          }
       }
    }
@@ -168,7 +258,7 @@ public final class JavaxAnnotationHelper
          }
          catch (Exception e)
          {
-            LOG.warn("Cannot inject @Resource annotated method: " + method, e);
+            LOG.error("Cannot inject @Resource annotated method: " + method, e);
          }
       }
 
@@ -182,7 +272,7 @@ public final class JavaxAnnotationHelper
          }
          catch (Exception e)
          {
-            LOG.warn("Cannot inject @Resource annotated field: " + field, e);
+            LOG.error("Cannot inject @Resource annotated field: " + field, e);
          }
       }
    }
@@ -212,7 +302,7 @@ public final class JavaxAnnotationHelper
          }
          catch (Exception e)
          {
-            LOG.warn("Calling of @PostConstruct annotated method failed: " + method, e);
+            LOG.error("Calling of @PostConstruct annotated method failed: " + method, e);
          }
       }
    }
@@ -242,7 +332,7 @@ public final class JavaxAnnotationHelper
          }
          catch (Exception e)
          {
-            LOG.warn("Calling of @PreDestroy annotated method failed: " + method, e);
+            LOG.error("Calling of @PreDestroy annotated method failed: " + method, e);
          }
       }
    }
@@ -258,11 +348,11 @@ public final class JavaxAnnotationHelper
     * @throws Exception if any error occurs
     * @see org.jboss.wsf.common.javax.finders.ResourceMethodFinder
     */
-   private static void inject(final Object instance, final Method method, final String resourceName, final Context ctx, final String envPrefix)
+   private static void inject(final Object instance, final Method method, final String resourceName, final Context ctx)
    throws Exception
    {
       final String beanName = convertToBeanName(method.getName()); 
-      final Object value = ctx.lookup(envPrefix + getName(resourceName, beanName));
+      final Object value = ctx.lookup(getName(resourceName, beanName));
 
       LOG.debug("Injecting method: " + method);
       invokeMethod(instance, method, new Object[] {value});
@@ -279,11 +369,11 @@ public final class JavaxAnnotationHelper
     * @throws Exception if any error occurs
     * @see org.jboss.wsf.common.javax.finders.ResourceFieldFinder
     */
-   private static void inject(final Object instance, final Field field, final String resourceName, final Context ctx, final String envPrefix)
+   private static void inject(final Object instance, final Field field, final String resourceName, final Context ctx)
    throws Exception
    {
       final String beanName = field.getName();
-      final Object value = ctx.lookup(envPrefix + getName(resourceName, beanName));
+      final Object value = ctx.lookup(getName(resourceName, beanName));
 
       LOG.debug("Injecting field: " + field);
       setField(instance, field, value);

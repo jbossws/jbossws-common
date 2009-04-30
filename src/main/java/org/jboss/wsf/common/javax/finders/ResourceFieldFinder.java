@@ -30,7 +30,7 @@ import javax.xml.ws.WebServiceContext;
 import org.jboss.wsf.common.reflection.AnnotatedFieldFinder;
 
 /**
- * Field based injection.
+ * Field based resource injection.
  *
  * To access a resource a developer declares a setter method and annotates it as being a
  * resource reference. The name and type of resource maybe inferred by inspecting the
@@ -83,6 +83,7 @@ extends AnnotatedFieldFinder<Resource>
       Class<Resource> annotation = getAnnotation();
       ReflectionUtils.assertNotVoidType(field, annotation);
       ReflectionUtils.assertNotStatic(field, annotation);
+      ReflectionUtils.assertNotFinal(field, annotation);
       ReflectionUtils.assertNotPrimitiveType(field, annotation);
    }
 

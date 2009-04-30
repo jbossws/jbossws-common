@@ -29,7 +29,7 @@ import javax.xml.ws.WebServiceContext;
 import org.jboss.wsf.common.reflection.AnnotatedMethodFinder;
 
 /**
- * Setter based injection.
+ * Setter based resource injection.
  *
  * To access a resource a developer declares a setter method and annotates it as being a
  * resource reference. The name and type of resource maybe inferred by inspecting the

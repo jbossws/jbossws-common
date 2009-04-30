@@ -93,6 +93,7 @@ extends FieldFinder
 
       ReflectionUtils.assertNotVoidType(field);
       ReflectionUtils.assertNotStatic(field);
+      ReflectionUtils.assertNotFinal(field);
       ReflectionUtils.assertNotPrimitiveType(field);
    }
 

@@ -232,7 +232,7 @@ final class ReflectionUtils
          throw new RuntimeException("Field " + getAnnotationMessage(annotation) + "cannot be static: " + field);
       }
    }
-
+   
    /**
     * Asserts field is not static.
     *
@@ -241,6 +241,30 @@ final class ReflectionUtils
    public static void assertNotStatic(final Field field) 
    {
       assertNotStatic(field, null);
+   }
+
+   /**
+    * Asserts field is not final.
+    *
+    * @param field to validate
+    * @param annotation annotation to propagate in exception message
+    */
+   public static void assertNotFinal(final Field field, Class<? extends Annotation> annotation) 
+   {
+      if (Modifier.isFinal(field.getModifiers()))
+      {
+         throw new RuntimeException("Field " + getAnnotationMessage(annotation) + "cannot be final: " + field);
+      }
+   }
+   
+   /**
+    * Asserts field is not final.
+    *
+    * @param field to validate
+    */
+   public static void assertNotFinal(final Field field) 
+   {
+      assertNotFinal(field, null);
    }
 
    /**
