@@ -19,18 +19,17 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.wsf.common.javax.finders;
+package org.jboss.wsf.common.injection.finders;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import javax.annotation.Resource;
 import javax.xml.ws.WebServiceContext;
 
-import org.jboss.wsf.common.reflection.AnnotatedFieldFinder;
+import org.jboss.wsf.common.reflection.AnnotatedMethodFinder;
 
 /**
- * Field based resource injection.
+ * Setter based resource injection.
  *
  * To access a resource a developer declares a setter method and annotates it as being a
  * resource reference. The name and type of resource maybe inferred by inspecting the
@@ -41,10 +40,10 @@ import org.jboss.wsf.common.reflection.AnnotatedFieldFinder;
  * Additionally, the type of the parameter must be compatible with the type specified
  * as a property of the Resource if present.
  *
- * @author ropalka@redhat.com
+ * @author <a href="mailto:richard.opalka@jboss.org">Richard Opalka</a>
  */
-public final class ResourceFieldFinder
-extends AnnotatedFieldFinder<Resource>
+public final class ResourceMethodFinder
+extends AnnotatedMethodFinder<Resource>
 {
 
    /**
@@ -66,7 +65,7 @@ extends AnnotatedFieldFinder<Resource>
     * @param accept filtering class
     * @param include whether include/exclude filtering class
     */
-   public ResourceFieldFinder(final Class<?> accept, boolean include)
+   public ResourceMethodFinder(final Class<?> accept, boolean include)
    {
       super(Resource.class);
 
@@ -75,22 +74,24 @@ extends AnnotatedFieldFinder<Resource>
    }
 
    @Override
-   public void validate(Field field)
+   public void validate(Method method)
    {
-      super.validate(field);
+      super.validate(method);
 
       // Ensure all method preconditions
       Class<Resource> annotation = getAnnotation();
-      ReflectionUtils.assertNotVoidType(field, annotation);
-      ReflectionUtils.assertNotStatic(field, annotation);
-      ReflectionUtils.assertNotFinal(field, annotation);
-      ReflectionUtils.assertNotPrimitiveType(field, annotation);
+      ReflectionUtils.assertVoidReturnType(method, annotation);
+      ReflectionUtils.assertOneParameter(method, annotation);
+      ReflectionUtils.assertNoPrimitiveParameters(method, annotation);
+      ReflectionUtils.assertValidSetterName(method, annotation);
+      ReflectionUtils.assertNoCheckedExceptionsAreThrown(method, annotation);
+      ReflectionUtils.assertNotStatic(method, annotation);
    }
 
    @Override
-   public boolean matches(Field field)
+   public boolean matches(Method method)
    {
-      final boolean matches = super.matches(field);
+      final boolean matches = super.matches(method);
 
       if (matches)
       {
@@ -98,10 +99,13 @@ extends AnnotatedFieldFinder<Resource>
          if (this.accept != null)
          {
             // filtering
-            final Class<?> fieldType = field.getType();
-            final boolean parameterMatch = this.accept.equals(fieldType);
-            // include/exclude filtering
-            return this.include ? parameterMatch : !parameterMatch;
+            if (method.getParameterTypes().length == 1)
+            {
+               final Class<?> param = method.getParameterTypes()[0];
+               final boolean parameterMatch = this.accept.equals(param);
+               // include/exclude filtering
+               return this.include ? parameterMatch : !parameterMatch;
+            }
          }
       }
 

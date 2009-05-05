@@ -19,11 +19,12 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.wsf.common.javax;
+package org.jboss.wsf.common.injection;
 
 /**
- * Utility class for pre destroy registration
- * @author richard.opalka@jboss.com
+ * Utility class for pre destroy registration.
+ *
+ * @author <a href="mailto:richard.opalka@jboss.org">Richard Opalka</a>
  */
 public final class PreDestroyHolder
 {

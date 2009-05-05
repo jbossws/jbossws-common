@@ -19,7 +19,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.wsf.common.javax.finders;
+package org.jboss.wsf.common.injection.finders;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -30,7 +30,7 @@ import org.jboss.wsf.common.reflection.AnnotatedMethodFinder;
 /**
  * Abstract @PostConstruct and @PreDestroy annotations method finder. 
  *
- * @author ropalka@redhat.com
+ * @author <a href="mailto:richard.opalka@jboss.org">Richard Opalka</a>
  */
 abstract class AbstractPostConstructPreDestroyAnnotatedMethodFinder<A extends Annotation>
 extends AnnotatedMethodFinder<A>

@@ -19,7 +19,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.wsf.common.javax.finders;
+package org.jboss.wsf.common.injection.finders;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -27,10 +27,12 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
 
+import org.jboss.wsf.common.injection.InjectionException;
+
 /**
  * Reflection utility class.
  *
- * @author ropalka@redhat.com
+ * @author <a href="mailto:richard.opalka@jboss.org">Richard Opalka</a>
  */
 final class ReflectionUtils
 {
@@ -55,7 +57,7 @@ final class ReflectionUtils
       {
          if (type.isPrimitive())
          {
-            throw new RuntimeException("Method " + getAnnotationMessage(annotation) + "can't declare primitive parameters: " + method);
+            throw new InjectionException("Method " + getAnnotationMessage(annotation) + "can't declare primitive parameters: " + method);
          }
       }
    }
@@ -80,7 +82,7 @@ final class ReflectionUtils
    {
       if (field.getType().isPrimitive())
       {
-         throw new RuntimeException("Field " + getAnnotationMessage(annotation) + "can't be of primitive type: " + field);
+         throw new InjectionException("Field " + getAnnotationMessage(annotation) + "can't be of primitive type: " + field);
       }
    }
 
@@ -104,7 +106,7 @@ final class ReflectionUtils
    {
       if (method.getParameterTypes().length != 0)
       {
-         throw new RuntimeException("Method " + getAnnotationMessage(annotation) + "have to have no parameters: " + method);
+         throw new InjectionException("Method " + getAnnotationMessage(annotation) + "have to have no parameters: " + method);
       }
    }
 
@@ -128,7 +130,7 @@ final class ReflectionUtils
    {
       if ((!method.getReturnType().equals(Void.class)) && (!method.getReturnType().equals(Void.TYPE)))
       {
-         throw new RuntimeException("Method " + getAnnotationMessage(annotation) + "have to return void: " + method);
+         throw new InjectionException("Method " + getAnnotationMessage(annotation) + "have to return void: " + method);
       }
    }
 
@@ -152,7 +154,7 @@ final class ReflectionUtils
    {
       if ((field.getClass().equals(Void.class)) && (field.getClass().equals(Void.TYPE)))
       {
-         throw new RuntimeException("Field " + getAnnotationMessage(annotation) + "cannot be of void type: " + field);
+         throw new InjectionException("Field " + getAnnotationMessage(annotation) + "cannot be of void type: " + field);
       }
    }
 
@@ -180,7 +182,7 @@ final class ReflectionUtils
          Class<?> exception = declaredExceptions[i];
          if (!exception.isAssignableFrom(RuntimeException.class))
          {
-            throw new RuntimeException("Method " + getAnnotationMessage(annotation) + "cannot throw checked exceptions: " + method);
+            throw new InjectionException("Method " + getAnnotationMessage(annotation) + "cannot throw checked exceptions: " + method);
          }
       }
    }
@@ -205,7 +207,7 @@ final class ReflectionUtils
    {
       if (Modifier.isStatic(method.getModifiers()))
       {
-         throw new RuntimeException("Method " + getAnnotationMessage(annotation) + "cannot be static: " + method);
+         throw new InjectionException("Method " + getAnnotationMessage(annotation) + "cannot be static: " + method);
       }
    }
 
@@ -229,10 +231,10 @@ final class ReflectionUtils
    {
       if (Modifier.isStatic(field.getModifiers()))
       {
-         throw new RuntimeException("Field " + getAnnotationMessage(annotation) + "cannot be static: " + field);
+         throw new InjectionException("Field " + getAnnotationMessage(annotation) + "cannot be static: " + field);
       }
    }
-   
+
    /**
     * Asserts field is not static.
     *
@@ -253,10 +255,10 @@ final class ReflectionUtils
    {
       if (Modifier.isFinal(field.getModifiers()))
       {
-         throw new RuntimeException("Field " + getAnnotationMessage(annotation) + "cannot be final: " + field);
+         throw new InjectionException("Field " + getAnnotationMessage(annotation) + "cannot be final: " + field);
       }
    }
-   
+
    /**
     * Asserts field is not final.
     *
@@ -277,7 +279,7 @@ final class ReflectionUtils
    {
       if (method.getParameterTypes().length != 1)
       {
-         throw new RuntimeException("Method " + getAnnotationMessage(annotation) + "have to declare exactly one parameter: " + method);
+         throw new InjectionException("Method " + getAnnotationMessage(annotation) + "have to declare exactly one parameter: " + method);
       }
    }
 
@@ -306,7 +308,7 @@ final class ReflectionUtils
 
       if (!correctMethodNameLength || !isSetterMethodName || !isUpperCasedPropertyName)
       {
-         throw new RuntimeException("Method " + getAnnotationMessage(annotation) + "doesn't follow Java Beans setter method name: " + method);
+         throw new InjectionException("Method " + getAnnotationMessage(annotation) + "doesn't follow Java Beans setter method name: " + method);
       }
    }
 
@@ -330,7 +332,7 @@ final class ReflectionUtils
    {
       if (methods.size() > 1)
       {
-         throw new RuntimeException("Only one method " + getAnnotationMessage(annotation) + "can exist");
+         throw new InjectionException("Only one method " + getAnnotationMessage(annotation) + "can exist");
       }
    }
 

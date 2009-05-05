@@ -19,7 +19,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.wsf.common.javax.finders;
+package org.jboss.wsf.common.injection.finders;
 
 import javax.annotation.PostConstruct;
 
@@ -41,7 +41,7 @@ import javax.annotation.PostConstruct;
  *   <li>If the method throws an unchecked exception the class MUST NOT be put into service.
  * </ul>
  *
- * @author ropalka@redhat.com
+ * @author <a href="mailto:richard.opalka@jboss.org">Richard Opalka</a>
  */
 public final class PostConstructMethodFinder
 extends AbstractPostConstructPreDestroyAnnotatedMethodFinder<PostConstruct>

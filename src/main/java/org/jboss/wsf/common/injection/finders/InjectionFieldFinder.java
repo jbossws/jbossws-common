@@ -19,18 +19,19 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.wsf.common.javax.finders;
+package org.jboss.wsf.common.injection.finders;
 
 import java.lang.reflect.Field;
 import java.util.Collection;
 
+import org.jboss.wsf.common.injection.InjectionException;
 import org.jboss.wsf.common.reflection.FieldFinder;
 import org.jboss.wsf.spi.metadata.injection.InjectionMetaData;
 
 /**
  * Lookups field that matches descriptor specified injection metadata.
  *
- * @author ropalka@redhat.com
+ * @author <a href="mailto:richard.opalka@jboss.org">Richard Opalka</a>
  */
 public final class InjectionFieldFinder
 extends FieldFinder
@@ -82,7 +83,7 @@ extends FieldFinder
 
       if (fields.size() > 2)
       {
-         throw new RuntimeException("More than one field found matching the criteria: " + injectionMD);
+         throw new InjectionException("More than one field found matching the criteria: " + injectionMD);
       }
    }
 

@@ -19,13 +19,13 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.wsf.common.javax.finders;
+package org.jboss.wsf.common.injection.finders;
 
 import javax.annotation.PreDestroy;
 
 /**
  * @PreDestroy method finder.
- * 
+ *
  * The PreDestroy annotation is used on methods as a callback notification to signal that the instance
  * is in the process of being removed by the container. The method annotated with PreDestroy is typically
  * used to release resources that it has been holding. This annotation MUST be supported by all container
@@ -41,7 +41,7 @@ import javax.annotation.PreDestroy;
  *   <li>If the method throws an unchecked exception it is ignored.
  * </ul>
  *
- * @author ropalka@redhat.com
+ * @author <a href="mailto:richard.opalka@jboss.org">Richard Opalka</a>
  */
 public final class PreDestroyMethodFinder
 extends AbstractPostConstructPreDestroyAnnotatedMethodFinder<PreDestroy>
