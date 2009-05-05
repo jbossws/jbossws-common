@@ -44,7 +44,6 @@ import org.jboss.wsf.common.injection.finders.ResourceMethodFinder;
 import org.jboss.wsf.common.reflection.ClassProcessor;
 import org.jboss.wsf.spi.metadata.injection.InjectionMetaData;
 import org.jboss.wsf.spi.metadata.injection.InjectionsMetaData;
-import org.jboss.wsf.spi.metadata.injection.ReferenceResolver;
 
 /**
  * An injection helper class for <b>javax.*</b> annotations.
@@ -296,15 +295,13 @@ public final class InjectionHelper
     */
    private static void injectResourceAnnotatedAccessibleObjects(final Object instance, final Context ctx, final InjectionsMetaData injections)
    {
-      final ReferenceResolver referenceResolver = injections.getResolver(Resource.class);
-
       // Inject @Resource annotated fields
       final Collection<Field> resourceAnnotatedFields = RESOURCE_FIELD_FINDER.process(instance.getClass());
       for (Field field : resourceAnnotatedFields)
       {
          try
          {
-            final String jndiName = referenceResolver.resolve(field);
+            final String jndiName = injections.getResolver(Resource.class).resolve(field);
             inject(instance, field, jndiName, ctx);
          }
          catch (Exception e)
@@ -320,7 +317,7 @@ public final class InjectionHelper
       {
          try
          {
-            final String jndiName = referenceResolver.resolve(method);
+            final String jndiName = injections.getResolver(Resource.class).resolve(method);
             inject(instance, method, jndiName, ctx);
          }
          catch (Exception e)
@@ -340,15 +337,13 @@ public final class InjectionHelper
     */
    private static void injectEJBAnnotatedAccessibleObjects(final Object instance, final Context ctx, final InjectionsMetaData injections)
    {
-      final ReferenceResolver referenceResolver = injections.getResolver(EJB.class);
-
       // Inject @EJB annotated fields
       final Collection<Field> ejbAnnotatedFields = EJB_FIELD_FINDER.process(instance.getClass());
       for (Field field : ejbAnnotatedFields)
       {
          try
          {
-            final String jndiName = referenceResolver.resolve(field);
+            final String jndiName = injections.getResolver(EJB.class).resolve(field);
             inject(instance, field, jndiName, ctx);
          }
          catch (Exception e)
@@ -364,7 +359,7 @@ public final class InjectionHelper
       {
          try
          {
-            final String jndiName = referenceResolver.resolve(method);
+            final String jndiName = injections.getResolver(EJB.class).resolve(method);
             inject(instance, method, jndiName, ctx);
          }
          catch (Exception e)
