@@ -88,7 +88,8 @@ public final class InjectionHelper
     * </ul>
     *
     * @param instance to inject resources on
-    * @param injections injections metadata
+    * @param injections injection metadata
+    * @see org.jboss.wsf.spi.metadata.injection.InjectionsMetaData
     * @see javax.annotation.Resource
     * @see javax.ejb.EJB
     */
@@ -113,7 +114,7 @@ public final class InjectionHelper
       injectResourceAnnotatedAccessibleObjects(instance, ctx, injections);
 
       // inject @EJB annotated methods and fields
-      injectEJBAnnotatedAccessibleObjects(instance, ctx, injections);
+      injectEJBAnnotatedAccessibleObjects(instance, getDefaultContext(), injections);
    }
 
    /**
@@ -169,11 +170,11 @@ public final class InjectionHelper
       if (instance == null)
          throw new IllegalArgumentException("Object instance cannot be null");
 
-      Collection<Method> methods = POST_CONSTRUCT_METHOD_FINDER.process(instance.getClass());
+      final Collection<Method> methods = POST_CONSTRUCT_METHOD_FINDER.process(instance.getClass());
 
       if (methods.size() > 0)
       {
-         Method method = methods.iterator().next();
+         final Method method = methods.iterator().next();
          LOG.debug("Calling @PostConstruct annotated method: " + method);
          try
          {
@@ -199,11 +200,11 @@ public final class InjectionHelper
       if (instance == null)
          throw new IllegalArgumentException("Object instance cannot be null");
 
-      Collection<Method> methods = PRE_DESTROY_METHOD_FINDER.process(instance.getClass());
+      final Collection<Method> methods = PRE_DESTROY_METHOD_FINDER.process(instance.getClass());
 
       if (methods.size() > 0)
       {
-         Method method = methods.iterator().next();
+         final Method method = methods.iterator().next();
          LOG.debug("Calling @PreDestroy annotated method: " + method);
          try
          {
@@ -230,7 +231,7 @@ public final class InjectionHelper
       {
          try
          {
-            return (Context)new InitialContext().lookup(POJO_JNDI_PREFIX);
+            return (Context)getDefaultContext().lookup(POJO_JNDI_PREFIX);
          }
          catch (NamingException ne)
          {
@@ -292,6 +293,9 @@ public final class InjectionHelper
     * @param instance to operate on
     * @param ctx JNDI context
     * @param injections injections meta data
+    * @see org.jboss.wsf.common.injection.finders.ResourceFieldFinder
+    * @see org.jboss.wsf.common.injection.finders.ResourceMethodFinder
+    * @see javax.annotation.Resource
     */
    private static void injectResourceAnnotatedAccessibleObjects(final Object instance, final Context ctx, final InjectionsMetaData injections)
    {
@@ -334,6 +338,9 @@ public final class InjectionHelper
     * @param instance to operate on
     * @param ctx JNDI context
     * @param injections injections meta data
+    * @see org.jboss.wsf.common.injection.finders.EJBFieldFinder
+    * @see org.jboss.wsf.common.injection.finders.EJBMethodFinder
+    * @see javax.ejb.EJB
     */
    private static void injectEJBAnnotatedAccessibleObjects(final Object instance, final Context ctx, final InjectionsMetaData injections)
    {
@@ -371,13 +378,12 @@ public final class InjectionHelper
    }
 
    /**
-    * Injects @Resource annotated method.
+    * Injects method.
     *
     * @param instance to invoke method on
     * @param method to invoke
     * @param resourceName resource name
     * @param cxt JNDI context
-    * @see org.jboss.wsf.common.injection.finders.ResourceMethodFinder
     */
    private static void inject(final Object instance, final Method method, final String jndiName, final Context ctx)
    {
@@ -387,13 +393,12 @@ public final class InjectionHelper
    }
 
    /**
-    * Injects @Resource annotated field.
+    * Injects field.
     *
     * @param field to set
     * @param instance to modify field on
     * @param resourceName resource name
     * @param cxt JNDI context
-    * @see org.jboss.wsf.common.injection.finders.ResourceFieldFinder
     */
    private static void inject(final Object instance, final Field field, final String jndiName, final Context ctx)
    {
@@ -418,18 +423,33 @@ public final class InjectionHelper
       }
       catch (NamingException ne)
       {
-         try
-         {
-            value = new InitialContext().lookup(jndiName);
-         }
-         catch (Exception e)
-         {
-            final String message = "Resource '" + jndiName + "' not found";
-            InjectionException.rethrow(message, e);
-         }
+         final String message = "Resource '" + jndiName + "' not found";
+         InjectionException.rethrow(message, ne);
       }
 
       return value;
+   }
+   
+   /**
+    * Returns default JNDI context.
+    * 
+    * @return default JNDI context
+    */
+   private static Context getDefaultContext()
+   {
+      Context ctx = null;
+      
+      try
+      {
+         ctx = new InitialContext();
+      }
+      catch (NamingException ne)
+      {
+         final String message = "Cannot create default JNDI context";
+         InjectionException.rethrow(message, ne);
+      }
+      
+      return ctx;
    }
 
    /**
@@ -441,7 +461,7 @@ public final class InjectionHelper
     */
    private static void invokeMethod(final Object instance, final Method method, final Object[] args)
    {
-      boolean accessability = method.isAccessible();
+      final boolean accessability = method.isAccessible();
 
       try
       {
@@ -467,7 +487,7 @@ public final class InjectionHelper
     */
    private static void setField(final Object instance, final Field field, final Object value)
    {
-      boolean accessability = field.isAccessible();
+      final boolean accessability = field.isAccessible();
 
       try
       {
