@@ -101,20 +101,14 @@ public final class InjectionHelper
       if (injections == null)
          return;
 
-      final Context ctx = getContext(injections);
-
       // inject descriptor driven annotations
-      final Collection<InjectionMetaData> injectionMDs = injections.getInjectionsMetaData(instance.getClass());
-      for (InjectionMetaData injectionMD : injectionMDs)
-      {
-         injectDescriptorAnnotatedAccessibleObjects(instance, ctx, injectionMD);
-      }
+      injectDescriptorAnnotatedAccessibleObjects(instance, injections);
 
       // inject @Resource annotated methods and fields
-      injectResourceAnnotatedAccessibleObjects(instance, ctx, injections);
+      injectResourceAnnotatedAccessibleObjects(instance, injections);
 
       // inject @EJB annotated methods and fields
-      injectEJBAnnotatedAccessibleObjects(instance, getDefaultContext(), injections);
+      injectEJBAnnotatedAccessibleObjects(instance, injections);
    }
 
    /**
@@ -246,44 +240,51 @@ public final class InjectionHelper
     * Performs descriptor driven injections.
     *
     * @param instance to operate on
-    * @param ctx JNDI context
-    * @param injectionMD injections metadata
+    * @param injections injections metadata
     */
-   private static void injectDescriptorAnnotatedAccessibleObjects(final Object instance, final Context ctx, final InjectionMetaData injectionMD)
+   private static void injectDescriptorAnnotatedAccessibleObjects(final Object instance, final InjectionsMetaData injections)
    {
-      final Method method = getMethod(injectionMD, instance.getClass());
-      if (method != null)
+      final Collection<InjectionMetaData> injectionMDs = injections.getInjectionsMetaData(instance.getClass());
+      final Context ctx = !injectionMDs.isEmpty() ? getContext(injections) : null;
+
+      for (InjectionMetaData injectionMD : injectionMDs)
       {
-         try
-         {
-            inject(instance, method, injectionMD.getEnvEntryName(), ctx);
-         }
-         catch (Exception e)
-         {
-            final String message = "Cannot inject method (descriptor driven injection): " + injectionMD;
-            InjectionException.rethrow(message, e);
-         }
-      }
-      else
-      {
-         final Field field = getField(injectionMD, instance.getClass());
-         if (field != null)
+
+         final Method method = getMethod(injectionMD, instance.getClass());
+         if (method != null)
          {
             try
             {
-               inject(instance, field, injectionMD.getEnvEntryName(), ctx);
+               inject(instance, method, injectionMD.getEnvEntryName(), ctx);
             }
             catch (Exception e)
             {
-               final String message = "Cannot inject field (descriptor driven injection): " + injectionMD;
+               final String message = "Cannot inject method (descriptor driven injection): " + injectionMD;
                InjectionException.rethrow(message, e);
             }
          }
          else
          {
-            final String message = "Cannot find injection target for: " + injectionMD;
-            throw new InjectionException(message);
+            final Field field = getField(injectionMD, instance.getClass());
+            if (field != null)
+            {
+               try
+               {
+                  inject(instance, field, injectionMD.getEnvEntryName(), ctx);
+               }
+               catch (Exception e)
+               {
+                  final String message = "Cannot inject field (descriptor driven injection): " + injectionMD;
+                  InjectionException.rethrow(message, e);
+               }
+            }
+            else
+            {
+               final String message = "Cannot find injection target for: " + injectionMD;
+               throw new InjectionException(message);
+            }
          }
+      
       }
    }
 
@@ -291,16 +292,19 @@ public final class InjectionHelper
     * Injects @Resource annotated accessible objects.
     *
     * @param instance to operate on
-    * @param ctx JNDI context
     * @param injections injections meta data
     * @see org.jboss.wsf.common.injection.finders.ResourceFieldFinder
     * @see org.jboss.wsf.common.injection.finders.ResourceMethodFinder
     * @see javax.annotation.Resource
     */
-   private static void injectResourceAnnotatedAccessibleObjects(final Object instance, final Context ctx, final InjectionsMetaData injections)
+   private static void injectResourceAnnotatedAccessibleObjects(final Object instance, final InjectionsMetaData injections)
    {
-      // Inject @Resource annotated fields
       final Collection<Field> resourceAnnotatedFields = RESOURCE_FIELD_FINDER.process(instance.getClass());
+      final Collection<Method> resourceAnnotatedMethods = RESOURCE_METHOD_FINDER.process(instance.getClass());
+      final boolean doInjection = !resourceAnnotatedFields.isEmpty() || !resourceAnnotatedMethods.isEmpty();
+      final Context ctx = doInjection ? getContext(injections) : null;
+
+      // Inject @Resource annotated fields
       for (Field field : resourceAnnotatedFields)
       {
          try
@@ -316,7 +320,6 @@ public final class InjectionHelper
       }
 
       // Inject @Resource annotated methods
-      final Collection<Method> resourceAnnotatedMethods = RESOURCE_METHOD_FINDER.process(instance.getClass());
       for(Method method : resourceAnnotatedMethods)
       {
          try
@@ -336,16 +339,19 @@ public final class InjectionHelper
     * Injects @EJB annotated accessible objects.
     *
     * @param instance to operate on
-    * @param ctx JNDI context
     * @param injections injections meta data
     * @see org.jboss.wsf.common.injection.finders.EJBFieldFinder
     * @see org.jboss.wsf.common.injection.finders.EJBMethodFinder
     * @see javax.ejb.EJB
     */
-   private static void injectEJBAnnotatedAccessibleObjects(final Object instance, final Context ctx, final InjectionsMetaData injections)
+   private static void injectEJBAnnotatedAccessibleObjects(final Object instance, final InjectionsMetaData injections)
    {
-      // Inject @EJB annotated fields
       final Collection<Field> ejbAnnotatedFields = EJB_FIELD_FINDER.process(instance.getClass());
+      final Collection<Method> ejbAnnotatedMethods = EJB_METHOD_FINDER.process(instance.getClass());
+      final boolean doInjection = !ejbAnnotatedFields.isEmpty() || !ejbAnnotatedMethods.isEmpty();
+      final Context ctx = doInjection ? getDefaultContext() : null;
+
+      // Inject @EJB annotated fields
       for (Field field : ejbAnnotatedFields)
       {
          try
@@ -361,7 +367,6 @@ public final class InjectionHelper
       }
 
       // Inject @EJB annotated methods
-      final Collection<Method> ejbAnnotatedMethods = EJB_METHOD_FINDER.process(instance.getClass());
       for(Method method : ejbAnnotatedMethods)
       {
          try
