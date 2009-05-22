@@ -23,8 +23,6 @@ package org.jboss.wsf.common.management;
 
 import java.io.File;
 import java.net.InetAddress;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.Set;
 
@@ -47,12 +45,6 @@ import org.jboss.wsf.spi.management.ServerConfig;
 public abstract class AbstractServerConfig implements AbstractServerConfigMBean, ServerConfig
 {
    private static final Logger log = Logger.getLogger(AbstractServerConfig.class);
-   
-   protected static final ObjectName OBJECT_NAME_SERVER_CONFIG;
-   static
-   {
-      OBJECT_NAME_SERVER_CONFIG = ObjectNameFactory.create("jboss.system:type=ServerConfig");
-   }
 
    // The MBeanServer
    private MBeanServer mbeanServer;
@@ -118,56 +110,44 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
 
    public File getServerTempDir()
    {
-      return this.getDirFromServerConfig("ServerTempLocation");
+      try
+      {
+         ObjectName oname = ObjectNameFactory.create("jboss.system:type=ServerConfig");
+         File dir = (File)getMbeanServer().getAttribute(oname, "ServerTempDir");
+         return dir;
+      }
+      catch (JMException e)
+      {
+         return null;
+      }
    }
    
    public File getHomeDir()
    {
-      return this.getDirFromServerConfig("JBossHome");
+      try
+      {
+         ObjectName oname = ObjectNameFactory.create("jboss.system:type=ServerConfig");
+         File dir = (File)getMbeanServer().getAttribute(oname, "HomeDir");
+         return dir;
+      }
+      catch (JMException e)
+      {
+         return null;
+      }
    }
 
    public File getServerDataDir()
    {
-      return this.getDirFromServerConfig("ServerDataLocation");
-   }
-   
-   /**
-    * Obtains the specified attribute from the server configuration,
-    * represented as a {@link File}.
-    *  
-    * @param attributeName
-    * @return
-    * @author ALR
-    */
-   protected File getDirFromServerConfig(final String attributeName)
-   {
-      // Define the ON to invoke upon
-      final ObjectName on = OBJECT_NAME_SERVER_CONFIG;
-
-      // Get the URL location
-      URL location = null;
       try
       {
-         location = (URL) getMbeanServer().getAttribute(on, attributeName);
+         ObjectName oname = ObjectNameFactory.create("jboss.system:type=ServerConfig");
+         File dir = (File)getMbeanServer().getAttribute(oname, "ServerDataDir");
+         return dir;
       }
-      catch (final JMException e)
+      catch (JMException e)
       {
-         throw new RuntimeException("Could not obtain attribute " + attributeName + " from " + on, e);
+         return null;
       }
-
-      // Represent as a File
-      File dir = null;
-      try
-      {
-         dir = new File(location.toURI());
-      }
-      catch (final URISyntaxException urise)
-      {
-         throw new RuntimeException("Could not desired directory from URL: " + location, urise);
-      }
-
-      // Return
-      return dir;
    }
 
    public int getWebServicePort()
