@@ -8,7 +8,7 @@
   <artifactId>jbossws-common</artifactId>
   <packaging>jar</packaging>
   
-  <version>1.2.0-SNAPSHOT</version>
+  <version>1.2.0.Beta1</version>
   
   <!-- Parent -->
   <parent>
@@ -26,7 +26,7 @@
   
   <!-- Properties -->
   <properties>
-    <jbossws.spi.version>1.2.0-SNAPSHOT</jbossws.spi.version>
+    <jbossws.spi.version>1.2.0.Beta1</jbossws.spi.version>
     <jboss.common.version>2.2.7.GA</jboss.common.version>
     <jboss.microcontainer.version>1.0.2</jboss.microcontainer.version>
   </properties>
