@@ -21,10 +21,7 @@
  */
 package org.jboss.wsf.common.management;
 
-import java.io.File;
 import java.net.InetAddress;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.Set;
 
@@ -35,13 +32,18 @@ import javax.management.ObjectName;
 
 import org.jboss.logging.Logger;
 import org.jboss.wsf.common.ObjectNameFactory;
+import org.jboss.wsf.spi.SPIProvider;
+import org.jboss.wsf.spi.SPIProviderResolver;
 import org.jboss.wsf.spi.management.ServerConfig;
+import org.jboss.wsf.spi.management.StackConfig;
+import org.jboss.wsf.spi.management.StackConfigFactory;
 
 /**
  * Basic implementation of a ServerConfig 
  *
  * @author Thomas.Diesler@jboss.org
  * @author darran.lofthouse@jboss.com
+ * @author alessio.soldano@jboss.com
  * @since 08-May-2006
  */
 public abstract class AbstractServerConfig implements AbstractServerConfigMBean, ServerConfig
@@ -62,8 +64,10 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
    private int webServicePort;
    // The webservice port that will be used when updating the wsdl
    private int webServiceSecurePort;
-   // Whether we should always modify the soap address to the deployed endpoing location
+   // Whether we should always modify the soap address to the deployed endpoint location
    private boolean modifySOAPAddress;
+   //The stack config
+   protected StackConfig stackConfig;
 
    public MBeanServer getMbeanServer()
    {
@@ -116,60 +120,6 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
       this.modifySOAPAddress = modify;
    }
 
-   public File getServerTempDir()
-   {
-      return this.getDirFromServerConfig("ServerTempLocation");
-   }
-   
-   public File getHomeDir()
-   {
-      return this.getDirFromServerConfig("JBossHome");
-   }
-
-   public File getServerDataDir()
-   {
-      return this.getDirFromServerConfig("ServerDataLocation");
-   }
-   
-   /**
-    * Obtains the specified attribute from the server configuration,
-    * represented as a {@link File}.
-    *  
-    * @param attributeName
-    * @return
-    * @author ALR
-    */
-   protected File getDirFromServerConfig(final String attributeName)
-   {
-      // Define the ON to invoke upon
-      final ObjectName on = OBJECT_NAME_SERVER_CONFIG;
-
-      // Get the URL location
-      URL location = null;
-      try
-      {
-         location = (URL) getMbeanServer().getAttribute(on, attributeName);
-      }
-      catch (final JMException e)
-      {
-         throw new RuntimeException("Could not obtain attribute " + attributeName + " from " + on, e);
-      }
-
-      // Represent as a File
-      File dir = null;
-      try
-      {
-         dir = new File(location.toURI());
-      }
-      catch (final URISyntaxException urise)
-      {
-         throw new RuntimeException("Could not desired directory from URL: " + location, urise);
-      }
-
-      // Return
-      return dir;
-   }
-
    public int getWebServicePort()
    {
       if (webServicePort <= 0)
@@ -204,6 +154,12 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
 
    public void create() throws Exception
    {
+      //Retrieve the stackConfig using SPIProvider
+      SPIProvider spiProvider = SPIProviderResolver.getInstance().getProvider();
+      this.stackConfig = spiProvider.getSPI(StackConfigFactory.class).getStackConfig();
+      
+      log.info(getImplementationTitle());
+      log.info(getImplementationVersion());
       getMbeanServer().registerMBean(this, AbstractServerConfigMBean.OBJECT_NAME);
    }
 
@@ -255,5 +211,15 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
       {
          return -1;
       }
+   }
+   
+   public String getImplementationTitle()
+   {
+      return stackConfig.getImplementationTitle();
+   }
+
+   public String getImplementationVersion()
+   {
+      return stackConfig.getImplementationVersion();
    }
 }
