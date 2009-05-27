@@ -67,7 +67,7 @@ public interface MAP
 
    public void addReferenceParameter(Element refParam);
    
-   public List<Element> getReferenceParameters();
+   public List<Object> getReferenceParameters();
 
    public void initializeAsDestination(MAPEndpoint epref);
 

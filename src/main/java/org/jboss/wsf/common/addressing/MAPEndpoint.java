@@ -38,6 +38,6 @@ public interface MAPEndpoint
 
    public void addReferenceParameter(Element element);
    
-   public List<Element> getReferenceParameters();
+   public List<Object> getReferenceParameters();
 
 }

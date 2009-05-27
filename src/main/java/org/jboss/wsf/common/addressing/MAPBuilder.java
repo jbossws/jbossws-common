@@ -42,7 +42,7 @@ public interface MAPBuilder
     * @param ctx the server message context
     * @return
     */
-   public MAP inboundMap(MessageContext ctx);
+   public MAP inboundMap(Map<String, Object> ctx);
 
    /**
     * retrieve the outbound client message address properties attached to a message request map
