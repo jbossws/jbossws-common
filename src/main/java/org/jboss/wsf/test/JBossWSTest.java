@@ -57,7 +57,7 @@ import org.w3c.dom.NodeList;
  */
 public abstract class JBossWSTest extends TestCase
 {
-   protected Logger log = Logger.getLogger(getClass().getName());
+   protected static Logger log = Logger.getLogger(JBossWSTest.class.getName());
    private JBossWSTestHelper delegate = new JBossWSTestHelper();
 
    public JBossWSTest()

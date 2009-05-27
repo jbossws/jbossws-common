@@ -296,6 +296,11 @@ public final class DOMUtils
                   nsElement = getParentElement(nsElement);
             }
          }
+         
+         if (namespaceURI.equals("") && el.getNamespaceURI() != null)
+         {
+            namespaceURI = el.getNamespaceURI();
+         }
 
          if (namespaceURI.equals(""))
             throw new IllegalArgumentException("Cannot find namespace uri for: " + qualifiedName);
