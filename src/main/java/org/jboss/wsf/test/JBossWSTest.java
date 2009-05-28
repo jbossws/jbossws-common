@@ -68,7 +68,7 @@ public abstract class JBossWSTest extends TestCase
    {
       super(name);
    }
-   
+
    /**
     * Execute <b>command</b> in separate process.
     * @param command command to execute
@@ -78,7 +78,7 @@ public abstract class JBossWSTest extends TestCase
    {
       this.executeCommand(command, null, null, null);
    }
-   
+
    /**
     * Execute <b>command</b> in separate process. If process will fail, display custom <b>message</b> in assertion.
     * @param command command to execute
@@ -89,7 +89,7 @@ public abstract class JBossWSTest extends TestCase
    {
       this.executeCommand(command, null, message, null);
    }
-   
+
    /**
     * Execute <b>command</b> in separate process, copy process input to <b>os</b>.
     * @param command command to execute
@@ -125,10 +125,10 @@ public abstract class JBossWSTest extends TestCase
    {
       if (command == null)
          throw new NullPointerException( "Command cannot be null" );
-      
+
       System.out.println("Executing command: " + command);
       log.debug("Executing command: " + command);
-      
+
       StringTokenizer st = new StringTokenizer(command, " \t\r");
       List<String> tokenizedCommand = new LinkedList<String>();
       while (st.hasMoreTokens())
@@ -136,7 +136,7 @@ public abstract class JBossWSTest extends TestCase
          // PRECONDITION: command doesn't contain whitespaces in the paths
          tokenizedCommand.add(st.nextToken());
       }
-      
+
       try
       {
          this.executeCommand(tokenizedCommand, os, message, env);
@@ -201,10 +201,15 @@ public abstract class JBossWSTest extends TestCase
    {
       return delegate.isTargetJBoss5();
    }
-   
+
    public boolean isTargetJBoss51()
    {
       return delegate.isTargetJBoss51();
+   }
+
+   public boolean isTargetJBoss52()
+   {
+      return delegate.isTargetJBoss52();
    }
 
    public boolean isTargetJBoss50()
@@ -216,7 +221,7 @@ public abstract class JBossWSTest extends TestCase
    {
       return delegate.isTargetJBoss6();
    }
-   
+
    public boolean isTargetJBoss61()
    {
       return delegate.isTargetJBoss61();
