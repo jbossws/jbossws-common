@@ -93,12 +93,6 @@ public interface Constants
    static final String URI_STYLE_RPC = "http://www.w3.org/2004/03/wsdl/style/rpc";
    static final String URI_STYLE_DOCUMENT = "http://www.w3.org/2004/03/wsdl/style/iri";
 
-    /** WS-Eventing namespace uri **/
-    static final String URI_WS_EVENTING = "http://schemas.xmlsoap.org/ws/2004/08/eventing";
-    
-    /** WS-Policy namespace uri **/
-   static final String URI_WS_POLICY = "http://schemas.xmlsoap.org/ws/2004/09/policy";
-   
     /** WS-Addressing namespace uri **/
    static final String URI_WS_ADDRESSING = "http://www.w3.org/2005/08/addressing";
 
@@ -273,12 +267,6 @@ public interface Constants
    /** Key to the outbound wsa action */
    static final String WSDL_PROPERTY_ACTION_OUT = "http://www.jboss.org/jbossws/wsa/actionOut";
 
-   static final String WSDL_PROPERTY_EVENTSOURCE = "http://www.jboss.org/jbossws/wse/isEventSource";
-   
-   static final String WSDL_ELEMENT_POLICY = "http://www.jboss.org/jbossws/wsp/policy";
-   static final String WSDL_PROPERTY_POLICYURIS = "http://www.jboss.org/jbossws/wsp/policyURIs";
-   static final String WSDL_ELEMENT_POLICYREFERENCE = "http://www.jboss.org/jbossws/wsp/policyReference";
-   
    /** The key to the original message part name */
    static final String WSDL_PROPERTY_PART_NAME = "http://www.jboss.org/jbossws/partname";
    /** The key to the message part type in case a part does not reference an element; http://www.jboss.org/jbossws/part/xmltype */
@@ -294,10 +282,6 @@ public interface Constants
 
    static final QName WSDL_ATTRIBUTE_WSA_ACTION = new QName(URI_WS_ADDRESSING, "Action");
 
-   static final QName WSDL_ATTRIBUTE_WSE_EVENTSOURCE = new QName(URI_WS_EVENTING, "EventSource");
-   
-   static final QName WSDL_ATTRIBUTE_WSP_POLICYURIS = new QName(URI_WS_POLICY, "PolicyURIs");
-   static final QName WSDL_ELEMENT_WSP_POLICYREFERENCE = new QName(URI_WS_POLICY, "PolicyReference");
    static final QName WSDL_ELEMENT_JAXWS_BINDINGS = new QName(URI_JAXWS_WSDL_CUSTOMIZATIONS, "bindings");
    static final QName WSDL_ELEMENT_JAXWS_CLASS = new QName(URI_JAXWS_WSDL_CUSTOMIZATIONS, "class");
    static final QName WSDL_ELEMENT_JAXWS_METHOD = new QName(URI_JAXWS_WSDL_CUSTOMIZATIONS, "method");
