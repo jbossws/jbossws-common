@@ -31,6 +31,8 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.XMLConstants;
@@ -64,6 +66,7 @@ import org.xml.sax.SAXException;
  * DOM2 utilites
  *
  * @author Thomas.Diesler@jboss.org
+ * @author alessio.soldano@jboss.com
  */
 public final class DOMUtils
 {
@@ -493,27 +496,48 @@ public final class DOMUtils
     */
    public static Element getFirstChildElement(Node node)
    {
-      return getFirstChildElementIntern(node, null);
+      return getFirstChildElement(node, false);
+   }
+
+   /**Gets the first child element
+    */
+   public static Element getFirstChildElement(Node node, boolean recursive)
+   {
+      return getFirstChildElementIntern(node, null, recursive);
    }
 
    /** Gets the first child element for a given local name without namespace
     */
    public static Element getFirstChildElement(Node node, String nodeName)
    {
-      return getFirstChildElementIntern(node, new QName(nodeName));
+      return getFirstChildElement(node, nodeName, false);
    }
+
+   /** Gets the first child element for a given local name without namespace
+    */
+   public static Element getFirstChildElement(Node node, String nodeName, boolean recursive)
+   {
+      return getFirstChildElementIntern(node, new QName(nodeName), recursive);
+   }   
 
    /** Gets the first child element for a given qname
     */
    public static Element getFirstChildElement(Node node, QName nodeName)
    {
-      return getFirstChildElementIntern(node, nodeName);
+      return getFirstChildElement(node, nodeName, false);
    }
-
-   private static Element getFirstChildElementIntern(Node node, QName nodeName)
+   
+   /** Gets the first child element for a given qname
+    */
+   public static Element getFirstChildElement(Node node, QName nodeName, boolean recursive)
+   {
+      return getFirstChildElementIntern(node, nodeName, recursive);
+   }
+   
+   private static Element getFirstChildElementIntern(Node node, QName nodeName, boolean recursive)
    {
       Element childElement = null;
-      Iterator it = getChildElementsIntern(node, nodeName);
+      Iterator it = getChildElementsIntern(node, nodeName, recursive);
       if (it.hasNext())
       {
          childElement = (Element)it.next();
@@ -525,14 +549,28 @@ public final class DOMUtils
     */
    public static Iterator getChildElements(Node node, String nodeName)
    {
-      return getChildElementsIntern(node, new QName(nodeName));
+      return getChildElements(node, nodeName, false);
+   }
+
+   /** Gets the child elements for a given local name without namespace
+    */
+   public static Iterator getChildElements(Node node, String nodeName, boolean recursive)
+   {
+      return getChildElementsIntern(node, new QName(nodeName), recursive);
    }
 
    /** Gets the child element for a given qname
     */
    public static Iterator getChildElements(Node node, QName nodeName)
    {
-      return getChildElementsIntern(node, nodeName);
+      return getChildElements(node, nodeName, false);
+   }
+
+   /** Gets the child element for a given qname
+   */
+   public static Iterator getChildElements(Node node, QName nodeName, boolean recursive)
+   {
+      return getChildElementsIntern(node, nodeName, recursive);
    }
 
    private static Iterator getChildElementsIntern(Node node, QName nodeName)
@@ -568,6 +606,63 @@ public final class DOMUtils
       }
       return list.iterator();
    }
+
+   private static Iterator getChildElementsIntern(Node node, QName nodeName, boolean recursive)
+   {
+      return getChildElementsAsListIntern(node, nodeName, recursive).iterator();
+   }
+
+   private static List<Element> getChildElementsAsListIntern(Node node, QName nodeName, boolean recursive)
+   {
+      List<Element> list = new LinkedList<Element>();
+
+      NodeList nlist = node.getChildNodes();
+      for (int i = 0; i < nlist.getLength(); i++)
+      {
+         Node child = nlist.item(i);
+         if (child.getNodeType() == Node.ELEMENT_NODE)
+         {
+            search(list, (Element)child, nodeName, recursive);
+         }
+      }
+      return list;
+   }
+
+   private static void search(List<Element> list, Element baseElement, QName nodeName, boolean recursive)
+   {
+      if (nodeName == null)
+      {
+         list.add(baseElement);
+      }
+      else
+      {
+         QName qname;
+         if (nodeName.getNamespaceURI().length() > 0)
+         {
+            qname = new QName(baseElement.getNamespaceURI(), baseElement.getLocalName());
+         }
+         else
+         {
+            qname = new QName(baseElement.getLocalName());
+         }
+         if (qname.equals(nodeName))
+         {
+            list.add(baseElement);
+         }
+      }
+      if (recursive)
+      {
+         NodeList nlist = baseElement.getChildNodes();
+         for (int i = 0; i < nlist.getLength(); i++)
+         {
+            Node child = nlist.item(i);
+            if (child.getNodeType() == Node.ELEMENT_NODE)
+            {
+               search(list, (Element)child, nodeName, recursive);
+            }
+         }
+      }
+   }                   
 
    /** Gets parent element or null if there is none
     */
