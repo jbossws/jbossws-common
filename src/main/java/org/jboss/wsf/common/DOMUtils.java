@@ -112,12 +112,12 @@ public final class DOMUtils
          String[] resolvers = new String[] { "org.jboss.ws.core.utils.JBossWSEntityResolver", "org.jboss.util.xml.JBossEntityResolver" };
 
          EntityResolver entityResolver = null;
-         ClassLoader loader = Thread.currentThread().getContextClassLoader();
+         ClassLoader loader = SecurityActions.getContextClassLoader();
          for (String resolver : resolvers)
          {
             try
             {
-               Class<?> resolverClass = loader.loadClass(resolver);
+               Class<?> resolverClass = SecurityActions.loadClass(loader, resolver);
                entityResolver = (EntityResolver)resolverClass.newInstance();
             }
             catch (Exception ex)

@@ -22,6 +22,8 @@
 package org.jboss.wsf.common.servlet;
 
 import java.io.IOException;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 import javax.management.ObjectName;
 import javax.servlet.ServletConfig;
@@ -165,8 +167,26 @@ public abstract class AbstractEndpointServlet extends HttpServlet
 
       if (isJaxrpcJse || isJaxwsJse)
       {
-         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+         ClassLoader classLoader = getContextClassLoader();
          dep.setRuntimeClassLoader(classLoader);
+      }
+   }
+   
+   private static ClassLoader getContextClassLoader()
+   {
+      SecurityManager sm = System.getSecurityManager();
+      if (sm == null)
+      {
+         return Thread.currentThread().getContextClassLoader();
+      }
+      else
+      {
+         return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+            public ClassLoader run()
+            {
+               return Thread.currentThread().getContextClassLoader();
+            }
+         });
       }
    }
    

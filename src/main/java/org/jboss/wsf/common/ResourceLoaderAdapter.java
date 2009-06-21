@@ -53,7 +53,7 @@ public class ResourceLoaderAdapter implements UnifiedVirtualFile
 
    public ResourceLoaderAdapter()
    {
-      this(Thread.currentThread().getContextClassLoader());
+      this(SecurityActions.getContextClassLoader());
    }
 
    public ResourceLoaderAdapter(ClassLoader loader)
