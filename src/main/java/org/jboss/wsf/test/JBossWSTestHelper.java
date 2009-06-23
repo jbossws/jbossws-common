@@ -92,7 +92,7 @@ public class JBossWSTestHelper
    public boolean isTargetJBoss51()
    {
       String target = getIntegrationTarget();
-      return target.startsWith("jboss51");
+      return target.startsWith("jboss5"); //loose check to support EAP 5.0.0 which is based on AS 5.1.0, should have been startsWith("jboss51") 
    }
 
    /** True, if -Djbossws.integration.target=jboss6x */
@@ -222,7 +222,7 @@ public class JBossWSTestHelper
             if (jbossVersion.startsWith("5.1"))
                jbossVersion = "jboss51";
             else if (jbossVersion.startsWith("5.0"))
-               jbossVersion = "jboss50";
+               jbossVersion = "jboss5"; //loose check to support EAP 5.0.0 which is based on AS 5.1.0, should have been "jboss51"
             else if (jbossVersion.startsWith("6.1"))
                jbossVersion = "jboss61";
             else if (jbossVersion.startsWith("6.0"))
