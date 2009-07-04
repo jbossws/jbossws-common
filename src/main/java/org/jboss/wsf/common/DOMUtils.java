@@ -73,8 +73,8 @@ public final class DOMUtils
    private static final String DEFER_NODE_EXPANSION_FEATURE = "http://apache.org/xml/features/dom/defer-node-expansion";
 
    // All elements created by the same thread are created by the same builder and belong to the same doc
-   private static ThreadLocal<Document> documentThreadLocal = new ThreadLocal<Document>();
-   private static ThreadLocal<DocumentBuilder> builderThreadLocal = new ThreadLocal<DocumentBuilder>() {
+   private static ThreadLocal<Document> documentThreadLocal = new InheritableThreadLocal<Document>();
+   private static ThreadLocal<DocumentBuilder> builderThreadLocal = new InheritableThreadLocal<DocumentBuilder>() {
       protected DocumentBuilder initialValue()
       {
          DocumentBuilderFactory factory = null;
