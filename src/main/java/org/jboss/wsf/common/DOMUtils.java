@@ -26,9 +26,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.util.LinkedList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -130,7 +130,7 @@ public final class DOMUtils
             builder.setEntityResolver(entityResolver);
       }
    };
-
+   
    public static void clearThreadLocals()
    {
       documentThreadLocal.remove();
@@ -170,7 +170,13 @@ public final class DOMUtils
    {
       try
       {
-         return getDocumentBuilder().parse(xmlStream).getDocumentElement();
+         Document doc;
+         DocumentBuilder builder = getDocumentBuilder();
+         synchronized (builder) //synchronize to prevent concurrent parsing on the same DocumentBuilder
+         {
+            doc = builder.parse(xmlStream);
+         }
+         return doc.getDocumentElement();
       }
       catch (SAXException se)
       {
@@ -188,7 +194,13 @@ public final class DOMUtils
    {
       try
       {
-         return getDocumentBuilder().parse(source).getDocumentElement();
+         Document doc;
+         DocumentBuilder builder = getDocumentBuilder();
+         synchronized (builder) //synchronize to prevent concurrent parsing on the same DocumentBuilder
+         {
+            doc = builder.parse(source);
+         }
+         return doc.getDocumentElement();
       }
       catch (SAXException se)
       {
