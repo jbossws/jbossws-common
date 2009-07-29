@@ -50,6 +50,7 @@ public class JBossWSTestHelper
    private static final String SYSPROP_JBOSS_BIND_ADDRESS = "jboss.bind.address";
    private static final String SYSPROP_TEST_ARCHIVE_DIRECTORY = "test.archive.directory";
    private static final String SYSPROP_TEST_RESOURCES_DIRECTORY = "test.resources.directory";
+   private static final boolean DEPLOY_PROCESS_ENABLED = !Boolean.getBoolean("test.disable.deployment");
 
    private static MBeanServerConnection server;
    private static String integrationTarget;
@@ -63,16 +64,22 @@ public class JBossWSTestHelper
     */
    public void deploy(String archive) throws Exception
    {
-      URL url = getArchiveFile(archive).toURL();
-      getDeployer().deploy(url);
+      if ( DEPLOY_PROCESS_ENABLED )
+      {
+         URL archiveURL = getArchiveFile(archive).toURL();
+         getDeployer().deploy(archiveURL);
+      }
    }
 
    /** Undeploy the given archive
     */
    public void undeploy(String archive) throws Exception
    {
-      URL url = getArchiveFile(archive).toURL();
-      getDeployer().undeploy(url);
+      if ( DEPLOY_PROCESS_ENABLED )
+      {
+         URL archiveURL = getArchiveFile(archive).toURL();
+         getDeployer().undeploy(archiveURL);
+      }
    }
 
    /** True, if -Djbossws.integration.target=jboss5x */
