@@ -129,7 +129,7 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
       if (localPort <= 0)
       {
          // Do not initialize webServicePort with the default, the connector port may become available later 
-         log.warn("Unable to calculate 'WebServicePort', using default '8080'");
+         log.debug("Unable to calculate 'WebServicePort', using default '8080'");
          localPort = 8080;
       }
 
@@ -145,7 +145,7 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
       if (localPort <= 0)
       {
          // Do not initialize webServiceSecurePort with the default, the connector port may become available later 
-         log.warn("Unable to calculate 'WebServiceSecurePort', using default '8443'");
+         log.debug("Unable to calculate 'WebServiceSecurePort', using default '8443'");
          localPort = 8443;
       }
 
