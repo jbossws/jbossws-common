@@ -33,11 +33,22 @@ public final class WSConstants
     * Stack specific context parameters configuration property.
     */
    public static final String STACK_CONTEXT_PARAMS = "stack.context.parameters";
+
    /**
     * Stack specific transport class configuration property.
     */
    public static final String STACK_TRANSPORT_CLASS = "stack.transport.class";
    
+   /**
+    * JBoss WS config name property.
+    */
+   public static final String JBOSSWS_CONFIG_NAME = "jbossws-config-name";
+   
+   /**
+    * JBoss WS config file property.
+    */
+   public static final String JBOSSWS_CONFIG_FILE = "jbossws-config-file";
+
    /**
     * Forbidden constructor.
     */
