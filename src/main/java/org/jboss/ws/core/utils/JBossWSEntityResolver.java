@@ -111,7 +111,10 @@ public class JBossWSEntityResolver extends JBossEntityResolver
          inputSource = resolveSystemIDAsURL(systemId, log.isTraceEnabled());
 
       if (inputSource == null)
-         log.debug("Cannot resolve entity: [pub=" + publicId + ",sysid=" + systemId + "]");
+      {
+         if (log.isDebugEnabled())
+            log.debug("Cannot resolve entity: [pub=" + publicId + ",sysid=" + systemId + "]");
+      }
       
       return inputSource;
    }

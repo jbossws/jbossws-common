@@ -113,6 +113,7 @@ public final class DOMUtils
 
          EntityResolver entityResolver = null;
          ClassLoader loader = SecurityActions.getContextClassLoader();
+         boolean debugEnabled = log.isDebugEnabled();
          for (String resolver : resolvers)
          {
             try
@@ -122,7 +123,8 @@ public final class DOMUtils
             }
             catch (Exception ex)
             {
-               log.debug("Cannot load: " + resolver);
+               if (debugEnabled)
+                  log.debug("Cannot load: " + resolver);
             }
          }
 
