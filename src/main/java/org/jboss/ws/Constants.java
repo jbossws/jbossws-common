@@ -318,4 +318,8 @@ public interface Constants
    static final String EAGER_INITIALIZE_JAXB_CONTEXT_CACHE = "org.jboss.ws.eagerInitializeJAXBContextCache";
    
    static final String DOM_CONTENT_CANONICAL_NORMALIZATION = "org.jboss.ws.DOMContentCanonicalNormalization";
+   
+   static final String HTTP_KEEP_ALIVE = "org.jboss.ws.http.keepAlive";
+   
+   static final String HTTP_MAX_CONNECTIONS = "org.jboss.ws.http.maxConnections";
 }
