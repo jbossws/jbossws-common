@@ -128,7 +128,7 @@ public final class IOUtils
       {
          int capacity = 1024;
          char[] charBuffer = new char[capacity];
-         StringBuffer strBuffer = new StringBuffer(capacity);
+         StringBuilder strBuffer = new StringBuilder(capacity);
 
          int len = reader.read(charBuffer, 0, capacity);
          while (len > 0)

@@ -267,7 +267,8 @@ public class DOMWriter
          case Node.DOCUMENT_NODE:
          {
             NodeList children = node.getChildNodes();
-            for (int iChild = 0; iChild < children.getLength(); iChild++)
+            int len = children.getLength();
+            for (int iChild = 0; iChild < len; iChild++)
             {
                printInternal(children.item(iChild), false);
             }
@@ -577,9 +578,9 @@ public class DOMWriter
    /** Normalizes the given string. */
    public static String normalize(String s, boolean canonical)
    {
-      StringBuffer str = new StringBuffer();
-
       int len = (s != null) ? s.length() : 0;
+      StringBuilder str = new StringBuilder();
+
       for (int i = 0; i < len; i++)
       {
          char ch = s.charAt(i);

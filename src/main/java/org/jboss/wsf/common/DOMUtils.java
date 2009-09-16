@@ -228,7 +228,7 @@ public final class DOMUtils
    public static Element createElement(String localPart)
    {
       Document doc = getOwnerDocument();
-      log.trace("createElement {}" + localPart);
+      if (log.isTraceEnabled()) log.trace("createElement {}" + localPart);
       return doc.createElement(localPart);
    }
 
@@ -237,7 +237,7 @@ public final class DOMUtils
    public static Element createElement(String localPart, String prefix)
    {
       Document doc = getOwnerDocument();
-      log.trace("createElement {}" + prefix + ":" + localPart);
+      if (log.isTraceEnabled()) log.trace("createElement {}" + prefix + ":" + localPart);
       return doc.createElement(prefix + ":" + localPart);
    }
 
@@ -248,12 +248,12 @@ public final class DOMUtils
       Document doc = getOwnerDocument();
       if (prefix == null || prefix.length() == 0)
       {
-         log.trace("createElement {" + uri + "}" + localPart);
+         if (log.isTraceEnabled()) log.trace("createElement {" + uri + "}" + localPart);
          return doc.createElementNS(uri, localPart);
       }
       else
       {
-         log.trace("createElement {" + uri + "}" + prefix + ":" + localPart);
+         if (log.isTraceEnabled()) log.trace("createElement {" + uri + "}" + prefix + ":" + localPart);
          return doc.createElementNS(uri, prefix + ":" + localPart);
       }
    }
@@ -421,7 +421,8 @@ public final class DOMUtils
    {
       Map attmap = new HashMap();
       NamedNodeMap attribs = el.getAttributes();
-      for (int i = 0; i < attribs.getLength(); i++)
+      int len = attribs.getLength();
+      for (int i = 0; i < len; i++)
       {
          Attr attr = (Attr)attribs.item(i);
          String name = attr.getName();
@@ -437,7 +438,8 @@ public final class DOMUtils
    public static void copyAttributes(Element destElement, Element srcElement)
    {
       NamedNodeMap attribs = srcElement.getAttributes();
-      for (int i = 0; i < attribs.getLength(); i++)
+      int len = attribs.getLength();
+      for (int i = 0; i < len; i++)
       {
          Attr attr = (Attr)attribs.item(i);
          String uri = attr.getNamespaceURI();
@@ -448,7 +450,7 @@ public final class DOMUtils
          // change an object in a way which is incorrect with regard to namespaces.
          if (uri == null && qname.startsWith("xmlns"))
          {
-            log.trace("Ignore attribute: [uri=" + uri + ",qname=" + qname + ",value=" + value + "]");
+            if (log.isTraceEnabled()) log.trace("Ignore attribute: [uri=" + uri + ",qname=" + qname + ",value=" + value + "]");
          }
          else
          {
@@ -462,10 +464,11 @@ public final class DOMUtils
    public static boolean hasTextChildNodesOnly(Node node)
    {
       NodeList nodeList = node.getChildNodes();
-      if (nodeList.getLength() == 0)
+      int len = nodeList.getLength();
+      if (len == 0)
          return false;
 
-      for (int i = 0; i < nodeList.getLength(); i++)
+      for (int i = 0; i < len; i++)
       {
          Node acksToChildNode = nodeList.item(i);
          if (acksToChildNode.getNodeType() != Node.TEXT_NODE)
@@ -480,7 +483,8 @@ public final class DOMUtils
    public static boolean hasChildElements(Node node)
    {
       NodeList nlist = node.getChildNodes();
-      for (int i = 0; i < nlist.getLength(); i++)
+      int len = nlist.getLength();
+      for (int i = 0; i < len; i++)
       {
          Node child = nlist.item(i);
          if (child.getNodeType() == Node.ELEMENT_NODE)
@@ -495,7 +499,8 @@ public final class DOMUtils
    {
       List<Element> list = new LinkedList<Element>();
       NodeList nlist = node.getChildNodes();
-      for (int i = 0; i < nlist.getLength(); i++)
+      int len = nlist.getLength();
+      for (int i = 0; i < len; i++)
       {
          Node child = nlist.item(i);
          if (child.getNodeType() == Node.ELEMENT_NODE)
@@ -509,9 +514,10 @@ public final class DOMUtils
    public static String getTextContent(Node node)
    {
       boolean hasTextContent = false;
-      StringBuffer buffer = new StringBuffer();
+      StringBuilder buffer = new StringBuilder();
       NodeList nlist = node.getChildNodes();
-      for (int i = 0; i < nlist.getLength(); i++)
+      int len = nlist.getLength();
+      for (int i = 0; i < len; i++)
       {
          Node child = nlist.item(i);
          if (child.getNodeType() == Node.TEXT_NODE)
@@ -629,7 +635,8 @@ public final class DOMUtils
       List<Element> list = new LinkedList<Element>();
 
       NodeList nlist = node.getChildNodes();
-      for (int i = 0; i < nlist.getLength(); i++)
+      int len = nlist.getLength();
+      for (int i = 0; i < len; i++)
       {
          Node child = nlist.item(i);
          if (child.getNodeType() == Node.ELEMENT_NODE)
@@ -665,7 +672,8 @@ public final class DOMUtils
       if (recursive)
       {
          NodeList nlist = baseElement.getChildNodes();
-         for (int i = 0; i < nlist.getLength(); i++)
+         int len = nlist.getLength();
+         for (int i = 0; i < len; i++)
          {
             Node child = nlist.item(i);
             if (child.getNodeType() == Node.ELEMENT_NODE)
