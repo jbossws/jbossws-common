@@ -26,6 +26,7 @@
 
   <!-- Properties -->
   <properties>
+    <jboss.jaxbintros.version>1.0.1-SNAPSHOT</jboss.jaxbintros.version>
     <jaxws.api.version>2.1</jaxws.api.version>
     <jboss.common.core.version>2.2.14.GA</jboss.common.core.version>
     <jboss.ejb.api.version>3.0.0.GA</jboss.ejb.api.version>
@@ -37,13 +38,28 @@
 
   <!-- Dependencies -->
   <dependencies>
-
+  
     <!-- jbossws dependencies -->
     <dependency>
       <groupId>org.jboss.ws</groupId>
       <artifactId>jbossws-spi</artifactId>
       <version>${jbossws.spi.version}</version>
     </dependency>
+    <dependency>
+       <groupId>jboss.jaxbintros</groupId>
+       <artifactId>jboss-jaxb-intros</artifactId>
+       <version>${jboss.jaxbintros.version}</version>
+       <exclusions>
+         <exclusion>
+           <groupId>com.sun.xml.bind</groupId>
+           <artifactId>jaxb-impl</artifactId>
+         </exclusion>
+         <exclusion>
+           <groupId>javax.xml.bind</groupId>
+           <artifactId>jaxb-api</artifactId>
+         </exclusion>
+       </exclusions>
+     </dependency>
 
     <!-- provided apis -->
     <dependency>
