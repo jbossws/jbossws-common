@@ -130,7 +130,7 @@ public class EclipseClasspathTask extends Task
             String str;
             while ((str = in.readLine()) != null)
             {
-               if (str.length() > 0 & !str.startsWith("#"))
+               if (str.length() > 0 && !str.startsWith("#"))
                   excludes.add(str);
             }
          }
