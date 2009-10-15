@@ -322,4 +322,7 @@ public interface Constants
    static final String HTTP_KEEP_ALIVE = "org.jboss.ws.http.keepAlive";
    
    static final String HTTP_MAX_CONNECTIONS = "org.jboss.ws.http.maxConnections";
+   
+   static final String NETTY_MESSAGE = "org.jboss.ws.http.netty.Message";
+
 }

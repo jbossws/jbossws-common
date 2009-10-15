@@ -62,7 +62,7 @@ public class JBossWSTestHelper
 
    /** Deploy the given archive
     */
-   public void deploy(String archive) throws Exception
+   public static void deploy(String archive) throws Exception
    {
       if ( DEPLOY_PROCESS_ENABLED )
       {
@@ -73,7 +73,7 @@ public class JBossWSTestHelper
 
    /** Undeploy the given archive
     */
-   public void undeploy(String archive) throws Exception
+   public static void undeploy(String archive) throws Exception
    {
       if ( DEPLOY_PROCESS_ENABLED )
       {
@@ -83,71 +83,71 @@ public class JBossWSTestHelper
    }
 
    /** True, if -Djbossws.integration.target=jboss5x */
-   public boolean isTargetJBoss5()
+   public static boolean isTargetJBoss5()
    {
       return  isTargetJBoss52() || isTargetJBoss51() || isTargetJBoss50();
    }
 
    /** True, if -Djbossws.integration.target=jboss50x */
-   public boolean isTargetJBoss50()
+   public static boolean isTargetJBoss50()
    {
       String target = getIntegrationTarget();
       return target.startsWith("jboss50");
    }
 
    /** True, if -Djbossws.integration.target=jboss51x */
-   public boolean isTargetJBoss51()
+   public static boolean isTargetJBoss51()
    {
       String target = getIntegrationTarget();
       return target.startsWith("jboss51");
    }
 
    /** True, if -Djbossws.integration.target=jboss52x */
-   public boolean isTargetJBoss52()
+   public static boolean isTargetJBoss52()
    {
       String target = getIntegrationTarget();
       return target.startsWith("jboss52");
    }
 
    /** True, if -Djbossws.integration.target=jboss6x */
-   public boolean isTargetJBoss6()
+   public static boolean isTargetJBoss6()
    {
       return isTargetJBoss61() || isTargetJBoss60();
    }
    
    /** True, if -Djbossws.integration.target=jboss60x */
-   public boolean isTargetJBoss60()
+   public static boolean isTargetJBoss60()
    {
       String target = getIntegrationTarget();
       return target.startsWith("jboss60");
    }
 
    /** True, if -Djbossws.integration.target=jboss61x */
-   public boolean isTargetJBoss61()
+   public static boolean isTargetJBoss61()
    {
       String target = getIntegrationTarget();
       return target.startsWith("jboss61");
    }
 
-   public boolean isIntegrationNative()
+   public static boolean isIntegrationNative()
    {
       String vendor = getImplementationVendor();
       return vendor.toLowerCase().indexOf("jboss") != -1;
    }
 
-   public boolean isIntegrationMetro()
+   public static boolean isIntegrationMetro()
    {
       String vendor = getImplementationVendor();
       return vendor.toLowerCase().indexOf("sun") != -1;
    }
 
-   public boolean isIntegrationCXF()
+   public static boolean isIntegrationCXF()
    {
       String vendor = getImplementationVendor();
       return vendor.toLowerCase().indexOf("apache") != -1;
    }
 
-   private String getImplementationVendor()
+   private static String getImplementationVendor()
    {
       if (implVendor == null)
       {
@@ -164,7 +164,7 @@ public class JBossWSTestHelper
       return implVendor;
    }
 
-   private Object getImplementationObject()
+   private static Object getImplementationObject()
    {
       Service service = Service.create(new QName("dummyService"));
       Object obj = service.getHandlerResolver();
@@ -176,7 +176,7 @@ public class JBossWSTestHelper
       return obj;
    }
 
-   private String getImplementationPackage()
+   private static String getImplementationPackage()
    {
       return getImplementationObject().getClass().getPackage().getName();
    }
@@ -210,12 +210,12 @@ public class JBossWSTestHelper
       return server;
    }
 
-   private TestDeployer getDeployer()
+   private static TestDeployer getDeployer()
    {
       return new TestDeployerJBoss(getServer());
    }
 
-   public String getIntegrationTarget()
+   public static String getIntegrationTarget()
    {
       if (integrationTarget == null)
       {
@@ -258,13 +258,13 @@ public class JBossWSTestHelper
    }
 
    /** Try to discover the URL for the deployment archive */
-   public URL getArchiveURL(String archive) throws MalformedURLException
+   public static URL getArchiveURL(String archive) throws MalformedURLException
    {
       return getArchiveFile(archive).toURL();
    }
 
    /** Try to discover the File for the deployment archive */
-   public File getArchiveFile(String archive)
+   public static File getArchiveFile(String archive)
    {
       File file = new File(archive);
       if (file.exists())
@@ -279,13 +279,13 @@ public class JBossWSTestHelper
    }
 
    /** Try to discover the URL for the test resource */
-   public URL getResourceURL(String resource) throws MalformedURLException
+   public static URL getResourceURL(String resource) throws MalformedURLException
    {
       return getResourceFile(resource).toURL();
    }
 
    /** Try to discover the File for the test resource */
-   public File getResourceFile(String resource)
+   public static File getResourceFile(String resource)
    {
       File file = new File(resource);
       if (file.exists())

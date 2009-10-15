@@ -50,15 +50,15 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * Base class for JBossWS test cases
+ * Base class for JBossWS test cases.
  *
- * @author Thomas.Diesler@jboss.org
- * @author ropalka@redhat.com
+ * @author <a href="mailto:tdiesler@redhat.com">Thomas Diesler</a>
+ * @author <a href="mailto:ropalka@redhat.com">Richard Opalka</a>
  */
 public abstract class JBossWSTest extends TestCase
 {
    protected static Logger log = Logger.getLogger(JBossWSTest.class.getName());
-   private JBossWSTestHelper delegate = new JBossWSTestHelper();
+   //private static JBossWSTestHelper delegate = new JBossWSTestHelper();
 
    public JBossWSTest()
    {
@@ -74,9 +74,9 @@ public abstract class JBossWSTest extends TestCase
     * @param command command to execute
     * @throws IOException if I/O error occurs
     */
-   public void executeCommand(String command) throws IOException
+   public static void executeCommand(String command) throws IOException
    {
-      this.executeCommand(command, null, null, null);
+      executeCommand(command, null, null, null);
    }
 
    /**
@@ -85,9 +85,9 @@ public abstract class JBossWSTest extends TestCase
     * @param message message to display if assertion fails
     * @throws IOException if I/O error occurs
     */
-   public void executeCommand(String command, String message) throws IOException
+   public static void executeCommand(String command, String message) throws IOException
    {
-      this.executeCommand(command, null, message, null);
+      executeCommand(command, null, message, null);
    }
 
    /**
@@ -96,9 +96,9 @@ public abstract class JBossWSTest extends TestCase
     * @param os output stream to copy process input to. If null, <b>System.out</b> will be used
     * @throws IOException if I/O error occurs
     */
-   public void executeCommand(String command, OutputStream os) throws IOException
+   public static void executeCommand(String command, OutputStream os) throws IOException
    {
-      this.executeCommand(command, os, null, null);
+      executeCommand(command, os, null, null);
    }
 
    /**
@@ -108,9 +108,9 @@ public abstract class JBossWSTest extends TestCase
     * @param message message to display if assertion fails
     * @throws IOException if I/O error occurs
     */
-   public void executeCommand(String command, OutputStream os, String message) throws IOException
+   public static void executeCommand(String command, OutputStream os, String message) throws IOException
    {
-      this.executeCommand(command, os, message, null);
+      executeCommand(command, os, message, null);
    }
 
    /**
@@ -121,7 +121,7 @@ public abstract class JBossWSTest extends TestCase
     * @param env environment
     * @throws IOException if I/O error occurs
     */
-   public void executeCommand(String command, OutputStream os, String message, Map<String, String> env) throws IOException
+   public static void executeCommand(String command, OutputStream os, String message, Map<String, String> env) throws IOException
    {
       if (command == null)
          throw new NullPointerException( "Command cannot be null" );
@@ -139,7 +139,7 @@ public abstract class JBossWSTest extends TestCase
 
       try
       {
-         this.executeCommand(tokenizedCommand, os, message, env);
+         executeCommand(tokenizedCommand, os, message, env);
       }
       catch (IOException e)
       {
@@ -156,7 +156,7 @@ public abstract class JBossWSTest extends TestCase
     * @param env environment
     * @throws IOException if I/O error occurs
     */
-   private void executeCommand(List<String> command, OutputStream os, String message, Map<String, String> env) throws IOException
+   private static void executeCommand(List<String> command, OutputStream os, String message, Map<String, String> env) throws IOException
    {
       ProcessBuilder pb = new ProcessBuilder(command);
       if (env != null)
@@ -192,118 +192,115 @@ public abstract class JBossWSTest extends TestCase
       }
    }
 
-   public MBeanServerConnection getServer() throws NamingException
+   public static MBeanServerConnection getServer() throws NamingException
    {
       return JBossWSTestHelper.getServer();
    }
 
-   public boolean isTargetJBoss5()
+   public static boolean isTargetJBoss5()
    {
-      return delegate.isTargetJBoss5();
+      return JBossWSTestHelper.isTargetJBoss5();
    }
 
-   public boolean isTargetJBoss51()
+   public static boolean isTargetJBoss51()
    {
-      return delegate.isTargetJBoss51();
+      return JBossWSTestHelper.isTargetJBoss51();
    }
 
-   public boolean isTargetJBoss52()
+   public static boolean isTargetJBoss52()
    {
-      return delegate.isTargetJBoss52();
+      return JBossWSTestHelper.isTargetJBoss52();
    }
 
-   public boolean isTargetJBoss50()
+   public static boolean isTargetJBoss50()
    {
-      return delegate.isTargetJBoss50();
+      return JBossWSTestHelper.isTargetJBoss50();
    }
 
-   public boolean isTargetJBoss6()
+   public static boolean isTargetJBoss6()
    {
-      return delegate.isTargetJBoss6();
+      return JBossWSTestHelper.isTargetJBoss6();
    }
 
-   public boolean isTargetJBoss61()
+   public static boolean isTargetJBoss61()
    {
-      return delegate.isTargetJBoss61();
+      return JBossWSTestHelper.isTargetJBoss61();
    }
 
-   public boolean isTargetJBoss60()
+   public static boolean isTargetJBoss60()
    {
-      return delegate.isTargetJBoss60();
+      return JBossWSTestHelper.isTargetJBoss60();
    }
 
-   public boolean isIntegrationNative()
+   public static boolean isIntegrationNative()
    {
-      return delegate.isIntegrationNative();
-
+      return JBossWSTestHelper.isIntegrationNative();
    }
 
-   public boolean isIntegrationMetro()
+   public static boolean isIntegrationMetro()
    {
-      return delegate.isIntegrationMetro();
+      return JBossWSTestHelper.isIntegrationMetro();
    }
 
-   public boolean isIntegrationCXF()
+   public static boolean isIntegrationCXF()
    {
-      return delegate.isIntegrationCXF();
+      return JBossWSTestHelper.isIntegrationCXF();
    }
 
    /** Deploy the given archive
     */
-   public void deploy(String archive) throws Exception
+   public static void deploy(String archive) throws Exception
    {
-      delegate.deploy(archive);
+      JBossWSTestHelper.deploy(archive);
    }
 
    /** Undeploy the given archive
     */
-   public void undeploy(String archive) throws Exception
+   public static void undeploy(String archive) throws Exception
    {
-      delegate.undeploy(archive);
+      JBossWSTestHelper.undeploy(archive);
    }
 
-   public String getServerHost()
+   public static String getServerHost()
    {
       return JBossWSTestHelper.getServerHost();
    }
 
-   public File getArchiveFile(String archive)
+   public static File getArchiveFile(String archive)
    {
-      return delegate.getArchiveFile(archive);
+      return JBossWSTestHelper.getArchiveFile(archive);
    }
 
-   public URL getArchiveURL(String archive) throws MalformedURLException
+   public static URL getArchiveURL(String archive) throws MalformedURLException
    {
-      return delegate.getArchiveURL(archive);
+      return JBossWSTestHelper.getArchiveURL(archive);
    }
 
-   public File getResourceFile(String resource)
+   public static File getResourceFile(String resource)
    {
-      return delegate.getResourceFile(resource);
+      return JBossWSTestHelper.getResourceFile(resource);
    }
 
-   public URL getResourceURL(String resource) throws MalformedURLException
+   public static URL getResourceURL(String resource) throws MalformedURLException
    {
-      return delegate.getResourceURL(resource);
+      return JBossWSTestHelper.getResourceURL(resource);
    }
 
-   public File createResourceFile(String filename)
+   public static File createResourceFile(String filename)
    {
       File resDir = new File(JBossWSTestHelper.getTestResourcesDir());
-      File file = new File(resDir.getAbsolutePath() + File.separator + filename);
-      return file;
+      return new File(resDir.getAbsolutePath() + File.separator + filename);
    }
 
-   public File createResourceFile(File parent, String filename)
+   public static File createResourceFile(File parent, String filename)
    {
-      File file = new File(parent, filename);
-      return file;
+      return new File(parent, filename);
    }
 
    /** Get the client's env context for a given name.
     */
    @SuppressWarnings("unchecked")
-   protected InitialContext getInitialContext(String clientName) throws NamingException
+   protected static InitialContext getInitialContext(String clientName) throws NamingException
    {
       InitialContext iniCtx = new InitialContext();
       Hashtable env = iniCtx.getEnvironment();
@@ -314,7 +311,7 @@ public abstract class JBossWSTest extends TestCase
 
    /** Get the client's env context
     */
-   protected InitialContext getInitialContext() throws NamingException
+   protected static InitialContext getInitialContext() throws NamingException
    {
       return getInitialContext("jbossws-client");
    }
@@ -461,4 +458,5 @@ public abstract class JBossWSTest extends TestCase
          }
       }
    }
+
 }
