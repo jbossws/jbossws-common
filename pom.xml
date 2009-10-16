@@ -8,7 +8,7 @@
   <artifactId>jbossws-common</artifactId>
   <packaging>jar</packaging>
 
-  <version>1.2.1-SNAPSHOT</version>
+  <version>1.2.1.Beta2</version>
 
   <!-- Parent -->
   <parent>
@@ -19,9 +19,9 @@
 
   <!-- Source Control Management -->
   <scm>
-    <connection>scm:svn:http://anonsvn.jboss.org/repos/jbossws/common/trunk</connection>
-    <developerConnection>scm:svn:https://svn.jboss.org/repos/jbossws/common/trunk</developerConnection>
-    <url>http://fisheye.jboss.com/viewrep/JBossWS/common/trunk</url>
+    <connection>scm:svn:http://anonsvn.jboss.org/repos/jbossws/common/tags/jbossws-common-1.2.1.Beta2</connection>
+    <developerConnection>scm:svn:https://svn.jboss.org/repos/jbossws/common/tags/jbossws-common-1.2.1.Beta2</developerConnection>
+    <url>http://fisheye.jboss.com/viewrep/JBossWS/common/tags/jbossws-common-1.2.1.Beta2</url>
   </scm>
 
   <!-- Properties -->
@@ -32,7 +32,7 @@
     <jboss.ejb.api.version>3.0.0.GA</jboss.ejb.api.version>
     <jboss.microcontainer.version>2.0.8.GA</jboss.microcontainer.version>
     <jboss.web.version>2.1.3.GA</jboss.web.version>
-    <jbossws.spi.version>1.2.1-SNAPSHOT</jbossws.spi.version>
+    <jbossws.spi.version>1.2.1.Beta2</jbossws.spi.version>
     <junit.version>3.8.2</junit.version>
   </properties>
 
