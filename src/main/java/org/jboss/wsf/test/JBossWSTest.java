@@ -172,10 +172,14 @@ public abstract class JBossWSTest extends TestCase
       // unfortunately the following threads are needed because of Windows behavior
       System.out.println("Process input stream:");
       System.err.println("Process error stream:");
-      new Thread( inputStreamJob ).start();
-      new Thread( errorStreamJob ).start();
+      Thread inputJob = new Thread(inputStreamJob);
+      Thread outputJob = new Thread(errorStreamJob);
       try
-      {
+      {  
+         inputJob.start();
+         inputJob.join(5000);
+         outputJob.start();
+         outputJob.join(5000);
          int statusCode = p.waitFor();
          String fallbackMessage = "Process did exit with status " + statusCode; 
          assertTrue(message != null ? message : fallbackMessage, statusCode == 0);
