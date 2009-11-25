@@ -325,4 +325,7 @@ public interface Constants
    
    static final String NETTY_MESSAGE = "org.jboss.ws.http.netty.Message";
 
+   // TODO: [JBWS-2838] default value have to be "false" in JBossWS 3.x series
+   static final boolean BC_CONTEXT_MODE = Boolean.parseBoolean(   
+      System.getProperty("org.jboss.ws.backward_compatible_context_creator", "true"));
 }
