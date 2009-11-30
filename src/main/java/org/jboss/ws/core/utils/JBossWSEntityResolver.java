@@ -27,8 +27,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.Collections;
 import java.util.Enumeration;
+import java.util.Map;
 import java.util.Properties;
+import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.jboss.logging.Logger;
 import org.jboss.util.xml.JBossEntityResolver;
@@ -43,6 +47,12 @@ import org.xml.sax.SAXException;
  */
 public class JBossWSEntityResolver extends JBossEntityResolver
 {
+   /**
+    * A synchronized weak hash map that keeps entities' properties for each classloader.
+    * Weak keys are used to remove entries when classloaders are garbage collected; values are filenames -> properties.
+    */
+   private static Map<ClassLoader, Map<String, Properties>> propertiesMap = Collections.synchronizedMap(new WeakHashMap<ClassLoader, Map<String, Properties>>());
+   
    // provide logging
    private static final Logger log = Logger.getLogger(JBossWSEntityResolver.class);
 
@@ -54,11 +64,27 @@ public class JBossWSEntityResolver extends JBossEntityResolver
    public JBossWSEntityResolver(final String entitiesResource)
    {
       super();
-    
-      // load entities
-      Properties props = loadEntitiesMappingFromClasspath(entitiesResource);
-      if (props.size() == 0)
-         throw new IllegalArgumentException("No entities mapping defined in resource file: " + entitiesResource);
+      
+      Properties props = null;
+      ClassLoader loader = this.getClass().getClassLoader();
+      Map<String, Properties> map = propertiesMap.get(loader);
+      if (map != null && map.containsKey(entitiesResource))
+      {
+         props = map.get(entitiesResource);
+      }
+      else
+      {
+         if (map == null)
+         {
+            map = new ConcurrentHashMap<String, Properties>();
+            propertiesMap.put(loader, map);
+         }
+         // load entities
+         props = loadEntitiesMappingFromClasspath(entitiesResource);
+         if (props.size() == 0)
+            throw new IllegalArgumentException("No entities mapping defined in resource file: " + entitiesResource);
+         map.put(entitiesResource, props);
+      }
       
 	   // register entities
 	   String key = null, val = null;
