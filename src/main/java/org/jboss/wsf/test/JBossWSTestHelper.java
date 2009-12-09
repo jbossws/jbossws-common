@@ -85,7 +85,7 @@ public class JBossWSTestHelper
    /** True, if -Djbossws.integration.target=jboss5x */
    public static boolean isTargetJBoss5()
    {
-      return  isTargetJBoss52() || isTargetJBoss51() || isTargetJBoss50();
+      return  isTargetJBoss51() || isTargetJBoss50();
    }
 
    /** True, if -Djbossws.integration.target=jboss50x */
@@ -102,19 +102,12 @@ public class JBossWSTestHelper
       return target.startsWith("jboss51");
    }
 
-   /** True, if -Djbossws.integration.target=jboss52x */
-   public static boolean isTargetJBoss52()
-   {
-      String target = getIntegrationTarget();
-      return target.startsWith("jboss52");
-   }
-
    /** True, if -Djbossws.integration.target=jboss6x */
    public static boolean isTargetJBoss6()
    {
       return isTargetJBoss61() || isTargetJBoss60();
    }
-   
+
    /** True, if -Djbossws.integration.target=jboss60x */
    public static boolean isTargetJBoss60()
    {
@@ -155,10 +148,10 @@ public class JBossWSTestHelper
          implVendor = obj.getClass().getPackage().getImplementationVendor();
          if (implVendor == null)
             implVendor = getImplementationPackage();
-         
+
          implTitle = obj.getClass().getPackage().getImplementationTitle();
          implVersion = obj.getClass().getPackage().getImplementationVersion();
-         
+
          System.out.println(implVendor + ", " + implTitle + ", " + implVersion);
       }
       return implVendor;
@@ -233,9 +226,7 @@ public class JBossWSTestHelper
             if (jbossVersion == null)
                throw new IllegalStateException("Cannot obtain jboss version");
 
-            if (jbossVersion.startsWith("5.2"))
-               jbossVersion = "jboss52";
-            else if (jbossVersion.startsWith("5.1"))
+            if (jbossVersion.startsWith("5.1"))
                jbossVersion = "jboss51";
             else if (jbossVersion.startsWith("5.0"))
                jbossVersion = "jboss50";
@@ -253,7 +244,7 @@ public class JBossWSTestHelper
          if (integrationTarget.startsWith(jbossVersion) == false)
             throw new IllegalStateException("Integration target mismatch: " + integrationTarget + ".startsWith(" + jbossVersion + ")");
       }
-      
+
       return integrationTarget;
    }
 
