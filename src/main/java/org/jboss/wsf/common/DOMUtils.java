@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source.
- * Copyright 2006, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2009, Red Hat Middleware LLC, and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -80,7 +80,7 @@ public final class DOMUtils
          DocumentBuilderFactory factory = null;
          try
          {
-            factory = DocumentBuilderFactory.newInstance();
+            factory = JBossWSDocumentBuilderFactory.newInstance();
             factory.setValidating(false);
             factory.setNamespaceAware(true);
 
