@@ -295,7 +295,7 @@ public interface Constants
    static final QName WSDL_ATTRIBUTE_WSA_ACTION = new QName(URI_WS_ADDRESSING, "Action");
 
    static final QName WSDL_ATTRIBUTE_WSE_EVENTSOURCE = new QName(URI_WS_EVENTING, "EventSource");
-   
+
    static final QName WSDL_ATTRIBUTE_WSP_POLICYURIS = new QName(URI_WS_POLICY, "PolicyURIs");
    static final QName WSDL_ELEMENT_WSP_POLICYREFERENCE = new QName(URI_WS_POLICY, "PolicyReference");
    static final QName WSDL_ELEMENT_JAXWS_BINDINGS = new QName(URI_JAXWS_WSDL_CUSTOMIZATIONS, "bindings");
@@ -314,18 +314,17 @@ public interface Constants
    static final String WSDL20_PATTERN_OUT_OPT_IN = "http://www.w3.org/2004/08/wsdl/out-opt-in";
 
    static final String ASYNC_METHOD_SUFFIX = "Async";
-   
+
    static final String EAGER_INITIALIZE_JAXB_CONTEXT_CACHE = "org.jboss.ws.eagerInitializeJAXBContextCache";
-   
+
    static final String DOM_CONTENT_CANONICAL_NORMALIZATION = "org.jboss.ws.DOMContentCanonicalNormalization";
-   
+
    static final String HTTP_KEEP_ALIVE = "org.jboss.ws.http.keepAlive";
-   
+
    static final String HTTP_MAX_CONNECTIONS = "org.jboss.ws.http.maxConnections";
-   
+
    static final String NETTY_MESSAGE = "org.jboss.ws.http.netty.Message";
 
-   // TODO: [JBWS-2838] default value have to be "false" in JBossWS 3.x series
    static final boolean BC_CONTEXT_MODE = Boolean.parseBoolean(   
-      System.getProperty("org.jboss.ws.backward_compatible_context_creator", "true"));
+      System.getProperty("org.jboss.ws.backward_compatible_context_creator", "false"));
 }
