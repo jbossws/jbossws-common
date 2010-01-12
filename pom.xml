@@ -103,32 +103,7 @@
   
   <!-- Plugins -->
   <build>
-    <resources>
-      <resource>
-        <targetPath>../etc</targetPath>
-        <directory>src/main/etc</directory>
-        <filtering>true</filtering>
-      </resource>
-    </resources>
     <plugins>
-      <plugin>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>install</phase>
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <configuration>
-              <tasks>
-                <property name="version.id" value="${project.version}" />
-                <property name="jboss.local.repository" value="${jboss.local.repository}" />
-                <ant antfile="src/main/ant/build-install.xml" target="install" />
-              </tasks>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-release-plugin</artifactId>
