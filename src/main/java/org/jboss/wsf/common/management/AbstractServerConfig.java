@@ -157,9 +157,8 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
       //Retrieve the stackConfig using SPIProvider
       SPIProvider spiProvider = SPIProviderResolver.getInstance().getProvider();
       this.stackConfig = spiProvider.getSPI(StackConfigFactory.class).getStackConfig();
-      
-      log.info(getImplementationTitle());
-      log.info(getImplementationVersion());
+
+      log.info(getImplementationTitle() + ' ' + getImplementationVersion());
       getMbeanServer().registerMBean(this, AbstractServerConfigMBean.OBJECT_NAME);
    }
 
