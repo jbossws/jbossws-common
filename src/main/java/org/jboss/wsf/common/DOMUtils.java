@@ -48,6 +48,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import org.jboss.logging.Logger;
+import org.jboss.ws.Constants;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -71,7 +72,12 @@ public final class DOMUtils
 
    private static final String DISABLE_DEFERRED_NODE_EXPANSION = "org.jboss.ws.disable_deferred_node_expansion";
    private static final String DEFER_NODE_EXPANSION_FEATURE = "http://apache.org/xml/features/dom/defer-node-expansion";
-
+   
+   private static String documentBuilderFactoryName;
+   
+   private static final boolean alwaysResolveFactoryName = Boolean.getBoolean(Constants.ALWAYS_RESOLVE_DOCUMENT_BUILDER_FACTORY);
+   private static final boolean disableDeferedNodeExpansion = Boolean.getBoolean(DISABLE_DEFERRED_NODE_EXPANSION);
+   
    // All elements created by the same thread are created by the same builder and belong to the same doc
    private static ThreadLocal<Document> documentThreadLocal = new ThreadLocal<Document>();
    private static ThreadLocal<DocumentBuilder> builderThreadLocal = new ThreadLocal<DocumentBuilder>() {
@@ -80,14 +86,31 @@ public final class DOMUtils
          DocumentBuilderFactory factory = null;
          try
          {
-            factory = JBossWSDocumentBuilderFactory.newInstance();
+            //slow
+            //factory = DocumentBuilderFactory.newInstance();
+            
+            //fast (requires JDK6 or greater)
+            if (documentBuilderFactoryName == null || alwaysResolveFactoryName)
+            {
+               factory = DocumentBuilderFactory.newInstance();
+               if (!alwaysResolveFactoryName)
+               {
+                  documentBuilderFactoryName = factory.getClass().getCanonicalName();
+               }
+            }
+            else
+            {
+               factory = DocumentBuilderFactory.newInstance(documentBuilderFactoryName, SecurityActions.getContextClassLoader());
+            }
+            
+            
             factory.setValidating(false);
             factory.setNamespaceAware(true);
 
             try
             {
                factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-               if (Boolean.getBoolean(DISABLE_DEFERRED_NODE_EXPANSION))
+               if (disableDeferedNodeExpansion)
                {
                   factory.setFeature(DEFER_NODE_EXPANSION_FEATURE, false);
                }
