@@ -302,4 +302,6 @@ public interface Constants
    static final String EAGER_INITIALIZE_JAXB_CONTEXT_CACHE = "org.jboss.ws.eagerInitializeJAXBContextCache";
    
    static final String DOM_CONTENT_CANONICAL_NORMALIZATION = "org.jboss.ws.DOMContentCanonicalNormalization";
+   
+   static final String ALWAYS_RESOLVE_DOCUMENT_BUILDER_FACTORY = "org.jboss.ws.alwaysResolveDocumentBuilderFactory";
 }
