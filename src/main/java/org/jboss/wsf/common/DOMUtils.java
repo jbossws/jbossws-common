@@ -49,6 +49,7 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.jboss.logging.Logger;
 import org.jboss.ws.Constants;
+import org.jboss.ws.core.utils.JBossWSEntityResolver;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -129,26 +130,33 @@ public final class DOMUtils
             throw new RuntimeException("Unable to create document builder", e);
          }
       }
-
+      
       private void setEntityResolver(DocumentBuilder builder)
       {
-         String[] resolvers = new String[] { "org.jboss.ws.core.utils.JBossWSEntityResolver", "org.jboss.util.xml.JBossEntityResolver" };
-
          EntityResolver entityResolver = null;
-         ClassLoader loader = Thread.currentThread().getContextClassLoader();
-         for (String resolver : resolvers)
+         try
          {
-            try
+            entityResolver = new JBossWSEntityResolver();
+         }
+         catch (Throwable t)
+         {
+            log.debug("Cannot load: " + JBossWSEntityResolver.class.getCanonicalName());
+            String[] resolvers = new String[] { "org.jboss.util.xml.JBossEntityResolver" };
+            ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            for (String resolver : resolvers)
             {
-               Class<?> resolverClass = loader.loadClass(resolver);
-               entityResolver = (EntityResolver)resolverClass.newInstance();
-            }
-            catch (Exception ex)
-            {
-               log.debug("Cannot load: " + resolver);
+               try
+               {
+                  Class<?> resolverClass = loader.loadClass(resolver);
+                  entityResolver = (EntityResolver)resolverClass.newInstance();
+                  break;
+               }
+               catch (Exception ex)
+               {
+                  log.debug("Cannot load: " + resolver);
+               }
             }
          }
-
          if (entityResolver != null)
             builder.setEntityResolver(entityResolver);
       }
