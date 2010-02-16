@@ -21,7 +21,11 @@
  */
 package org.jboss.wsf.common.invocation;
 
+import java.security.Principal;
+
+import javax.xml.ws.EndpointReference;
 import javax.xml.ws.WebServiceContext;
+import javax.xml.ws.handler.MessageContext;
 
 import org.jboss.wsf.common.injection.InjectionHelper;
 import org.jboss.wsf.common.injection.PreDestroyHolder;
@@ -33,6 +37,7 @@ import org.jboss.wsf.spi.invocation.InvocationContext;
 import org.jboss.wsf.spi.invocation.ResourceInjector;
 import org.jboss.wsf.spi.invocation.ResourceInjectorFactory;
 import org.jboss.wsf.spi.metadata.injection.InjectionsMetaData;
+import org.w3c.dom.Element;
 
 /**
  * Handles invocations on JAXWS endpoints.
@@ -43,19 +48,12 @@ import org.jboss.wsf.spi.metadata.injection.InjectionsMetaData;
 public final class InvocationHandlerJAXWS extends AbstractInvocationHandlerJSE
 {
 
-   /** WebServiceContext injector. */
-   private final ResourceInjector wsContextInjector;
-
    /**
     * Constructor.
     */
    public InvocationHandlerJAXWS()
    {
       super();
-
-      final SPIProvider spiProvider = SPIProviderResolver.getInstance().getProvider();
-      final ResourceInjectorFactory resourceInjectorFactory = spiProvider.getSPI(ResourceInjectorFactory.class);
-      this.wsContextInjector = resourceInjectorFactory.newResourceInjector();
    }
 
    /**
@@ -73,6 +71,12 @@ public final class InvocationHandlerJAXWS extends AbstractInvocationHandlerJSE
 
       this.log.debug("Injecting resources on JAXWS JSE endpoint: " + targetBean);
       InjectionHelper.injectResources(targetBean, injectionsMD);
+
+      final SPIProvider spiProvider = SPIProviderResolver.getInstance().getProvider();
+      final ResourceInjectorFactory resourceInjectorFactory = spiProvider.getSPI(ResourceInjectorFactory.class);
+      final ResourceInjector wsContextInjector = resourceInjectorFactory.newResourceInjector();
+      wsContextInjector.inject(targetBean, ThreadLocalAwareWebServiceContext.getInstance());
+
       this.log.debug("Calling postConstruct method on JAXWS JSE endpoint: " + targetBean);
       InjectionHelper.callPostConstructMethod(targetBean);
 
@@ -88,12 +92,7 @@ public final class InvocationHandlerJAXWS extends AbstractInvocationHandlerJSE
    protected void onBeforeInvocation(final Invocation invocation)
    {
       final WebServiceContext wsContext = this.getWebServiceContext(invocation);
-
-      if (wsContext != null)
-      {
-         final Object targetBean = this.getTargetBean(invocation);
-         this.wsContextInjector.inject(targetBean, wsContext);
-      }
+      ThreadLocalAwareWebServiceContext.getInstance().setMessageContext(wsContext);
    }
 
    /**
@@ -104,14 +103,7 @@ public final class InvocationHandlerJAXWS extends AbstractInvocationHandlerJSE
    @Override
    protected void onAfterInvocation(final Invocation invocation)
    {
-      final WebServiceContext wsContext = this.getWebServiceContext(invocation);
-
-      if (wsContext != null)
-      {
-         final Object targetBean = this.getTargetBean(invocation);
-
-         this.wsContextInjector.inject(targetBean, null);
-      }
+      ThreadLocalAwareWebServiceContext.getInstance().setMessageContext(null);
    }
 
    /**
@@ -139,5 +131,50 @@ public final class InvocationHandlerJAXWS extends AbstractInvocationHandlerJSE
 
       return invocationContext.getTargetBean();
    }
+   
+   private static final class ThreadLocalAwareWebServiceContext implements WebServiceContext
+   {
+      private static final ThreadLocalAwareWebServiceContext SINGLETON = new ThreadLocalAwareWebServiceContext();
+      private final ThreadLocal<WebServiceContext> contexts = new InheritableThreadLocal<WebServiceContext>();
+      
+      private static ThreadLocalAwareWebServiceContext getInstance()
+      {
+         return SINGLETON;
+      }
+      
+      private void setMessageContext(final WebServiceContext ctx)
+      {
+         this.contexts.set(ctx);
+      }
+      
+      public EndpointReference getEndpointReference(Element... referenceParameters)
+      {
+         final WebServiceContext delegee = this.contexts.get();
+         return delegee == null ? null : delegee.getEndpointReference(referenceParameters);
+      }
 
+      public <T extends EndpointReference> T getEndpointReference(Class<T> clazz, Element... referenceParameters)
+      {
+         final WebServiceContext delegee = this.contexts.get();
+         return delegee == null ? null : delegee.getEndpointReference(clazz, referenceParameters);
+      }
+
+      public MessageContext getMessageContext()
+      {
+         final WebServiceContext delegee = this.contexts.get();
+         return delegee == null ? null : delegee.getMessageContext();
+      }
+
+      public Principal getUserPrincipal()
+      {
+         final WebServiceContext delegee = this.contexts.get();
+         return delegee == null ? null : delegee.getUserPrincipal();
+      }
+
+      public boolean isUserInRole(String role)
+      {
+         final WebServiceContext delegee = this.contexts.get();
+         return delegee == null ? false : delegee.isUserInRole(role);
+      }
+   }
 }
