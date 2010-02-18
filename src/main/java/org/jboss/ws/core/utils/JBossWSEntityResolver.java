@@ -66,7 +66,7 @@ public class JBossWSEntityResolver extends JBossEntityResolver
       super();
       
       Properties props = null;
-      ClassLoader loader = this.getClass().getClassLoader();
+      ClassLoader loader = SecurityActions.getContextClassLoader();
       Map<String, Properties> map = propertiesMap.get(loader);
       if (map != null && map.containsKey(entitiesResource))
       {
@@ -80,7 +80,7 @@ public class JBossWSEntityResolver extends JBossEntityResolver
             propertiesMap.put(loader, map);
          }
          // load entities
-         props = loadEntitiesMappingFromClasspath(entitiesResource);
+         props = loadEntitiesMappingFromClasspath(entitiesResource, loader);
          if (props.size() == 0)
             throw new IllegalArgumentException("No entities mapping defined in resource file: " + entitiesResource);
          map.put(entitiesResource, props);
@@ -97,13 +97,13 @@ public class JBossWSEntityResolver extends JBossEntityResolver
 	   }
    }
    
-   private Properties loadEntitiesMappingFromClasspath(final String entitiesResource)
+   private Properties loadEntitiesMappingFromClasspath(final String entitiesResource, final ClassLoader classLoader)
    {
       return AccessController.doPrivileged(new PrivilegedAction<Properties>()
       {
          public Properties run()
          {
-            InputStream is = this.getClass().getClassLoader().getResourceAsStream(entitiesResource);
+            InputStream is = classLoader.getResourceAsStream(entitiesResource);
             // get stream
             if (is == null)
                throw new IllegalArgumentException("Resource " + entitiesResource + " not found");
