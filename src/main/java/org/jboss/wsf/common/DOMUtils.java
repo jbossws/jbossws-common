@@ -25,7 +25,9 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -820,4 +822,46 @@ public final class DOMUtils
 
       return retElement;
    }
+
+   /**
+    * Converts XML node in pretty mode using UTF-8 encoding to string.
+    * 
+    * @param node XML document or element
+    * @return XML string
+    * @throws Exception if some error occurs
+    */
+   public static String node2String(final Node node) throws UnsupportedEncodingException
+   {
+      return node2String(node, true, Constants.DEFAULT_XML_CHARSET);
+   }
+   
+   /**
+    * Converts XML node in specified pretty mode using UTF-8 encoding to string.
+    * 
+    * @param node XML document or element
+    * @param prettyPrint whether XML have to be pretty formated
+    * @return XML string
+    * @throws Exception if some error occurs
+    */
+   public static String node2String(final Node node, boolean prettyPrint) throws UnsupportedEncodingException
+   {
+      return node2String(node, prettyPrint, Constants.DEFAULT_XML_CHARSET);
+   }
+   
+   /**
+    * Converts XML node in specified pretty mode and encoding to string.
+    * 
+    * @param node XML document or element
+    * @param prettyPrint whether XML have to be pretty formated
+    * @param encoding to use
+    * @return XML string
+    * @throws UnsupportedEncodingException 
+    */
+   public static String node2String(final Node node, boolean prettyPrint, String encoding) throws UnsupportedEncodingException 
+   {
+      final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+      new DOMWriter(new PrintWriter(baos), encoding).setPrettyprint(prettyPrint).print(node);
+      return baos.toString(encoding);
+   }
+
 }
