@@ -21,9 +21,11 @@
  */
 package org.jboss.wsf.test;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -43,6 +45,7 @@ import javax.naming.NamingException;
 import junit.framework.TestCase;
 
 import org.jboss.logging.Logger;
+import org.jboss.ws.Constants;
 import org.jboss.wsf.common.DOMWriter;
 import org.jboss.wsf.common.concurrent.CopyJob;
 import org.w3c.dom.Element;
@@ -67,6 +70,47 @@ public abstract class JBossWSTest extends TestCase
    public JBossWSTest(String name)
    {
       super(name);
+   }
+
+   /**
+    * Prints XML in pretty mode in UTF-8 encoding.
+    * 
+    * @param node XML document or element
+    * @return XML string
+    * @throws Exception if some error occurs
+    */
+   public static String getXML(final Node node) throws Exception
+   {
+      return getXML(node, true, Constants.DEFAULT_XML_CHARSET);
+   }
+   
+   /**
+    * Prints XML in specified pretty mode in UTF-8 encoding.
+    * 
+    * @param node XML document or element
+    * @param prettyPrint whether XML have to be pretty formated
+    * @return XML string
+    * @throws Exception if some error occurs
+    */
+   public static String getXML(final Node node, boolean prettyPrint) throws Exception
+   {
+      return getXML(node, prettyPrint, Constants.DEFAULT_XML_CHARSET);
+   }
+   
+   /**
+    * Prints XML in specified encoding and pretty mode.
+    * 
+    * @param node XML document or element
+    * @param prettyPrint whether XML have to be pretty formated
+    * @param encoding to use
+    * @return XML string
+    * @throws Exception if some error occurs
+    */
+   public static String getXML(final Node node, boolean prettyPrint, String encoding) throws Exception
+   {
+      final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+      new DOMWriter(new PrintWriter(baos), encoding).setPrettyprint(prettyPrint).print(node);
+      return baos.toString(encoding);
    }
 
    /**
