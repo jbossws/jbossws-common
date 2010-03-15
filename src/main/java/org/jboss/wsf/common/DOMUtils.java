@@ -134,6 +134,7 @@ public final class DOMUtils
          }
       }
       
+      @SuppressWarnings("deprecation")
       private void setEntityResolver(DocumentBuilder builder)
       {
          EntityResolver entityResolver = null;
@@ -452,9 +453,9 @@ public final class DOMUtils
 
    /** Get the attributes as Map<QName, String>
     */
-   public static Map getAttributes(Element el)
+   public static Map<QName, String> getAttributes(Element el)
    {
-      Map attmap = new HashMap();
+      Map<QName, String> attmap = new HashMap<QName, String>();
       NamedNodeMap attribs = el.getAttributes();
       int len = attribs.getLength();
       for (int i = 0; i < len; i++)
@@ -493,7 +494,7 @@ public final class DOMUtils
          }
       }
    }
-
+   
    /** True if the node has text child elements only
     */
    public static boolean hasTextChildNodesOnly(Node node)
@@ -609,7 +610,7 @@ public final class DOMUtils
    private static Element getFirstChildElementIntern(Node node, QName nodeName, boolean recursive)
    {
       Element childElement = null;
-      Iterator it = getChildElementsIntern(node, nodeName, recursive);
+      Iterator<Element> it = getChildElementsIntern(node, nodeName, recursive);
       if (it.hasNext())
       {
          childElement = (Element)it.next();
@@ -619,28 +620,28 @@ public final class DOMUtils
 
    /** Gets the child elements for a given local name without namespace
     */
-   public static Iterator getChildElements(Node node, String nodeName)
+   public static Iterator<Element> getChildElements(Node node, String nodeName)
    {
       return getChildElements(node, nodeName, false);
    }
 
    /** Gets the child elements for a given local name without namespace
     */
-   public static Iterator getChildElements(Node node, String nodeName, boolean recursive)
+   public static Iterator<Element> getChildElements(Node node, String nodeName, boolean recursive)
    {
       return getChildElementsIntern(node, new QName(nodeName), recursive);
    }
 
    /** Gets the child element for a given qname
     */
-   public static Iterator getChildElements(Node node, QName nodeName)
+   public static Iterator<Element> getChildElements(Node node, QName nodeName)
    {
       return getChildElements(node, nodeName, false);
    }
 
    /** Gets the child element for a given qname
     */
-   public static Iterator getChildElements(Node node, QName nodeName, boolean recursive)
+   public static Iterator<Element> getChildElements(Node node, QName nodeName, boolean recursive)
    {
       return getChildElementsIntern(node, nodeName, recursive);
    }
@@ -719,7 +720,7 @@ public final class DOMUtils
       }
    }
 
-   private static Iterator getChildElementsIntern(Node node, QName nodeName, boolean recursive)
+   private static Iterator<Element> getChildElementsIntern(Node node, QName nodeName, boolean recursive)
    {
       return getChildElementsAsListIntern(node, nodeName, recursive).iterator();
    }
