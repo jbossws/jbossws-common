@@ -404,7 +404,7 @@ public class JavaUtils
       {
          ClassLoader destLoader = dest.getClassLoader();
          ClassLoader srcLoader = src.getClassLoader();
-         if(log.isDebugEnabled()) log.debug("Not assignable because of conflicting class loaders:\ndstLoader=" + destLoader + "\nsrcLoader=" + srcLoader);
+         if(log.isTraceEnabled()) log.trace("Not assignable because of conflicting class loaders:\ndstLoader=" + destLoader + "\nsrcLoader=" + srcLoader);
       }
 
       if (isAssignable == false && isPrimitive(dest))
@@ -638,7 +638,7 @@ public class JavaUtils
 					}
 					catch (Exception e)
 					{
-						if(log.isDebugEnabled()) log.debug("Could not clear blacklists on " + loader);
+						if(log.isTraceEnabled()) log.trace("Could not clear blacklists on " + loader);
 					}
 				}
 			}			

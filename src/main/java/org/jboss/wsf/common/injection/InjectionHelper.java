@@ -169,8 +169,8 @@ public final class InjectionHelper
       if (methods.size() > 0)
       {
          final Method method = methods.iterator().next();
-         if (LOG.isDebugEnabled())
-            LOG.debug("Calling @PostConstruct annotated method: " + method);
+         if (LOG.isTraceEnabled())
+            LOG.trace("Calling @PostConstruct annotated method: " + method);
          try
          {
             invokeMethod(instance, method, null);
@@ -200,8 +200,8 @@ public final class InjectionHelper
       if (methods.size() > 0)
       {
          final Method method = methods.iterator().next();
-         if (LOG.isDebugEnabled())
-            LOG.debug("Calling @PreDestroy annotated method: " + method);
+         if (LOG.isTraceEnabled())
+            LOG.trace("Calling @PreDestroy annotated method: " + method);
          try
          {
             invokeMethod(instance, method, null);
@@ -395,8 +395,8 @@ public final class InjectionHelper
    private static void inject(final Object instance, final Method method, final String jndiName, final Context ctx)
    {
       final Object value = lookup(jndiName, ctx);
-      if (LOG.isDebugEnabled())
-         LOG.debug("Injecting method: " + method);
+      if (LOG.isTraceEnabled())
+         LOG.trace("Injecting method: " + method);
       invokeMethod(instance, method, new Object[] {value});
    }
 
@@ -411,8 +411,8 @@ public final class InjectionHelper
    private static void inject(final Object instance, final Field field, final String jndiName, final Context ctx)
    {
       final Object value = lookup(jndiName, ctx);
-      if (LOG.isDebugEnabled())
-         LOG.debug("Injecting field: " + field);
+      if (LOG.isTraceEnabled())
+         LOG.trace("Injecting field: " + field);
       setField(instance, field, value);
    }
 

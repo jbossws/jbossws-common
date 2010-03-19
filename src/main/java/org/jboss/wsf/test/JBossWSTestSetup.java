@@ -77,7 +77,7 @@ public class JBossWSTestSetup extends TestSetup
 
    public URL getArchiveURL(String archive) throws MalformedURLException
    {
-      return delegate.getArchiveFile(archive).toURL();
+      return delegate.getArchiveFile(archive).toURI().toURL();
    }
 
    public File getResourceFile(String resource)
@@ -87,7 +87,7 @@ public class JBossWSTestSetup extends TestSetup
 
    public URL getResourceURL(String resource) throws MalformedURLException
    {
-      return delegate.getResourceFile(resource).toURL();
+      return delegate.getResourceFile(resource).toURI().toURL();
    }
 
    private void getArchiveArray(String archiveList)

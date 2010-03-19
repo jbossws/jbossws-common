@@ -66,7 +66,7 @@ public class JBossWSTestHelper
    {
       if ( DEPLOY_PROCESS_ENABLED )
       {
-         URL archiveURL = getArchiveFile(archive).toURL();
+         URL archiveURL = getArchiveFile(archive).toURI().toURL();
          getDeployer().deploy(archiveURL);
       }
    }
@@ -77,7 +77,7 @@ public class JBossWSTestHelper
    {
       if ( DEPLOY_PROCESS_ENABLED )
       {
-         URL archiveURL = getArchiveFile(archive).toURL();
+         URL archiveURL = getArchiveFile(archive).toURI().toURL();
          getDeployer().undeploy(archiveURL);
       }
    }
@@ -251,7 +251,7 @@ public class JBossWSTestHelper
    /** Try to discover the URL for the deployment archive */
    public static URL getArchiveURL(String archive) throws MalformedURLException
    {
-      return getArchiveFile(archive).toURL();
+      return getArchiveFile(archive).toURI().toURL();
    }
 
    /** Try to discover the File for the deployment archive */
@@ -272,7 +272,7 @@ public class JBossWSTestHelper
    /** Try to discover the URL for the test resource */
    public static URL getResourceURL(String resource) throws MalformedURLException
    {
-      return getResourceFile(resource).toURL();
+      return getResourceFile(resource).toURI().toURL();
    }
 
    /** Try to discover the File for the test resource */

@@ -55,7 +55,7 @@ public class XOPTestSupport
       Image image = null;
       try
       {
-         URL url = imgFile.toURL();
+         URL url = imgFile.toURI().toURL();
 
          image = null;
          try
@@ -84,7 +84,7 @@ public class XOPTestSupport
    {
       try
       {
-         URL url = imgFile.toURL();
+         URL url = imgFile.toURI().toURL();
          return new DataHandler(url);
       }
       catch (MalformedURLException e)

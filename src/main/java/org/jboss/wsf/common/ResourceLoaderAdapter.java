@@ -89,7 +89,7 @@ public class ResourceLoaderAdapter implements UnifiedVirtualFile
             {
                File file = new File(resourcePath);
                if (file.exists())
-                  resourceURL = file.toURL();
+                  resourceURL = file.toURI().toURL();
             }
             catch (MalformedURLException e)
             {
@@ -203,7 +203,7 @@ public class ResourceLoaderAdapter implements UnifiedVirtualFile
                {
                   for (File f : files)
                   {
-                     list.add(new ResourceLoaderAdapter(loader, f.toURL()));
+                     list.add(new ResourceLoaderAdapter(loader, f.toURI().toURL()));
                   }
                }
             }
