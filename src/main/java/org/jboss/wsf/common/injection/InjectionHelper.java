@@ -28,7 +28,6 @@ import java.util.Collection;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.naming.Context;
-import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.xml.ws.WebServiceContext;
 
@@ -54,7 +53,6 @@ public final class InjectionHelper
 {
 
    private static final Logger LOG = Logger.getLogger(InjectionHelper.class);
-   private static final String POJO_JNDI_PREFIX = "java:comp/env/";
 
    private static final ClassProcessor<Method> POST_CONSTRUCT_METHOD_FINDER = new PostConstructMethodFinder();
    private static final ClassProcessor<Method> PRE_DESTROY_METHOD_FINDER = new PreDestroyMethodFinder();
@@ -93,22 +91,25 @@ public final class InjectionHelper
     * @see javax.annotation.Resource
     * @see javax.ejb.EJB
     */
-   public static void injectResources(final Object instance, final InjectionsMetaData injections) 
+   public static void injectResources(final Object instance, final InjectionsMetaData injections, final Context ctx) 
    {
       if (instance == null)
          throw new IllegalArgumentException("Object instance cannot be null");
 
       if (injections == null)
          return;
-
+      
+      if (ctx == null)
+         return;
+      
       // inject descriptor driven annotations
-      injectDescriptorAnnotatedAccessibleObjects(instance, injections);
+      injectDescriptorAnnotatedAccessibleObjects(instance, injections, ctx);
 
       // inject @Resource annotated methods and fields
-      injectResourceAnnotatedAccessibleObjects(instance, injections);
+      injectResourceAnnotatedAccessibleObjects(instance, injections, ctx);
 
       // inject @EJB annotated methods and fields
-      injectEJBAnnotatedAccessibleObjects(instance, injections);
+      injectEJBAnnotatedAccessibleObjects(instance, injections, ctx);
    }
 
    /**
@@ -215,39 +216,15 @@ public final class InjectionHelper
    }
 
    /**
-    * Gets JNDI context.
-    * 
-    * @param injections injection metadata to get context from.
-    * @return JNDI context
-    */
-   private static Context getContext(final InjectionsMetaData injections)
-   {
-      final Context ctx = injections.getContext();
-      if (ctx == null)
-      {
-         try
-         {
-            return (Context)getDefaultContext().lookup(POJO_JNDI_PREFIX);
-         }
-         catch (NamingException ne)
-         {
-            InjectionException.rethrow("Cannot lookup JNDI context: " + POJO_JNDI_PREFIX, ne);
-         }
-      }
-      
-      return ctx;
-   }
-
-   /**
     * Performs descriptor driven injections.
     *
     * @param instance to operate on
     * @param injections injections metadata
+    * @param ctx JNDI context
     */
-   private static void injectDescriptorAnnotatedAccessibleObjects(final Object instance, final InjectionsMetaData injections)
+   private static void injectDescriptorAnnotatedAccessibleObjects(final Object instance, final InjectionsMetaData injections, final Context ctx)
    {
       final Collection<InjectionMetaData> injectionMDs = injections.getInjectionsMetaData(instance.getClass());
-      final Context ctx = !injectionMDs.isEmpty() ? getContext(injections) : null;
 
       for (InjectionMetaData injectionMD : injectionMDs)
       {
@@ -295,16 +272,15 @@ public final class InjectionHelper
     *
     * @param instance to operate on
     * @param injections injections meta data
+    * @param ctx JNDI context
     * @see org.jboss.wsf.common.injection.finders.ResourceFieldFinder
     * @see org.jboss.wsf.common.injection.finders.ResourceMethodFinder
     * @see javax.annotation.Resource
     */
-   private static void injectResourceAnnotatedAccessibleObjects(final Object instance, final InjectionsMetaData injections)
+   private static void injectResourceAnnotatedAccessibleObjects(final Object instance, final InjectionsMetaData injections, final Context ctx)
    {
       final Collection<Field> resourceAnnotatedFields = RESOURCE_FIELD_FINDER.process(instance.getClass());
       final Collection<Method> resourceAnnotatedMethods = RESOURCE_METHOD_FINDER.process(instance.getClass());
-      final boolean doInjection = !resourceAnnotatedFields.isEmpty() || !resourceAnnotatedMethods.isEmpty();
-      final Context ctx = doInjection ? getContext(injections) : null;
 
       // Inject @Resource annotated fields
       for (Field field : resourceAnnotatedFields)
@@ -342,16 +318,15 @@ public final class InjectionHelper
     *
     * @param instance to operate on
     * @param injections injections meta data
+    * @param ctx JNDI context
     * @see org.jboss.wsf.common.injection.finders.EJBFieldFinder
     * @see org.jboss.wsf.common.injection.finders.EJBMethodFinder
     * @see javax.ejb.EJB
     */
-   private static void injectEJBAnnotatedAccessibleObjects(final Object instance, final InjectionsMetaData injections)
+   private static void injectEJBAnnotatedAccessibleObjects(final Object instance, final InjectionsMetaData injections, final Context ctx)
    {
       final Collection<Field> ejbAnnotatedFields = EJB_FIELD_FINDER.process(instance.getClass());
       final Collection<Method> ejbAnnotatedMethods = EJB_METHOD_FINDER.process(instance.getClass());
-      final boolean doInjection = !ejbAnnotatedFields.isEmpty() || !ejbAnnotatedMethods.isEmpty();
-      final Context ctx = doInjection ? getDefaultContext() : null;
 
       // Inject @EJB annotated fields
       for (Field field : ejbAnnotatedFields)
@@ -439,28 +414,6 @@ public final class InjectionHelper
       return value;
    }
    
-   /**
-    * Returns default JNDI context.
-    * 
-    * @return default JNDI context
-    */
-   private static Context getDefaultContext()
-   {
-      Context ctx = null;
-      
-      try
-      {
-         ctx = new InitialContext();
-      }
-      catch (NamingException ne)
-      {
-         final String message = "Cannot create default JNDI context";
-         InjectionException.rethrow(message, ne);
-      }
-      
-      return ctx;
-   }
-
    /**
     * Invokes method on object with specified arguments.
     *

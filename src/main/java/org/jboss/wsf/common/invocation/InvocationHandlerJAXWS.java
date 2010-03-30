@@ -23,6 +23,9 @@ package org.jboss.wsf.common.invocation;
 
 import java.security.Principal;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.xml.ws.EndpointReference;
 import javax.xml.ws.WebServiceContext;
 import javax.xml.ws.handler.MessageContext;
@@ -48,6 +51,8 @@ import org.w3c.dom.Element;
 public final class InvocationHandlerJAXWS extends AbstractInvocationHandlerJSE
 {
 
+   private static final String POJO_JNDI_PREFIX = "java:comp/env/";
+
    /**
     * Constructor.
     */
@@ -70,7 +75,8 @@ public final class InvocationHandlerJAXWS extends AbstractInvocationHandlerJSE
       final Object targetBean = this.getTargetBean(invocation);
 
       this.log.debug("Injecting resources on JAXWS JSE endpoint: " + targetBean);
-      InjectionHelper.injectResources(targetBean, injectionsMD);
+      if (injectionsMD != null)
+         InjectionHelper.injectResources(targetBean, injectionsMD, endpoint.getJNDIContext());
 
       final SPIProvider spiProvider = SPIProviderResolver.getInstance().getProvider();
       final ResourceInjectorFactory resourceInjectorFactory = spiProvider.getSPI(ResourceInjectorFactory.class);
@@ -106,6 +112,11 @@ public final class InvocationHandlerJAXWS extends AbstractInvocationHandlerJSE
       ThreadLocalAwareWebServiceContext.getInstance().setMessageContext(null);
    }
 
+   public Context getJNDIContext(final Endpoint ep) throws NamingException
+   {
+      return (Context)new InitialContext().lookup(POJO_JNDI_PREFIX);
+   }
+   
    /**
     * Returns WebServiceContext associated with this invocation.
     * 

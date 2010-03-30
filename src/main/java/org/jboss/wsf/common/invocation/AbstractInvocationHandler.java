@@ -23,6 +23,9 @@ package org.jboss.wsf.common.invocation;
 
 import java.lang.reflect.Method;
 
+import javax.naming.Context;
+import javax.naming.NamingException;
+
 import org.jboss.logging.Logger;
 import org.jboss.wsf.spi.deployment.Endpoint;
 import org.jboss.wsf.spi.invocation.Invocation;
@@ -67,7 +70,12 @@ public abstract class AbstractInvocationHandler extends InvocationHandler
    {
       // does nothing
    }
-
+   
+   public Context getJNDIContext(final Endpoint ep) throws NamingException
+   {
+      return null;
+   }
+   
    /**
     * Returns implementation method that will be used for invocation.
     * 
