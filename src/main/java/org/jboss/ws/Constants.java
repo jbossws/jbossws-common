@@ -329,5 +329,5 @@ public interface Constants
 
    static final boolean BC_CONTEXT_MODE = Boolean.parseBoolean(System.getProperty("org.jboss.ws.backward_compatible_context_creator", "false"));
    
-   static final boolean LAZY_LOAD_CXF_BUS = Boolean.parseBoolean(System.getProperty("org.jboss.ws.lazyLoadCxfBus", "true"));
+   static final boolean LAZY_LOAD_CXF_BUS = Boolean.parseBoolean(System.getProperty("org.jboss.ws.lazyLoadCxfBus", "false"));
 }
