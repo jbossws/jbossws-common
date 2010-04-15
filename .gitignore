@@ -1,0 +1,9 @@
+
+# /
+/ant.properties
+/version.properties.md5
+/output*
+/profiles.xml
+/thirdparty
+/target
+/.settings
