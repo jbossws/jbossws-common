@@ -37,7 +37,7 @@ public class JavaUtils
    // provide logging
    private static final Logger log = Logger.getLogger(JavaUtils.class);
 
-   private static HashMap<String, Class> primitiveNames = new HashMap<String, Class>(8);
+   private static HashMap<String, Class<?>> primitiveNames = new HashMap<String, Class<?>>(8);
    private static HashMap<String, String> primitiveNameDescriptors = new HashMap<String, String>(8);
    private static HashSet<String> reservedKeywords = new HashSet<String>(50);
 
@@ -118,7 +118,7 @@ public class JavaUtils
     *
     * @param typeName maybe the source notation of a primitve, class name, array of both
     */
-   public static Class loadJavaType(String typeName) throws ClassNotFoundException
+   public static Class<?> loadJavaType(String typeName) throws ClassNotFoundException
    {
       return loadJavaType(typeName, null);
    }
@@ -128,12 +128,12 @@ public class JavaUtils
     *
     * @param typeName maybe the source notation of a primitve, class name, array of both
     */
-   public static Class loadJavaType(String typeName, ClassLoader classLoader) throws ClassNotFoundException
+   public static Class<?> loadJavaType(String typeName, ClassLoader classLoader) throws ClassNotFoundException
    {
       if (classLoader == null)
          classLoader = Thread.currentThread().getContextClassLoader();
 
-      Class javaType = primitiveNames.get(typeName);
+      Class<?> javaType = primitiveNames.get(typeName);
       if (javaType == null)
          javaType = getArray(typeName, classLoader);
 
@@ -154,14 +154,14 @@ public class JavaUtils
    /**
     * True if the given class is a primitive or array of which.
     */
-   public static boolean isPrimitive(Class javaType)
+   public static boolean isPrimitive(Class<?> javaType)
    {
       return javaType.isPrimitive() || (javaType.isArray() && isPrimitive(javaType.getComponentType()));
    }
 
-   public static Class getPrimitiveType(String javaType)
+   public static Class<?> getPrimitiveType(String javaType)
    {
-      Class type = primitiveNames.get(javaType);
+      Class<?> type = primitiveNames.get(javaType);
       if (type != null)
          return type;
 
@@ -178,7 +178,7 @@ public class JavaUtils
       return type;
    }
 
-   private static Class getArray(String javaType, ClassLoader loader) throws ClassNotFoundException
+   private static Class<?> getArray(String javaType, ClassLoader loader) throws ClassNotFoundException
    {
       if (javaType.charAt(0) == '[')
          return getArrayFromJVMName(javaType, loader);
@@ -189,9 +189,9 @@ public class JavaUtils
       return null;
    }
 
-   private static Class getArrayFromJVMName(String javaType, ClassLoader loader) throws ClassNotFoundException
+   private static Class<?> getArrayFromJVMName(String javaType, ClassLoader loader) throws ClassNotFoundException
    {
-      Class componentType;
+      Class<?> componentType;
       int componentStart = javaType.lastIndexOf('[') + 1;
       switch (javaType.charAt(componentStart))
       {
@@ -217,12 +217,12 @@ public class JavaUtils
       return Array.newInstance(componentType, new int[componentStart]).getClass();
    }
 
-   private static Class getArrayFromSourceName(String javaType, ClassLoader loader) throws ClassNotFoundException
+   private static Class<?> getArrayFromSourceName(String javaType, ClassLoader loader) throws ClassNotFoundException
    {
       int arrayStart = javaType.indexOf('[');
       String componentName = javaType.substring(0, arrayStart);
 
-      Class componentType = primitiveNames.get(componentName);
+      Class<?> componentType = primitiveNames.get(componentName);
       if (componentType == null)
       {
          if (loader == null)
@@ -236,12 +236,47 @@ public class JavaUtils
 
       return Array.newInstance(componentType, new int[dimensions]).getClass();
    }
+   
+   /**
+    * Given a class, strip out the package name
+    *
+    * @param cls
+    * @return just the classname
+    */
+
+   public static String getJustClassName(Class<?> cls)
+   {
+      if (cls == null)
+         return null;
+      if (cls.isArray())
+      {
+         Class<?> c = cls.getComponentType();
+         return getJustClassName(c.getName());
+      }
+
+      return getJustClassName(cls.getName());
+   }
+   
+   /**
+    * Given a FQN of a class, strip out the package name
+    *
+    * @param classname
+    * @return just the classname
+    */
+   public static String getJustClassName(String classname)
+   {
+      int index = classname.lastIndexOf('.');
+      if (index < 0)
+         index = 0;
+      else index = index + 1;
+      return classname.substring(index);
+   }
 
    /**
     * Get the corresponding primitive for a give wrapper type.
     * Also handles arrays of which.
     */
-   public static Class getPrimitiveType(Class javaType)
+   public static Class<?> getPrimitiveType(Class<?> javaType)
    {
       if (javaType == Integer.class)
          return int.class;
@@ -279,7 +314,7 @@ public class JavaUtils
 
       if (javaType.isArray() && javaType.getComponentType().isArray())
       {
-         Class compType = getPrimitiveType(javaType.getComponentType());
+         Class<?> compType = getPrimitiveType(javaType.getComponentType());
          return Array.newInstance(compType, 0).getClass();
       }
 
@@ -294,7 +329,7 @@ public class JavaUtils
       if (value == null)
          return null;
 
-      Class javaType = value.getClass();
+      Class<?> javaType = value.getClass();
       if (javaType.isArray())
       {
          int length = Array.getLength(value);
@@ -314,7 +349,7 @@ public class JavaUtils
     * Get the corresponding wrapper type for a give primitive.
     * Also handles arrays of which.
     */
-   public static Class getWrapperType(Class javaType)
+   public static Class<?> getWrapperType(Class<?> javaType)
    {
       if (javaType == int.class)
          return Integer.class;
@@ -352,7 +387,7 @@ public class JavaUtils
 
       if (javaType.isArray() && javaType.getComponentType().isArray())
       {
-         Class compType = getWrapperType(javaType.getComponentType());
+         Class<?> compType = getWrapperType(javaType.getComponentType());
          return Array.newInstance(compType, 0).getClass();
       }
 
@@ -367,7 +402,7 @@ public class JavaUtils
       if (value == null)
          return null;
 
-      Class javaType = value.getClass();
+      Class<?> javaType = value.getClass();
       if (javaType.isArray())
       {
          int length = Array.getLength(value);
@@ -383,7 +418,7 @@ public class JavaUtils
       return value;
    }
 
-   public static Object syncArray(Object array, Class target)
+   public static Object syncArray(Object array, Class<?> target)
    {
       return (JavaUtils.isPrimitive(target)) ? JavaUtils.getPrimitiveValueArray(array) : JavaUtils.getWrapperValueArray(array);
    }
@@ -392,7 +427,7 @@ public class JavaUtils
     * Return true if the dest class is assignable from the src.
     * Also handles arrays and primitives.
     */
-   public static boolean isAssignableFrom(Class dest, Class src)
+   public static boolean isAssignableFrom(Class<?> dest, Class<?> src)
    {
       if (dest == null)
          throw new IllegalArgumentException("Destination class cannot be null");
@@ -425,7 +460,7 @@ public class JavaUtils
       // TODO Don't use a ClassLoader for this, we need to just convert it
       try
       {
-         Class javaType = loadJavaType(typeName, loader);
+         Class<?> javaType = loadJavaType(typeName, loader);
          typeName = getSourceName(javaType);
       }
       catch (Exception e)
@@ -481,13 +516,13 @@ public class JavaUtils
       return out.append("]").toString();
    }
 
-   public static String getSourceName(Class type)
+   public static String getSourceName(Class<?> type)
    {
       if (! type.isArray())
          return type.getName();
 
       String arrayNotation = "";
-      Class component = type;
+      Class<?> component = type;
       while(component.isArray())
       {
          component = component.getComponentType();
@@ -544,15 +579,15 @@ public class JavaUtils
     * @param t type to erase
     * @return erased type
     */
-   public static Class erasure(Type type)
+   public static Class<?> erasure(Type type)
    {
       if (type instanceof ParameterizedType)
       {
          return erasure(((ParameterizedType)type).getRawType());
       }
-      if (type instanceof TypeVariable)
+      if (type instanceof TypeVariable<?>)
       {
-         return erasure(((TypeVariable)type).getBounds()[0]);
+         return erasure(((TypeVariable<?>)type).getBounds()[0]);
       }
       if (type instanceof WildcardType)
       {
@@ -564,7 +599,7 @@ public class JavaUtils
       }
 
       // Only type left is class
-      return (Class)type;
+      return (Class<?>)type;
    }
 
    public static String[] getRawParameterTypeArguments(ParameterizedType type)
@@ -573,7 +608,7 @@ public class JavaUtils
       String[] ret = new String[arguments.length];
       for (int i = 0; i < arguments.length; i++)
       {
-         Class raw = erasure(arguments[i]);
+         Class<?> raw = erasure(arguments[i]);
          ret[i] = raw.getName();
       }
 
@@ -599,7 +634,7 @@ public class JavaUtils
     */
    public static boolean isJBossRepositoryClassLoader(ClassLoader loader)
    {
-      Class clazz = loader.getClass();
+      Class<?> clazz = loader.getClass();
       while (!clazz.getName().startsWith("java"))
       {
          if ("org.jboss.mx.loading.RepositoryClassLoader".equals(clazz.getName()))
