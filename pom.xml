@@ -12,9 +12,9 @@
 
   <!-- Parent -->
   <parent>
-    <groupId>org.jboss.ws</groupId>
-    <artifactId>jbossws-parent</artifactId>
-    <version>1.0.5.GA</version>
+    <groupId>org.jboss</groupId>
+    <artifactId>jboss-parent</artifactId>
+    <version>5</version>
   </parent>
 
   <!-- Source Control Management -->
