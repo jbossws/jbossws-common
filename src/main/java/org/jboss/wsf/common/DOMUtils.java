@@ -107,6 +107,7 @@ public final class DOMUtils
             
             factory.setValidating(false);
             factory.setNamespaceAware(true);
+            factory.setExpandEntityReferences(false);
 
             try
             {
