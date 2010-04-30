@@ -97,7 +97,7 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
          log.debug("Using local host: " + localHost.getHostName());
          host = localHost.getHostName();
       }
-      this.webServiceHost = host;
+      this.webServiceHost = "127.0.0.1".equals(host) ? "localhost" : host; // TCK workaround
    }
 
    public void setWebServicePort(int port)
