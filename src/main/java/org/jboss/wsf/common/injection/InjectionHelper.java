@@ -28,6 +28,7 @@ import java.util.Collection;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.xml.ws.WebServiceContext;
 
@@ -109,7 +110,7 @@ public final class InjectionHelper
       injectResourceAnnotatedAccessibleObjects(instance, injections, ctx);
 
       // inject @EJB annotated methods and fields
-      injectEJBAnnotatedAccessibleObjects(instance, injections, ctx);
+      injectEJBAnnotatedAccessibleObjects(instance, injections);
    }
 
    /**
@@ -323,10 +324,11 @@ public final class InjectionHelper
     * @see org.jboss.wsf.common.injection.finders.EJBMethodFinder
     * @see javax.ejb.EJB
     */
-   private static void injectEJBAnnotatedAccessibleObjects(final Object instance, final InjectionsMetaData injections, final Context ctx)
+   private static void injectEJBAnnotatedAccessibleObjects(final Object instance, final InjectionsMetaData injections)
    {
       final Collection<Field> ejbAnnotatedFields = EJB_FIELD_FINDER.process(instance.getClass());
       final Collection<Method> ejbAnnotatedMethods = EJB_METHOD_FINDER.process(instance.getClass());
+      final Context ctx = InjectionHelper.getDefaultContext();
 
       // Inject @EJB annotated fields
       for (Field field : ejbAnnotatedFields)
@@ -494,6 +496,28 @@ public final class InjectionHelper
       final Collection<Field> result = new InjectionFieldFinder(injectionMD).process(clazz);
 
       return result.isEmpty() ? null : result.iterator().next();
+   }
+
+   /**
+    * Returns default JNDI context.
+    * 
+    * @return default JNDI context
+    */
+   private static Context getDefaultContext()
+   {
+      Context ctx = null;
+      
+      try
+      {
+         ctx = new InitialContext();
+      }
+      catch (NamingException ne)
+      {
+         final String message = "Cannot create default JNDI context";
+         InjectionException.rethrow(message, ne);
+      }
+      
+      return ctx;
    }
 
 }
