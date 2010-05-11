@@ -140,8 +140,8 @@ public class ResourceLoaderAdapter implements UnifiedVirtualFile
          try
          {
             //get the jar and open it
-            String folder = jarRoot.substring(5,jarRoot.lastIndexOf(File.separator));
-            String filename = jarRoot.substring(jarRoot.lastIndexOf(File.separator)+1);
+            String folder = jarRoot.substring(5,jarRoot.lastIndexOf("/"));
+            String filename = jarRoot.substring(jarRoot.lastIndexOf("/")+1);
             final File jar = new File(folder, filename);
             
             PrivilegedAction<JarFile> action = new PrivilegedAction<JarFile>()

@@ -36,7 +36,7 @@ import org.jboss.wsf.common.reflection.AnnotatedMethodFinder;
  * method declaration if necessary. The name of the resource, if not declared, is the
  * name of the JavaBeans property as determined starting from the name of the setter
  * method in question. The setter method must follow the standard JavaBeans
- * convention - name starts with a “set”, void return type and only one parameter.
+ * convention - name starts with a 'set', void return type and only one parameter.
  * Additionally, the type of the parameter must be compatible with the type specified
  * as a property of the Resource if present.
  *
