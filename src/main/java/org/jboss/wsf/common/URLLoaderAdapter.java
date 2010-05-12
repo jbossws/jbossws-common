@@ -147,13 +147,14 @@ public class URLLoaderAdapter implements UnifiedVirtualFile
          String jarRoot = urlString.substring(4, urlString.indexOf("ar!") + 2);
          String path = urlString.contains("!") ? urlString.substring(urlString.lastIndexOf("!") + 2) : "";
          if (path.endsWith(jarFileSeparator))
-            path = path.substring(0, path.lastIndexOf(jarFileSeparator));         
+            path = path.substring(0, path.lastIndexOf(jarFileSeparator));
+         
          try
-         {  
-        	System.out.println("jarRoot.lastIndexOf(File.separator) " + jarRoot.lastIndexOf('/'));
-            String folder = jarRoot.substring(5,jarRoot.lastIndexOf('/'));
-            String filename = jarRoot.substring(jarRoot.lastIndexOf('/')+1);
+         {
+            String folder = jarRoot.substring(5,jarRoot.lastIndexOf(File.separator));
+            String filename = jarRoot.substring(jarRoot.lastIndexOf(File.separator)+1);
             final File jar = new File(folder, filename);
+            
             PrivilegedAction<JarFile> action = new PrivilegedAction<JarFile>()
             {
                public JarFile run()

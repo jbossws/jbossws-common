@@ -76,7 +76,7 @@ public class URLLoaderAdapterTestCase extends TestCase
       
       UnifiedVirtualFile common = ula.findChild("org/jboss/wsf/common/");
       assertNotNull(common);
-      assertTrue(common.toURL().toExternalForm().contains("target/classes")); //check we got a URL to dir
+      assertTrue(common.toURL().toExternalForm().contains("target" + File.separator + "classes")); //check we got a URL to dir
       assertEquals("common/", common.getName());
       List<UnifiedVirtualFile> children = common.getChildren();
       assertNotNull(children);
