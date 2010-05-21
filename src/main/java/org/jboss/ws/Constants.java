@@ -268,10 +268,14 @@ public interface Constants
    static final String WSDL_PROPERTY_MESSAGE_NAME_IN = "http://www.jboss.org/jbossws/messagename/in";
    /** Key to the outbound message name */
    static final String WSDL_PROPERTY_MESSAGE_NAME_OUT = "http://www.jboss.org/jbossws/messagename/out";
-   /** Key to the inboudn wsa action */
+   /** Key to the inbound message name */
+   static final String WSDL_PROPERTY_MESSAGE_NAME_FAULT = "http://www.jboss.org/jbossws/messagename/fault";
+   /** Key to the inbound wsa action */
    static final String WSDL_PROPERTY_ACTION_IN = "http://www.jboss.org/jbossws/wsa/actionIn";
    /** Key to the outbound wsa action */
    static final String WSDL_PROPERTY_ACTION_OUT = "http://www.jboss.org/jbossws/wsa/actionOut";
+   /** Key to the fault wsa action */
+   static final String WSDL_PROPERTY_ACTION_FAULT = "http://www.jboss.org/jbossws/wsa/actionFault";
 
    static final String WSDL_PROPERTY_EVENTSOURCE = "http://www.jboss.org/jbossws/wse/isEventSource";
    
