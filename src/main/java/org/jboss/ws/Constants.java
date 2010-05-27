@@ -279,6 +279,7 @@ public interface Constants
 
    static final String WSDL_PROPERTY_EVENTSOURCE = "http://www.jboss.org/jbossws/wse/isEventSource";
    
+   static final String WSDL_ELEMENT_EPR = "http://www.jboss.org/jbossws/epr";
    static final String WSDL_ELEMENT_POLICY = "http://www.jboss.org/jbossws/wsp/policy";
    static final String WSDL_PROPERTY_POLICYURIS = "http://www.jboss.org/jbossws/wsp/policyURIs";
    static final String WSDL_ELEMENT_POLICYREFERENCE = "http://www.jboss.org/jbossws/wsp/policyReference";
