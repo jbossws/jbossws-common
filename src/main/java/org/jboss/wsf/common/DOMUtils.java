@@ -760,65 +760,64 @@ public final class DOMUtils
    {
       Element retElement = null;
 
-      try
+      if (source instanceof StreamSource)
       {
-         if (source instanceof StreamSource)
-         {
-            StreamSource streamSource = (StreamSource)source;
+         StreamSource streamSource = (StreamSource)source;
 
-            InputStream ins = streamSource.getInputStream();
-            if (ins != null)
-            {
-               retElement = DOMUtils.parse(ins);
-            }
-            else
-            {
-               Reader reader = streamSource.getReader();
-               retElement = DOMUtils.parse(new InputSource(reader));
-            }
-         }
-         else if (source instanceof DOMSource)
+         InputStream ins = streamSource.getInputStream();
+         if (ins != null)
          {
-            DOMSource domSource = (DOMSource)source;
-            Node node = domSource.getNode();
-            if (node instanceof Element)
-            {
-               retElement = (Element)node;
-            }
-            else if (node instanceof Document)
-            {
-               retElement = ((Document)node).getDocumentElement();
-            }
-            else
-            {
-               throw new RuntimeException("Unsupported Node type: " + node.getClass().getName());
-            }
+            retElement = DOMUtils.parse(ins);
          }
-         else if (source instanceof SAXSource)
+         Reader reader = streamSource.getReader();
+         if (reader != null)
          {
-            // The fact that JAXBSource derives from SAXSource is an implementation detail.
-            // Thus in general applications are strongly discouraged from accessing methods defined on SAXSource.
-            // The XMLReader object obtained by the getXMLReader method shall be used only for parsing the InputSource object returned by the getInputSource method.
-
-            TransformerFactory tf = TransformerFactory.newInstance();
-            ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
-            Transformer transformer = tf.newTransformer();
-            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-            transformer.setOutputProperty(OutputKeys.METHOD, "xml");
-            transformer.transform(source, new StreamResult(baos));
-            retElement = DOMUtils.parse(new ByteArrayInputStream(baos.toByteArray()));
+            retElement = DOMUtils.parse(new InputSource(reader));
          }
-         else
-         {
-            throw new RuntimeException("Source type not implemented: " + source.getClass().getName());
-         }
-
       }
-      catch (TransformerException ex)
+      else if (source instanceof DOMSource)
       {
-         IOException ioex = new IOException();
-         ioex.initCause(ex);
-         throw ioex;
+         DOMSource domSource = (DOMSource)source;
+         Node node = domSource.getNode();
+         if (node instanceof Element)
+         {
+            retElement = (Element)node;
+         }
+         else if (node instanceof Document)
+         {
+            retElement = ((Document)node).getDocumentElement();
+         }
+      }
+      else if (source instanceof SAXSource)
+      {
+         // The fact that JAXBSource derives from SAXSource is an implementation detail.
+         // Thus in general applications are strongly discouraged from accessing methods defined on SAXSource.
+         // The XMLReader object obtained by the getXMLReader method shall be used only for parsing the InputSource object returned by the getInputSource method.
+
+         final boolean hasInputSource = ((SAXSource) source).getInputSource() != null; 
+         final boolean hasXMLReader = ((SAXSource) source).getXMLReader() != null;
+
+         if (hasInputSource || hasXMLReader)
+         {
+            try
+            {
+               TransformerFactory tf = TransformerFactory.newInstance();
+               ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
+               Transformer transformer = tf.newTransformer();
+               transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+               transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+               transformer.transform(source, new StreamResult(baos));
+               retElement = DOMUtils.parse(new ByteArrayInputStream(baos.toByteArray()));
+            }
+            catch (TransformerException ex)
+            {
+               throw new IOException(ex);
+            }
+         }
+      }
+      else
+      {
+         throw new RuntimeException("Source type not implemented: " + source.getClass().getName());
       }
 
       return retElement;
