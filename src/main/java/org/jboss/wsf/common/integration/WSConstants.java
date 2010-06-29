@@ -40,6 +40,11 @@ public final class WSConstants
    public static final String STACK_TRANSPORT_CLASS = "stack.transport.class";
    
    /**
+    * Stack specific transport class provider configuration property.
+    */
+   public static final String STACK_TRANSPORT_CLASS_PROVIDER = "stack.transport.class.provider";
+   
+   /**
     * JBoss WS config name property.
     */
    public static final String JBOSSWS_CONFIG_NAME = "jbossws-config-name";
