@@ -29,7 +29,7 @@ import org.jboss.wsf.spi.metadata.jms.JMSEndpointsMetaData;
  *
  * @author <a href="mailto:ema@redhat.com">Jim Ma</a>
  */
-public final class JMSDeploymentAspect extends AbstractDeploymentAspect
+public class JMSDeploymentAspect extends AbstractDeploymentAspect
 {
    @Override
    public boolean canHandle(final Deployment dep)
