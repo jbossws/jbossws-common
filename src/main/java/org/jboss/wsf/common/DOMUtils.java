@@ -85,6 +85,7 @@ public final class DOMUtils
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             factory.setValidating(false);
             factory.setNamespaceAware(true);
+            factory.setExpandEntityReferences(false);
 
             try
             {
