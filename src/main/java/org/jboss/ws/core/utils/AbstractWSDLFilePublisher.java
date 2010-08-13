@@ -66,8 +66,12 @@ public abstract class AbstractWSDLFilePublisher
    {
       this.dep = dep;
       
-      SPIProvider spiProvider = SPIProviderResolver.getInstance().getProvider();
-      serverConfig = spiProvider.getSPI(ServerConfigFactory.class).getServerConfig();
+      serverConfig = dep.getAttachment(ServerConfig.class);
+      if (serverConfig == null)
+      {
+         SPIProvider spiProvider = SPIProviderResolver.getInstance().getProvider();
+         serverConfig = spiProvider.getSPI(ServerConfigFactory.class).getServerConfig();
+      }
       
       if (dep.getType().toString().endsWith("JSE"))
       {
