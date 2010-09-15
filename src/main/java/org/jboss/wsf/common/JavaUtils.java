@@ -565,7 +565,8 @@ public class JavaUtils
    public static String getPackageName(Class<?> clazz)
    {
       String fullName = clazz.getName();
-      return fullName.substring(0, fullName.lastIndexOf("."));
+      int dotIndex = fullName.lastIndexOf(".");
+      return dotIndex == -1 ? "" : fullName.substring(0, dotIndex);
    }
 
    public static boolean isReservedKeyword(String keyword)
