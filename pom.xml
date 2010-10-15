@@ -37,6 +37,7 @@
     <junit.version>3.8.2</junit.version>
     <wsdl4j.version>1.6.2</wsdl4j.version>
     <jms.api.version>1.1</jms.api.version>
+    <jaxws.api.version>1.0.0.Beta1</jaxws.api.version>
   </properties>
 
   <!-- Dependencies -->
@@ -65,12 +66,11 @@
      </dependency>
 
     <!-- provided apis -->
-    <dependency>
-      <groupId>javax.xml.ws</groupId>
-      <artifactId>jaxws-api</artifactId>
-      <version>${jaxws.api.version}</version>
-      <scope>provided</scope>
-    </dependency>
+      <dependency>
+        <groupId>org.jboss.spec.javax.xml.ws</groupId>
+        <artifactId>jboss-jaxws-api_2.2_spec</artifactId>
+        <version>${jaxws.api.version}</version>
+      </dependency>
     <dependency>
       <groupId>org.jboss.javaee</groupId>
       <artifactId>jboss-ejb-api</artifactId>
@@ -119,6 +119,37 @@
   <!-- Plugins -->
   <build>
     <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <showDeprecation>false</showDeprecation>
+          <compilerArguments>
+            <endorseddirs>${project.build.directory}/endorsed</endorseddirs>
+          </compilerArguments>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.jboss.spec.javax.xml.ws</groupId>
+                  <artifactId>jboss-jaxws-api_2.2_spec</artifactId>
+                  <type>jar</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.directory}/endorsed</outputDirectory>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-release-plugin</artifactId>
