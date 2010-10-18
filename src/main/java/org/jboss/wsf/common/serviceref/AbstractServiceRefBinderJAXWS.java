@@ -31,8 +31,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.jws.HandlerChain;
-import javax.naming.Context;
-import javax.naming.NamingException;
 import javax.naming.Referenceable;
 import javax.xml.namespace.QName;
 import javax.xml.ws.RespectBinding;
@@ -43,23 +41,18 @@ import javax.xml.ws.WebServiceRefs;
 import javax.xml.ws.soap.Addressing;
 import javax.xml.ws.soap.MTOM;
 
-import org.jboss.logging.Logger;
-import org.jboss.util.naming.Util;
 import org.jboss.wsf.spi.WSFException;
 import org.jboss.wsf.spi.metadata.j2ee.serviceref.UnifiedServiceRefMetaData;
 import org.jboss.wsf.spi.serviceref.ServiceRefBinder;
 
 /**
- * Binds a JAXWS Service object in the client's ENC.
+ * Binds a JAXWS service object factory to the client's ENC.
  *
  * @author <a href="mailto:ropalka@redhat.com">Richard Opalka</a>
  */
-public abstract class AbstractServiceRefBinderJAXWS implements ServiceRefBinder
+public abstract class AbstractServiceRefBinderJAXWS extends AbstractServiceRefBinder
 {
-   private static Logger log = Logger.getLogger(AbstractServiceRefBinderJAXWS.class);
-
-   public void setupServiceRef(Context encCtx, String encName, AnnotatedElement ignored,
-         UnifiedServiceRefMetaData serviceRef, ClassLoader loader) throws NamingException
+   public final Referenceable createReferenceable(final UnifiedServiceRefMetaData serviceRef, final ClassLoader loader)
    {
       WebServiceRef wsref = null;
 
@@ -119,7 +112,7 @@ public abstract class AbstractServiceRefBinderJAXWS implements ServiceRefBinder
       {
          for (WebServiceRef aux : wsrefList)
          {
-            if (encName.endsWith("/" + aux.name()))
+            if (serviceRef.getServiceRefName().endsWith("/" + aux.name()))
             {
                wsref = aux;
                break;
@@ -127,7 +120,7 @@ public abstract class AbstractServiceRefBinderJAXWS implements ServiceRefBinder
          }
       }
 
-      Class targetClass = null;
+      Class<?> targetClass = null;
       if (anElement instanceof Field)
       {
          targetClass = ((Field) anElement).getType();
@@ -143,9 +136,6 @@ public abstract class AbstractServiceRefBinderJAXWS implements ServiceRefBinder
       }
 
       String targetClassName = (targetClass != null ? targetClass.getName() : null);
-      String externalName = encCtx.getNameInNamespace() + "/" + encName;
-      if (log.isDebugEnabled())
-         log.debug("setupServiceRef [jndi=" + externalName + ",target=" + targetClassName + "]");
 
       String serviceImplClass = null;
 
@@ -195,13 +185,13 @@ public abstract class AbstractServiceRefBinderJAXWS implements ServiceRefBinder
          }
          catch (MalformedURLException ex)
          {
-            Class declaringClass = null;
+            Class<?> declaringClass = null;
             if (anElement instanceof Field)
                declaringClass = ((Field) anElement).getDeclaringClass();
             else if (anElement instanceof Method)
                declaringClass = ((Method) anElement).getDeclaringClass();
             else if (anElement instanceof Class)
-               declaringClass = (Class) anElement;
+               declaringClass = (Class<?>) anElement;
 
             handlerChain = declaringClass.getPackage().getName().replace('.', '/') + "/" + handlerChain;
          }
@@ -214,7 +204,7 @@ public abstract class AbstractServiceRefBinderJAXWS implements ServiceRefBinder
       {
          try
          {
-            Class serviceClass = loader.loadClass(serviceImplClass);
+            Class<?> serviceClass = loader.loadClass(serviceImplClass);
             if (serviceClass.getAnnotation(WebServiceClient.class) != null)
             {
                WebServiceClient clientDecl = (WebServiceClient) serviceClass.getAnnotation(WebServiceClient.class);
@@ -250,11 +240,17 @@ public abstract class AbstractServiceRefBinderJAXWS implements ServiceRefBinder
          serviceRef.setRespectBindingEnabled(respectBindingAnnotation.enabled());
       }
 
-      Referenceable serviceReferenceable = this.createReferenceable(serviceImplClass, targetClassName, serviceRef);
-      Util.bind(encCtx, encName, serviceReferenceable);
-
+      return this.createJAXWSReferenceable(serviceImplClass, targetClassName, serviceRef);
    }
 
-   protected abstract Referenceable createReferenceable(String serviceImplClass, String targetClassName,
-         UnifiedServiceRefMetaData serviceRef);
+   /**
+    * Template method for creating stack specific JAXWS referenceables.
+    * 
+    * @param serviceImplClass service implementation class name
+    * @param targetClassName target class name
+    * @param serviceRef service reference UMDM
+    * @return stack specific JAXWS JNDI referenceable
+    */
+   protected abstract Referenceable createJAXWSReferenceable(final String serviceImplClass,
+         final String targetClassName, final UnifiedServiceRefMetaData serviceRef);
 }

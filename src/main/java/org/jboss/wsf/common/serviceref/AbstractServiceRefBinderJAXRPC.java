@@ -21,41 +21,27 @@
  */
 package org.jboss.wsf.common.serviceref;
 
-import java.lang.reflect.AnnotatedElement;
-
-import javax.naming.Context;
-import javax.naming.NamingException;
 import javax.naming.Referenceable;
 
-import org.jboss.logging.Logger;
-import org.jboss.util.naming.Util;
 import org.jboss.wsf.spi.metadata.j2ee.serviceref.UnifiedServiceRefMetaData;
-import org.jboss.wsf.spi.serviceref.ServiceRefBinder;
 
 /**
- * Binds a JAXRPC Service object in the client's ENC for every service-ref element in the
- * deployment descriptor.
+ * Binds a JAXRPC service object factory to the client's ENC.
  *
  * @author <a href="mailto:ropalka@redhat.com">Richard Opalka</a>
  */
-public abstract class AbstractServiceRefBinderJAXRPC implements ServiceRefBinder
+public abstract class AbstractServiceRefBinderJAXRPC extends AbstractServiceRefBinder
 {
-   // logging support
-   private static Logger log = Logger.getLogger(AbstractServiceRefBinderJAXRPC.class);
-
-   /**
-    * Binds a Service into the callers ENC for every service-ref element
-    */
-   public void setupServiceRef(Context encCtx, String encName, AnnotatedElement ignored,
-         UnifiedServiceRefMetaData serviceRef, ClassLoader loader) throws NamingException
+   public final Referenceable createReferenceable(final UnifiedServiceRefMetaData serviceRef, final ClassLoader ignored)
    {
-      String externalName = encCtx.getNameInNamespace() + "/" + encName;
-      log.info("setupServiceRef [jndi=" + externalName + "]");
-
-      // Do not use rebind, the binding should be unique
-      Referenceable ref = this.createReferenceable(serviceRef);
-      Util.bind(encCtx, encName, ref);
+      return this.createJAXRPCReferenceable(serviceRef);
    }
 
-   protected abstract Referenceable createReferenceable(UnifiedServiceRefMetaData serviceRef);
+   /**
+    * Template method for creating stack specific JAXRPC referenceables.
+    * 
+    * @param serviceRef service reference UMDM
+    * @return stack specific JAXRPC JNDI referenceable
+    */
+   protected abstract Referenceable createJAXRPCReferenceable(final UnifiedServiceRefMetaData serviceRef);
 }
