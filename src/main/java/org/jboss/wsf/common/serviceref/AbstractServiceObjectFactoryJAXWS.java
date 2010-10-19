@@ -95,7 +95,7 @@ public abstract class AbstractServiceObjectFactoryJAXWS implements ObjectFactory
          final Class<?> serviceClass = this.getClass(serviceImplClass);
          final Class<?> targetClass = this.getClass(targetClassName);
          final Service serviceInstance;
-         
+
          this.init(serviceRef);
          try
          {
