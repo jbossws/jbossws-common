@@ -43,7 +43,6 @@ import javax.xml.ws.soap.MTOM;
 
 import org.jboss.wsf.spi.WSFException;
 import org.jboss.wsf.spi.metadata.j2ee.serviceref.UnifiedServiceRefMetaData;
-import org.jboss.wsf.spi.serviceref.ServiceRefBinder;
 
 /**
  * Binds a JAXWS service object factory to the client's ENC.
@@ -54,124 +53,29 @@ public abstract class AbstractServiceRefBinderJAXWS extends AbstractServiceRefBi
 {
    public final Referenceable createReferenceable(final UnifiedServiceRefMetaData serviceRef, final ClassLoader loader)
    {
-      WebServiceRef wsref = null;
-
-      if (null == loader)
-         throw new IllegalArgumentException("There needs to be a classloader available");
-
-      // Build the list of @WebServiceRef relevant annotations
-      List<WebServiceRef> wsrefList = new ArrayList<WebServiceRef>();
-      Addressing addressingAnnotation = null;
-      MTOM mtomAnnotation = null;
-      RespectBinding respectBindingAnnotation = null;
-
-      AnnotatedElement anElement = (AnnotatedElement) serviceRef.getAnnotatedElement();
-      if (anElement != null)
+      final AnnotatedElement annotatedElement = (AnnotatedElement) serviceRef.getAnnotatedElement();
+      WebServiceRef serviceRefAnnotation = null;
+      if (annotatedElement != null)
       {
-         for (Annotation an : anElement.getAnnotations())
-         {
-            if (an instanceof Addressing)
-            {
-               addressingAnnotation = (Addressing) an;
-               continue;
-            }
-
-            if (an instanceof MTOM)
-            {
-               mtomAnnotation = (MTOM) an;
-               continue;
-            }
-
-            if (an instanceof RespectBinding)
-            {
-               respectBindingAnnotation = (RespectBinding) an;
-               continue;
-            }
-
-            if (an instanceof WebServiceRef)
-            {
-               wsrefList.add((WebServiceRef) an);
-               continue;
-            }
-
-            if (an instanceof WebServiceRefs)
-            {
-               WebServiceRefs wsrefs = (WebServiceRefs) an;
-               for (WebServiceRef aux : wsrefs.value())
-                  wsrefList.add(aux);
-            }
-         }
+         this.processAddressingAnnotation(serviceRef, annotatedElement);
+         this.processMTOMAnnotation(serviceRef, annotatedElement);
+         this.processRespectBindingAnnotation(serviceRef, annotatedElement);
+         serviceRefAnnotation = this.getWebServiceRefAnnotation(serviceRef, annotatedElement);
       }
 
-      // Use the single @WebServiceRef
-      if (wsrefList.size() == 1)
-      {
-         wsref = wsrefList.get(0);
-      }
-      else
-      {
-         for (WebServiceRef aux : wsrefList)
-         {
-            if (serviceRef.getServiceRefName().endsWith("/" + aux.name()))
-            {
-               wsref = aux;
-               break;
-            }
-         }
-      }
-
-      Class<?> targetClass = null;
-      if (anElement instanceof Field)
-      {
-         targetClass = ((Field) anElement).getType();
-      }
-      else if (anElement instanceof Method)
-      {
-         targetClass = ((Method) anElement).getParameterTypes()[0];
-      }
-      else
-      {
-         if (wsref != null && (wsref.type() != Object.class))
-            targetClass = wsref.type();
-      }
-
-      String targetClassName = (targetClass != null ? targetClass.getName() : null);
-
-      String serviceImplClass = null;
-
-      // #1 Use the explicit @WebServiceRef.value
-      if (wsref != null && wsref.value() != Service.class)
-         serviceImplClass = wsref.value().getName();
-
-      // #2 Use the target ref type
-      if (serviceImplClass == null && targetClass != null && Service.class.isAssignableFrom(targetClass))
-         serviceImplClass = targetClass.getName();
-
-      // #3 Use <service-interface>
-      if (serviceImplClass == null && serviceRef.getServiceInterface() != null)
-         serviceImplClass = serviceRef.getServiceInterface();
-
-      // #4 Use javax.xml.ws.Service
-      if (serviceImplClass == null)
-         serviceImplClass = Service.class.getName();
-
-      // #1 Use the explicit @WebServiceRef.type
-      if (wsref != null && wsref.type() != Object.class)
-         targetClassName = wsref.type().getName();
-
-      // #2 Use the target ref type
-      if (targetClassName == null && targetClass != null && Service.class.isAssignableFrom(targetClass) == false)
-         targetClassName = targetClass.getName();
+      final Class<?> targetClass = getTargetClass(annotatedElement, serviceRefAnnotation);
+      final String targetClassName = (targetClass != null ? targetClass.getName() : null);
+      final String serviceImplClassName = getServiceImplClassName(serviceRef, serviceRefAnnotation, targetClass);
 
       // Set the wsdlLocation if there is no override already
-      if (serviceRef.getWsdlOverride() == null && wsref != null && wsref.wsdlLocation().length() > 0)
-         serviceRef.setWsdlOverride(wsref.wsdlLocation());
+      if (serviceRef.getWsdlOverride() == null && serviceRefAnnotation != null && serviceRefAnnotation.wsdlLocation().length() > 0)
+         serviceRef.setWsdlOverride(serviceRefAnnotation.wsdlLocation());
 
       // Set the handlerChain from @HandlerChain on the annotated element
       String handlerChain = serviceRef.getHandlerChain();
-      if (anElement != null)
+      if (annotatedElement != null)
       {
-         HandlerChain anHandlerChain = anElement.getAnnotation(HandlerChain.class);
+         HandlerChain anHandlerChain = annotatedElement.getAnnotation(HandlerChain.class);
          if (handlerChain == null && anHandlerChain != null && anHandlerChain.file().length() > 0)
             handlerChain = anHandlerChain.file();
       }
@@ -186,12 +90,12 @@ public abstract class AbstractServiceRefBinderJAXWS extends AbstractServiceRefBi
          catch (MalformedURLException ex)
          {
             Class<?> declaringClass = null;
-            if (anElement instanceof Field)
-               declaringClass = ((Field) anElement).getDeclaringClass();
-            else if (anElement instanceof Method)
-               declaringClass = ((Method) anElement).getDeclaringClass();
-            else if (anElement instanceof Class)
-               declaringClass = (Class<?>) anElement;
+            if (annotatedElement instanceof Field)
+               declaringClass = ((Field) annotatedElement).getDeclaringClass();
+            else if (annotatedElement instanceof Method)
+               declaringClass = ((Method) annotatedElement).getDeclaringClass();
+            else if (annotatedElement instanceof Class)
+               declaringClass = (Class<?>) annotatedElement;
 
             handlerChain = declaringClass.getPackage().getName().replace('.', '/') + "/" + handlerChain;
          }
@@ -204,7 +108,7 @@ public abstract class AbstractServiceRefBinderJAXWS extends AbstractServiceRefBi
       {
          try
          {
-            Class<?> serviceClass = loader.loadClass(serviceImplClass);
+            Class<?> serviceClass = loader.loadClass(serviceImplClassName);
             if (serviceClass.getAnnotation(WebServiceClient.class) != null)
             {
                WebServiceClient clientDecl = (WebServiceClient) serviceClass.getAnnotation(WebServiceClient.class);
@@ -222,30 +126,33 @@ public abstract class AbstractServiceRefBinderJAXWS extends AbstractServiceRefBi
          }
       }
 
-      if (addressingAnnotation != null)
+      return this.createJAXWSReferenceable(serviceImplClassName, targetClassName, serviceRef);
+   }
+
+   private Class<?> getTargetClass(final AnnotatedElement annotatedElement, WebServiceRef serviceRefAnnotation)
+   {
+      Class<?> targetClass = null;
+
+      if (annotatedElement instanceof Field)
       {
-         serviceRef.setAddressingEnabled(addressingAnnotation.enabled());
-         serviceRef.setAddressingRequired(addressingAnnotation.required());
-         serviceRef.setAddressingResponses(addressingAnnotation.responses().toString());
+         targetClass = ((Field) annotatedElement).getType();
+      }
+      else if (annotatedElement instanceof Method)
+      {
+         targetClass = ((Method) annotatedElement).getParameterTypes()[0];
+      }
+      else
+      {
+         if (serviceRefAnnotation != null && (serviceRefAnnotation.type() != Object.class))
+            targetClass = serviceRefAnnotation.type();
       }
 
-      if (mtomAnnotation != null)
-      {
-         serviceRef.setMtomEnabled(mtomAnnotation.enabled());
-         serviceRef.setMtomThreshold(mtomAnnotation.threshold());
-      }
-
-      if (respectBindingAnnotation != null)
-      {
-         serviceRef.setRespectBindingEnabled(respectBindingAnnotation.enabled());
-      }
-
-      return this.createJAXWSReferenceable(serviceImplClass, targetClassName, serviceRef);
+      return targetClass;
    }
 
    /**
     * Template method for creating stack specific JAXWS referenceables.
-    * 
+    *
     * @param serviceImplClass service implementation class name
     * @param targetClassName target class name
     * @param serviceRef service reference UMDM
@@ -253,4 +160,117 @@ public abstract class AbstractServiceRefBinderJAXWS extends AbstractServiceRefBi
     */
    protected abstract Referenceable createJAXWSReferenceable(final String serviceImplClass,
          final String targetClassName, final UnifiedServiceRefMetaData serviceRef);
+
+   private void processAddressingAnnotation(final UnifiedServiceRefMetaData serviceRef, final AnnotatedElement annotatedElement)
+   {
+      for (final Annotation annotation : annotatedElement.getAnnotations())
+      {
+         if (annotation instanceof Addressing)
+         {
+            final Addressing addressingAnnotation = (Addressing) annotation;
+
+            serviceRef.setAddressingEnabled(addressingAnnotation.enabled());
+            serviceRef.setAddressingRequired(addressingAnnotation.required());
+            serviceRef.setAddressingResponses(addressingAnnotation.responses().toString());
+
+            return;
+         }
+      }
+   }
+
+   private void processMTOMAnnotation(final UnifiedServiceRefMetaData serviceRef, final AnnotatedElement annotatedElement)
+   {
+      for (final Annotation annotation : annotatedElement.getAnnotations())
+      {
+         if (annotation instanceof MTOM)
+         {
+            final MTOM mtomAnnotation = (MTOM) annotation;
+
+            serviceRef.setMtomEnabled(mtomAnnotation.enabled());
+            serviceRef.setMtomThreshold(mtomAnnotation.threshold());
+
+            return;
+         }
+      }
+   }
+
+   private void processRespectBindingAnnotation(final UnifiedServiceRefMetaData serviceRef, final AnnotatedElement annotatedElement)
+   {
+      for (final Annotation annotation : annotatedElement.getAnnotations())
+      {
+         if (annotation instanceof RespectBinding)
+         {
+            final RespectBinding respectBindingAnnotation = (RespectBinding) annotation;
+
+            serviceRef.setRespectBindingEnabled(respectBindingAnnotation.enabled());
+
+            return;
+         }
+      }
+   }
+
+   private WebServiceRef getWebServiceRefAnnotation(final UnifiedServiceRefMetaData serviceRef, final AnnotatedElement annotatedElement)
+   {
+      // Build the list of @WebServiceRef relevant annotations
+      final List<WebServiceRef> wsrefList = new ArrayList<WebServiceRef>();
+
+      for (final Annotation an : annotatedElement.getAnnotations())
+      {
+         if (an instanceof WebServiceRef)
+         {
+            wsrefList.add((WebServiceRef) an);
+            continue;
+         }
+
+         if (an instanceof WebServiceRefs)
+         {
+            WebServiceRefs wsrefs = (WebServiceRefs) an;
+            for (WebServiceRef aux : wsrefs.value())
+               wsrefList.add(aux);
+         }
+      }
+
+      // Return effective @WebServiceRef annotation
+      WebServiceRef wsref = null;
+      if (wsrefList.size() == 1)
+      {
+         wsref = wsrefList.get(0);
+      }
+      else
+      {
+         for (WebServiceRef aux : wsrefList)
+         {
+            if (serviceRef.getServiceRefName().endsWith(aux.name()))
+            {
+               wsref = aux;
+               break;
+            }
+         }
+      }
+
+      return wsref;
+   }
+
+   private String getServiceImplClassName(final UnifiedServiceRefMetaData serviceRef, final WebServiceRef serviceRefAnnotation, final Class<?> targetClass)
+   {
+      String serviceImplClass = null;
+
+      // #1 Use the explicit @WebServiceRef.value
+      if (serviceRefAnnotation != null && serviceRefAnnotation.value() != Service.class)
+         serviceImplClass = serviceRefAnnotation.value().getName();
+
+      // #2 Use the target ref type
+      if (serviceImplClass == null && targetClass != null && Service.class.isAssignableFrom(targetClass))
+         serviceImplClass = targetClass.getName();
+
+      // #3 Use <service-interface>
+      if (serviceImplClass == null && serviceRef.getServiceInterface() != null)
+         serviceImplClass = serviceRef.getServiceInterface();
+
+      // #4 Use javax.xml.ws.Service
+      if (serviceImplClass == null)
+         serviceImplClass = Service.class.getName();
+
+      return serviceImplClass;
+   }
 }
