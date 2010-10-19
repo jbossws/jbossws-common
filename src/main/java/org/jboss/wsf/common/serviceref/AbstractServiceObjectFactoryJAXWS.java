@@ -21,9 +21,6 @@
  */
 package org.jboss.wsf.common.serviceref;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -35,8 +32,6 @@ import java.util.List;
 
 import javax.naming.Context;
 import javax.naming.Name;
-import javax.naming.NamingException;
-import javax.naming.RefAddr;
 import javax.naming.Reference;
 import javax.naming.spi.ObjectFactory;
 import javax.xml.namespace.QName;
@@ -54,7 +49,6 @@ import org.jboss.wsf.spi.metadata.j2ee.serviceref.UnifiedServiceRefMetaData;
  * This ServiceObjectFactory reconstructs a javax.xml.ws.Service
  * for a given WSDL when the webservice client does a JNDI lookup.
  *
- * @author Thomas.Diesler@jboss.org
  * @author <a href="mailto:ropalka@redhat.com">Richard Opalka</a>
  */
 public abstract class AbstractServiceObjectFactoryJAXWS implements ObjectFactory
@@ -80,14 +74,15 @@ public abstract class AbstractServiceObjectFactoryJAXWS implements ObjectFactory
     * @see javax.naming.spi.NamingManager#getURLContext
     */
    @SuppressWarnings("rawtypes")
-   public Object getObjectInstance(final Object obj, final Name name, final Context nameCtx, final Hashtable environment)
-         throws Exception
+   public final Object getObjectInstance(final Object obj, final Name name, final Context nameCtx,
+         final Hashtable environment) throws Exception
    {
       try
       {
          // references
          final Reference ref = (Reference) obj;
-         final UnifiedServiceRefMetaData serviceRef = unmarshallServiceRef(ref);
+         final byte[] binaryData = (byte[]) ref.get(ServiceRefSerializer.SERVICE_REF_META_DATA).getContent();
+         final UnifiedServiceRefMetaData serviceRef = ServiceRefSerializer.unmarshall(binaryData);
          // class names
          final String serviceImplClass = this.getServiceClassName(ref, serviceRef);
          final String targetClassName = this.getTargetClassName(ref, serviceRef, serviceImplClass);
@@ -127,10 +122,28 @@ public abstract class AbstractServiceObjectFactoryJAXWS implements ObjectFactory
       return null;
    }
 
+   /**
+    * Lifecycle template method called before javax.xml.ws.Service object instantiation.
+    *
+    * @param serviceRefUMDM service reference meta data
+    */
    protected abstract void init(final UnifiedServiceRefMetaData serviceRefUMDM);
 
+   /**
+    * Lifecycle template method called after javax.xml.ws.Service object was created
+    * and before port is instantiated. It allows stack to configure service before
+    * creating ports.
+    *
+    * @param serviceRefUMDM service reference meta data
+    * @param service service instance
+    */
    protected abstract void configure(final UnifiedServiceRefMetaData serviceRefUMDM, final Service service);
 
+   /**
+    * Lifecycle template method called after javax.xml.ws.Service object and after port instantiation.
+    *
+    * @param serviceRefUMDM
+    */
    protected abstract void destroy(final UnifiedServiceRefMetaData serviceRefUMDM);
 
    private Class<?> getClass(final String className) throws ClassNotFoundException
@@ -147,7 +160,7 @@ public abstract class AbstractServiceObjectFactoryJAXWS implements ObjectFactory
    {
       String serviceClassName = serviceRefMD.getServiceImplClass();
       if (serviceClassName == null)
-         serviceClassName = (String) ref.get(AbstractServiceReferenceableJAXWS.SERVICE_IMPL_CLASS).getContent();
+         serviceClassName = (String) ref.get(ServiceRefSerializer.SERVICE_IMPL_CLASS).getContent();
 
       return serviceClassName;
    }
@@ -157,7 +170,7 @@ public abstract class AbstractServiceObjectFactoryJAXWS implements ObjectFactory
    {
       String targetClassName = serviceRefMD.getServiceRefType();
       if (targetClassName == null)
-         targetClassName = (String) ref.get(AbstractServiceReferenceableJAXWS.TARGET_CLASS_NAME).getContent();
+         targetClassName = (String) ref.get(ServiceRefSerializer.TARGET_CLASS_NAME).getContent();
 
       if (Service.class.getName().equals(targetClassName))
          targetClassName = serviceImplClass;
@@ -405,25 +418,5 @@ public abstract class AbstractServiceObjectFactoryJAXWS implements ObjectFactory
 
       return features.size() == 0 ? null : features.toArray(new WebServiceFeature[]
       {});
-   }
-
-   private UnifiedServiceRefMetaData unmarshallServiceRef(final Reference ref) throws ClassNotFoundException,
-         NamingException
-   {
-      final UnifiedServiceRefMetaData sref;
-      final RefAddr refAddr = ref.get(AbstractServiceReferenceableJAXWS.SERVICE_REF_META_DATA);
-      final ByteArrayInputStream bais = new ByteArrayInputStream((byte[]) refAddr.getContent());
-      try
-      {
-         ObjectInputStream ois = new ObjectInputStream(bais);
-         sref = (UnifiedServiceRefMetaData) ois.readObject();
-         ois.close();
-      }
-      catch (IOException e)
-      {
-         throw new NamingException("Cannot unmarshall service ref meta data, cause: " + e.toString());
-      }
-
-      return sref;
    }
 }

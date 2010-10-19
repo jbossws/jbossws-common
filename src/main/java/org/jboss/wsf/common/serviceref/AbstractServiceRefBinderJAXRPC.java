@@ -39,7 +39,7 @@ public abstract class AbstractServiceRefBinderJAXRPC extends AbstractServiceRefB
 
    /**
     * Template method for creating stack specific JAXRPC referenceables.
-    * 
+    *
     * @param serviceRef service reference UMDM
     * @return stack specific JAXRPC JNDI referenceable
     */

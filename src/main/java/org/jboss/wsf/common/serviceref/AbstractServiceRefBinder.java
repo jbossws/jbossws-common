@@ -58,7 +58,7 @@ abstract class AbstractServiceRefBinder implements ServiceRefBinder
    {
       final String jndiFullName = encCtx.getNameInNamespace() + "/" + encName;
 
-      log.info("binding service reference to [jndi=" + jndiFullName + "]");
+      log.info("Binding service reference to [jndi=" + jndiFullName + "]");
       Util.bind(encCtx, encName, jndiReferenceable);
    }
 }

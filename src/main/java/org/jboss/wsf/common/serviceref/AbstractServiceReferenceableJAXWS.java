@@ -21,10 +21,6 @@
  */
 package org.jboss.wsf.common.serviceref;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-
 import javax.naming.BinaryRefAddr;
 import javax.naming.NamingException;
 import javax.naming.Reference;
@@ -36,23 +32,16 @@ import org.jboss.wsf.spi.metadata.j2ee.serviceref.UnifiedServiceRefMetaData;
 
 /**
  * A JNDI reference to a javax.xml.ws.Service metadata.
- * 
+ *
  * It holds all the information necessary to reconstruct the javax.xml.ws.Service
  * instances when client does a JNDI lookup.
  *
  * @param <T> JNDI object factory type
- * 
- * @author Thomas.Diesler@jboss.org
+ *
  * @author <a href="mailto:ropalka@redhat.com">Richard Opalka</a>
  */
 public abstract class AbstractServiceReferenceableJAXWS<T extends ObjectFactory> implements Referenceable
 {
-   public static final String SERVICE_REF_META_DATA = "SERVICE_REF_META_DATA";
-
-   public static final String SERVICE_IMPL_CLASS = "SERVICE_CLASS_NAME";
-
-   public static final String TARGET_CLASS_NAME = "TARGET_CLASS_NAME";
-
    private final String serviceImplClass;
 
    private final String targetClassName;
@@ -67,38 +56,26 @@ public abstract class AbstractServiceReferenceableJAXWS<T extends ObjectFactory>
       this.serviceRef = serviceRef;
    }
 
-   public Reference getReference() throws NamingException
+   public final Reference getReference() throws NamingException
    {
       final Reference myRef = new Reference(getClass().getName(), this.getObjectFactory().getName(), null);
 
-      myRef.add(new StringRefAddr(SERVICE_IMPL_CLASS, this.serviceImplClass));
-      myRef.add(new StringRefAddr(TARGET_CLASS_NAME, this.targetClassName));
-      myRef.add(new BinaryRefAddr(SERVICE_REF_META_DATA, this.marshall(this.serviceRef)));
+      myRef.add(new StringRefAddr(ServiceRefSerializer.SERVICE_IMPL_CLASS, this.serviceImplClass));
+      myRef.add(new StringRefAddr(ServiceRefSerializer.TARGET_CLASS_NAME, this.targetClassName));
+      myRef.add(new BinaryRefAddr(ServiceRefSerializer.SERVICE_REF_META_DATA, ServiceRefSerializer
+            .marshall(this.serviceRef)));
 
       return myRef;
    }
 
+   /**
+    * Template method for providing stack specific JNDI object factory.
+    *
+    * @return JNDI object factory
+    */
    protected abstract Class<T> getObjectFactory();
 
-   private byte[] marshall(final Object obj) throws NamingException
-   {
-      final ByteArrayOutputStream baos = new ByteArrayOutputStream(512);
-
-      try
-      {
-         final ObjectOutputStream oos = new ObjectOutputStream(baos);
-         oos.writeObject(obj);
-         oos.close();
-      }
-      catch (final IOException e)
-      {
-         throw new NamingException("Cannot marshall object, cause: " + e.toString());
-      }
-
-      return baos.toByteArray();
-   }
-
-   public String toString()
+   public final String toString()
    {
       final StringBuilder sb = new StringBuilder();
 
