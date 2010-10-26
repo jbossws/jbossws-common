@@ -65,7 +65,11 @@ public abstract class AbstractServiceRefBinderJAXWS extends AbstractServiceRefBi
 
       this.processWsdlOverride(serviceRef, serviceRefAnnotation, loader, serviceImplClassName);
 
-      return this.createJAXWSReferenceable(serviceImplClassName, targetClassName, serviceRef);
+      // TODO: refactor these two lines of code higher
+      serviceRef.setServiceImplClass(serviceImplClassName);
+      serviceRef.setServiceInterface(targetClassName);
+      
+      return this.createJAXWSReferenceable(serviceRef);
    }
 
    /**
@@ -76,8 +80,7 @@ public abstract class AbstractServiceRefBinderJAXWS extends AbstractServiceRefBi
     * @param serviceRef service reference UMDM
     * @return stack specific JAXWS JNDI referenceable
     */
-   protected abstract Referenceable createJAXWSReferenceable(final String serviceImplClass,
-         final String targetClassName, final UnifiedServiceRefMetaData serviceRefMD);
+   protected abstract Referenceable createJAXWSReferenceable(final UnifiedServiceRefMetaData serviceRefMD);
 
    private void processAddressingAnnotation(final UnifiedServiceRefMetaData serviceRefMD)
    {

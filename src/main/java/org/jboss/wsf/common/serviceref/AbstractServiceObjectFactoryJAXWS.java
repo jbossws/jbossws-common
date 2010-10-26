@@ -84,8 +84,8 @@ public abstract class AbstractServiceObjectFactoryJAXWS implements ObjectFactory
          final byte[] binaryData = (byte[]) ref.get(ServiceRefSerializer.SERVICE_REF_META_DATA).getContent();
          final UnifiedServiceRefMetaData serviceRef = ServiceRefSerializer.unmarshall(binaryData);
          // class names
-         final String serviceImplClass = this.getServiceClassName(ref, serviceRef);
-         final String targetClassName = this.getTargetClassName(ref, serviceRef, serviceImplClass);
+         final String serviceImplClass = this.getServiceClassName(serviceRef);
+         final String targetClassName = this.getTargetClassName(serviceRef);
          // class instances
          final Class<?> serviceClass = this.getClass(serviceImplClass);
          final Class<?> targetClass = this.getClass(targetClassName);
@@ -156,24 +156,17 @@ public abstract class AbstractServiceObjectFactoryJAXWS implements ObjectFactory
       return null;
    }
 
-   private String getServiceClassName(final Reference ref, final UnifiedServiceRefMetaData serviceRefMD)
+   private String getServiceClassName(final UnifiedServiceRefMetaData serviceRefMD)
    {
-      String serviceClassName = serviceRefMD.getServiceImplClass();
-      if (serviceClassName == null)
-         serviceClassName = (String) ref.get(ServiceRefSerializer.SERVICE_IMPL_CLASS).getContent();
-
-      return serviceClassName;
+      return serviceRefMD.getServiceImplClass();
    }
 
-   private String getTargetClassName(final Reference ref, final UnifiedServiceRefMetaData serviceRefMD,
-         final String serviceImplClass)
+   private String getTargetClassName(final UnifiedServiceRefMetaData serviceRefMD)
    {
       String targetClassName = serviceRefMD.getServiceRefType();
-      if (targetClassName == null)
-         targetClassName = (String) ref.get(ServiceRefSerializer.TARGET_CLASS_NAME).getContent();
 
       if (Service.class.getName().equals(targetClassName))
-         targetClassName = serviceImplClass;
+         targetClassName = serviceRefMD.getServiceImplClass();
 
       return targetClassName;
    }

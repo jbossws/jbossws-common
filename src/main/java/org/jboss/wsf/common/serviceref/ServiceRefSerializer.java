@@ -40,10 +40,6 @@ final class ServiceRefSerializer
 {
    public static final String SERVICE_REF_META_DATA = "SERVICE_REF_META_DATA";
 
-   public static final String SERVICE_IMPL_CLASS = "SERVICE_CLASS_NAME";
-
-   public static final String TARGET_CLASS_NAME = "TARGET_CLASS_NAME";
-
    private ServiceRefSerializer()
    {
       // forbidden constructor

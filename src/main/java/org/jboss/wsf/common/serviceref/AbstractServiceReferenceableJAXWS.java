@@ -25,7 +25,6 @@ import javax.naming.BinaryRefAddr;
 import javax.naming.NamingException;
 import javax.naming.Reference;
 import javax.naming.Referenceable;
-import javax.naming.StringRefAddr;
 import javax.naming.spi.ObjectFactory;
 
 import org.jboss.wsf.spi.metadata.j2ee.serviceref.UnifiedServiceRefMetaData;
@@ -42,30 +41,21 @@ import org.jboss.wsf.spi.metadata.j2ee.serviceref.UnifiedServiceRefMetaData;
  */
 public abstract class AbstractServiceReferenceableJAXWS<T extends ObjectFactory> implements Referenceable
 {
-   private final String serviceImplClass;
-
-   private final String targetClassName;
-
    private final UnifiedServiceRefMetaData serviceRef;
 
-   public AbstractServiceReferenceableJAXWS(final String serviceImplClass, final String targetClassName,
-         final UnifiedServiceRefMetaData serviceRef)
+   public AbstractServiceReferenceableJAXWS(final UnifiedServiceRefMetaData serviceRef)
    {
-      this.serviceImplClass = serviceImplClass;
-      this.targetClassName = targetClassName;
       this.serviceRef = serviceRef;
    }
 
    public final Reference getReference() throws NamingException
    {
-      final Reference myRef = new Reference(getClass().getName(), this.getObjectFactory().getName(), null);
+      final Reference reference = new Reference(getClass().getName(), this.getObjectFactory().getName(), null);
+      final byte[] data = ServiceRefSerializer.marshall(this.serviceRef);
 
-      myRef.add(new StringRefAddr(ServiceRefSerializer.SERVICE_IMPL_CLASS, this.serviceImplClass));
-      myRef.add(new StringRefAddr(ServiceRefSerializer.TARGET_CLASS_NAME, this.targetClassName));
-      myRef.add(new BinaryRefAddr(ServiceRefSerializer.SERVICE_REF_META_DATA, ServiceRefSerializer
-            .marshall(this.serviceRef)));
+      reference.add(new BinaryRefAddr(ServiceRefSerializer.SERVICE_REF_META_DATA, data));
 
-      return myRef;
+      return reference;
    }
 
    /**
@@ -74,16 +64,4 @@ public abstract class AbstractServiceReferenceableJAXWS<T extends ObjectFactory>
     * @return JNDI object factory
     */
    protected abstract Class<T> getObjectFactory();
-
-   public final String toString()
-   {
-      final StringBuilder sb = new StringBuilder();
-
-      sb.append("\n").append(getClass().getName());
-      sb.append("\n serviceImplClass=" + serviceImplClass);
-      sb.append("\n targetClassName=" + targetClassName);
-      sb.append("\n serviceRef=" + this.serviceRef);
-
-      return sb.toString();
-   }
 }
