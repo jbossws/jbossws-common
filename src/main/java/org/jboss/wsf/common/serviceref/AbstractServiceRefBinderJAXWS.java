@@ -58,17 +58,16 @@ public abstract class AbstractServiceRefBinderJAXWS extends AbstractServiceRefBi
       this.processRespectBindingAnnotation(serviceRef);
       this.processHandlerChainAnnotation(serviceRef);
 
-      final WebServiceRef serviceRefAnnotation = this.getWebServiceRefAnnotation(serviceRef);
-      final Class<?> targetClass = getTargetClass(serviceRef, serviceRefAnnotation);
+      final Class<?> targetClass = getTargetClass(serviceRef);
       final String targetClassName = (targetClass != null ? targetClass.getName() : null);
-      final String serviceImplClassName = getServiceImplClassName(serviceRef, serviceRefAnnotation, targetClass);
-
-      this.processWsdlOverride(serviceRef, serviceRefAnnotation, loader, serviceImplClassName);
+      final String serviceImplClassName = getServiceImplClassName(serviceRef);
 
       // TODO: refactor these two lines of code higher
-      serviceRef.setServiceImplClass(serviceImplClassName);
       serviceRef.setServiceInterface(targetClassName);
-      
+      serviceRef.setServiceImplClass(serviceImplClassName);
+
+      this.processWsdlOverride(serviceRef, loader);
+
       return this.createJAXWSReferenceable(serviceRef);
    }
 
@@ -153,10 +152,10 @@ public abstract class AbstractServiceRefBinderJAXWS extends AbstractServiceRefBi
       return annotatedElement != null ? (T) annotatedElement.getAnnotation(annotationClass) : null;
    }
 
-   private void processWsdlOverride(final UnifiedServiceRefMetaData serviceRefMD,
-         final WebServiceRef serviceRefAnnotation, final ClassLoader loader, final String serviceImplClassName)
+   private void processWsdlOverride(final UnifiedServiceRefMetaData serviceRefMD, final ClassLoader loader)
    {
       // Set the wsdlLocation if there is no override already
+      final WebServiceRef serviceRefAnnotation = this.getWebServiceRefAnnotation(serviceRefMD);
       if (serviceRefMD.getWsdlOverride() == null && serviceRefAnnotation != null
             && serviceRefAnnotation.wsdlLocation().length() > 0)
          serviceRefMD.setWsdlOverride(serviceRefAnnotation.wsdlLocation());
@@ -166,7 +165,7 @@ public abstract class AbstractServiceRefBinderJAXWS extends AbstractServiceRefBi
       {
          try
          {
-            Class<?> serviceClass = loader.loadClass(serviceImplClassName);
+            Class<?> serviceClass = loader.loadClass(serviceRefMD.getServiceImplClass());
             if (serviceClass.getAnnotation(WebServiceClient.class) != null)
             {
                WebServiceClient clientDecl = (WebServiceClient) serviceClass.getAnnotation(WebServiceClient.class);
@@ -198,7 +197,7 @@ public abstract class AbstractServiceRefBinderJAXWS extends AbstractServiceRefBi
       return declaringClass;
    }
 
-   private Class<?> getTargetClass(final UnifiedServiceRefMetaData serviceRefMD, WebServiceRef serviceRefAnnotation)
+   private Class<?> getTargetClass(final UnifiedServiceRefMetaData serviceRefMD)
    {
       final AnnotatedElement annotatedElement = (AnnotatedElement) serviceRefMD.getAnnotatedElement();
 
@@ -214,11 +213,37 @@ public abstract class AbstractServiceRefBinderJAXWS extends AbstractServiceRefBi
       }
       else
       {
+         final WebServiceRef serviceRefAnnotation = this.getWebServiceRefAnnotation(serviceRefMD);
          if (serviceRefAnnotation != null && (serviceRefAnnotation.type() != Object.class))
             targetClass = serviceRefAnnotation.type();
       }
 
       return targetClass;
+   }
+
+   private String getServiceImplClassName(final UnifiedServiceRefMetaData serviceRefMD)
+   {
+      String serviceImplClass = null;
+
+      // #1 Use the explicit @WebServiceRef.value
+      final WebServiceRef serviceRefAnnotation = this.getWebServiceRefAnnotation(serviceRefMD);
+      if (serviceRefAnnotation != null && serviceRefAnnotation.value() != Service.class)
+         serviceImplClass = serviceRefAnnotation.value().getName();
+
+      // #2 Use the target ref type
+      final Class<?> targetClass = getTargetClass(serviceRefMD);
+      if (serviceImplClass == null && targetClass != null && Service.class.isAssignableFrom(targetClass))
+         serviceImplClass = targetClass.getName();
+
+      // #3 Use <service-interface>
+      if (serviceImplClass == null && serviceRefMD.getServiceInterface() != null)
+         serviceImplClass = serviceRefMD.getServiceInterface();
+
+      // #4 Use javax.xml.ws.Service
+      if (serviceImplClass == null)
+         serviceImplClass = Service.class.getName();
+
+      return serviceImplClass;
    }
 
    private WebServiceRef getWebServiceRefAnnotation(final UnifiedServiceRefMetaData serviceRefMD)
@@ -266,29 +291,5 @@ public abstract class AbstractServiceRefBinderJAXWS extends AbstractServiceRefBi
       }
 
       return returnValue;
-   }
-
-   private String getServiceImplClassName(final UnifiedServiceRefMetaData serviceRefMD,
-         final WebServiceRef serviceRefAnnotation, final Class<?> targetClass)
-   {
-      String serviceImplClass = null;
-
-      // #1 Use the explicit @WebServiceRef.value
-      if (serviceRefAnnotation != null && serviceRefAnnotation.value() != Service.class)
-         serviceImplClass = serviceRefAnnotation.value().getName();
-
-      // #2 Use the target ref type
-      if (serviceImplClass == null && targetClass != null && Service.class.isAssignableFrom(targetClass))
-         serviceImplClass = targetClass.getName();
-
-      // #3 Use <service-interface>
-      if (serviceImplClass == null && serviceRefMD.getServiceInterface() != null)
-         serviceImplClass = serviceRefMD.getServiceInterface();
-
-      // #4 Use javax.xml.ws.Service
-      if (serviceImplClass == null)
-         serviceImplClass = Service.class.getName();
-
-      return serviceImplClass;
    }
 }

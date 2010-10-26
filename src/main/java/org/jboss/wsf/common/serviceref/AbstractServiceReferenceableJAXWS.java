@@ -43,7 +43,7 @@ public abstract class AbstractServiceReferenceableJAXWS<T extends ObjectFactory>
 {
    private final UnifiedServiceRefMetaData serviceRef;
 
-   public AbstractServiceReferenceableJAXWS(final UnifiedServiceRefMetaData serviceRef)
+   protected AbstractServiceReferenceableJAXWS(final UnifiedServiceRefMetaData serviceRef)
    {
       this.serviceRef = serviceRef;
    }

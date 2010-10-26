@@ -38,14 +38,14 @@ import org.jboss.wsf.spi.metadata.j2ee.serviceref.UnifiedServiceRefMetaData;
  */
 final class ServiceRefSerializer
 {
-   public static final String SERVICE_REF_META_DATA = "SERVICE_REF_META_DATA";
+   static final String SERVICE_REF_META_DATA = "SERVICE_REF_META_DATA";
 
    private ServiceRefSerializer()
    {
       // forbidden constructor
    }
 
-   public static byte[] marshall(final UnifiedServiceRefMetaData obj) throws NamingException
+   static byte[] marshall(final UnifiedServiceRefMetaData obj) throws NamingException
    {
       final ByteArrayOutputStream baos = new ByteArrayOutputStream(512);
 
@@ -63,7 +63,7 @@ final class ServiceRefSerializer
       return baos.toByteArray();
    }
 
-   public static UnifiedServiceRefMetaData unmarshall(final byte[] data) throws NamingException
+   static UnifiedServiceRefMetaData unmarshall(final byte[] data) throws NamingException
    {
       final UnifiedServiceRefMetaData sref;
 
