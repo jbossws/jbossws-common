@@ -165,6 +165,9 @@ public abstract class AbstractServiceObjectFactoryJAXWS implements ObjectFactory
    {
       String targetClassName = serviceRefMD.getServiceRefType();
 
+      if (targetClassName == null)
+         targetClassName = serviceRefMD.getServiceInterface();
+            
       if (Service.class.getName().equals(targetClassName))
          targetClassName = serviceRefMD.getServiceImplClass();
 
