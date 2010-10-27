@@ -62,9 +62,15 @@ public abstract class AbstractServiceRefBinderJAXWS extends AbstractServiceRefBi
       final String targetClassName = (targetClass != null ? targetClass.getName() : null);
       final String serviceImplClassName = getServiceImplClassName(serviceRef);
 
-      // TODO: refactor these two lines of code higher
-      serviceRef.setServiceInterface(targetClassName);
-      serviceRef.setServiceImplClass(serviceImplClassName);
+      // TODO: investigate why these if conditions
+      if (targetClassName != null)
+      {
+         serviceRef.setServiceInterface(targetClassName);
+      }
+      if (serviceRef.getServiceImplClass() == null)
+      {
+         serviceRef.setServiceImplClass(serviceImplClassName);
+      }
 
       this.processWsdlOverride(serviceRef, loader);
 
@@ -217,7 +223,7 @@ public abstract class AbstractServiceRefBinderJAXWS extends AbstractServiceRefBi
          if (serviceRefAnnotation != null && (serviceRefAnnotation.type() != Object.class))
             targetClass = serviceRefAnnotation.type();
       }
-
+      
       return targetClass;
    }
 
