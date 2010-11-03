@@ -24,6 +24,7 @@ package org.jboss.wsf.common.serviceref;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Hashtable;
@@ -37,6 +38,8 @@ import javax.naming.spi.ObjectFactory;
 import javax.xml.namespace.QName;
 import javax.xml.ws.RespectBindingFeature;
 import javax.xml.ws.Service;
+import javax.xml.ws.WebServiceClient;
+import javax.xml.ws.WebServiceException;
 import javax.xml.ws.WebServiceFeature;
 import javax.xml.ws.soap.AddressingFeature;
 import javax.xml.ws.soap.MTOMFeature;
@@ -98,7 +101,7 @@ public abstract class AbstractServiceObjectFactoryJAXWS implements ObjectFactory
             this.configure(serviceRef, serviceInstance);
 
             // construct port
-            final boolean instantiatePort = targetClassName != null && !targetClassName.equals(serviceImplClass);
+            final boolean instantiatePort = targetClassName != null && !Service.class.isAssignableFrom(targetClass);
             if (instantiatePort)
             {
                final QName portQName = this.getPortQName(targetClassName, serviceImplClass, serviceRef);
@@ -158,20 +161,18 @@ public abstract class AbstractServiceObjectFactoryJAXWS implements ObjectFactory
 
    private String getServiceClassName(final UnifiedServiceRefMetaData serviceRefMD)
    {
-      return serviceRefMD.getServiceImplClass();
+      final String serviceImplClassName = serviceRefMD.getServiceImplClass();
+      if (serviceImplClassName != null) return serviceImplClassName;
+
+      final String serviceInterfaceName = serviceRefMD.getServiceInterface();
+      if (serviceInterfaceName != null) return serviceInterfaceName;
+
+      return Service.class.getName(); // fallback
    }
 
    private String getTargetClassName(final UnifiedServiceRefMetaData serviceRefMD)
    {
-      String targetClassName = serviceRefMD.getServiceRefType();
-
-      if (targetClassName == null)
-         targetClassName = serviceRefMD.getServiceInterface();
-            
-      if (Service.class.getName().equals(targetClassName))
-         targetClassName = serviceRefMD.getServiceImplClass();
-
-      return targetClassName;
+      return serviceRefMD.getServiceRefType();
    }
 
    private Object instantiatePort(final Class<?> serviceClass, final Class<?> targetClass, final Service target,
@@ -211,8 +212,8 @@ public abstract class AbstractServiceObjectFactoryJAXWS implements ObjectFactory
          throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException
    {
       final WebServiceFeature[] features = getFeatures(serviceRefMD);
-      final URL wsdlURL = serviceRefMD.getWsdlLocation();
-      final QName serviceQName = serviceRefMD.getServiceQName();
+      final URL wsdlURL = this.getWsdlURL(serviceRefMD, serviceClass);
+      final QName serviceQName = this.getServiceQName(serviceRefMD, serviceClass);
 
       Service target = null;
       if (serviceClass == Service.class)
@@ -272,6 +273,40 @@ public abstract class AbstractServiceObjectFactoryJAXWS implements ObjectFactory
       }
 
       return target;
+   }
+
+   private URL getWsdlURL(final UnifiedServiceRefMetaData serviceRefMD, final Class<?> serviceClass)
+   {
+      if (serviceRefMD.getWsdlLocation() == null)
+      {
+         final WebServiceClient webServiceClientAnnotation = serviceClass.getAnnotation(WebServiceClient.class);
+         if (webServiceClientAnnotation != null)
+         {
+            // use the @WebServiceClien(wsdlLocation=...) if the service ref wsdl location returned at this time would be null
+            if (webServiceClientAnnotation.wsdlLocation().length() > 0)
+            {
+               serviceRefMD.setWsdlOverride(webServiceClientAnnotation.wsdlLocation());
+            }
+         }
+      }
+
+      return serviceRefMD.getWsdlLocation();
+   }
+
+   private QName getServiceQName(final UnifiedServiceRefMetaData serviceRefMD, final Class<?> serviceClass)
+   {
+      QName retVal = serviceRefMD.getServiceQName();
+
+      if (retVal == null)
+      {
+         final WebServiceClient webServiceClientAnnotation = serviceClass.getAnnotation(WebServiceClient.class);
+         if (webServiceClientAnnotation != null)
+         {
+            retVal = new QName(webServiceClientAnnotation.targetNamespace(), webServiceClientAnnotation.name());
+         }
+      }
+
+      return retVal;
    }
 
    private WebServiceFeature[] getFeatures(final String targetClassName, final String serviceClassName,
