@@ -31,18 +31,19 @@ import org.jboss.wsf.spi.invocation.WebServiceContextDelegate;
 
 /**
  * JSE web service context which security related methods delegate to servlet container.
- * 
+ *
  * @author alessio.soldano@jboss.com
  * @author <a href="mailto:ropalka@redhat.com">Richard Opalka</a>
  */
 public final class WebServiceContextJSE extends WebServiceContextDelegate
 {
+
    private final HttpServletRequest httpRequest;
-   
+
    public WebServiceContextJSE(final WebServiceContext ctx)
    {
       super(ctx);
-      
+
       if (ctx.getMessageContext().get(MessageContext.SERVLET_REQUEST) == null)
          throw new IllegalStateException("Cannot obtain HttpServletRequest from message context");
 
@@ -60,4 +61,5 @@ public final class WebServiceContextJSE extends WebServiceContextDelegate
    {
       return this.httpRequest.isUserInRole(role);
    }
+
 }

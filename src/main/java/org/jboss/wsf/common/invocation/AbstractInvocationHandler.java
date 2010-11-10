@@ -53,7 +53,7 @@ public abstract class AbstractInvocationHandler extends InvocationHandler
 
    /**
     * Creates invocation.
-    * 
+    *
     * @return invocation instance
     */
    public final Invocation createInvocation()
@@ -63,22 +63,22 @@ public abstract class AbstractInvocationHandler extends InvocationHandler
 
    /**
     * Initialization method.
-    * 
+    *
     * @param endpoint endpoint
     */
    public void init(final Endpoint endpoint)
    {
       // does nothing
    }
-   
+
    public Context getJNDIContext(final Endpoint ep) throws NamingException
    {
       return null;
    }
-   
+
    /**
     * Returns implementation method that will be used for invocation.
-    * 
+    *
     * @param implClass implementation endpoint class
     * @param seiMethod SEI interface method used for method finding algorithm
     * @return implementation method

@@ -30,12 +30,13 @@ import org.jboss.wsf.spi.invocation.WebServiceContextDelegate;
 
 /**
  * EJB web service context which security related methods delegate to EJB container.
- * 
+ *
  * @author alessio.soldano@jboss.com
  * @author <a href="mailto:ropalka@redhat.com">Richard Opalka</a>
  */
 public class WebServiceContextEJB extends WebServiceContextDelegate
 {
+
    public WebServiceContextEJB(final WebServiceContext ctx)
    {
       super(ctx);
@@ -52,4 +53,5 @@ public class WebServiceContextEJB extends WebServiceContextDelegate
       final EJBContext ejbContext = getAttachment(EJBContext.class);
       return ejbContext.isCallerInRole(role);
    }
+
 }

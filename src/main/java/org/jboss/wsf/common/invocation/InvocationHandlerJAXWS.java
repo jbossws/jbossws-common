@@ -64,7 +64,7 @@ public final class InvocationHandlerJAXWS extends AbstractInvocationHandlerJSE
    /**
     * Injects resources on target bean and calls post construct method.
     * Finally it registers target bean for predestroy phase.
-    * 
+    *
     * @param endpoint used for predestroy phase registration process
     * @param invocation current invocation
     */
@@ -91,7 +91,7 @@ public final class InvocationHandlerJAXWS extends AbstractInvocationHandlerJSE
 
    /**
     * Injects webservice context on target bean.
-    * 
+    *
     *  @param invocation current invocation
     */
    @Override
@@ -103,7 +103,7 @@ public final class InvocationHandlerJAXWS extends AbstractInvocationHandlerJSE
 
    /**
     * Cleanups injected webservice context on target bean.
-    * 
+    *
     * @param invocation current invocation
     */
    @Override
@@ -116,10 +116,10 @@ public final class InvocationHandlerJAXWS extends AbstractInvocationHandlerJSE
    {
       return (Context)new InitialContext().lookup(POJO_JNDI_PREFIX);
    }
-   
+
    /**
     * Returns WebServiceContext associated with this invocation.
-    * 
+    *
     * @param invocation current invocation
     * @return web service context or null if not available
     */
@@ -132,7 +132,7 @@ public final class InvocationHandlerJAXWS extends AbstractInvocationHandlerJSE
 
    /**
     * Returns endpoint instance associated with current invocation.
-    * 
+    *
     * @param invocation current invocation
     * @return target bean in invocation
     */
@@ -142,22 +142,22 @@ public final class InvocationHandlerJAXWS extends AbstractInvocationHandlerJSE
 
       return invocationContext.getTargetBean();
    }
-   
+
    private static final class ThreadLocalAwareWebServiceContext implements WebServiceContext
    {
       private static final ThreadLocalAwareWebServiceContext SINGLETON = new ThreadLocalAwareWebServiceContext();
       private final ThreadLocal<WebServiceContext> contexts = new InheritableThreadLocal<WebServiceContext>();
-      
+
       private static ThreadLocalAwareWebServiceContext getInstance()
       {
          return SINGLETON;
       }
-      
+
       private void setMessageContext(final WebServiceContext ctx)
       {
          this.contexts.set(ctx);
       }
-      
+
       public EndpointReference getEndpointReference(Element... referenceParameters)
       {
          final WebServiceContext delegee = this.contexts.get();
@@ -188,4 +188,5 @@ public final class InvocationHandlerJAXWS extends AbstractInvocationHandlerJSE
          return delegee == null ? false : delegee.isUserInRole(role);
       }
    }
+
 }

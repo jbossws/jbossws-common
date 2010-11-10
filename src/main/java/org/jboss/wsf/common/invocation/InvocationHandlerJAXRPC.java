@@ -48,7 +48,7 @@ public final class InvocationHandlerJAXRPC extends AbstractInvocationHandlerJSE
     * Calls {@link javax.xml.rpc.server.ServiceLifecycle#init(Object)}
     * method on target bean if this bean implements 
     * {@link javax.xml.rpc.server.ServiceLifecycle} interface.
-    * 
+    *
     * @param invocation current invocation
     * @throws Exception if any error occurs
     */
@@ -70,7 +70,7 @@ public final class InvocationHandlerJAXRPC extends AbstractInvocationHandlerJSE
     * Calls {@link javax.xml.rpc.server.ServiceLifecycle#destroy()}
     * method on target bean if this bean implements 
     * {@link javax.xml.rpc.server.ServiceLifecycle} interface.
-    * 
+    *
     * @param invocation current invocation
     * @throws Exception if any error occurs
     */
