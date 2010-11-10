@@ -28,6 +28,7 @@ package org.jboss.wsf.common.injection;
  */
 public final class PreDestroyHolder
 {
+
    private final Object object;
    private final int hashCode;
 

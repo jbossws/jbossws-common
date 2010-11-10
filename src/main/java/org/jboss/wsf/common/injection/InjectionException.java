@@ -88,10 +88,10 @@ public class InjectionException extends RuntimeException
    {
       rethrow(null, reason);
    }
-   
+
    /**
     * Rethrows Injection exception that will wrap passed reason.
-    * 
+    *
     * @param message custom message
     * @param reason to wrap.
     */

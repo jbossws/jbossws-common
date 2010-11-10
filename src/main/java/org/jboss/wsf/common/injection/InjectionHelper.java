@@ -99,10 +99,10 @@ public final class InjectionHelper
 
       if (injections == null)
          return;
-      
+
       if (ctx == null)
          return;
-      
+
       // inject descriptor driven annotations
       injectDescriptorAnnotatedAccessibleObjects(instance, injections, ctx);
 
@@ -264,7 +264,6 @@ public final class InjectionHelper
                throw new InjectionException(message);
             }
          }
-      
       }
    }
 
@@ -415,7 +414,7 @@ public final class InjectionHelper
 
       return value;
    }
-   
+
    /**
     * Invokes method on object with specified arguments.
     *
@@ -500,13 +499,13 @@ public final class InjectionHelper
 
    /**
     * Returns default JNDI context.
-    * 
+    *
     * @return default JNDI context
     */
    private static Context getDefaultContext()
    {
       Context ctx = null;
-      
+
       try
       {
          ctx = new InitialContext();
@@ -516,7 +515,7 @@ public final class InjectionHelper
          final String message = "Cannot create default JNDI context";
          InjectionException.rethrow(message, ne);
       }
-      
+
       return ctx;
    }
 

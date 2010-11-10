@@ -28,7 +28,7 @@ import java.util.Collection;
 import org.jboss.wsf.common.reflection.AnnotatedMethodFinder;
 
 /**
- * Abstract @PostConstruct and @PreDestroy annotations method finder. 
+ * Abstract @PostConstruct and @PreDestroy annotations method finder.
  *
  * @author <a href="mailto:richard.opalka@jboss.org">Richard Opalka</a>
  */

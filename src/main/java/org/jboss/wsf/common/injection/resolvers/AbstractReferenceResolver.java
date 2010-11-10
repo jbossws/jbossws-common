@@ -31,7 +31,7 @@ import org.jboss.wsf.spi.metadata.injection.ReferenceResolver;
 /**
  * This class adds support for notion of annotated fields and methods.
  * It also ensures passed methods and fields are non null references
- * plus it implements some common logic that would otherwise be 
+ * plus it implements some common logic that would otherwise be
  * implemented in all subclasses. It is highly recommended that all
  * reference resolvers extend this base class for high code reuse.
  *
@@ -40,7 +40,7 @@ import org.jboss.wsf.spi.metadata.injection.ReferenceResolver;
 public abstract class AbstractReferenceResolver<A extends Annotation>
 implements ReferenceResolver
 {
-   
+
    /**
     * Resolved annotation.
     */
