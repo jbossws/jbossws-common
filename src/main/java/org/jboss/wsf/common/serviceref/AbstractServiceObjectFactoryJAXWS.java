@@ -24,7 +24,6 @@ package org.jboss.wsf.common.serviceref;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Hashtable;
@@ -39,7 +38,6 @@ import javax.xml.namespace.QName;
 import javax.xml.ws.RespectBindingFeature;
 import javax.xml.ws.Service;
 import javax.xml.ws.WebServiceClient;
-import javax.xml.ws.WebServiceException;
 import javax.xml.ws.WebServiceFeature;
 import javax.xml.ws.soap.AddressingFeature;
 import javax.xml.ws.soap.MTOMFeature;
@@ -162,10 +160,12 @@ public abstract class AbstractServiceObjectFactoryJAXWS implements ObjectFactory
    private String getServiceClassName(final UnifiedServiceRefMetaData serviceRefMD)
    {
       final String serviceImplClassName = serviceRefMD.getServiceImplClass();
-      if (serviceImplClassName != null) return serviceImplClassName;
+      if (serviceImplClassName != null)
+         return serviceImplClassName;
 
       final String serviceInterfaceName = serviceRefMD.getServiceInterface();
-      if (serviceInterfaceName != null) return serviceInterfaceName;
+      if (serviceInterfaceName != null)
+         return serviceInterfaceName;
 
       return Service.class.getName(); // fallback
    }
@@ -388,8 +388,9 @@ public abstract class AbstractServiceObjectFactoryJAXWS implements ObjectFactory
       List<WebServiceFeature> features = new LinkedList<WebServiceFeature>();
 
       // configure @Addressing feature
-      if (serviceRef.isAddressingEnabled())
+      if (serviceRef.isAddressingAnnotationSpecified())
       {
+         final boolean enabled = serviceRef.isAddressingEnabled();
          final boolean required = serviceRef.isAddressingRequired();
          final String refResponses = serviceRef.getAddressingResponses();
          AddressingFeature.Responses responses = AddressingFeature.Responses.ALL;
@@ -398,24 +399,26 @@ public abstract class AbstractServiceObjectFactoryJAXWS implements ObjectFactory
          if ("NON_ANONYMOUS".equals(refResponses))
             responses = AddressingFeature.Responses.NON_ANONYMOUS;
 
-         features.add(new AddressingFeature(true, required, responses));
+         features.add(new AddressingFeature(enabled, required, responses));
       }
 
       // configure @MTOM feature
-      if (serviceRef.isMtomEnabled())
+      if (serviceRef.isMtomAnnotationSpecified())
       {
-         features.add(new MTOMFeature(true, serviceRef.getMtomThreshold()));
+         final boolean enabled = serviceRef.isMtomEnabled();
+         final int threshold = serviceRef.getMtomThreshold();
+         features.add(new MTOMFeature(enabled, threshold));
       }
 
       // configure @RespectBinding feature
-      if (serviceRef.isRespectBindingEnabled())
+      if (serviceRef.isRespectBindingAnnotationSpecified())
       {
-         features.add(new RespectBindingFeature(true));
+         final boolean enabled = serviceRef.isRespectBindingEnabled();
+         features.add(new RespectBindingFeature(enabled));
       }
 
-      WebServiceFeature[] wsFeatures = features.size() == 0 ? null : features.toArray(new WebServiceFeature[]
+      return features.size() == 0 ? null : features.toArray(new WebServiceFeature[]
       {});
-      return wsFeatures;
    }
 
    private WebServiceFeature[] getFeatures(final UnifiedPortComponentRefMetaData portComponentRefMD)
