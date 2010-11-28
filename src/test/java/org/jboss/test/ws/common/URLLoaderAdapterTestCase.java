@@ -21,7 +21,6 @@
  */
 package org.jboss.test.ws.common;
 
-import java.io.File;
 import java.net.URL;
 import java.util.List;
 
@@ -42,7 +41,7 @@ public class URLLoaderAdapterTestCase extends TestCase
    {
       //Getting the SPI jar url
       ClassLoader cl = UnifiedVirtualFile.class.getClassLoader();
-      URL rootURL = getJarUrl(cl.getResource("org/jboss/wsf/spi/"));
+      URL rootURL = getJarUrl(cl.getResource("org/jboss/wsf/spi/deployment"));
       assertNotNull(rootURL);
       URLLoaderAdapter ula = new URLLoaderAdapter(rootURL);
       

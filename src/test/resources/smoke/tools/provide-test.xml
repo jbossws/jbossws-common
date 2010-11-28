@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+   An example build file that used to test the WSConsume Task
+-->
+
+<project name="provide-test" basedir=".">
+
+  <property name="spi.dir" value="@SPI_DIR@"/>
+
+  <!-- Define the JAX-WS wsconsume task -->
+  <taskdef name="wsprovide" classname="org.jboss.wsf.spi.tools.ant.WSProvideTask">
+    <classpath>
+      <pathelement location="${spi.dir}/output/lib/jbossws-spi.jar"/>
+    </classpath>
+  </taskdef>
+
+  <target name="plainInvocation">
+    <wsprovide genwsdl="false" sei="org.jboss.test.wsf.spi.smoke.tools.CalculatorBean"/>
+  </target>
+
+  <target name="includeWSDL">
+    <wsprovide genwsdl="true" sei="org.jboss.test.wsf.spi.smoke.tools.CalculatorBean"/>
+  </target>
+
+  <target name="extraClasspath">
+    <wsprovide genwsdl="false" sei="org.jboss.test.wsf.spi.smoke.tools.CalculatorBean">
+      <classpath>
+        <pathelement location="${spi.dir}/output/test/classes"/>
+      </classpath>
+    </wsprovide>
+  </target>
+</project>

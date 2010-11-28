@@ -21,7 +21,6 @@
  */
 package org.jboss.test.ws.common;
 
-import java.io.File;
 import java.util.List;
 
 import junit.framework.TestCase;
