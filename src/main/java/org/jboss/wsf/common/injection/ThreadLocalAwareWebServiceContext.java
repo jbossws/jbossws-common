@@ -57,32 +57,62 @@ public final class ThreadLocalAwareWebServiceContext implements WebServiceContex
    public EndpointReference getEndpointReference(final Element... referenceParameters)
    {
       final WebServiceContext delegee = this.contexts.get();
-      return delegee == null ? null : delegee.getEndpointReference(referenceParameters);
+
+      if (delegee == null)
+      {
+         throw new IllegalStateException();
+      }
+
+      return delegee.getEndpointReference(referenceParameters);
    }
 
    public <T extends EndpointReference> T getEndpointReference(final Class<T> clazz,
          final Element... referenceParameters)
    {
       final WebServiceContext delegee = this.contexts.get();
-      return delegee == null ? null : delegee.getEndpointReference(clazz, referenceParameters);
+
+      if (delegee == null)
+      {
+         throw new IllegalStateException();
+      }
+
+      return delegee.getEndpointReference(clazz, referenceParameters);
    }
 
    public MessageContext getMessageContext()
    {
       final WebServiceContext delegee = this.contexts.get();
-      return delegee == null ? null : delegee.getMessageContext();
+
+      if (delegee == null)
+      {
+         throw new IllegalStateException();
+      }
+
+      return delegee.getMessageContext();
    }
 
    public Principal getUserPrincipal()
    {
       final WebServiceContext delegee = this.contexts.get();
-      return delegee == null ? null : delegee.getUserPrincipal();
+
+      if (delegee == null)
+      {
+         throw new IllegalStateException();
+      }
+
+      return delegee.getUserPrincipal();
    }
 
    public boolean isUserInRole(String role)
    {
       final WebServiceContext delegee = this.contexts.get();
-      return delegee == null ? false : delegee.isUserInRole(role);
+
+      if (delegee == null)
+      {
+         throw new IllegalStateException();
+      }
+
+      return delegee.isUserInRole(role);
    }
 
 }
