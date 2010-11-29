@@ -144,38 +144,4 @@ public abstract class AbstractInvocationHandlerJSE extends AbstractInvocationHan
       }
    }
 
-   /**
-    * Template method for notifying subclasses that endpoint instance have been instantiated.
-    *
-    * @param endpoint instantiated endpoint
-    * @param invocation current invocation
-    * @throws Exception subclasses have to throw exception on any failure
-    */
-   protected void onEndpointInstantiated(final Endpoint endpoint, final Invocation invocation) throws Exception
-   {
-      // does nothing
-   }
-
-   /**
-    * Template method for notifying subclasses that endpoint method is going to be invoked.
-    *
-    * @param invocation current invocation
-    * @throws Exception subclasses have to throw exception on any failure
-    */
-   protected void onBeforeInvocation(final Invocation invocation) throws Exception
-   {
-      // does nothing
-   }
-
-   /**
-    * Template method for notifying subclasses that endpoint method invocation was completed.
-    *
-    * @param invocation current invocation
-    * @throws Exception subclasses have to throw exception on any failure
-    */
-   protected void onAfterInvocation(final Invocation invocation) throws Exception
-   {
-      // does nothing
-   }
-
 }
