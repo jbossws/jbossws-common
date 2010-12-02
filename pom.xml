@@ -32,11 +32,11 @@
     <getopt.version>1.0.13</getopt.version>
     <jboss.jaxbintros.version>1.0.2.GA</jboss.jaxbintros.version>
     <jboss.common.core.version>2.2.14.GA</jboss.common.core.version>
-    <jboss.ejb.api.version>3.0.0.GA</jboss.ejb.api.version>
-    <jboss.microcontainer.version>2.0.8.GA</jboss.microcontainer.version>
+    <jboss-logging-spi.version>2.0.5.GA</jboss-logging-spi.version>
     <junit.version>3.8.2</junit.version>
     <log4j.version>1.2.14</log4j.version>
     <wsdl4j.version>1.6.2</wsdl4j.version>
+    <ejb.api.version>1.0.0.CR2</ejb.api.version>
     <jms.api.version>1.0.0.Final</jms.api.version>
     <jaxws.api.version>1.0.0.Final</jaxws.api.version>
     <servlet.api.version>1.0.0.Final</servlet.api.version>
@@ -76,22 +76,23 @@
       <artifactId>getopt</artifactId>
       <version>${getopt.version}</version>
     </dependency>
+
+	<!-- Non transient dependencies -->
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
       <version>${log4j.version}</version>
+      <scope>provided</scope>
     </dependency>
-
-    <!-- provided apis -->
-      <dependency>
-        <groupId>org.jboss.spec.javax.xml.ws</groupId>
-        <artifactId>jboss-jaxws-api_2.2_spec</artifactId>
-        <version>${jaxws.api.version}</version>
-      </dependency>
     <dependency>
-      <groupId>org.jboss.javaee</groupId>
-      <artifactId>jboss-ejb-api</artifactId>
-      <version>${jboss.ejb.api.version}</version>
+      <groupId>org.jboss.spec.javax.xml.ws</groupId>
+      <artifactId>jboss-jaxws-api_2.2_spec</artifactId>
+      <version>${jaxws.api.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.spec.javax.ejb</groupId>
+      <artifactId>jboss-ejb-api_3.1_spec</artifactId>
+      <version>${ejb.api.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -101,9 +102,9 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.jboss.microcontainer</groupId>
-      <artifactId>jboss-kernel</artifactId>
-      <version>${jboss.microcontainer.version}</version>
+      <groupId>org.jboss.logging</groupId>
+      <artifactId>jboss-logging-spi</artifactId>
+      <version>${jboss-logging-spi.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -124,12 +125,11 @@
       <version>${wsdl4j.version}</version>
       <scope>provided</scope>
     </dependency>
-
-    <!-- test dependencies -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>${junit.version}</version>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 
