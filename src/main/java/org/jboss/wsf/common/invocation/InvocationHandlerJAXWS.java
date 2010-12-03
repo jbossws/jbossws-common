@@ -65,7 +65,7 @@ public final class InvocationHandlerJAXWS extends AbstractInvocationHandlerJSE
     * @param invocation current invocation
     */
    @Override
-   protected void onEndpointInstantiated(final Endpoint endpoint, final Invocation invocation)
+   public void onEndpointInstantiated(final Endpoint endpoint, final Invocation invocation)
    {
       final InjectionsMetaData injectionsMD = endpoint.getAttachment(InjectionsMetaData.class);
       final Object targetBean = this.getTargetBean(invocation);
@@ -91,7 +91,7 @@ public final class InvocationHandlerJAXWS extends AbstractInvocationHandlerJSE
     *  @param invocation current invocation
     */
    @Override
-   protected void onBeforeInvocation(final Invocation invocation)
+   public void onBeforeInvocation(final Invocation invocation)
    {
       final WebServiceContext wsContext = this.getWebServiceContext(invocation);
       ThreadLocalAwareWebServiceContext.getInstance().setMessageContext(wsContext);
@@ -103,7 +103,7 @@ public final class InvocationHandlerJAXWS extends AbstractInvocationHandlerJSE
     * @param invocation current invocation
     */
    @Override
-   protected void onAfterInvocation(final Invocation invocation)
+   public void onAfterInvocation(final Invocation invocation)
    {
       ThreadLocalAwareWebServiceContext.getInstance().setMessageContext(null);
    }
