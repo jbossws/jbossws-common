@@ -53,7 +53,7 @@ public final class InvocationHandlerJAXRPC extends AbstractInvocationHandlerJSE
     * @throws Exception if any error occurs
     */
    @Override
-   protected void onBeforeInvocation(final Invocation invocation) throws Exception
+   public void onBeforeInvocation(final Invocation invocation) throws Exception
    {
       final InvocationContext invocationContext = invocation.getInvocationContext();
       final Object targetBean = invocationContext.getTargetBean();
@@ -75,7 +75,7 @@ public final class InvocationHandlerJAXRPC extends AbstractInvocationHandlerJSE
     * @throws Exception if any error occurs
     */
    @Override
-   protected void onAfterInvocation(final Invocation invocation) throws Exception
+   public void onAfterInvocation(final Invocation invocation) throws Exception
    {
       final InvocationContext invocationContext = invocation.getInvocationContext();
       final Object targetBean = invocationContext.getTargetBean();
