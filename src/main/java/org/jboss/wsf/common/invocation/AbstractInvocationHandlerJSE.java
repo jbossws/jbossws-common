@@ -23,6 +23,10 @@ package org.jboss.wsf.common.invocation;
 
 import java.lang.reflect.Method;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
 import org.jboss.wsf.spi.deployment.Endpoint;
 import org.jboss.wsf.spi.invocation.Invocation;
 import org.jboss.wsf.spi.invocation.InvocationContext;
@@ -35,6 +39,10 @@ import org.jboss.wsf.spi.invocation.InvocationContext;
  */
 public abstract class AbstractInvocationHandlerJSE extends AbstractInvocationHandler
 {
+
+   private static final String POJO_JNDI_PREFIX = "java:comp/env/";
+
+   private boolean initialized;
 
    /**
     * Constructor.
@@ -63,7 +71,8 @@ public abstract class AbstractInvocationHandlerJSE extends AbstractInvocationHan
     * @return endpoint implementation
     * @throws Exception if any error occurs
     */
-   protected final Object getTargetBean(final Endpoint endpoint, final Invocation invocation) throws Exception
+   protected synchronized final Object getTargetBean(final Endpoint endpoint, final Invocation invocation)
+         throws Exception
    {
       final InvocationContext invocationContext = invocation.getInvocationContext();
       Object targetBean = invocationContext.getTargetBean();
@@ -76,14 +85,18 @@ public abstract class AbstractInvocationHandlerJSE extends AbstractInvocationHan
             final Class<?> endpointImplClass = endpoint.getTargetBeanClass();
             targetBean = endpointImplClass.newInstance();
             invocationContext.setTargetBean(targetBean);
-
-            // notify subclasses
-            this.onEndpointInstantiated(endpoint, invocation);
          }
          catch (Exception ex)
          {
             throw new IllegalStateException("Cannot create endpoint instance: ", ex);
          }
+      }
+
+      if (!this.initialized)
+      {
+         // notify subclasses
+         this.onEndpointInstantiated(endpoint, invocation);
+         this.initialized = true;
       }
 
       return targetBean;
@@ -142,6 +155,12 @@ public abstract class AbstractInvocationHandlerJSE extends AbstractInvocationHan
          // notify subclasses
          this.onAfterInvocation(invocation);
       }
+   }
+
+   @Override
+   public Context getJNDIContext(final Endpoint ep) throws NamingException
+   {
+      return (Context) new InitialContext().lookup(POJO_JNDI_PREFIX);
    }
 
 }
