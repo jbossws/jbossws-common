@@ -21,9 +21,6 @@
  */
 package org.jboss.wsf.common.invocation;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.xml.ws.WebServiceContext;
 
 import org.jboss.wsf.common.injection.InjectionHelper;
@@ -46,8 +43,6 @@ import org.jboss.wsf.spi.metadata.injection.InjectionsMetaData;
  */
 public final class InvocationHandlerJAXWS extends AbstractInvocationHandlerJSE
 {
-
-   private static final String POJO_JNDI_PREFIX = "java:comp/env/";
 
    /**
     * Constructor.
@@ -106,11 +101,6 @@ public final class InvocationHandlerJAXWS extends AbstractInvocationHandlerJSE
    public void onAfterInvocation(final Invocation invocation)
    {
       ThreadLocalAwareWebServiceContext.getInstance().setMessageContext(null);
-   }
-
-   public Context getJNDIContext(final Endpoint ep) throws NamingException
-   {
-      return (Context) new InitialContext().lookup(POJO_JNDI_PREFIX);
    }
 
    /**
