@@ -21,6 +21,7 @@
  */
 package org.jboss.wsf.common.management;
 
+import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Set;
@@ -97,7 +98,15 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
          log.debug("Using local host: " + localHost.getHostName());
          host = localHost.getHostName();
       }
-      this.webServiceHost = "127.0.0.1".equals(host) ? "localhost" : host; // TCK workaround
+      this.webServiceHost = toIPv6URLFormat("127.0.0.1".equals(host) ? "localhost" : host); // TCK workaround
+   }
+
+   private String toIPv6URLFormat(final String host) throws UnknownHostException
+   {
+      final boolean isIPv6Address = !UNDEFINED_HOSTNAME.equals(host) && InetAddress.getByName(host) instanceof Inet6Address;
+      final boolean isIPv6Formatted = isIPv6Address && host.startsWith("[");
+
+      return isIPv6Address && !isIPv6Formatted ? "[" + host + "]" : host;
    }
 
    public void setWebServicePort(int port)
