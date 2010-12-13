@@ -22,8 +22,11 @@
 package org.jboss.wsf.test;
 
 import java.io.File;
+import java.net.Inet6Address;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.Hashtable;
 
 import javax.management.MBeanServerConnection;
@@ -180,7 +183,22 @@ public class JBossWSTestHelper
     */
    public static String getServerHost()
    {
-      return System.getProperty(SYSPROP_JBOSS_BIND_ADDRESS, "localhost");
+      final String host = System.getProperty(SYSPROP_JBOSS_BIND_ADDRESS, "localhost"); 
+      return toIPv6URLFormat(host);
+   }
+   
+   private static String toIPv6URLFormat(final String host)
+   {
+      try
+      {
+         final boolean isIPv6Address = InetAddress.getByName(host) instanceof Inet6Address;
+         final boolean isIPv6Formatted = isIPv6Address && host.startsWith("[");
+         return isIPv6Address && !isIPv6Formatted ? "[" + host + "]" : host;
+      }
+      catch (final UnknownHostException e)
+      {
+         throw new RuntimeException(e);
+      }
    }
 
    @SuppressWarnings("unchecked")
