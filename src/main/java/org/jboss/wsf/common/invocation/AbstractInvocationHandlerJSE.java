@@ -29,7 +29,6 @@ import javax.naming.NamingException;
 
 import org.jboss.wsf.spi.deployment.Endpoint;
 import org.jboss.wsf.spi.invocation.Invocation;
-import org.jboss.wsf.spi.invocation.InvocationContext;
 
 /**
  * Handles invocations on JSE endpoints.
@@ -52,54 +51,14 @@ public abstract class AbstractInvocationHandlerJSE extends AbstractInvocationHan
       super();
    }
 
-   /**
-    * Retrieves endpoint implementation bean that will be used in invocation process.
-    *
-    * This method does the following steps:
-    *
-    * <ul>
-    *   <li>tries to retrieve endpoint instance from invocation context,</li>
-    *   <li>if endpoint instance is not found it's created and instantiated (lazy initialization)</li>
-    *   <li>
-    *     if endpoint instance was created all subclasses will be notified about this event
-    *     (using {@link #onEndpointInstantiated(Endpoint, Invocation)} template method).  
-    *   </li>
-    * </ul>
-    *
-    * @param endpoint to lookup implementation instance for
-    * @param invocation current invocation
-    * @return endpoint implementation
-    * @throws Exception if any error occurs
-    */
-   protected synchronized final Object getTargetBean(final Endpoint endpoint, final Invocation invocation)
-         throws Exception
+   private synchronized void init(final Endpoint endpoint, final Invocation invocation)
+   throws Exception
    {
-      final InvocationContext invocationContext = invocation.getInvocationContext();
-      Object targetBean = invocationContext.getTargetBean();
-
-      if (targetBean == null)
-      {
-         try
-         {
-            // create endpoint instance
-            final Class<?> endpointImplClass = endpoint.getTargetBeanClass();
-            targetBean = endpointImplClass.newInstance();
-            invocationContext.setTargetBean(targetBean);
-         }
-         catch (Exception ex)
-         {
-            throw new IllegalStateException("Cannot create endpoint instance: ", ex);
-         }
-      }
-
       if (!this.initialized)
       {
-         // notify subclasses
          this.onEndpointInstantiated(endpoint, invocation);
          this.initialized = true;
       }
-
-      return targetBean;
    }
 
    /**
@@ -129,7 +88,8 @@ public abstract class AbstractInvocationHandlerJSE extends AbstractInvocationHan
       try
       {
          // prepare for invocation
-         final Object targetBean = this.getTargetBean(endpoint, invocation);
+         this.init(endpoint, invocation);
+         final Object targetBean = invocation.getInvocationContext().getTargetBean();
          final Class<?> implClass = targetBean.getClass();
          final Method seiMethod = invocation.getJavaMethod();
          final Method implMethod = this.getImplMethod(implClass, seiMethod);
