@@ -22,8 +22,6 @@
 package org.jboss.wsf.common.invocation;
 
 import java.lang.reflect.Method;
-import java.util.LinkedList;
-import java.util.List;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -44,7 +42,7 @@ public abstract class AbstractInvocationHandlerJSE extends AbstractInvocationHan
 
    private static final String POJO_JNDI_PREFIX = "java:comp/env/";
 
-   private List<Long> initializedEndpoints = new LinkedList<Long>();
+   private boolean initialized;
 
    /**
     * Constructor.
@@ -94,12 +92,11 @@ public abstract class AbstractInvocationHandlerJSE extends AbstractInvocationHan
          }
       }
 
-      final long targetBeanId = System.identityHashCode(targetBean);
-      if (!this.initializedEndpoints.contains(targetBeanId))
+      if (!this.initialized)
       {
          // notify subclasses
          this.onEndpointInstantiated(endpoint, invocation);
-         this.initializedEndpoints.add(targetBeanId);
+         this.initialized = true;
       }
 
       return targetBean;
