@@ -1,0 +1,117 @@
+/*
+ * JBoss, Home of Professional Open Source.
+ * Copyright 2006, Red Hat Middleware LLC, and individual contributors
+ * as indicated by the @author tags. See the copyright.txt file in the
+ * distribution for a full listing of individual contributors.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
+package org.jboss.wsf.framework;
+
+import org.jboss.wsf.framework.deployment.DefaultDeploymentAspectManagerFactory;
+import org.jboss.wsf.framework.deployment.DefaultDeploymentModelFactory;
+import org.jboss.wsf.framework.deployment.DefaultLifecycleHandlerFactory;
+import org.jboss.wsf.framework.invocation.DefaultResourceInjectorFactory;
+import org.jboss.wsf.framework.management.DefaultEndpointMetricsFactory;
+import org.jboss.wsf.framework.management.DefaultEndpointRegistryFactory;
+import org.jboss.wsf.framework.management.DefaultJMSEndpointResolver;
+import org.jboss.wsf.framework.security.DefaultSecurityAdapterFactory;
+import org.jboss.wsf.framework.serviceref.DefaultServiceRefHandlerFactory;
+import org.jboss.wsf.spi.SPIProvider;
+import org.jboss.wsf.spi.WSFException;
+import org.jboss.wsf.spi.deployment.DeploymentAspectManagerFactory;
+import org.jboss.wsf.spi.deployment.DeploymentModelFactory;
+import org.jboss.wsf.spi.deployment.LifecycleHandlerFactory;
+import org.jboss.wsf.spi.invocation.ResourceInjectorFactory;
+import org.jboss.wsf.spi.invocation.SecurityAdaptorFactory;
+import org.jboss.wsf.spi.management.EndpointMetricsFactory;
+import org.jboss.wsf.spi.management.EndpointRegistryFactory;
+import org.jboss.wsf.spi.management.JMSEndpointResolver;
+import org.jboss.wsf.spi.serviceref.ServiceRefHandlerFactory;
+import org.jboss.wsf.spi.util.ServiceLoader;
+
+/**
+ * @author <a href="mailto:tdiesler@redhat.com">Thomas Diesler</a>
+ * @author <a href="mailto:ropalka@redhat.com">Richard Opalka</a>
+ */
+class DefaultSPIProvider extends SPIProvider
+{
+
+   /**
+    * Gets the specified SPI.
+    */
+   public <T> T getSPI(Class<T> spiType)
+   {
+      T returnType = null;
+
+      // SPIs provided by framework, defaults can be overridden
+      if (DeploymentAspectManagerFactory.class.equals(spiType))
+      {
+         returnType = loadService(spiType, DefaultDeploymentAspectManagerFactory.class);
+      }
+      if (DeploymentModelFactory.class.equals(spiType))
+      {
+         returnType = loadService(spiType, DefaultDeploymentModelFactory.class);
+      }
+      else if (EndpointMetricsFactory.class.equals(spiType))
+      {
+         returnType = loadService(spiType, DefaultEndpointMetricsFactory.class);
+      }
+      else if (LifecycleHandlerFactory.class.equals(spiType))
+      {
+         returnType = loadService(spiType, DefaultLifecycleHandlerFactory.class);
+      }
+      else if (ResourceInjectorFactory.class.equals(spiType))
+      {
+         returnType = loadService(spiType, DefaultResourceInjectorFactory.class);
+      }
+      else if (ServiceRefHandlerFactory.class.equals(spiType))
+      {
+         returnType = loadService(spiType, DefaultServiceRefHandlerFactory.class);
+      }
+      else if (SecurityAdaptorFactory.class.equals(spiType))
+      {
+         returnType = loadService(spiType, DefaultSecurityAdapterFactory.class);
+      }
+      else if (EndpointRegistryFactory.class.equals(spiType))
+      {
+         returnType = loadService(spiType, DefaultEndpointRegistryFactory.class);
+      }
+      else if (JMSEndpointResolver.class.equals(spiType))
+      {
+         returnType = loadService(spiType, DefaultJMSEndpointResolver.class);
+      }
+      else
+      {
+         // SPI provided by either container or stack integration that has no default implementation
+         returnType = (T)loadService(spiType, null);
+      }
+
+      if (returnType == null)
+         throw new WSFException("Failed to provide SPI '" + spiType + "'");
+      
+      return returnType;
+   }
+
+   // Load SPI implementation through ServiceLoader
+   @SuppressWarnings("unchecked")
+   private <T> T loadService(Class<T> spiType, Class<?> defaultImpl)
+   {
+      final String defaultImplName = defaultImpl != null ? defaultImpl.getName() : null;
+      return (T)ServiceLoader.loadService(spiType.getName(), defaultImplName);
+   }
+
+}
