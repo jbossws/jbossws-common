@@ -42,6 +42,7 @@ public final class DefaultEndpointRegistryFactory extends EndpointRegistryFactor
    private Logger log = Logger.getLogger(DefaultEndpointRegistryFactory.class);
    /** The bean name in the kernel registry. */
    private static final String BEAN_NAME = "WSEndpointRegistry";
+   private static final String SERVICE_NAME = "jboss.ws.registry";
    private static final EndpointRegistry fallbackRegistry = new DefaultEndpointRegistry();;
 
    /**
@@ -65,9 +66,25 @@ public final class DefaultEndpointRegistryFactory extends EndpointRegistryFactor
          final IoCContainerProxyFactory iocContainerFactory = spiProvider.getSPI(IoCContainerProxyFactory.class);
          final IoCContainerProxy iocContainer = iocContainerFactory.getContainer();
          
-         return iocContainer.getBean(DefaultEndpointRegistryFactory.BEAN_NAME, EndpointRegistry.class);
+         EndpointRegistry registry = null;
+         try
+         {
+            //try MSC service name
+            registry = iocContainer.getBean(DefaultEndpointRegistryFactory.SERVICE_NAME, EndpointRegistry.class);
+         }
+         catch (Exception e)
+         {
+            log.debug("Can't get endpoint registry: ", e);
+            //ignore
+         }
+         if (registry == null)
+         {
+            //try MC bean name
+            registry = iocContainer.getBean(DefaultEndpointRegistryFactory.BEAN_NAME, EndpointRegistry.class);
+         }
+         return registry;
       }
-      catch (WSFException e)
+      catch (Exception e)
       {
          log.warn("Unable to get WSEndpointRegistry from IoC, using default one");
          return fallbackRegistry; // JSE environment
