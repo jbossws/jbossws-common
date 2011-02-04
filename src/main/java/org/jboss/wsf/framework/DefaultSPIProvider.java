@@ -21,6 +21,7 @@
  */
 package org.jboss.wsf.framework;
 
+import org.jboss.wsf.spi.deployer.Deployer;
 import org.jboss.wsf.framework.deployment.DefaultDeploymentAspectManagerFactory;
 import org.jboss.wsf.framework.deployment.DefaultDeploymentModelFactory;
 import org.jboss.wsf.framework.deployment.DefaultLifecycleHandlerFactory;
@@ -42,6 +43,7 @@ import org.jboss.wsf.spi.management.EndpointRegistryFactory;
 import org.jboss.wsf.spi.management.JMSEndpointResolver;
 import org.jboss.wsf.spi.serviceref.ServiceRefHandlerFactory;
 import org.jboss.wsf.spi.util.ServiceLoader;
+import org.jboss.wsf.test.DeployerJBoss6;
 
 /**
  * @author <a href="mailto:tdiesler@redhat.com">Thomas Diesler</a>
@@ -62,7 +64,7 @@ class DefaultSPIProvider extends SPIProvider
       {
          returnType = loadService(spiType, DefaultDeploymentAspectManagerFactory.class);
       }
-      if (DeploymentModelFactory.class.equals(spiType))
+      else if (DeploymentModelFactory.class.equals(spiType))
       {
          returnType = loadService(spiType, DefaultDeploymentModelFactory.class);
       }
@@ -89,6 +91,10 @@ class DefaultSPIProvider extends SPIProvider
       else if (EndpointRegistryFactory.class.equals(spiType))
       {
          returnType = loadService(spiType, DefaultEndpointRegistryFactory.class);
+      }
+      else if (Deployer.class.equals(spiType))
+      {
+         returnType = loadService(spiType, DeployerJBoss6.class);
       }
       else if (JMSEndpointResolver.class.equals(spiType))
       {

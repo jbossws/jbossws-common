@@ -40,6 +40,10 @@ import javax.xml.ws.Service.Mode;
 import javax.xml.ws.soap.SOAPBinding;
 
 import org.jboss.wsf.common.ObjectNameFactory;
+import org.jboss.wsf.spi.SPIProvider;
+import org.jboss.wsf.spi.SPIProviderResolver;
+import org.jboss.wsf.spi.deployer.Deployer;
+import org.jboss.wsf.spi.invocation.SecurityAdaptorFactory;
 
 /**
  * A JBossWS test helper that deals with test deployment/undeployment, etc.
@@ -54,6 +58,7 @@ public class JBossWSTestHelper
    private static final String SYSPROP_TEST_ARCHIVE_DIRECTORY = "test.archive.directory";
    private static final String SYSPROP_TEST_RESOURCES_DIRECTORY = "test.resources.directory";
    private static final boolean DEPLOY_PROCESS_ENABLED = !Boolean.getBoolean("test.disable.deployment");
+   private static final Deployer DEPLOYER;
 
    private static MBeanServerConnection server;
    private static String integrationTarget;
@@ -62,6 +67,12 @@ public class JBossWSTestHelper
    private static String implVersion;
    private static String testArchiveDir;
    private static String testResourcesDir;
+   
+   static
+   {
+      SPIProvider spiProvider = SPIProviderResolver.getInstance().getProvider();
+      DEPLOYER = spiProvider.getSPI(Deployer.class);
+   }
 
    /** Deploy the given archive
     */
@@ -70,7 +81,7 @@ public class JBossWSTestHelper
       if ( DEPLOY_PROCESS_ENABLED )
       {
          URL archiveURL = getArchiveFile(archive).toURI().toURL();
-         getDeployer().deploy(archiveURL);
+         DEPLOYER.deploy(archiveURL);
       }
    }
 
@@ -81,7 +92,7 @@ public class JBossWSTestHelper
       if ( DEPLOY_PROCESS_ENABLED )
       {
          URL archiveURL = getArchiveFile(archive).toURI().toURL();
-         getDeployer().undeploy(archiveURL);
+         DEPLOYER.undeploy(archiveURL);
       }
    }
 
@@ -219,11 +230,6 @@ public class JBossWSTestHelper
          }
       }
       return server;
-   }
-
-   private static TestDeployer getDeployer()
-   {
-      return new TestDeployerJBoss(getServer());
    }
 
    public static String getIntegrationTarget()
