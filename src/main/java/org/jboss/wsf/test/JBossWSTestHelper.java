@@ -39,11 +39,11 @@ import javax.xml.ws.Service;
 import javax.xml.ws.Service.Mode;
 import javax.xml.ws.soap.SOAPBinding;
 
+import org.jboss.logging.Logger;
 import org.jboss.wsf.common.ObjectNameFactory;
 import org.jboss.wsf.spi.SPIProvider;
 import org.jboss.wsf.spi.SPIProviderResolver;
 import org.jboss.wsf.spi.deployer.Deployer;
-import org.jboss.wsf.spi.invocation.SecurityAdaptorFactory;
 
 /**
  * A JBossWS test helper that deals with test deployment/undeployment, etc.
@@ -53,6 +53,8 @@ import org.jboss.wsf.spi.invocation.SecurityAdaptorFactory;
  */
 public class JBossWSTestHelper
 {
+   private static final Logger LOGGER = Logger.getLogger(JBossWSTestHelper.class);
+   
    private static final String SYSPROP_JBOSSWS_INTEGRATION_TARGET = "jbossws.integration.target";
    private static final String SYSPROP_JBOSS_BIND_ADDRESS = "jboss.bind.address";
    private static final String SYSPROP_TEST_ARCHIVE_DIRECTORY = "test.archive.directory";
@@ -241,32 +243,36 @@ public class JBossWSTestHelper
          if (integrationTarget == null)
             throw new IllegalStateException("Cannot obtain system property: " + SYSPROP_JBOSSWS_INTEGRATION_TARGET);
 
-         // Read the JBoss SpecificationVersion
-         String jbossVersion = null;
-         try
+         LOGGER.fatal("TODO: remove this ugly hack");
+         if (!integrationTarget.startsWith("jboss7"))
          {
-            ObjectName oname = ObjectNameFactory.create("jboss.system:type=Server");
-            jbossVersion = (String)getServer().getAttribute(oname, "VersionNumber");
-            if (jbossVersion == null)
-               throw new IllegalStateException("Cannot obtain jboss version");
+            // Read the JBoss SpecificationVersion
+            String jbossVersion = null;
+            try
+            {
+               ObjectName oname = ObjectNameFactory.create("jboss.system:type=Server");
+               jbossVersion = (String)getServer().getAttribute(oname, "VersionNumber");
+               if (jbossVersion == null)
+                  throw new IllegalStateException("Cannot obtain jboss version");
 
-            if (jbossVersion.startsWith("5.1"))
-               jbossVersion = "jboss51";
-            else if (jbossVersion.startsWith("5.0"))
-               jbossVersion = "jboss50";
-            else if (jbossVersion.startsWith("6.1"))
-               jbossVersion = "jboss61";
-            else if (jbossVersion.startsWith("6.0"))
-               jbossVersion = "jboss60";
-            else throw new IllegalStateException("Unsupported jboss version: " + jbossVersion);
-         }
-         catch (Exception ex)
-         {
-            throw new RuntimeException(ex);
-         }
+               if (jbossVersion.startsWith("5.1"))
+                  jbossVersion = "jboss51";
+               else if (jbossVersion.startsWith("5.0"))
+                  jbossVersion = "jboss50";
+               else if (jbossVersion.startsWith("6.1"))
+                  jbossVersion = "jboss61";
+               else if (jbossVersion.startsWith("6.0"))
+                  jbossVersion = "jboss60";
+               else throw new IllegalStateException("Unsupported jboss version: " + jbossVersion);
+            }
+            catch (Exception ex)
+            {
+               throw new RuntimeException(ex);
+            }
 
-         if (integrationTarget.startsWith(jbossVersion) == false)
-            throw new IllegalStateException("Integration target mismatch: " + integrationTarget + ".startsWith(" + jbossVersion + ")");
+            if (integrationTarget.startsWith(jbossVersion) == false)
+               throw new IllegalStateException("Integration target mismatch: " + integrationTarget + ".startsWith(" + jbossVersion + ")");
+         }
       }
 
       return integrationTarget;
