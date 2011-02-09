@@ -136,7 +136,7 @@ public class EndpointAddressDeploymentAspect extends AbstractDeploymentAspect
                   {
                      for (String currentUrlPattern : currentCollection.getUrlPatterns())
                      {
-                        if (urlPattern.equals(currentUrlPattern) || "/*".equals(currentUrlPattern))
+                        if (urlPattern.equals(currentUrlPattern) || (urlPattern + "/*").equals(currentUrlPattern) || "/*".equals(currentUrlPattern))
                         {
                            transportGuarantee = currentSecurity.getTransportGuarantee();
                         }
