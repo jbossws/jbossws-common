@@ -22,6 +22,7 @@
 package org.jboss.wsf.test;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
@@ -31,6 +32,8 @@ import java.util.Hashtable;
 
 import javax.management.MBeanServerConnection;
 import javax.management.ObjectName;
+import javax.management.remote.JMXConnectorFactory;
+import javax.management.remote.JMXServiceURL;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.xml.namespace.QName;
@@ -219,19 +222,43 @@ public class JBossWSTestHelper
    {
       if (server == null)
       {
-         Hashtable jndiEnv = null;
-         try
-         {
-            InitialContext iniCtx = new InitialContext();
-            jndiEnv = iniCtx.getEnvironment();
-            server = (MBeanServerConnection)iniCtx.lookup("jmx/invoker/RMIAdaptor");
-         }
-         catch (NamingException ex)
-         {
-            throw new RuntimeException("Cannot obtain MBeanServerConnection using jndi props: " + jndiEnv, ex);
-         }
+          if (getIntegrationTarget().startsWith("jboss7"))
+          {
+              server = getAS7ServerConnection();
+          }
+          else
+          {
+              server = getAS6ServerConnection();
+          }
       }
       return server;
+   }
+   
+   private static MBeanServerConnection getAS7ServerConnection()
+   {
+       String host = getServerHost();
+       String urlString = System.getProperty("jmx.service.url", "service:jmx:rmi:///jndi/rmi://" + host + ":" + 1090 + "/jmxrmi");
+       try {
+           JMXServiceURL serviceURL = new JMXServiceURL(urlString);
+           return JMXConnectorFactory.connect(serviceURL, null).getMBeanServerConnection();
+       } catch (IOException ex) {
+           throw new IllegalStateException("Cannot obtain MBeanServerConnection to: " + urlString, ex);
+       }
+   }
+   
+   private static MBeanServerConnection getAS6ServerConnection()
+   {
+       Hashtable jndiEnv = null;
+       try
+       {
+          InitialContext iniCtx = new InitialContext();
+          jndiEnv = iniCtx.getEnvironment();
+          return (MBeanServerConnection)iniCtx.lookup("jmx/invoker/RMIAdaptor");
+       }
+       catch (NamingException ex)
+       {
+          throw new RuntimeException("Cannot obtain MBeanServerConnection using jndi props: " + jndiEnv, ex);
+       }
    }
 
    public static String getIntegrationTarget()
