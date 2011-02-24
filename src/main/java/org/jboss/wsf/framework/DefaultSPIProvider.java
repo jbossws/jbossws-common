@@ -21,8 +21,6 @@
  */
 package org.jboss.wsf.framework;
 
-import org.jboss.wsf.spi.deployer.Deployer;
-import org.jboss.wsf.framework.deployment.DefaultDeploymentAspectManagerFactory;
 import org.jboss.wsf.framework.deployment.DefaultDeploymentModelFactory;
 import org.jboss.wsf.framework.deployment.DefaultLifecycleHandlerFactory;
 import org.jboss.wsf.framework.invocation.DefaultResourceInjectorFactory;
@@ -33,7 +31,7 @@ import org.jboss.wsf.framework.security.DefaultSecurityAdapterFactory;
 import org.jboss.wsf.framework.serviceref.DefaultServiceRefHandlerFactory;
 import org.jboss.wsf.spi.SPIProvider;
 import org.jboss.wsf.spi.WSFException;
-import org.jboss.wsf.spi.deployment.DeploymentAspectManagerFactory;
+import org.jboss.wsf.spi.deployer.Deployer;
 import org.jboss.wsf.spi.deployment.DeploymentModelFactory;
 import org.jboss.wsf.spi.deployment.LifecycleHandlerFactory;
 import org.jboss.wsf.spi.invocation.ResourceInjectorFactory;
@@ -60,11 +58,7 @@ class DefaultSPIProvider extends SPIProvider
       T returnType = null;
 
       // SPIs provided by framework, defaults can be overridden
-      if (DeploymentAspectManagerFactory.class.equals(spiType))
-      {
-         returnType = loadService(spiType, DefaultDeploymentAspectManagerFactory.class);
-      }
-      else if (DeploymentModelFactory.class.equals(spiType))
+      if (DeploymentModelFactory.class.equals(spiType))
       {
          returnType = loadService(spiType, DefaultDeploymentModelFactory.class);
       }
