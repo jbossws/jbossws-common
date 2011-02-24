@@ -117,6 +117,10 @@ public class AbstractDeploymentAspect implements DeploymentAspect
          while (st.hasMoreTokens())
             condset.add(st.nextToken());
       }
+      if (!isLast)
+      {
+          condset.add("WSObject");
+      }
       return condset;
    }
 
@@ -128,6 +132,10 @@ public class AbstractDeploymentAspect implements DeploymentAspect
          StringTokenizer st = new StringTokenizer(requires, ", \r\n\t");
          while (st.hasMoreTokens())
             condset.add(st.nextToken());
+      }
+      if (isLast)
+      {
+          condset.add("WSObject");
       }
       return condset;
    }
