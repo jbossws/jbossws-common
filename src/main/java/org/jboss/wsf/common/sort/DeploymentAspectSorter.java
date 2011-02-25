@@ -54,7 +54,27 @@ public final class DeploymentAspectSorter
     
    public List<DeploymentAspect> sort(final List<DeploymentAspect> aspects)
    {
-      return this.createOrientedGraph(aspects).sort();
+      final DeploymentAspect lastAspect = getLastAspect(aspects);
+      final List<DeploymentAspect> sortedAspects = createOrientedGraph(aspects).sort();
+      sortedAspects.add(lastAspect);
+      return sortedAspects;
+   }
+   
+   private DeploymentAspect getLastAspect(final List<DeploymentAspect> aspects)
+   {
+      final Iterator<DeploymentAspect> i = aspects.iterator();
+      DeploymentAspect aspect;
+      while (i.hasNext())
+      {
+         aspect = i.next();
+         if (aspect.isLast())
+         {
+            i.remove();
+            return aspect;
+         }
+      }
+      
+      throw new IllegalStateException("No deployment aspect found with attribute last='true'");
    }
 
    private Graph createOrientedGraph(final List<DeploymentAspect> aspects)
