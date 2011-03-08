@@ -146,7 +146,7 @@ public final class DOMUtils
          {
             boolean debugEnabled = log.isDebugEnabled();
             if (debugEnabled)
-               log.debug("Cannot load: " + JBossWSEntityResolver.class.getCanonicalName());
+               log.debug("Cannot load JBossWSEntityResolver");
             String[] resolvers = new String[] { "org.jboss.util.xml.JBossEntityResolver" };
             ClassLoader loader = SecurityActions.getContextClassLoader();
             for (String resolver : resolvers)
