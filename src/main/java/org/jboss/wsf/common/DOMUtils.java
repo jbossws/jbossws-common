@@ -75,11 +75,14 @@ public final class DOMUtils
 
    private static final String DISABLE_DEFERRED_NODE_EXPANSION = "org.jboss.ws.disable_deferred_node_expansion";
    private static final String DEFER_NODE_EXPANSION_FEATURE = "http://apache.org/xml/features/dom/defer-node-expansion";
+   private static final String ENABLE_DOCTYPE_DECL = "org.jboss.ws.enable_doctype_decl";
+   private static final String DISALLOW_DOCTYPE_DECL_FEATURE = "http://apache.org/xml/features/disallow-doctype-decl";
    
    private static String documentBuilderFactoryName;
    
    private static final boolean alwaysResolveFactoryName = Boolean.getBoolean(Constants.ALWAYS_RESOLVE_DOCUMENT_BUILDER_FACTORY);
    private static final boolean disableDeferedNodeExpansion = Boolean.getBoolean(DISABLE_DEFERRED_NODE_EXPANSION);
+   private static final boolean enableDoctypeDeclaration = Boolean.getBoolean(ENABLE_DOCTYPE_DECL);
    
    // All elements created by the same thread are created by the same builder and belong to the same doc
    private static ThreadLocal<Document> documentThreadLocal = new ThreadLocal<Document>();
@@ -118,10 +121,14 @@ public final class DOMUtils
                {
                   factory.setFeature(DEFER_NODE_EXPANSION_FEATURE, false);
                }
+               if (!enableDoctypeDeclaration)
+               {
+                  factory.setFeature(DISALLOW_DOCTYPE_DECL_FEATURE, true);
+               }
             }
             catch (ParserConfigurationException pce)
             {
-               log.error(pce);
+               log.fatal("Serious security risk, not able to configure parser feature", pce);
             }
 
             DocumentBuilder builder = factory.newDocumentBuilder();
