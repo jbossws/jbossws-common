@@ -25,7 +25,6 @@ import org.jboss.logging.Logger;
 import org.jboss.wsf.spi.SPIProvider;
 import org.jboss.wsf.spi.SPIProviderResolver;
 import org.jboss.wsf.spi.WSFException;
-import org.jboss.wsf.spi.classloading.ClassLoaderProvider;
 import org.jboss.wsf.spi.ioc.IoCContainerProxy;
 import org.jboss.wsf.spi.ioc.IoCContainerProxyFactory;
 import org.jboss.wsf.spi.management.EndpointRegistry;
@@ -63,9 +62,8 @@ public final class DefaultEndpointRegistryFactory extends EndpointRegistryFactor
    {
       try
       {
-         final ClassLoader cl = ClassLoaderProvider.getDefaultProvider().getServerIntegrationClassLoader();
-         final SPIProvider spiProvider = SPIProviderResolver.getInstance(cl).getProvider();
-         final IoCContainerProxyFactory iocContainerFactory = spiProvider.getSPI(IoCContainerProxyFactory.class, cl);
+         final SPIProvider spiProvider = SPIProviderResolver.getInstance().getProvider();
+         final IoCContainerProxyFactory iocContainerFactory = spiProvider.getSPI(IoCContainerProxyFactory.class);
          final IoCContainerProxy iocContainer = iocContainerFactory.getContainer();
          
          EndpointRegistry registry = null;
