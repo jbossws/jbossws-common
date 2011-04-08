@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source.
- * Copyright 2009, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2011, Red Hat Middleware LLC, and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -28,11 +28,6 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
@@ -52,24 +47,23 @@ import javax.xml.transform.stream.StreamSource;
 import org.jboss.logging.Logger;
 import org.jboss.ws.Constants;
 import org.jboss.ws.core.utils.JBossWSEntityResolver;
-import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 /**
- * DOM2 utilites
+ * DOM2 utilities: this extends the {@link org.jboss.wsf.util.DOMUtils} adding parse and creation methods.
+ * These leverage static thread-local instances of {@link org.w3c.dom.Document} and {@link javax.xml.parsers.DocumentBuilder}.
+ * The ThreadLocal attributes can be reset using the clearThreadLocals() method.
  *
  * @author Thomas.Diesler@jboss.org
  * @author alessio.soldano@jboss.com
  */
-public final class DOMUtils
+public final class DOMUtils extends org.jboss.wsf.util.DOMUtils
 {
    private static Logger log = Logger.getLogger(DOMUtils.class);
 
@@ -187,14 +181,17 @@ public final class DOMUtils
    {
    }
 
-   /** Initialize the DocumentBuilder
+   /**
+    * Initialize the DocumentBuilder, set the current thread association and returns it
     */
    public static DocumentBuilder getDocumentBuilder()
    {
       return builderThreadLocal.get();
    }
 
-   /** Parse the given XML string and return the root Element
+   /**
+    * Parse the given XML string and return the root Element
+    * This uses the document builder associated with the current thread.
     */
    public static Element parse(String xmlString) throws IOException
    {
@@ -209,7 +206,9 @@ public final class DOMUtils
       }
    }
 
-   /** Parse the given XML stream and return the root Element
+   /**
+    * Parse the given XML stream and return the root Element
+    * This uses the document builder associated with the current thread.
     */
    public static Element parse(InputStream xmlStream) throws IOException
    {
@@ -233,7 +232,9 @@ public final class DOMUtils
       }
    }
 
-   /** Parse the given input source and return the root Element
+   /**
+    * Parse the given input source and return the root Element.
+    * This uses the document builder associated with the current thread.
     */
    public static Element parse(InputSource source) throws IOException
    {
@@ -266,7 +267,9 @@ public final class DOMUtils
       }
    }
 
-   /** Create an Element for a given name
+   /**
+    * Create an Element for a given name.
+    * This uses the document builder associated with the current thread.
     */
    public static Element createElement(String localPart)
    {
@@ -275,7 +278,9 @@ public final class DOMUtils
       return doc.createElement(localPart);
    }
 
-   /** Create an Element for a given name and prefix
+   /**
+    * Create an Element for a given name and prefix.
+    * This uses the document builder associated with the current thread.
     */
    public static Element createElement(String localPart, String prefix)
    {
@@ -284,7 +289,9 @@ public final class DOMUtils
       return doc.createElement(prefix + ":" + localPart);
    }
 
-   /** Create an Element for a given name, prefix and uri
+   /**
+    * Create an Element for a given name, prefix and uri.
+    * This uses the document builder associated with the current thread.
     */
    public static Element createElement(String localPart, String prefix, String uri)
    {
@@ -301,443 +308,23 @@ public final class DOMUtils
       }
    }
 
-   /** Create an Element for a given QName
+   /**
+    * Create an Element for a given QName.
+    * This uses the document builder associated with the current thread.
     */
    public static Element createElement(QName qname)
    {
       return createElement(qname.getLocalPart(), qname.getPrefix(), qname.getNamespaceURI());
    }
 
-   /** Create a org.w3c.dom.Text node
+   /**
+    * Create a org.w3c.dom.Text node.
+    * This uses the document builder associated with the current thread.
     */
    public static Text createTextNode(String value)
    {
       Document doc = getOwnerDocument();
       return doc.createTextNode(value);
-   }
-
-   /** Get the qname of the given node.
-    */
-   public static QName getElementQName(Element el)
-   {
-      String qualifiedName = el.getNodeName();
-      return resolveQName(el, qualifiedName);
-   }
-
-   /** Transform the given qualified name into a QName
-    */
-   public static QName resolveQName(Element el, String qualifiedName)
-   {
-      QName qname;
-      String prefix = "";
-      String namespaceURI = "";
-      String localPart = qualifiedName;
-
-      int colIndex = qualifiedName.indexOf(":");
-      if (colIndex > 0)
-      {
-         prefix = qualifiedName.substring(0, colIndex);
-         localPart = qualifiedName.substring(colIndex + 1);
-
-         if ("xmlns".equals(prefix))
-         {
-            namespaceURI = "URI:XML_PREDEFINED_NAMESPACE";
-         }
-         else
-         {
-            Element nsElement = el;
-            while (namespaceURI.equals("") && nsElement != null)
-            {
-               namespaceURI = nsElement.getAttribute("xmlns:" + prefix);
-               if (namespaceURI.equals(""))
-                  nsElement = getParentElement(nsElement);
-            }
-         }
-         
-         if (namespaceURI.equals("") && el.getNamespaceURI() != null)
-         {
-            namespaceURI = el.getNamespaceURI();
-         }
-
-         if (namespaceURI.equals(""))
-            throw new IllegalArgumentException("Cannot find namespace uri for: " + qualifiedName);
-      }
-      else
-      {
-         Element nsElement = el;
-         while (namespaceURI.equals("") && nsElement != null)
-         {
-            namespaceURI = nsElement.getAttribute("xmlns");
-            if (namespaceURI.equals(""))
-               nsElement = getParentElement(nsElement);
-         }
-      }
-
-      qname = new QName(namespaceURI, localPart, prefix);
-      return qname;
-   }
-
-   /** Get the value from the given attribute
-    *
-    * @return null if the attribute value is empty or the attribute is not present
-    */
-   public static String getAttributeValue(Element el, String attrName)
-   {
-      return getAttributeValue(el, new QName(attrName));
-   }
-
-   /** Get the value from the given attribute
-    *
-    * @return null if the attribute value is empty or the attribute is not present
-    */
-   public static String getAttributeValue(Element el, QName attrName)
-   {
-      String attr = null;
-      if ("".equals(attrName.getNamespaceURI()))
-         attr = el.getAttribute(attrName.getLocalPart());
-      else
-         attr = el.getAttributeNS(attrName.getNamespaceURI(), attrName.getLocalPart());
-
-      if ("".equals(attr))
-         attr = null;
-
-      return attr;
-   }
-
-   /** Get the qname value from the given attribute
-    */
-   public static QName getAttributeValueAsQName(Element el, String attrName)
-   {
-      return getAttributeValueAsQName(el, new QName(attrName));
-
-   }
-
-   /** Get the qname value from the given attribute
-    */
-   public static QName getAttributeValueAsQName(Element el, QName attrName)
-   {
-      QName qname = null;
-
-      String qualifiedName = getAttributeValue(el, attrName);
-      if (qualifiedName != null)
-      {
-         qname = resolveQName(el, qualifiedName);
-      }
-
-      return qname;
-   }
-
-   /** Get the boolean value from the given attribute
-    */
-   public static boolean getAttributeValueAsBoolean(Element el, String attrName)
-   {
-      return getAttributeValueAsBoolean(el, new QName(attrName));
-   }
-
-   /** Get the boolean value from the given attribute
-    */
-   public static boolean getAttributeValueAsBoolean(Element el, QName attrName)
-   {
-      String attrVal = getAttributeValue(el, attrName);
-      boolean ret = "true".equalsIgnoreCase(attrVal) || "1".equalsIgnoreCase(attrVal);
-      return ret;
-   }
-
-   /** Get the integer value from the given attribute
-    */
-   public static Integer getAttributeValueAsInteger(Element el, String attrName)
-   {
-      return getAttributeValueAsInteger(el, new QName(attrName));
-   }
-
-   /** Get the integer value from the given attribute
-    */
-   public static Integer getAttributeValueAsInteger(Element el, QName attrName)
-   {
-      String attrVal = getAttributeValue(el, attrName);
-      return (attrVal != null ? new Integer(attrVal) : null);
-   }
-
-   /** Get the attributes as Map<QName, String>
-    */
-   public static Map<QName, String> getAttributes(Element el)
-   {
-      Map<QName, String> attmap = new HashMap<QName, String>();
-      NamedNodeMap attribs = el.getAttributes();
-      int len = attribs.getLength();
-      for (int i = 0; i < len; i++)
-      {
-         Attr attr = (Attr)attribs.item(i);
-         String name = attr.getName();
-         QName qname = resolveQName(el, name);
-         String value = attr.getNodeValue();
-         attmap.put(qname, value);
-      }
-      return attmap;
-   }
-
-   /** Copy attributes between elements
-    */
-   public static void copyAttributes(Element destElement, Element srcElement)
-   {
-      NamedNodeMap attribs = srcElement.getAttributes();
-      int len = attribs.getLength();
-      for (int i = 0; i < len; i++)
-      {
-         Attr attr = (Attr)attribs.item(i);
-         String uri = attr.getNamespaceURI();
-         String qname = attr.getName();
-         String value = attr.getNodeValue();
-
-         // Prevent DOMException: NAMESPACE_ERR: An attempt is made to create or
-         // change an object in a way which is incorrect with regard to namespaces.
-         if (uri == null && qname.startsWith("xmlns"))
-         {
-            if (log.isTraceEnabled()) log.trace("Ignore attribute: [uri=" + uri + ",qname=" + qname + ",value=" + value + "]");
-         }
-         else
-         {
-            destElement.setAttributeNS(uri, qname, value);
-         }
-      }
-   }
-   
-   /** True if the node has text child elements only
-    */
-   public static boolean hasTextChildNodesOnly(Node node)
-   {
-      NodeList nodeList = node.getChildNodes();
-      int len = nodeList.getLength();
-      if (len == 0)
-         return false;
-
-      for (int i = 0; i < len; i++)
-      {
-         Node acksToChildNode = nodeList.item(i);
-         if (acksToChildNode.getNodeType() != Node.TEXT_NODE)
-            return false;
-      }
-
-      return true;
-   }
-
-   /** True if the node has child elements
-    */
-   public static boolean hasChildElements(Node node)
-   {
-      NodeList nlist = node.getChildNodes();
-      int len = nlist.getLength();
-      for (int i = 0; i < len; i++)
-      {
-         Node child = nlist.item(i);
-         if (child.getNodeType() == Node.ELEMENT_NODE)
-            return true;
-      }
-      return false;
-   }
-
-   /** Gets child elements
-    */
-   public static Iterator<Element> getChildElements(Node node)
-   {
-      List<Element> list = new LinkedList<Element>();
-      NodeList nlist = node.getChildNodes();
-      int len = nlist.getLength();
-      for (int i = 0; i < len; i++)
-      {
-         Node child = nlist.item(i);
-         if (child.getNodeType() == Node.ELEMENT_NODE)
-            list.add((Element)child);
-      }
-      return list.iterator();
-   }
-
-   /** Get the concatenated text content, or null.
-    */
-   public static String getTextContent(Node node)
-   {
-      boolean hasTextContent = false;
-      StringBuilder buffer = new StringBuilder();
-      NodeList nlist = node.getChildNodes();
-      int len = nlist.getLength();
-      for (int i = 0; i < len; i++)
-      {
-         Node child = nlist.item(i);
-         if (child.getNodeType() == Node.TEXT_NODE)
-         {
-            buffer.append(child.getNodeValue());
-            hasTextContent = true;
-         }
-      }
-      return (hasTextContent ? buffer.toString() : null);
-   }
-
-   /** Gets the first child element
-    */
-   public static Element getFirstChildElement(Node node)
-   {
-      return getFirstChildElement(node, false);
-   }
-
-   /** Gets the first child element
-    */
-   public static Element getFirstChildElement(Node node, boolean recursive)
-   {
-      return getFirstChildElementIntern(node, null, recursive);
-   }
-
-   /** Gets the first child element for a given local name without namespace
-    */
-   public static Element getFirstChildElement(Node node, String nodeName)
-   {
-      return getFirstChildElement(node, nodeName, false);
-   }
-
-   /** Gets the first child element for a given local name without namespace
-    */
-   public static Element getFirstChildElement(Node node, String nodeName, boolean recursive)
-   {
-      return getFirstChildElementIntern(node, new QName(nodeName), recursive);
-   }
-
-   /** Gets the first child element for a given qname
-    */
-   public static Element getFirstChildElement(Node node, QName nodeName)
-   {
-      return getFirstChildElement(node, nodeName, false);
-   }
-
-   /** Gets the first child element for a given qname
-    */
-   public static Element getFirstChildElement(Node node, QName nodeName, boolean recursive)
-   {
-      return getFirstChildElementIntern(node, nodeName, recursive);
-   }
-
-   private static Element getFirstChildElementIntern(Node node, QName nodeName, boolean recursive)
-   {
-      Element childElement = null;
-      Iterator<Element> it = getChildElementsIntern(node, nodeName, recursive);
-      if (it.hasNext())
-      {
-         childElement = (Element)it.next();
-      }
-      return childElement;
-   }
-
-   /** Gets the child elements for a given local name without namespace
-    */
-   public static Iterator<Element> getChildElements(Node node, String nodeName)
-   {
-      return getChildElements(node, nodeName, false);
-   }
-
-   /** Gets the child elements for a given local name without namespace
-    */
-   public static Iterator<Element> getChildElements(Node node, String nodeName, boolean recursive)
-   {
-      return getChildElementsIntern(node, new QName(nodeName), recursive);
-   }
-
-   /** Gets the child element for a given qname
-    */
-   public static Iterator<Element> getChildElements(Node node, QName nodeName)
-   {
-      return getChildElements(node, nodeName, false);
-   }
-
-   /** Gets the child element for a given qname
-    */
-   public static Iterator<Element> getChildElements(Node node, QName nodeName, boolean recursive)
-   {
-      return getChildElementsIntern(node, nodeName, recursive);
-   }
-
-   public static List<Element> getChildElementsAsList(Node node, String nodeName)
-   {
-      return getChildElementsAsList(node, nodeName, false);
-   }
-
-   public static List<Element> getChildElementsAsList(Node node, String nodeName, boolean recursive)
-   {
-      return getChildElementsAsListIntern(node, new QName(nodeName), recursive);
-   }
-
-   public static List<Element> getChildElementsAsList(Node node, QName nodeName)
-   {
-      return getChildElementsAsList(node, nodeName, false);
-   }
-
-   public static List<Element> getChildElementsAsList(Node node, QName nodeName, boolean recursive)
-   {
-      return getChildElementsAsListIntern(node, nodeName, recursive);
-   }
-
-   private static List<Element> getChildElementsAsListIntern(Node node, QName nodeName, boolean recursive)
-   {
-      List<Element> list = new LinkedList<Element>();
-
-      NodeList nlist = node.getChildNodes();
-      int len = nlist.getLength();
-      for (int i = 0; i < len; i++)
-      {
-         Node child = nlist.item(i);
-         if (child.getNodeType() == Node.ELEMENT_NODE)
-         {
-            search(list, (Element)child, nodeName, recursive);
-         }
-      }
-      return list;
-   }
-
-   private static void search(List<Element> list, Element baseElement, QName nodeName, boolean recursive)
-   {
-      if (nodeName == null)
-      {
-         list.add(baseElement);
-      }
-      else
-      {
-         QName qname;
-         if (nodeName.getNamespaceURI().length() > 0)
-         {
-            qname = new QName(baseElement.getNamespaceURI(), baseElement.getLocalName());
-         }
-         else
-         {
-            qname = new QName(baseElement.getLocalName());
-         }
-         if (qname.equals(nodeName))
-         {
-            list.add(baseElement);
-         }
-      }
-      if (recursive)
-      {
-         NodeList nlist = baseElement.getChildNodes();
-         int len = nlist.getLength();
-         for (int i = 0; i < len; i++)
-         {
-            Node child = nlist.item(i);
-            if (child.getNodeType() == Node.ELEMENT_NODE)
-            {
-               search(list, (Element)child, nodeName, recursive);
-            }
-         }
-      }
-   }
-
-   private static Iterator<Element> getChildElementsIntern(Node node, QName nodeName, boolean recursive)
-   {
-      return getChildElementsAsListIntern(node, nodeName, recursive).iterator();
-   }
-
-   /** Gets parent element or null if there is none
-    */
-   public static Element getParentElement(Node node)
-   {
-      Node parent = node.getParentNode();
-      return (parent instanceof Element ? (Element)parent : null);
    }
 
    /** Peek at the owner document without creating a new one if not set. */
@@ -763,6 +350,14 @@ public final class DOMUtils
       return doc;
    }
 
+   /**
+    * Parse the contents of the provided source into an element.
+    * This uses the document builder associated with the current thread.
+    * 
+    * @param source
+    * @return
+    * @throws IOException
+    */
    public static Element sourceToElement(Source source) throws IOException
    {
       Element retElement = null;
