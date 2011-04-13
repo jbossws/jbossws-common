@@ -68,6 +68,7 @@ import java.util.List;
  */
 public class WSConsume
 {
+   private static final ClassLoader MODULES_LOADER;
    private List<File> bindingFiles = new ArrayList<File>();
    private File outputDir = new File("output");
    private boolean generateSource;
@@ -82,14 +83,40 @@ public class WSConsume
    private boolean noCompile;
    private File sourceDir;
    private String target;
-
+   
+   static
+   {
+      MODULES_LOADER = SecurityActions.getModulesClassLoader();
+   }
+   
    public static final String PROGRAM_NAME = SecurityActions.getSystemProperty("program.name", WSConsume.class.getName());
 
    public static void main(String[] args)
    {
-      WSConsume importer = new WSConsume();
-      URL wsdl = importer.parseArguments(args);
-      System.exit(importer.importServices(wsdl));
+      if (MODULES_LOADER != null)
+      {
+         final ClassLoader origLoader = SecurityActions.getContextClassLoader();
+         try
+         {
+            SecurityActions.setContextClassLoader(MODULES_LOADER);
+            mainInternal(args);
+         }
+         finally
+         {
+            SecurityActions.setContextClassLoader(origLoader);
+         }
+      }
+      else
+      {
+         mainInternal(args);
+      }
+   }
+   
+   private static void mainInternal(final String[] args)
+   {
+       WSConsume importer = new WSConsume();
+       URL wsdl = importer.parseArguments(args);
+       System.exit(importer.importServices(wsdl));
    }
 
    private URL parseArguments(String[] args)

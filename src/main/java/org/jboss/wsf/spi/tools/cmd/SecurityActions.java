@@ -57,6 +57,65 @@ class SecurityActions
          });
       }
    }
+   
+   /**
+    * Set context classloader.
+    *
+    * @param classLoader the classloader
+    */
+   static void setContextClassLoader(final ClassLoader classLoader)
+   {
+      if (System.getSecurityManager() == null)
+      {
+         Thread.currentThread().setContextClassLoader(classLoader);
+      }
+      else
+      {
+         AccessController.doPrivileged(new PrivilegedAction<Object>()
+         {
+            public Object run()
+            {
+               Thread.currentThread().setContextClassLoader(classLoader);
+               return null;
+            }
+         });
+      }
+   }
+
+   static ClassLoader getModulesClassLoader()
+   {
+      SecurityManager sm = System.getSecurityManager();
+      if (sm == null)
+      {
+         return getModulesClassLoaderInternal();
+      }
+      else
+      {
+         return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+            public ClassLoader run()
+            {
+               return getModulesClassLoaderInternal();
+            }
+         });
+      }
+   }
+   
+   private static ClassLoader getModulesClassLoaderInternal()
+   {
+       // TODO: use SPI class loader facade, not reflection!
+       try {
+          Class<?> moduleClass = Class.forName("org.jboss.modules.Module");
+          Class<?> moduleIdentifierClass = Class.forName("org.jboss.modules.ModuleIdentifier");
+          Class<?> moduleLoaderClass = Class.forName("org.jboss.modules.ModuleLoader");
+          Object moduleLoader = moduleClass.getMethod("getBootModuleLoader").invoke(null);
+          Object moduleIdentifier = moduleIdentifierClass.getMethod("create", String.class).invoke(null, "org.jboss.as.webservices.server.integration");
+          Object module = moduleLoaderClass.getMethod("loadModule", moduleIdentifierClass).invoke(moduleLoader, moduleIdentifier);
+          return (ClassLoader)moduleClass.getMethod("getClassLoader").invoke(module);
+       } catch (Exception e) {
+          //ignore, JBoss Modules might not be available at all
+          return null;
+       }
+   }
 
    /**
     * Load a class using the provided classloader
