@@ -49,55 +49,55 @@ import org.jboss.wsf.test.DeployerJBoss6;
  */
 class DefaultSPIProvider extends SPIProvider
 {
-
    /**
-    * Gets the specified SPI.
+    * Gets the specified SPI, using the provided classloader
     */
-   public <T> T getSPI(Class<T> spiType)
+   @Override
+   public <T> T getSPI(Class<T> spiType, ClassLoader loader)
    {
       T returnType = null;
 
       // SPIs provided by framework, defaults can be overridden
       if (DeploymentModelFactory.class.equals(spiType))
       {
-         returnType = loadService(spiType, DefaultDeploymentModelFactory.class);
+         returnType = loadService(spiType, DefaultDeploymentModelFactory.class, loader);
       }
       else if (EndpointMetricsFactory.class.equals(spiType))
       {
-         returnType = loadService(spiType, DefaultEndpointMetricsFactory.class);
+         returnType = loadService(spiType, DefaultEndpointMetricsFactory.class, loader);
       }
       else if (LifecycleHandlerFactory.class.equals(spiType))
       {
-         returnType = loadService(spiType, DefaultLifecycleHandlerFactory.class);
+         returnType = loadService(spiType, DefaultLifecycleHandlerFactory.class, loader);
       }
       else if (ResourceInjectorFactory.class.equals(spiType))
       {
-         returnType = loadService(spiType, DefaultResourceInjectorFactory.class);
+         returnType = loadService(spiType, DefaultResourceInjectorFactory.class, loader);
       }
       else if (ServiceRefHandlerFactory.class.equals(spiType))
       {
-         returnType = loadService(spiType, DefaultServiceRefHandlerFactory.class);
+         returnType = loadService(spiType, DefaultServiceRefHandlerFactory.class, loader);
       }
       else if (SecurityAdaptorFactory.class.equals(spiType))
       {
-         returnType = loadService(spiType, DefaultSecurityAdapterFactory.class);
+         returnType = loadService(spiType, DefaultSecurityAdapterFactory.class, loader);
       }
       else if (EndpointRegistryFactory.class.equals(spiType))
       {
-         returnType = loadService(spiType, DefaultEndpointRegistryFactory.class);
+         returnType = loadService(spiType, DefaultEndpointRegistryFactory.class, loader);
       }
       else if (Deployer.class.equals(spiType))
       {
-         returnType = loadService(spiType, DeployerJBoss6.class);
+         returnType = loadService(spiType, DeployerJBoss6.class, loader);
       }
       else if (JMSEndpointResolver.class.equals(spiType))
       {
-         returnType = loadService(spiType, DefaultJMSEndpointResolver.class);
+         returnType = loadService(spiType, DefaultJMSEndpointResolver.class, loader);
       }
       else
       {
          // SPI provided by either container or stack integration that has no default implementation
-         returnType = (T)loadService(spiType, null);
+         returnType = (T)loadService(spiType, null, loader);
       }
 
       if (returnType == null)
@@ -108,10 +108,10 @@ class DefaultSPIProvider extends SPIProvider
 
    // Load SPI implementation through ServiceLoader
    @SuppressWarnings("unchecked")
-   private <T> T loadService(Class<T> spiType, Class<?> defaultImpl)
+   private <T> T loadService(Class<T> spiType, Class<?> defaultImpl, ClassLoader loader)
    {
       final String defaultImplName = defaultImpl != null ? defaultImpl.getName() : null;
-      return (T)ServiceLoader.loadService(spiType.getName(), defaultImplName);
+      return (T)ServiceLoader.loadService(spiType.getName(), defaultImplName, loader);
    }
 
 }

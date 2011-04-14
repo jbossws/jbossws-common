@@ -26,13 +26,9 @@ import javax.xml.ws.WebServiceContext;
 import org.jboss.wsf.common.injection.InjectionHelper;
 import org.jboss.wsf.common.injection.PreDestroyHolder;
 import org.jboss.wsf.common.injection.ThreadLocalAwareWebServiceContext;
-import org.jboss.wsf.spi.SPIProvider;
-import org.jboss.wsf.spi.SPIProviderResolver;
 import org.jboss.wsf.spi.deployment.Endpoint;
 import org.jboss.wsf.spi.invocation.Invocation;
 import org.jboss.wsf.spi.invocation.InvocationContext;
-import org.jboss.wsf.spi.invocation.ResourceInjector;
-import org.jboss.wsf.spi.invocation.ResourceInjectorFactory;
 import org.jboss.wsf.spi.metadata.injection.InjectionsMetaData;
 
 /**
@@ -69,10 +65,7 @@ public final class InvocationHandlerJAXWS extends AbstractInvocationHandlerJSE
       if (injectionsMD != null)
          InjectionHelper.injectResources(targetBean, injectionsMD, endpoint.getJNDIContext());
 
-      final SPIProvider spiProvider = SPIProviderResolver.getInstance().getProvider();
-      final ResourceInjectorFactory resourceInjectorFactory = spiProvider.getSPI(ResourceInjectorFactory.class);
-      final ResourceInjector wsContextInjector = resourceInjectorFactory.newResourceInjector();
-      wsContextInjector.inject(targetBean, ThreadLocalAwareWebServiceContext.getInstance());
+      InjectionHelper.injectWebServiceContext(targetBean, ThreadLocalAwareWebServiceContext.getInstance());
 
       this.log.debug("Calling postConstruct method on JAXWS JSE endpoint: " + targetBean);
       InjectionHelper.callPostConstructMethod(targetBean);

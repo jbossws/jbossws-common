@@ -35,6 +35,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.jboss.wsf.common.ObjectNameFactory;
 import org.jboss.wsf.spi.SPIProvider;
 import org.jboss.wsf.spi.SPIProviderResolver;
+import org.jboss.wsf.spi.classloading.ClassLoaderProvider;
 import org.jboss.wsf.spi.deployment.Deployment;
 import org.jboss.wsf.spi.deployment.Endpoint;
 import org.jboss.wsf.spi.invocation.EndpointAssociation;
@@ -54,7 +55,6 @@ import javax.xml.ws.WebServiceException;
 public abstract class AbstractEndpointServlet extends HttpServlet
 {
 
-   private final SPIProvider spiProvider = SPIProviderResolver.getInstance().getProvider();
    protected Endpoint endpoint;
    private EndpointRegistry epRegistry;
    
@@ -133,7 +133,9 @@ public abstract class AbstractEndpointServlet extends HttpServlet
     */
    private void initRegistry()
    {
-      epRegistry = spiProvider.getSPI(EndpointRegistryFactory.class).getEndpointRegistry();
+      ClassLoader cl = ClassLoaderProvider.getDefaultProvider().getServerIntegrationClassLoader();
+      SPIProvider spiProvider = SPIProviderResolver.getInstance(cl).getProvider();
+      epRegistry = spiProvider.getSPI(EndpointRegistryFactory.class, cl).getEndpointRegistry();
    }   
 
    /**
