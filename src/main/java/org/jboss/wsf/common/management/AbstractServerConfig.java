@@ -35,6 +35,7 @@ import org.jboss.logging.Logger;
 import org.jboss.wsf.common.ObjectNameFactory;
 import org.jboss.wsf.spi.SPIProvider;
 import org.jboss.wsf.spi.SPIProviderResolver;
+import org.jboss.wsf.spi.classloading.ClassLoaderProvider;
 import org.jboss.wsf.spi.management.ServerConfig;
 import org.jboss.wsf.spi.management.StackConfig;
 import org.jboss.wsf.spi.management.StackConfigFactory;
@@ -164,8 +165,9 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
    public void create() throws Exception
    {
       //Retrieve the stackConfig using SPIProvider
-      SPIProvider spiProvider = SPIProviderResolver.getInstance().getProvider();
-      this.stackConfig = spiProvider.getSPI(StackConfigFactory.class).getStackConfig();
+      ClassLoader cl = ClassLoaderProvider.getDefaultProvider().getServerIntegrationClassLoader();
+      SPIProvider spiProvider = SPIProviderResolver.getInstance(cl).getProvider();
+      this.stackConfig = spiProvider.getSPI(StackConfigFactory.class, cl).getStackConfig();
 
       log.info(getImplementationTitle() + ' ' + getImplementationVersion());
       getMbeanServer().registerMBean(this, AbstractServerConfigMBean.OBJECT_NAME);
@@ -176,7 +178,7 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
       getMbeanServer().unregisterMBean(AbstractServerConfigMBean.OBJECT_NAME);
    }
 
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings("rawtypes")
    private int getConnectorPort(final String protocol, final boolean secure)
    {
       int port = -1;
