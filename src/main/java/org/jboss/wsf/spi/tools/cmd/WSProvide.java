@@ -64,8 +64,8 @@ import org.jboss.wsf.spi.util.Log4jOutputStream;
  */
 public class WSProvide
 {
-   private static final ClassLoader DEFAULT_LOADER;
-   private ClassLoader loader = DEFAULT_LOADER;
+   private static final ClassLoader MODULES_LOADER = SecurityActions.getModulesClassLoader();
+   private ClassLoader loader = MODULES_LOADER != null ? MODULES_LOADER : SecurityActions.getContextClassLoader();
    private File outputDir = new File("output");
    private boolean generateSource;
    private boolean generateWsdl;
@@ -76,13 +76,6 @@ public class WSProvide
    private File resourceDir;
    private File sourceDir;
 
-   static
-   {
-       final ClassLoader modulesLoader = SecurityActions.getModulesClassLoader();
-       final ClassLoader contextLoader = SecurityActions.getContextClassLoader();
-       DEFAULT_LOADER = modulesLoader != null ? modulesLoader : contextLoader;
-   }
-   
    public static final String PROGRAM_NAME = SecurityActions.getSystemProperty("program.name", WSProvide.class.getSimpleName());
 
    public static void main(String[] args)

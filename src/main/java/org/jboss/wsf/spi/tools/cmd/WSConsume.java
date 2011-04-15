@@ -68,7 +68,7 @@ import java.util.List;
  */
 public class WSConsume
 {
-   private static final ClassLoader MODULES_LOADER;
+   private static final ClassLoader MODULES_LOADER = SecurityActions.getModulesClassLoader();
    private List<File> bindingFiles = new ArrayList<File>();
    private File outputDir = new File("output");
    private boolean generateSource;
@@ -83,11 +83,6 @@ public class WSConsume
    private boolean noCompile;
    private File sourceDir;
    private String target;
-   
-   static
-   {
-      MODULES_LOADER = SecurityActions.getModulesClassLoader();
-   }
    
    public static final String PROGRAM_NAME = SecurityActions.getSystemProperty("program.name", WSConsume.class.getName());
 
