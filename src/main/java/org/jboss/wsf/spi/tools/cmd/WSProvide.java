@@ -62,7 +62,7 @@ import org.jboss.wsf.spi.util.Log4jOutputStream;
  * 
  * @author <a href="mailto:jason.greene@jboss.com">Jason T. Greene</a>
  */
-public class WSProvide
+public final class WSProvide
 {
    private static final ClassLoader MODULES_LOADER = SecurityActions.getModulesClassLoader();
    private ClassLoader loader = MODULES_LOADER != null ? MODULES_LOADER : SecurityActions.getContextClassLoader();
@@ -83,6 +83,12 @@ public class WSProvide
       WSProvide generate = new WSProvide();
       String endpoint = generate.parseArguments(args);
       System.exit(generate.generate(endpoint));
+   }
+   
+   //hide constructor
+   private WSProvide()
+   {
+      //NOOP
    }
    
    private String parseArguments(String[] args)

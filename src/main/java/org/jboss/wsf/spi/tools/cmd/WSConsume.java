@@ -66,7 +66,7 @@ import java.util.List;
  *
  * @author <a href="mailto:jason.greene@jboss.com">Jason T. Greene</a>
  */
-public class WSConsume
+public final class WSConsume
 {
    private static final ClassLoader MODULES_LOADER = SecurityActions.getModulesClassLoader();
    private List<File> bindingFiles = new ArrayList<File>();
@@ -105,6 +105,12 @@ public class WSConsume
       {
          mainInternal(args);
       }
+   }
+   
+   //hide constructor
+   private WSConsume()
+   {
+      //NOOP
    }
    
    private static void mainInternal(final String[] args)
