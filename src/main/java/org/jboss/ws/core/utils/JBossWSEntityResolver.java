@@ -36,6 +36,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.jboss.logging.Logger;
 import org.jboss.util.xml.JBossEntityResolver;
+import org.jboss.wsf.spi.classloading.ClassLoaderProvider;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -103,7 +104,10 @@ public class JBossWSEntityResolver extends JBossEntityResolver
       {
          public Properties run()
          {
-            InputStream is = classLoader.getResourceAsStream(entitiesResource);
+            //use a delegate classloader: first try lookup using the provided classloader,
+            //otherwise use server integration classloader which has the default configuration
+            final ClassLoader intCl = ClassLoaderProvider.getDefaultProvider().getServerIntegrationClassLoader();
+            InputStream is = new DelegateClassLoader(intCl, classLoader).getResourceAsStream(entitiesResource);
             // get stream
             if (is == null)
                throw new IllegalArgumentException("Resource " + entitiesResource + " not found");
