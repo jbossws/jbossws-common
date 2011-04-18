@@ -28,17 +28,14 @@
   <!-- Properties -->
   <properties>
     <jbossws.spi.version>2.0.0-SNAPSHOT</jbossws.spi.version>
-    <ant.version>1.7.1</ant.version>
-    <getopt.version>1.0.13</getopt.version>
     <jboss.jaxbintros.version>1.0.2.GA</jboss.jaxbintros.version>
     <jboss.common.core.version>2.2.14.GA</jboss.common.core.version>
     <jboss-logging-spi.version>2.0.5.GA</jboss-logging-spi.version>
-    <junit.version>3.8.2</junit.version>
-    <log4j.version>1.2.14</log4j.version>
     <wsdl4j.version>1.6.2</wsdl4j.version>
     <ejb.api.version>1.0.0.CR2</ejb.api.version>
     <jms.api.version>1.0.0.Final</jms.api.version>
     <jaxws.api.version>1.0.0.Final</jaxws.api.version>
+    <junit.version>3.8.2</junit.version>
     <servlet.api.version>1.0.0.Final</servlet.api.version>
   </properties>
 
@@ -66,24 +63,7 @@
          </exclusion>
        </exclusions>
     </dependency>
-    <dependency>
-      <groupId>org.apache.ant</groupId>
-      <artifactId>ant</artifactId>
-      <version>${ant.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>gnu-getopt</groupId>
-      <artifactId>getopt</artifactId>
-      <version>${getopt.version}</version>
-    </dependency>
-
-	<!-- Non transient dependencies -->
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>${log4j.version}</version>
-      <scope>provided</scope>
-    </dependency>
+    <!-- Non transient dependencies -->
     <dependency>
       <groupId>org.jboss.spec.javax.xml.ws</groupId>
       <artifactId>jboss-jaxws-api_2.2_spec</artifactId>
