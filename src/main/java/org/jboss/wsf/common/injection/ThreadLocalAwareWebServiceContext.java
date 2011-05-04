@@ -56,63 +56,39 @@ public final class ThreadLocalAwareWebServiceContext implements WebServiceContex
 
    public EndpointReference getEndpointReference(final Element... referenceParameters)
    {
-      final WebServiceContext delegee = this.contexts.get();
-
-      if (delegee == null)
-      {
-         throw new IllegalStateException();
-      }
-
-      return delegee.getEndpointReference(referenceParameters);
+      return getWebServiceContext().getEndpointReference(referenceParameters);
    }
 
-   public <T extends EndpointReference> T getEndpointReference(final Class<T> clazz,
-         final Element... referenceParameters)
+   public <T extends EndpointReference> T getEndpointReference(final Class<T> clazz, final Element... referenceParameters)
    {
-      final WebServiceContext delegee = this.contexts.get();
-
-      if (delegee == null)
-      {
-         throw new IllegalStateException();
-      }
-
-      return delegee.getEndpointReference(clazz, referenceParameters);
+      return getWebServiceContext().getEndpointReference(clazz, referenceParameters);
    }
 
    public MessageContext getMessageContext()
    {
-      final WebServiceContext delegee = this.contexts.get();
-
-      if (delegee == null)
-      {
-         throw new IllegalStateException();
-      }
-
-      return delegee.getMessageContext();
+      return getWebServiceContext().getMessageContext();
    }
 
    public Principal getUserPrincipal()
    {
-      final WebServiceContext delegee = this.contexts.get();
-
-      if (delegee == null)
-      {
-         throw new IllegalStateException();
-      }
-
-      return delegee.getUserPrincipal();
+      return getWebServiceContext().getUserPrincipal();
    }
 
    public boolean isUserInRole(String role)
    {
-      final WebServiceContext delegee = this.contexts.get();
+      return getWebServiceContext().isUserInRole(role);
+   }
+   
+   private WebServiceContext getWebServiceContext()
+   {
+       final WebServiceContext delegate = contexts.get();
 
-      if (delegee == null)
-      {
-         throw new IllegalStateException();
-      }
-
-      return delegee.isUserInRole(role);
+       if (delegate == null)
+       {
+          throw new IllegalStateException();
+       }
+       
+       return delegate;
    }
 
 }
