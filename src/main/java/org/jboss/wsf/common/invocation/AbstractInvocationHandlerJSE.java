@@ -41,7 +41,7 @@ public abstract class AbstractInvocationHandlerJSE extends AbstractInvocationHan
 
    private static final String POJO_JNDI_PREFIX = "java:comp/env/";
 
-   private boolean initialized;
+   private volatile boolean initialized;
 
    /**
     * Constructor.
@@ -51,13 +51,19 @@ public abstract class AbstractInvocationHandlerJSE extends AbstractInvocationHan
       super();
    }
 
-   private synchronized void init(final Endpoint endpoint, final Invocation invocation)
+   private void init(final Endpoint endpoint, final Invocation invocation)
    throws Exception
    {
-      if (!this.initialized)
+      if (!initialized)
       {
-         this.onEndpointInstantiated(endpoint, invocation);
-         this.initialized = true;
+         synchronized(this)
+         {
+            if (!initialized)
+            {
+               onEndpointInstantiated(endpoint, invocation);
+               initialized = true;
+            }
+         }
       }
    }
 
