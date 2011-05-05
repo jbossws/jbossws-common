@@ -44,7 +44,7 @@ import org.jboss.wsf.spi.management.recording.Record;
 import org.jboss.wsf.spi.management.recording.RecordGroupAssociation;
 import org.jboss.wsf.spi.management.recording.RecordProcessor;
 import org.jboss.wsf.spi.management.recording.Record.MessageType;
-import org.jboss.wsf.common.handler.GenericSOAPHandler;
+import org.jboss.ws.api.handler.GenericSOAPHandler;
 
 /**
  * This handler is responsible for collecting the information about the
