@@ -26,10 +26,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.jboss.ws.api.annotation.WebContext;
 import org.jboss.wsf.common.integration.AbstractDeploymentAspect;
 import org.jboss.wsf.spi.SPIProvider;
 import org.jboss.wsf.spi.SPIProviderResolver;
-import org.jboss.wsf.spi.annotation.WebContext;
 import org.jboss.wsf.spi.deployment.Deployment;
 import org.jboss.wsf.spi.deployment.Endpoint;
 import org.jboss.wsf.spi.deployment.HttpEndpoint;

@@ -26,9 +26,9 @@ import java.io.InputStream;
 
 import org.jboss.jaxb.intros.BindingCustomizationFactory;
 import org.jboss.logging.Logger;
+import org.jboss.ws.api.binding.BindingCustomization;
+import org.jboss.ws.api.binding.JAXBBindingCustomization;
 import org.jboss.wsf.common.integration.AbstractDeploymentAspect;
-import org.jboss.wsf.spi.binding.BindingCustomization;
-import org.jboss.wsf.spi.binding.JAXBBindingCustomization;
 import org.jboss.wsf.spi.deployment.ArchiveDeployment;
 import org.jboss.wsf.spi.deployment.Deployment;
 import org.jboss.wsf.spi.deployment.Endpoint;
