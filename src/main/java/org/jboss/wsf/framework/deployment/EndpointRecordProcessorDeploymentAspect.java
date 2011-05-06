@@ -32,7 +32,7 @@ import org.jboss.wsf.common.integration.AbstractDeploymentAspect;
 import org.jboss.wsf.framework.management.recording.ManagedRecordProcessor;
 import org.jboss.wsf.spi.deployment.Deployment;
 import org.jboss.wsf.spi.deployment.Endpoint;
-import org.jboss.wsf.spi.management.recording.RecordProcessor;
+import org.jboss.ws.api.monitoring.RecordProcessor;
 
 /**
  * A deployer that sets the record processors for each endpoint

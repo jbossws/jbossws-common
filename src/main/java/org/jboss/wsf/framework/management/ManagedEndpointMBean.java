@@ -24,8 +24,8 @@ package org.jboss.wsf.framework.management;
 import java.util.Date;
 import java.util.List;
 
-import org.jboss.wsf.spi.management.recording.Record;
-import org.jboss.wsf.spi.management.recording.RecordProcessor;
+import org.jboss.ws.api.monitoring.Record;
+import org.jboss.ws.api.monitoring.RecordProcessor;
 
 /**
  * MBean interface.

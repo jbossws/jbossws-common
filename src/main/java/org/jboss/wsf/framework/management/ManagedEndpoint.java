@@ -32,8 +32,8 @@ import org.jboss.wsf.common.ObjectNameFactory;
 import org.jboss.wsf.framework.management.recording.ManagedRecordProcessor;
 import org.jboss.wsf.spi.deployment.Endpoint;
 import org.jboss.wsf.spi.management.EndpointMetrics;
-import org.jboss.wsf.spi.management.recording.Record;
-import org.jboss.wsf.spi.management.recording.RecordProcessor;
+import org.jboss.ws.api.monitoring.Record;
+import org.jboss.ws.api.monitoring.RecordProcessor;
 
 /**
  * The endpoint MBean representation 

@@ -23,8 +23,8 @@ package org.jboss.wsf.framework.management.recording;
 
 import java.util.List;
 
-import org.jboss.wsf.spi.management.recording.Record;
-import org.jboss.wsf.spi.management.recording.RecordFilter;
+import org.jboss.ws.api.monitoring.Record;
+import org.jboss.ws.api.monitoring.RecordFilter;
 
 /**
  * The record processor MBean interface

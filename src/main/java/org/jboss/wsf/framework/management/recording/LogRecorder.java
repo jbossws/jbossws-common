@@ -26,8 +26,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.jboss.logging.Logger;
-import org.jboss.wsf.spi.management.recording.Record;
-import org.jboss.wsf.spi.management.recording.Record.MessageType;
+import org.jboss.ws.api.monitoring.Record;
+import org.jboss.ws.api.monitoring.Record.MessageType;
 
 /**
  * A simple record processor that writes records to the configured log.

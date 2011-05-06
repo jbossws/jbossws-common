@@ -28,7 +28,7 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
-import org.jboss.wsf.spi.management.recording.Record;
+import org.jboss.ws.api.monitoring.Record;
 
 /**
  * Default Record implementation

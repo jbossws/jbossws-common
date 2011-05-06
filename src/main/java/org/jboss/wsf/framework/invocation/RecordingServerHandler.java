@@ -40,10 +40,10 @@ import org.jboss.wsf.common.DOMWriter;
 import org.jboss.wsf.framework.management.recording.RecordFactory;
 import org.jboss.wsf.spi.deployment.Endpoint;
 import org.jboss.wsf.spi.invocation.EndpointAssociation;
-import org.jboss.wsf.spi.management.recording.Record;
-import org.jboss.wsf.spi.management.recording.RecordGroupAssociation;
-import org.jboss.wsf.spi.management.recording.RecordProcessor;
-import org.jboss.wsf.spi.management.recording.Record.MessageType;
+import org.jboss.ws.api.monitoring.Record;
+import org.jboss.ws.api.monitoring.RecordGroupAssociation;
+import org.jboss.ws.api.monitoring.RecordProcessor;
+import org.jboss.ws.api.monitoring.Record.MessageType;
 import org.jboss.ws.api.handler.GenericSOAPHandler;
 
 /**

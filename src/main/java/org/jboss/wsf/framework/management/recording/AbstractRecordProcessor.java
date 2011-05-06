@@ -24,9 +24,9 @@ package org.jboss.wsf.framework.management.recording;
 import java.util.List;
 import java.util.Vector;
 
-import org.jboss.wsf.spi.management.recording.Record;
-import org.jboss.wsf.spi.management.recording.RecordFilter;
-import org.jboss.wsf.spi.management.recording.RecordProcessor;
+import org.jboss.ws.api.monitoring.Record;
+import org.jboss.ws.api.monitoring.RecordFilter;
+import org.jboss.ws.api.monitoring.RecordProcessor;
 
 /**
  * An abstract record processor providing basic implementation

@@ -21,7 +21,7 @@
  */
 package org.jboss.wsf.framework.management.recording;
 
-import org.jboss.wsf.spi.management.recording.Record;
+import org.jboss.ws.api.monitoring.Record;
 
 /**
  * Simple record factory

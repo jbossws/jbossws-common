@@ -38,9 +38,9 @@ import org.jboss.wsf.spi.deployment.Endpoint.EndpointState;
 import org.jboss.wsf.spi.invocation.InvocationHandler;
 import org.jboss.wsf.spi.invocation.RequestHandler;
 import org.jboss.wsf.spi.management.EndpointMetrics;
-import org.jboss.wsf.spi.management.recording.Record;
-import org.jboss.wsf.spi.management.recording.RecordFilter;
-import org.jboss.wsf.spi.management.recording.RecordProcessor;
+import org.jboss.ws.api.monitoring.Record;
+import org.jboss.ws.api.monitoring.RecordFilter;
+import org.jboss.ws.api.monitoring.RecordProcessor;
 
 /**
  * A general abstract JAXWS endpoint.

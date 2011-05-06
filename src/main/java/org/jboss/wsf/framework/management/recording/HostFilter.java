@@ -25,8 +25,8 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.jboss.wsf.spi.management.recording.Record;
-import org.jboss.wsf.spi.management.recording.RecordFilter;
+import org.jboss.ws.api.monitoring.Record;
+import org.jboss.ws.api.monitoring.RecordFilter;
 
 /**
  * This filter matches records having the source/destination host equal to

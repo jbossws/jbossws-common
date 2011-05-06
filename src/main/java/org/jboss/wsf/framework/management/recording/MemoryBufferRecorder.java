@@ -33,9 +33,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.xml.namespace.QName;
 
-import org.jboss.wsf.spi.management.recording.Record;
-import org.jboss.wsf.spi.management.recording.RecordFilter;
-import org.jboss.wsf.spi.management.recording.Record.MessageType;
+import org.jboss.ws.api.monitoring.Record;
+import org.jboss.ws.api.monitoring.RecordFilter;
+import org.jboss.ws.api.monitoring.Record.MessageType;
 
 /**
  * Keeps the last received records in memory and allows user to
