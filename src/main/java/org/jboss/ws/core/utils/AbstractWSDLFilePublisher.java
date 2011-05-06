@@ -35,8 +35,8 @@ import javax.wsdl.Import;
 import javax.wsdl.factory.WSDLFactory;
 
 import org.jboss.logging.Logger;
-import org.jboss.wsf.common.DOMUtils;
-import org.jboss.wsf.common.IOUtils;
+import org.jboss.ws.common.DOMUtils;
+import org.jboss.ws.common.IOUtils;
 import org.jboss.wsf.spi.SPIProvider;
 import org.jboss.wsf.spi.SPIProviderResolver;
 import org.jboss.wsf.spi.deployment.ArchiveDeployment;

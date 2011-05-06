@@ -25,7 +25,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.jboss.wsf.common.ResourceLoaderAdapter;
+import org.jboss.ws.common.ResourceLoaderAdapter;
 import org.jboss.wsf.spi.deployment.UnifiedVirtualFile;
 
 /**
@@ -69,7 +69,7 @@ public class ResourceLoaderAdapterTestCase extends TestCase
       ClassLoader cl = ResourceLoaderAdapter.class.getClassLoader();
       ResourceLoaderAdapter ula = new ResourceLoaderAdapter(cl);
       
-      UnifiedVirtualFile common = ula.findChild("org/jboss/wsf/common/");
+      UnifiedVirtualFile common = ula.findChild("org/jboss/ws/common/");
       assertNotNull(common);
       assertTrue(common.toURL().toExternalForm().contains("target/classes")); //check we got a URL to dir
       assertEquals("common/", common.getName());

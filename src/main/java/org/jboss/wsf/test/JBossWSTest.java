@@ -43,8 +43,8 @@ import javax.naming.NamingException;
 import junit.framework.TestCase;
 
 import org.jboss.logging.Logger;
-import org.jboss.wsf.common.DOMWriter;
-import org.jboss.wsf.common.concurrent.CopyJob;
+import org.jboss.ws.common.DOMWriter;
+import org.jboss.ws.common.concurrent.CopyJob;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;

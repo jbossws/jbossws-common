@@ -34,7 +34,7 @@ import java.net.URL;
 import javax.activation.DataHandler;
 import javax.xml.transform.stream.StreamSource;
 
-import org.jboss.wsf.common.IOUtils;
+import org.jboss.ws.common.IOUtils;
 
 /**
  * @author Heiko Braun <heiko.braun@jboss.com>

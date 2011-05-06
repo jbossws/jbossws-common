@@ -26,7 +26,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.jboss.wsf.common.URLLoaderAdapter;
+import org.jboss.ws.common.URLLoaderAdapter;
 import org.jboss.wsf.spi.deployment.UnifiedVirtualFile;
 
 /**
@@ -69,11 +69,11 @@ public class URLLoaderAdapterTestCase extends TestCase
    public void testWithDir() throws Exception
    {
       ClassLoader cl = UnifiedVirtualFile.class.getClassLoader();
-      URL rootURL = cl.getResource("org/jboss/wsf/common/");
+      URL rootURL = cl.getResource("org/jboss/ws/common/");
       assertNotNull(rootURL);
       URLLoaderAdapter ula = new URLLoaderAdapter(rootURL);
       
-      UnifiedVirtualFile common = ula.findChild("org/jboss/wsf/common/");
+      UnifiedVirtualFile common = ula.findChild("org/jboss/ws/common/");
       assertNotNull(common);
       assertTrue(common.toURL().toExternalForm().contains("target/classes")); //check we got a URL to dir
       assertEquals("common/", common.getName());
