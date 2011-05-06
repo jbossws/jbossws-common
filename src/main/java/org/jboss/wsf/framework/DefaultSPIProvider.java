@@ -21,6 +21,7 @@
  */
 package org.jboss.wsf.framework;
 
+import org.jboss.ws.api.util.ServiceLoader;
 import org.jboss.wsf.framework.deployment.DefaultDeploymentModelFactory;
 import org.jboss.wsf.framework.deployment.DefaultLifecycleHandlerFactory;
 import org.jboss.wsf.framework.invocation.DefaultResourceInjectorFactory;
@@ -40,7 +41,6 @@ import org.jboss.wsf.spi.management.EndpointMetricsFactory;
 import org.jboss.wsf.spi.management.EndpointRegistryFactory;
 import org.jboss.wsf.spi.management.JMSEndpointResolver;
 import org.jboss.wsf.spi.serviceref.ServiceRefHandlerFactory;
-import org.jboss.wsf.spi.util.ServiceLoader;
 import org.jboss.wsf.test.DeployerJBoss6;
 
 /**

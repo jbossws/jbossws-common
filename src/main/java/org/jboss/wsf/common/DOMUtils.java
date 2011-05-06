@@ -63,7 +63,7 @@ import org.xml.sax.SAXException;
  * @author Thomas.Diesler@jboss.org
  * @author alessio.soldano@jboss.com
  */
-public final class DOMUtils extends org.jboss.wsf.util.DOMUtils
+public final class DOMUtils extends org.jboss.ws.api.util.DOMUtils
 {
    private static Logger log = Logger.getLogger(DOMUtils.class);
 
