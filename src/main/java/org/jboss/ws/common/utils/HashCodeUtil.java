@@ -19,7 +19,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.ws.core.utils;
+package org.jboss.ws.common.utils;
 
 import java.lang.reflect.Array;
 
@@ -53,7 +53,7 @@ public final class HashCodeUtil
     */
    public static int hash(int aSeed, boolean aBoolean)
    {
-      return org.jboss.ws.core.utils.HashCodeUtil.firstTerm(aSeed) + (aBoolean ? 1 : 0);
+      return org.jboss.ws.common.utils.HashCodeUtil.firstTerm(aSeed) + (aBoolean ? 1 : 0);
    }
 
    /**
@@ -61,7 +61,7 @@ public final class HashCodeUtil
     */
    public static int hash(int aSeed, char aChar)
    {
-      return org.jboss.ws.core.utils.HashCodeUtil.firstTerm(aSeed) + (int)aChar;
+      return org.jboss.ws.common.utils.HashCodeUtil.firstTerm(aSeed) + (int)aChar;
    }
 
    /**
@@ -74,7 +74,7 @@ public final class HashCodeUtil
        * Note that byte and short are handled by this method, through
        * implicit conversion.
        */
-      return org.jboss.ws.core.utils.HashCodeUtil.firstTerm(aSeed) + aInt;
+      return org.jboss.ws.common.utils.HashCodeUtil.firstTerm(aSeed) + aInt;
    }
 
    /**
@@ -82,7 +82,7 @@ public final class HashCodeUtil
     */
    public static int hash(int aSeed, long aLong)
    {
-      return org.jboss.ws.core.utils.HashCodeUtil.firstTerm(aSeed) + (int)(aLong ^ (aLong >>> 32));
+      return org.jboss.ws.common.utils.HashCodeUtil.firstTerm(aSeed) + (int)(aLong ^ (aLong >>> 32));
    }
 
    /**
@@ -90,7 +90,7 @@ public final class HashCodeUtil
     */
    public static int hash(int aSeed, float aFloat)
    {
-      return org.jboss.ws.core.utils.HashCodeUtil.hash(aSeed, Float.floatToIntBits(aFloat));
+      return org.jboss.ws.common.utils.HashCodeUtil.hash(aSeed, Float.floatToIntBits(aFloat));
    }
 
    /**
@@ -98,7 +98,7 @@ public final class HashCodeUtil
     */
    public static int hash(int aSeed, double aDouble)
    {
-      return org.jboss.ws.core.utils.HashCodeUtil.hash(aSeed, Double.doubleToLongBits(aDouble));
+      return org.jboss.ws.common.utils.HashCodeUtil.hash(aSeed, Double.doubleToLongBits(aDouble));
    }
 
    /**
@@ -112,11 +112,11 @@ public final class HashCodeUtil
       int result = aSeed;
       if (aObject == null)
       {
-         result = org.jboss.ws.core.utils.HashCodeUtil.hash(result, 0);
+         result = org.jboss.ws.common.utils.HashCodeUtil.hash(result, 0);
       }
-      else if (!org.jboss.ws.core.utils.HashCodeUtil.isArray(aObject))
+      else if (!org.jboss.ws.common.utils.HashCodeUtil.isArray(aObject))
       {
-         result = org.jboss.ws.core.utils.HashCodeUtil.hash(result, aObject.hashCode());
+         result = org.jboss.ws.common.utils.HashCodeUtil.hash(result, aObject.hashCode());
       }
       else
       {
@@ -125,7 +125,7 @@ public final class HashCodeUtil
          {
             Object item = Array.get(aObject, idx);
             //recursive call!
-            result = org.jboss.ws.core.utils.HashCodeUtil.hash(result, item);
+            result = org.jboss.ws.common.utils.HashCodeUtil.hash(result, item);
          }
       }
       return result;
@@ -136,7 +136,7 @@ public final class HashCodeUtil
 
    private static int firstTerm(int aSeed)
    {
-      return org.jboss.ws.core.utils.HashCodeUtil.fODD_PRIME_NUMBER * aSeed;
+      return org.jboss.ws.common.utils.HashCodeUtil.fODD_PRIME_NUMBER * aSeed;
    }
 
    private static boolean isArray(Object aObject)

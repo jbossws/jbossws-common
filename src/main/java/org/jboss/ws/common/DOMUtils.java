@@ -46,7 +46,7 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.jboss.logging.Logger;
 import org.jboss.ws.Constants;
-import org.jboss.ws.core.utils.JBossWSEntityResolver;
+import org.jboss.ws.common.utils.JBossWSEntityResolver;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
