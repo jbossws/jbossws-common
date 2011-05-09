@@ -25,8 +25,8 @@ import java.util.StringTokenizer;
 
 import javax.jws.WebService;
 
-import org.jboss.ws.Constants;
 import org.jboss.ws.api.annotation.WebContext;
+import org.jboss.ws.common.Constants;
 import org.jboss.ws.common.integration.AbstractDeploymentAspect;
 import org.jboss.wsf.spi.deployment.Deployment;
 import org.jboss.wsf.spi.deployment.Endpoint;

@@ -21,10 +21,10 @@
  */
 package org.jboss.ws.common.deployment;
 
-import org.jboss.ws.Constants;
 import org.jboss.ws.api.annotation.AuthMethod;
 import org.jboss.ws.api.annotation.TransportGuarantee;
 import org.jboss.ws.api.annotation.WebContext;
+import org.jboss.ws.common.Constants;
 import org.jboss.ws.common.integration.AbstractDeploymentAspect;
 import org.jboss.wsf.spi.deployment.ArchiveDeployment;
 import org.jboss.wsf.spi.deployment.Deployment;
