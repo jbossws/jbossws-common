@@ -32,7 +32,6 @@ import org.jboss.ws.common.security.DefaultSecurityAdapterFactory;
 import org.jboss.ws.common.serviceref.DefaultServiceRefHandlerFactory;
 import org.jboss.wsf.spi.SPIProvider;
 import org.jboss.wsf.spi.WSFException;
-import org.jboss.wsf.spi.deployer.Deployer;
 import org.jboss.wsf.spi.deployment.DeploymentModelFactory;
 import org.jboss.wsf.spi.deployment.LifecycleHandlerFactory;
 import org.jboss.wsf.spi.invocation.ResourceInjectorFactory;
@@ -41,7 +40,6 @@ import org.jboss.wsf.spi.management.EndpointMetricsFactory;
 import org.jboss.wsf.spi.management.EndpointRegistryFactory;
 import org.jboss.wsf.spi.management.JMSEndpointResolver;
 import org.jboss.wsf.spi.serviceref.ServiceRefHandlerFactory;
-import org.jboss.wsf.test.DeployerJBoss6;
 
 /**
  * @author <a href="mailto:tdiesler@redhat.com">Thomas Diesler</a>
@@ -85,10 +83,6 @@ class DefaultSPIProvider extends SPIProvider
       else if (EndpointRegistryFactory.class.equals(spiType))
       {
          returnType = loadService(spiType, DefaultEndpointRegistryFactory.class, loader);
-      }
-      else if (Deployer.class.equals(spiType))
-      {
-         returnType = loadService(spiType, DeployerJBoss6.class, loader);
       }
       else if (JMSEndpointResolver.class.equals(spiType))
       {
