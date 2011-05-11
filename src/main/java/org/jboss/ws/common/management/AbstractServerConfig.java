@@ -102,9 +102,18 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
       this.webServiceHost = toIPv6URLFormat("127.0.0.1".equals(host) ? "localhost" : host); // TCK workaround
    }
 
-   private String toIPv6URLFormat(final String host) throws UnknownHostException
+   private String toIPv6URLFormat(final String host)
    {
-      final boolean isIPv6Address = !UNDEFINED_HOSTNAME.equals(host) && InetAddress.getByName(host) instanceof Inet6Address;
+      boolean isIPv6Address = false;
+      try
+      {
+         isIPv6Address = !UNDEFINED_HOSTNAME.equals(host) && InetAddress.getByName(host) instanceof Inet6Address;
+      }
+      catch (UnknownHostException e)
+      {
+         log.warn("Could not get address for host: " + host, e);
+         //ignore, leave isIPv6Address to false
+      }
       final boolean isIPv6Formatted = isIPv6Address && host.startsWith("[");
 
       return isIPv6Address && !isIPv6Formatted ? "[" + host + "]" : host;
