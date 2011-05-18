@@ -37,6 +37,7 @@ import org.jboss.wsf.spi.deployment.Endpoint.EndpointState;
 import org.jboss.wsf.spi.invocation.InvocationHandler;
 import org.jboss.wsf.spi.invocation.RequestHandler;
 import org.jboss.wsf.spi.management.EndpointMetrics;
+import org.jboss.wsf.spi.security.SecurityDomainContext;
 import org.jboss.ws.api.monitoring.Record;
 import org.jboss.ws.api.monitoring.RecordFilter;
 import org.jboss.ws.api.monitoring.RecordProcessor;
@@ -63,6 +64,7 @@ public class AbstractDefaultEndpoint extends AbstractExtensible
    protected EndpointMetrics metrics;
    protected String address;
    protected List<RecordProcessor> recordProcessors = new Vector<RecordProcessor>();
+   protected SecurityDomainContext securityDomainContext;
    
    AbstractDefaultEndpoint(String targetBean)
    {
@@ -281,4 +283,14 @@ public class AbstractDefaultEndpoint extends AbstractExtensible
       this.address = address;
    }
    
+   public SecurityDomainContext getSecurityDomainContext()
+   {
+      return securityDomainContext;
+   }
+
+   public void setSecurityDomainContext(SecurityDomainContext securityDomainContext)
+   {
+      this.securityDomainContext = securityDomainContext;
+   }
+
 }
