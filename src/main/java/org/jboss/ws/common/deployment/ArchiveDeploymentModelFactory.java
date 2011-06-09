@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source.
- * Copyright 2006, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2011, Red Hat Middleware LLC, and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -42,15 +42,6 @@ public class ArchiveDeploymentModelFactory extends DeploymentModelFactory
       return new DefaultService();
    }
 
-   @Deprecated
-   /**
-    * Use #newHttpEndpoint(String) instead
-    */
-   public Endpoint newEndpoint(String targetBean)
-   {
-      return this.newHttpEndpoint(targetBean);
-   }
-   
    public Endpoint newHttpEndpoint(String targetBean)
    {
       return new DefaultHttpEndpoint(targetBean);
