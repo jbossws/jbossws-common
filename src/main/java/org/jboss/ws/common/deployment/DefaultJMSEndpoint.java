@@ -89,17 +89,17 @@ public class DefaultJMSEndpoint extends AbstractDefaultEndpoint implements JMSEn
    
    public String getAddress() 
    {
-      if (getTargetDestination() != null)
+      if (targetDestination != null)
       {
          StringBuffer address = new StringBuffer();
-         address.append("jms:jndi:" + getTargetDestination());
+         address.append("jms:jndi:" + targetDestination);
          if (this.getReplyDestination() != null)
          {
             address.append("?replyToName =" + this.getReplyDestination());
          }
          return address.toString();
       }
-      return "Not available";  
+      return super.getAddress();  
    }
 
    //TODO:enable jms endpoint management

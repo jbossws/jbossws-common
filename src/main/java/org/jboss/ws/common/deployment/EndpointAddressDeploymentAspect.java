@@ -78,31 +78,34 @@ public class EndpointAddressDeploymentAspect extends AbstractDeploymentAspect
       List<Endpoint> deleteList = new LinkedList<Endpoint>();
       for (Endpoint ep : dep.getService().getEndpoints())
       {
-         boolean confidential = isConfidentialTransportGuarantee(dep, ep);
-         int currentPort = confidential ? securePort : port;
-         String hostAndPort = host + (currentPort > 0 ? ":" + currentPort : ""); 
-         
-         HttpEndpoint httpEp = (HttpEndpoint)ep;
-         String urlPattern = httpEp.getURLPattern();
-         if (urlPattern == null)
-            throw new IllegalStateException("Cannot obtain url pattern");
-
-         if (urlPattern.endsWith("/*"))
-            urlPattern = urlPattern.substring(0, urlPattern.length() - 2);
-
-         protocol = confidential ? "https://" : "http://";
-         String address = protocol + hostAndPort + contextRoot + urlPattern;
-         httpEp.setAddress(address);
-         //JBWS-2957: EJB3 binds the same endpoint class to multiple beans at multiple JNDI locations;
-         //generally speaking we can't have multiple endpoints published at the same address and we
-         //can't ensure that completely in AS integration, since the publish address is final just here
-         if (!endpointsMap.containsKey(address))
+         if (ep instanceof HttpEndpoint)
          {
-            endpointsMap.put(address, httpEp);
-         }
-         else
-         {
-            deleteList.add(httpEp);
+            boolean confidential = isConfidentialTransportGuarantee(dep, ep);
+            int currentPort = confidential ? securePort : port;
+            String hostAndPort = host + (currentPort > 0 ? ":" + currentPort : ""); 
+            
+            HttpEndpoint httpEp = (HttpEndpoint)ep;
+            String urlPattern = httpEp.getURLPattern();
+            if (urlPattern == null)
+               throw new IllegalStateException("Cannot obtain url pattern");
+   
+            if (urlPattern.endsWith("/*"))
+               urlPattern = urlPattern.substring(0, urlPattern.length() - 2);
+   
+            protocol = confidential ? "https://" : "http://";
+            String address = protocol + hostAndPort + contextRoot + urlPattern;
+            httpEp.setAddress(address);
+            //JBWS-2957: EJB3 binds the same endpoint class to multiple beans at multiple JNDI locations;
+            //generally speaking we can't have multiple endpoints published at the same address and we
+            //can't ensure that completely in AS integration, since the publish address is final just here
+            if (!endpointsMap.containsKey(address))
+            {
+               endpointsMap.put(address, httpEp);
+            }
+            else
+            {
+               deleteList.add(httpEp);
+            }
          }
       }
       //Remove endpoints with duplicated address
