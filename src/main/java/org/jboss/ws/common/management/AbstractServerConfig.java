@@ -24,6 +24,8 @@ package org.jboss.ws.common.management;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import javax.management.AttributeNotFoundException;
@@ -39,6 +41,7 @@ import org.jboss.wsf.spi.classloading.ClassLoaderProvider;
 import org.jboss.wsf.spi.management.ServerConfig;
 import org.jboss.wsf.spi.management.StackConfig;
 import org.jboss.wsf.spi.management.StackConfigFactory;
+import org.jboss.wsf.spi.metadata.config.EndpointConfig;
 
 /**
  * Basic implementation of a ServerConfig 
@@ -70,6 +73,8 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
    private boolean modifySOAPAddress;
    //The stack config
    protected StackConfig stackConfig;
+   // The default endpoint configs, if any
+   private final List<EndpointConfig> endpointConfigs = new ArrayList<EndpointConfig>();
 
    public MBeanServer getMbeanServer()
    {
@@ -240,5 +245,15 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
    public String getImplementationVersion()
    {
       return stackConfig.getImplementationVersion();
+   }
+
+   public void addEndpointConfig(EndpointConfig config)
+   {
+      this.endpointConfigs.add(config);
+   }
+
+   public List<EndpointConfig> getEndpointConfigs()
+   {
+      return this.endpointConfigs;
    }
 }
