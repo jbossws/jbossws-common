@@ -48,9 +48,10 @@ import org.jboss.wsf.spi.util.StAXUtils;
  */
 public final class SOAPAddressWSDLParser
 {
+   public static final String SOAP_OVER_JMS_NS = "http://www.w3.org/2010/soapjms/";
    private static final String WSDL_NS = "http://schemas.xmlsoap.org/wsdl/";
    private static final String SOAP_NS = "http://schemas.xmlsoap.org/wsdl/soap/";
-   private static final String SOAP_OVER_JMS_NS = "http://www.w3.org/2010/soapjms/";
+   private static final String SOAP12_NS = "http://schemas.xmlsoap.org/wsdl/soap12/";
    private static final String DEFINITIONS = "definitions";
    private static final String SERVICE = "service";
    private static final String PORT = "port";
@@ -61,14 +62,14 @@ public final class SOAPAddressWSDLParser
    private static final String NAME = "name";
    private static final String TARGET_NAMESPACE = "targetNamespace";
    
-   public static String getSoapAddress(URL wsdlUrl, QName serviceName, QName portName) throws XMLStreamException
+   private WSDLMetaData metadata;
+   
+   public SOAPAddressWSDLParser(URL wsdlUrl)
    {
-      WSDLMetaData metadata = getMetaData(wsdlUrl);
-      //get the soap:address of the required service/port if the corresponding binding uses SOAP over JMS transport
-      return filterSoapAddress(metadata, serviceName, portName, SOAP_OVER_JMS_NS);
+      this.metadata = getMetaData(wsdlUrl);
    }
    
-   protected static String filterSoapAddress(WSDLMetaData metadata, QName serviceName, QName portName, String transportNamespace)
+   public String filterSoapAddress(QName serviceName, QName portName, String transportNamespace)
    {
       //get the soap:address of the required service/port if the corresponding binding uses SOAP over JMS transport
       WSDLServiceMetaData smd = metadata.getServices().get(serviceName);
@@ -223,7 +224,7 @@ public final class SOAPAddressWSDLParser
                continue;
             }
             case XMLStreamConstants.START_ELEMENT : {
-               if (match(reader, SOAP_NS, ADDRESS)) {
+               if (match(reader, SOAP_NS, ADDRESS) || match(reader, SOAP12_NS, ADDRESS)) {
                   String location = reader.getAttributeValue(null, LOCATION);
                   pmd.setSoapAddress(location);
                   reader.nextTag();
@@ -250,7 +251,7 @@ public final class SOAPAddressWSDLParser
                continue;
             }
             case XMLStreamConstants.START_ELEMENT : {
-               if (match(reader, SOAP_NS, BINDING)) {
+               if (match(reader, SOAP_NS, BINDING) || match(reader, SOAP12_NS, BINDING)) {
                   String transport = reader.getAttributeValue(null, TRANSPORT);
                   bmd.setSoapTransport(transport);
                   reader.nextTag();
