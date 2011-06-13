@@ -49,19 +49,22 @@ public class URLPatternDeploymentAspect extends AbstractDeploymentAspect
    {
       for (Endpoint ep : dep.getService().getEndpoints())
       {
-         HttpEndpoint httpEp = (HttpEndpoint)ep;
-         String urlPattern = httpEp.getURLPattern();
-         if (urlPattern == null)
+         if (ep instanceof HttpEndpoint)
          {
-            urlPattern = getExplicitPattern(dep, ep);
+            HttpEndpoint httpEp = (HttpEndpoint)ep;
+            String urlPattern = httpEp.getURLPattern();
             if (urlPattern == null)
-               urlPattern = getImplicitPattern(dep, ep);
-
-            // Always prefix with '/'
-            if (urlPattern.startsWith("/") == false)
-               urlPattern = "/" + urlPattern;
-
-            httpEp.setURLPattern(urlPattern);
+            {
+               urlPattern = getExplicitPattern(dep, ep);
+               if (urlPattern == null)
+                  urlPattern = getImplicitPattern(dep, ep);
+   
+               // Always prefix with '/'
+               if (urlPattern.startsWith("/") == false)
+                  urlPattern = "/" + urlPattern;
+   
+               httpEp.setURLPattern(urlPattern);
+            }
          }
       }
    }
