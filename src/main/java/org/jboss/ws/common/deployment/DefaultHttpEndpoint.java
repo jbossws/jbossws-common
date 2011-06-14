@@ -24,7 +24,6 @@ package org.jboss.ws.common.deployment;
 import javax.naming.Context;
 import javax.naming.NamingException;
 
-import org.jboss.logging.Logger;
 import org.jboss.wsf.spi.deployment.HttpEndpoint;
 import org.jboss.wsf.spi.management.EndpointMetrics;
 
@@ -35,8 +34,6 @@ import org.jboss.wsf.spi.management.EndpointMetrics;
  */
 public class DefaultHttpEndpoint extends AbstractDefaultEndpoint implements HttpEndpoint
 {
-
-   private static final Logger log = Logger.getLogger(DefaultHttpEndpoint.class);
 
    DefaultHttpEndpoint(String targetBean)
    {

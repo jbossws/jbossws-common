@@ -45,18 +45,6 @@ public class DefaultJMSEndpoint extends AbstractDefaultEndpoint implements JMSEn
       super(targetBean);
    }
    
-   @Deprecated 
-   public String getURLPattern()
-   {
-      throw new UnsupportedOperationException();
-   }
-
-   @Deprecated
-   public void setURLPattern(String urlPattern)
-   {
-      throw new UnsupportedOperationException();
-   }
-
    public String getTargetDestination()
    {
       return targetDestination;
@@ -102,7 +90,6 @@ public class DefaultJMSEndpoint extends AbstractDefaultEndpoint implements JMSEn
       return super.getAddress();  
    }
 
-   //TODO:enable jms endpoint management
    @Override
    public EndpointMetrics getEndpointMetrics()
    {
