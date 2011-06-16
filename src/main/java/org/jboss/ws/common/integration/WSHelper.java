@@ -135,17 +135,6 @@ public final class WSHelper
    }
    
    /**
-    * Returns true if deployment represents JAXWS JMS deployment.
-    *
-    * @param dep webservice deployment
-    * @return true if JAXWS JMS deployment, false otherwise
-    */
-   public static boolean isJaxwsJmsDeployment( final Deployment dep )
-   {
-      return DeploymentType.JAXWS_JMS.equals( dep.getType() );
-   }
-
-   /**
     * Returns true if deployment represents either JAXWS JSE or JAXRPC JSE deployment.
     *
     * @param dep webservice deployment
