@@ -23,35 +23,39 @@ package org.jboss.ws.common.invocation;
 
 import java.security.Principal;
 
-import javax.ejb.EJBContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.ws.WebServiceContext;
+import javax.xml.ws.handler.MessageContext;
 
 import org.jboss.wsf.spi.invocation.WebServiceContextDelegate;
 
 /**
- * EJB web service context which security related methods delegate to EJB container.
+ * Web service context which security related methods delegate to servlet container.
  *
  * @author alessio.soldano@jboss.com
  * @author <a href="mailto:ropalka@redhat.com">Richard Opalka</a>
  */
-public class WebServiceContextEJB extends WebServiceContextDelegate
+public final class WebServiceContextAdapter extends WebServiceContextDelegate
 {
 
-   public WebServiceContextEJB(final WebServiceContext ctx)
+   private final HttpServletRequest httpRequest;
+
+   public WebServiceContextAdapter(final WebServiceContext ctx)
    {
       super(ctx);
+      httpRequest = (HttpServletRequest)ctx.getMessageContext().get(MessageContext.SERVLET_REQUEST);
    }
 
+   @Override
    public Principal getUserPrincipal()
    {
-      final EJBContext ejbContext = getAttachment(EJBContext.class);
-      return ejbContext.getCallerPrincipal();
+      return httpRequest.getUserPrincipal();
    }
 
+   @Override
    public boolean isUserInRole(String role)
    {
-      final EJBContext ejbContext = getAttachment(EJBContext.class);
-      return ejbContext.isCallerInRole(role);
+      return httpRequest.isUserInRole(role);
    }
 
 }
