@@ -21,6 +21,9 @@
  */
 package org.jboss.ws.common.deployment;
 
+import java.util.ResourceBundle;
+
+import org.jboss.ws.api.util.BundleUtils;
 import org.jboss.ws.common.integration.AbstractDeploymentAspect;
 import org.jboss.wsf.spi.deployment.Deployment;
 import org.jboss.wsf.spi.deployment.Endpoint;
@@ -35,6 +38,7 @@ import org.jboss.wsf.spi.deployment.Service;
  */
 public class EndpointLifecycleDeploymentAspect extends AbstractDeploymentAspect
 {
+   private static final ResourceBundle bundle = BundleUtils.getBundle(EndpointLifecycleDeploymentAspect.class);
 
    @Override
    public void start(Deployment dep)
@@ -64,7 +68,7 @@ public class EndpointLifecycleDeploymentAspect extends AbstractDeploymentAspect
    {
       LifecycleHandler lifecycleHandler = ep.getLifecycleHandler();
       if (lifecycleHandler == null && assertHandler)
-         throw new IllegalStateException("LifecycleHandler not initialised");
+         throw new IllegalStateException(BundleUtils.getMessage(bundle, "LIFECYCLEHANDLER_NOT_INITIALISED"));
       
       return lifecycleHandler;
    }

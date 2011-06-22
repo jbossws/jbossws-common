@@ -21,7 +21,10 @@
  */
 package org.jboss.ws.common.integration;
 
+import java.util.ResourceBundle;
+
 import org.jboss.logging.Logger;
+import org.jboss.ws.api.util.BundleUtils;
 import org.jboss.wsf.spi.deployment.Deployment;
 import org.jboss.wsf.spi.deployment.Deployment.DeploymentType;
 
@@ -32,6 +35,7 @@ import org.jboss.wsf.spi.deployment.Deployment.DeploymentType;
  */
 public final class WSHelper
 {
+   private static final ResourceBundle bundle = BundleUtils.getBundle(WSHelper.class);
    
    /** Logger. */
    private static final Logger LOG = Logger.getLogger( WSHelper.class );
@@ -58,7 +62,7 @@ public final class WSHelper
       final A value = dep.getAttachment( key );
       if ( value == null )
       {
-         WSHelper.LOG.error( "Cannot find attachment in webservice deployment: " + key );
+         LOG.error(BundleUtils.getMessage(bundle, "CAN_NOT_FIND_ATTACHMENT",  key ));
          throw new IllegalStateException();
       }
       

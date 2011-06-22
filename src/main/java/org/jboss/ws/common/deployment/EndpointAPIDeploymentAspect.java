@@ -21,14 +21,17 @@
  */
 package org.jboss.ws.common.deployment;
 
+import java.util.ResourceBundle;
+
+import org.jboss.ws.api.util.BundleUtils;
 import org.jboss.ws.common.ResourceLoaderAdapter;
 import org.jboss.ws.common.integration.AbstractDeploymentAspect;
 import org.jboss.wsf.spi.deployment.ArchiveDeployment;
 import org.jboss.wsf.spi.deployment.Deployment;
+import org.jboss.wsf.spi.deployment.Deployment.DeploymentType;
 import org.jboss.wsf.spi.deployment.Endpoint;
 import org.jboss.wsf.spi.deployment.HttpEndpoint;
 import org.jboss.wsf.spi.deployment.UnifiedVirtualFile;
-import org.jboss.wsf.spi.deployment.Deployment.DeploymentType;
 
 /**
  * A deployment aspect for JAXWS Endpoint API endpoints. 
@@ -39,6 +42,7 @@ import org.jboss.wsf.spi.deployment.Deployment.DeploymentType;
 // TODO: [JBWS-2674] review this deployment aspect once AS IL is rewritten
 public class EndpointAPIDeploymentAspect extends AbstractDeploymentAspect
 {
+   private static final ResourceBundle bundle = BundleUtils.getBundle(EndpointAPIDeploymentAspect.class);
    @Override
    public void start(Deployment dep)
    {
@@ -59,7 +63,7 @@ public class EndpointAPIDeploymentAspect extends AbstractDeploymentAspect
       if (rtcl == null)
       {
          // TODO: What's this? Look's quiet hacky...
-         log.warn("Using inital class laoder as runtime laoder. Hack?", new IllegalArgumentException());
+         log.warn(BundleUtils.getMessage(bundle, "USING_INITAL_CLASS_LAODER_AS_RUNTIME_LAODER"),  new IllegalArgumentException());
          dep.setRuntimeClassLoader(dep.getInitialClassLoader());
       }
 

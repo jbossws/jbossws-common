@@ -29,10 +29,13 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
+
+import org.jboss.ws.api.util.BundleUtils;
 
 /** <code>URLConnection</code> capable of handling multiply-nested jars.
  *
@@ -40,6 +43,7 @@ import java.util.jar.JarInputStream;
  */
 public class JarUrlConnection extends JarURLConnection
 {
+   private static final ResourceBundle bundle = BundleUtils.getBundle(JarUrlConnection.class);
    // ----------------------------------------------------------------------
    //     Instance members
    // ----------------------------------------------------------------------
@@ -89,7 +93,7 @@ public class JarUrlConnection extends JarURLConnection
       }
       else
       {
-         throw new MalformedURLException("No !/ in url: " + url.toExternalForm());
+         throw new MalformedURLException(BundleUtils.getMessage(bundle, "ERROR_IN_URL",  url.toExternalForm()));
       }
 
       List segments = new ArrayList();
@@ -214,7 +218,7 @@ public class JarUrlConnection extends JarURLConnection
          }
       }
 
-      throw new IOException("unable to locate segment: " + segment);
+      throw new IOException(BundleUtils.getMessage(bundle, "UNABLE_TO_LOCATE_SEGMENT",  segment));
    }
 
    /** @see java.net.URLConnection

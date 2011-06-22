@@ -21,7 +21,10 @@
  */
 package org.jboss.ws.common.injection;
 
+import java.util.ResourceBundle;
+
 import org.jboss.logging.Logger;
+import org.jboss.ws.api.util.BundleUtils;
 
 /**
  * Represents generic injection error.
@@ -30,6 +33,7 @@ import org.jboss.logging.Logger;
  */
 public class InjectionException extends RuntimeException
 {
+   private static final ResourceBundle bundle = BundleUtils.getBundle(InjectionException.class);
 
    /**
     * Serial version UID.
@@ -99,7 +103,7 @@ public class InjectionException extends RuntimeException
    {
       if (reason == null)
       {
-         throw new IllegalArgumentException("Reason expected");
+         throw new IllegalArgumentException(BundleUtils.getMessage(bundle, "REASON_EXPECTED"));
       }
 
       LOG.error(message == null ? reason.getMessage() : message, reason);

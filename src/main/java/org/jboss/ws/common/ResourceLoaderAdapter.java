@@ -30,10 +30,12 @@ import java.security.PrivilegedAction;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import org.jboss.logging.Logger;
+import org.jboss.ws.api.util.BundleUtils;
 import org.jboss.wsf.spi.deployment.UnifiedVirtualFile;
 
 /**
@@ -46,6 +48,7 @@ import org.jboss.wsf.spi.deployment.UnifiedVirtualFile;
  */
 public class ResourceLoaderAdapter implements UnifiedVirtualFile
 {
+   private static final ResourceBundle bundle = BundleUtils.getBundle(ResourceLoaderAdapter.class);
    private URL resourceURL;
    private ClassLoader loader;
    private static Logger log = Logger.getLogger(ResourceLoaderAdapter.class);
@@ -112,7 +115,7 @@ public class ResourceLoaderAdapter implements UnifiedVirtualFile
       }
 
       if (resourceURL == null)
-         throw new IOException("Cannot get URL for: " + resourcePath);
+         throw new IOException(BundleUtils.getMessage(bundle, "CANNOT_GET_URL_FOR",  resourcePath));
 
       return new ResourceLoaderAdapter(loader, resourceURL);
    }
@@ -120,14 +123,14 @@ public class ResourceLoaderAdapter implements UnifiedVirtualFile
    public URL toURL()
    {
       if (null == this.resourceURL)
-         throw new IllegalStateException("UnifiedVirtualFile not initialized");
+         throw new IllegalStateException(BundleUtils.getMessage(bundle, "UNIFIEDVIRTUALFILE_NOT_INITIALIZED"));
       return resourceURL;
    }
 
    public List<UnifiedVirtualFile> getChildren() throws IOException
    {
       if (null == this.resourceURL)
-         throw new IllegalStateException("UnifiedVirtualFile not initialized");
+         throw new IllegalStateException(BundleUtils.getMessage(bundle, "UNIFIEDVIRTUALFILE_NOT_INITIALIZED"));
       List<UnifiedVirtualFile> list = new LinkedList<UnifiedVirtualFile>();
       if (resourceURL.getProtocol().equals("jar"))
       {
@@ -188,7 +191,7 @@ public class ResourceLoaderAdapter implements UnifiedVirtualFile
          }
          catch (Exception e)
          {
-            log.error("Cannot get children for resource: " + resourceURL, e);
+            log.error(BundleUtils.getMessage(bundle, "CANNOT_GET_CHILDREN_FOR_RESOURCE",  resourceURL),  e);
          }
       }
       else //std file/dir
@@ -210,7 +213,7 @@ public class ResourceLoaderAdapter implements UnifiedVirtualFile
          }
          catch (Exception e)
          {
-            log.error("Cannot get children for resource: " + resourceURL, e);
+            log.error(BundleUtils.getMessage(bundle, "CANNOT_GET_CHILDREN_FOR_RESOURCE",  resourceURL),  e);
          }
       }
       return list;
@@ -219,7 +222,7 @@ public class ResourceLoaderAdapter implements UnifiedVirtualFile
    public String getName()
    {
       if (null == this.resourceURL)
-         throw new IllegalStateException("UnifiedVirtualFile not initialized");
+         throw new IllegalStateException(BundleUtils.getMessage(bundle, "UNIFIEDVIRTUALFILE_NOT_INITIALIZED"));
       String name = null;
       try
       {
@@ -231,7 +234,7 @@ public class ResourceLoaderAdapter implements UnifiedVirtualFile
       }
       catch (Exception e)
       {
-         log.error("Cannot get name for resource: " + resourceURL);
+         log.error(BundleUtils.getMessage(bundle, "CANNOT_GET_NAME_FOR_RESOURCE",  resourceURL));
       }
       return name;
    }

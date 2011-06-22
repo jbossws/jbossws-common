@@ -26,8 +26,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.ResourceBundle;
 
 import org.jboss.logging.Logger;
+import org.jboss.ws.api.util.BundleUtils;
 import org.jboss.wsf.spi.deployment.ResourceResolver;
 import org.jboss.wsf.spi.deployment.UnifiedVirtualFile;
 
@@ -40,6 +42,7 @@ import org.jboss.wsf.spi.deployment.UnifiedVirtualFile;
  */
 public class ResourceResolverImpl implements ResourceResolver
 {
+   private static final ResourceBundle bundle = BundleUtils.getBundle(ResourceResolverImpl.class);
    private static Logger log = Logger.getLogger(ResourceResolverImpl.class);
    
    private UnifiedVirtualFile rootFile;
@@ -118,7 +121,7 @@ public class ResourceResolverImpl implements ResourceResolver
                }
             }
             if (vfResource == null)
-               throw new IOException("Could not find " + resourcePath + " in the additional metadatafiles!");
+               throw new IOException(BundleUtils.getMessage(bundle, "COULD_NOT_FIND_IN_THE_ADDITIONAL_METADATAFILES",  resourcePath ));
             
             resourceURL = vfResource.toURL();
          }

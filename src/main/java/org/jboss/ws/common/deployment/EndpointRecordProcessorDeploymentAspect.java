@@ -23,16 +23,18 @@ package org.jboss.ws.common.deployment;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.management.JMException;
 import javax.management.MBeanServer;
 
-import org.jboss.wsf.spi.deployment.Deployment;
-import org.jboss.wsf.spi.deployment.Endpoint;
 import org.jboss.ws.api.monitoring.RecordProcessor;
+import org.jboss.ws.api.util.BundleUtils;
 import org.jboss.ws.common.ObjectNameFactory;
 import org.jboss.ws.common.integration.AbstractDeploymentAspect;
 import org.jboss.ws.common.monitoring.ManagedRecordProcessor;
+import org.jboss.wsf.spi.deployment.Deployment;
+import org.jboss.wsf.spi.deployment.Endpoint;
 
 /**
  * A deployer that sets the record processors for each endpoint
@@ -42,6 +44,7 @@ import org.jboss.ws.common.monitoring.ManagedRecordProcessor;
  */
 public class EndpointRecordProcessorDeploymentAspect extends AbstractDeploymentAspect
 {
+   private static final ResourceBundle bundle = BundleUtils.getBundle(EndpointRecordProcessorDeploymentAspect.class);
    private MBeanServer mbeanServer;
    private List<RecordProcessor> processors;
 
@@ -104,7 +107,7 @@ public class EndpointRecordProcessorDeploymentAspect extends AbstractDeploymentA
          }
          catch (JMException innerEx)
          {
-            log.error("Cannot register endpoint with JMX server", innerEx);
+            log.error(BundleUtils.getMessage(bundle, "CANNOT_REGISTER_ENDPOINT_WITH_JMX_SERVER"),  innerEx);
          }
       }
    }
@@ -117,7 +120,7 @@ public class EndpointRecordProcessorDeploymentAspect extends AbstractDeploymentA
       }
       catch (JMException ex)
       {
-         log.error("Cannot unregister record processor with JMX server", ex);
+         log.error(BundleUtils.getMessage(bundle, "CANNOT_UNREGISTER_RECORD_PROCESSOR_WITH_JMX_SERVER"),  ex);
       }
    }
 

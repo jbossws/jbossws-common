@@ -32,6 +32,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
@@ -39,6 +40,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.ws.WebServiceException;
 
+import org.jboss.ws.api.util.BundleUtils;
 import org.jboss.wsf.spi.util.StAXUtils;
 
 /**
@@ -48,6 +50,7 @@ import org.jboss.wsf.spi.util.StAXUtils;
  */
 public final class SOAPAddressWSDLParser
 {
+   private static final ResourceBundle bundle = BundleUtils.getBundle(SOAPAddressWSDLParser.class);
    public static final String SOAP_OVER_JMS_NS = "http://www.w3.org/2010/soapjms/";
    private static final String WSDL_NS = "http://schemas.xmlsoap.org/wsdl/";
    private static final String SOAP_NS = "http://schemas.xmlsoap.org/wsdl/soap/";
@@ -99,7 +102,7 @@ public final class SOAPAddressWSDLParser
       }
       catch (Exception e)
       {
-         throw new WebServiceException("Failed to read " + wsdlUrl + ":" + e.getMessage(), e);
+         throw new WebServiceException(BundleUtils.getMessage(bundle, "FAILED_TO_READ", new Object[]{ wsdlUrl ,  e.getMessage()}),  e);
       }
       finally
       {
@@ -139,7 +142,7 @@ public final class SOAPAddressWSDLParser
             }
             else
             {
-               throw new IllegalStateException("Unexpected element: " + reader.getLocalName());
+               throw new IllegalStateException(BundleUtils.getMessage(bundle, "UNEXPECTED_ELEMENT",  reader.getLocalName()));
             }
          }
       }
@@ -176,7 +179,7 @@ public final class SOAPAddressWSDLParser
             }
          }
       }
-      throw new IllegalStateException("Reached end of xml document unexpectedly");
+      throw new IllegalStateException(BundleUtils.getMessage(bundle, "REACHED_END_OF_XML_DOCUMENT_UNEXPECTEDLY"));
    }
    
    private static WSDLServiceMetaData parseService(XMLStreamReader reader, String targetNS) throws XMLStreamException
@@ -206,7 +209,7 @@ public final class SOAPAddressWSDLParser
             }
          }
       }
-      throw new IllegalStateException("Reached end of xml document unexpectedly");
+      throw new IllegalStateException(BundleUtils.getMessage(bundle, "REACHED_END_OF_XML_DOCUMENT_UNEXPECTEDLY"));
    }
    
    private static WSDLPortMetaData parsePort(XMLStreamReader reader) throws XMLStreamException
@@ -233,7 +236,7 @@ public final class SOAPAddressWSDLParser
             }
          }
       }
-      throw new IllegalStateException("Reached end of xml document unexpectedly");
+      throw new IllegalStateException(BundleUtils.getMessage(bundle, "REACHED_END_OF_XML_DOCUMENT_UNEXPECTEDLY"));
    }
    
    private static WSDLBindingMetaData parseBinding(XMLStreamReader reader) throws XMLStreamException
@@ -260,7 +263,7 @@ public final class SOAPAddressWSDLParser
             }
          }
       }
-      throw new IllegalStateException("Reached end of xml document unexpectedly");
+      throw new IllegalStateException(BundleUtils.getMessage(bundle, "REACHED_END_OF_XML_DOCUMENT_UNEXPECTEDLY"));
    }
    
    private static class WSDLMetaData

@@ -22,11 +22,13 @@
 package org.jboss.ws.common.invocation;
 
 import java.lang.reflect.Method;
+import java.util.ResourceBundle;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import org.jboss.ws.api.util.BundleUtils;
 import org.jboss.wsf.spi.deployment.Endpoint;
 import org.jboss.wsf.spi.invocation.Invocation;
 
@@ -38,6 +40,7 @@ import org.jboss.wsf.spi.invocation.Invocation;
  */
 public abstract class AbstractInvocationHandlerJSE extends AbstractInvocationHandler
 {
+   private static final ResourceBundle bundle = BundleUtils.getBundle(AbstractInvocationHandlerJSE.class);
 
    private static final String POJO_JNDI_PREFIX = "java:comp/env/";
 
@@ -112,7 +115,7 @@ public abstract class AbstractInvocationHandlerJSE extends AbstractInvocationHan
       }
       catch (Exception e)
       {
-         this.log.error("Method invocation failed with exception: " + e.getMessage(), e);
+         this.log.error(BundleUtils.getMessage(bundle, "METHOD_INVOCATION_FAILED_WITH_EXCEPTION",  e.getMessage()),  e);
          // propagate exception
          this.handleInvocationException(e);
       }

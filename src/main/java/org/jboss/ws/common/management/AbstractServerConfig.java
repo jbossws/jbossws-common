@@ -26,6 +26,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.Set;
 
 import javax.management.AttributeNotFoundException;
@@ -34,6 +35,7 @@ import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
 import org.jboss.logging.Logger;
+import org.jboss.ws.api.util.BundleUtils;
 import org.jboss.ws.common.ObjectNameFactory;
 import org.jboss.wsf.spi.SPIProvider;
 import org.jboss.wsf.spi.SPIProviderResolver;
@@ -53,6 +55,7 @@ import org.jboss.wsf.spi.metadata.config.EndpointConfig;
  */
 public abstract class AbstractServerConfig implements AbstractServerConfigMBean, ServerConfig
 {
+   private static final ResourceBundle bundle = BundleUtils.getBundle(AbstractServerConfig.class);
    private static final Logger log = Logger.getLogger(AbstractServerConfig.class);
    
    protected static final ObjectName OBJECT_NAME_SERVER_CONFIG;
@@ -116,7 +119,7 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
       }
       catch (UnknownHostException e)
       {
-         log.warn("Could not get address for host: " + host, e);
+         log.warn(BundleUtils.getMessage(bundle, "COULD_NOT_GET_ADDRESS_FOR_HOST",  host),  e);
          //ignore, leave isIPv6Address to false
       }
       final boolean isIPv6Formatted = isIPv6Address && host.startsWith("[");
@@ -216,7 +219,7 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
                {
                   if (port > -1)
                   {
-                     log.warn("Found multiple connectors for protocol='" + protocol + "' and secure='" + secure + "', using first port found '" + port + "'");
+                     log.warn(BundleUtils.getMessage(bundle, "FOUND_MULTIPLE_CONNECTORS", new Object[]{ protocol, secure,  port }));
                   }
                   else
                   {

@@ -31,14 +31,16 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
+import java.util.ResourceBundle;
 
 import javax.activation.DataHandler;
 import javax.xml.ws.WebServiceException;
 
-import org.jboss.wsf.spi.management.ServerConfig;
-import org.jboss.wsf.spi.management.ServerConfigFactory;
+import org.jboss.ws.api.util.BundleUtils;
 import org.jboss.wsf.spi.SPIProvider;
 import org.jboss.wsf.spi.SPIProviderResolver;
+import org.jboss.wsf.spi.management.ServerConfig;
+import org.jboss.wsf.spi.management.ServerConfigFactory;
 
 /**
  * IO utilites
@@ -47,6 +49,7 @@ import org.jboss.wsf.spi.SPIProviderResolver;
  */
 public final class IOUtils
 {
+   private static final ResourceBundle bundle = BundleUtils.getBundle(IOUtils.class);
    // Hide the constructor
    private IOUtils()
    {
@@ -114,7 +117,7 @@ public final class IOUtils
       }
       catch (IOException e)
       {
-         throw new WebServiceException("Unable to convert DataHandler to byte[]: " + e.getMessage());
+         throw new WebServiceException(BundleUtils.getMessage(bundle, "UNABLE_TO_CONVERT_DATAHANDLER",  e.getMessage()));
       }
    }
 

@@ -21,15 +21,18 @@
  */
 package org.jboss.ws.common.management;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.Set;
+
+import javax.management.ObjectName;
+
 import org.jboss.logging.Logger;
+import org.jboss.ws.api.util.BundleUtils;
 import org.jboss.wsf.spi.deployment.Endpoint;
 import org.jboss.wsf.spi.management.EndpointRegistry;
 import org.jboss.wsf.spi.management.EndpointResolver;
-
-import javax.management.ObjectName;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * A general endpoint registry.
@@ -39,6 +42,7 @@ import java.util.Set;
  */
 public class DefaultEndpointRegistry implements EndpointRegistry
 {
+   private static final ResourceBundle bundle = BundleUtils.getBundle(DefaultEndpointRegistry.class);
    // provide logging
    private static final Logger log = Logger.getLogger(DefaultEndpointRegistry.class);
 
@@ -47,10 +51,10 @@ public class DefaultEndpointRegistry implements EndpointRegistry
    public Endpoint getEndpoint(ObjectName epName)
    {
       if (epName == null)
-         throw new IllegalArgumentException("Endpoint name cannot be null");
+         throw new IllegalArgumentException(BundleUtils.getMessage(bundle, "ENDPOINT_NAME_CANNOT_BE_NULL"));
 
       if (isRegistered(epName) == false)
-         throw new IllegalStateException("Endpoint not registered: " + epName);
+         throw new IllegalStateException(BundleUtils.getMessage(bundle, "ENDPOINT_NOT_REGISTERED",  epName));
 
       Endpoint endpoint = endpoints.get(epName);
       return endpoint;
@@ -64,7 +68,7 @@ public class DefaultEndpointRegistry implements EndpointRegistry
    public boolean isRegistered(ObjectName epName)
    {
       if (epName == null)
-         throw new IllegalArgumentException("Endpoint name cannot be null");
+         throw new IllegalArgumentException(BundleUtils.getMessage(bundle, "ENDPOINT_NAME_CANNOT_BE_NULL"));
 
       return endpoints.get(epName) != null;
    }
@@ -77,14 +81,14 @@ public class DefaultEndpointRegistry implements EndpointRegistry
    public void register(Endpoint endpoint)
    {
       if (endpoint == null)
-         throw new IllegalArgumentException("Endpoint cannot be null");
+         throw new IllegalArgumentException(BundleUtils.getMessage(bundle, "ENDPOINT_CANNOT_BE_NULL"));
 
       ObjectName epName = endpoint.getName();
       if (epName == null)
-         throw new IllegalStateException("Endpoint name cannot be null for: " + endpoint);
+         throw new IllegalStateException(BundleUtils.getMessage(bundle, "ENDPOINT_NAME_CANNOT_BE_NULL_FOR",  endpoint));
 
       if (isRegistered(epName))
-         throw new IllegalStateException("Endpoint already registered: " + epName);
+         throw new IllegalStateException(BundleUtils.getMessage(bundle, "ENDPOINT_ALREADY_REGISTERED",  epName));
 
       log.info("register: " + epName);
       endpoints.put(epName, endpoint);
@@ -93,11 +97,11 @@ public class DefaultEndpointRegistry implements EndpointRegistry
    public void unregister(Endpoint endpoint)
    {
       if (endpoint == null)
-         throw new IllegalArgumentException("Endpoint cannot be null");
+         throw new IllegalArgumentException(BundleUtils.getMessage(bundle, "ENDPOINT_CANNOT_BE_NULL"));
 
       ObjectName epName = endpoint.getName();
       if (isRegistered(epName) == false)
-         throw new IllegalStateException("Endpoint not registered: " + epName);
+         throw new IllegalStateException(BundleUtils.getMessage(bundle, "ENDPOINT_NOT_REGISTERED",  epName));
 
       log.info("remove: " + epName);
       endpoints.remove(epName);

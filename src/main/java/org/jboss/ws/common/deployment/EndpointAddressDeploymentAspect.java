@@ -25,15 +25,17 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import org.jboss.ws.api.annotation.WebContext;
+import org.jboss.ws.api.util.BundleUtils;
 import org.jboss.ws.common.integration.AbstractDeploymentAspect;
 import org.jboss.wsf.spi.SPIProvider;
 import org.jboss.wsf.spi.SPIProviderResolver;
 import org.jboss.wsf.spi.deployment.Deployment;
+import org.jboss.wsf.spi.deployment.Deployment.DeploymentType;
 import org.jboss.wsf.spi.deployment.Endpoint;
 import org.jboss.wsf.spi.deployment.HttpEndpoint;
-import org.jboss.wsf.spi.deployment.Deployment.DeploymentType;
 import org.jboss.wsf.spi.management.ServerConfig;
 import org.jboss.wsf.spi.management.ServerConfigFactory;
 import org.jboss.wsf.spi.metadata.j2ee.EJBArchiveMetaData;
@@ -51,12 +53,13 @@ import org.jboss.wsf.spi.metadata.j2ee.JSESecurityMetaData.JSEResourceCollection
  */
 public class EndpointAddressDeploymentAspect extends AbstractDeploymentAspect
 {
+   private static final ResourceBundle bundle = BundleUtils.getBundle(EndpointAddressDeploymentAspect.class);
    @Override
    public void start(Deployment dep)
    {
       String contextRoot = dep.getService().getContextRoot();
       if (contextRoot == null)
-         throw new IllegalStateException("Cannot obtain context root");
+         throw new IllegalStateException(BundleUtils.getMessage(bundle, "CANNOT_OBTAIN_CONTEXT_ROOT"));
       
       // TODO: remove this hack - review API
       String protocol = (String)dep.getService().getProperty("protocol");
@@ -87,7 +90,7 @@ public class EndpointAddressDeploymentAspect extends AbstractDeploymentAspect
             HttpEndpoint httpEp = (HttpEndpoint)ep;
             String urlPattern = httpEp.getURLPattern();
             if (urlPattern == null)
-               throw new IllegalStateException("Cannot obtain url pattern");
+               throw new IllegalStateException(BundleUtils.getMessage(bundle, "CANNOT_OBTAIN_URL_PATTERN"));
    
             if (urlPattern.endsWith("/*"))
                urlPattern = urlPattern.substring(0, urlPattern.length() - 2);
@@ -128,7 +131,7 @@ public class EndpointAddressDeploymentAspect extends AbstractDeploymentAspect
             String urlPattern = servletMappings.get(servletLink);
    
             if (urlPattern == null)
-               throw new RuntimeException("Cannot find <url-pattern> for servlet-name: " + servletLink);
+               throw new RuntimeException(BundleUtils.getMessage(bundle, "CANNOT_FIND_URL_PATTERN",  servletLink));
    
             List<JSESecurityMetaData> securityList = webMetaData.getSecurityMetaData();
             for (JSESecurityMetaData currentSecurity : securityList)

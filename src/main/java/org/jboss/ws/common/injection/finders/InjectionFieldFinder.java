@@ -23,7 +23,9 @@ package org.jboss.ws.common.injection.finders;
 
 import java.lang.reflect.Field;
 import java.util.Collection;
+import java.util.ResourceBundle;
 
+import org.jboss.ws.api.util.BundleUtils;
 import org.jboss.ws.common.injection.InjectionException;
 import org.jboss.ws.common.reflection.FieldFinder;
 import org.jboss.wsf.spi.metadata.injection.InjectionMetaData;
@@ -36,6 +38,7 @@ import org.jboss.wsf.spi.metadata.injection.InjectionMetaData;
 public final class InjectionFieldFinder
 extends FieldFinder
 {
+   private static final ResourceBundle bundle = BundleUtils.getBundle(InjectionFieldFinder.class);
 
    /**
     * Descriptor injection metadata.
@@ -50,7 +53,7 @@ extends FieldFinder
    public InjectionFieldFinder(final InjectionMetaData injectionMD)
    {
       if (injectionMD == null)
-         throw new IllegalArgumentException("Injection metadata cannot be null");
+         throw new IllegalArgumentException(BundleUtils.getMessage(bundle, "INJECTION_METADATA_CANNOT_BE_NULL"));
 
       this.injectionMD = injectionMD;
    }
@@ -83,7 +86,7 @@ extends FieldFinder
 
       if (fields.size() > 2)
       {
-         throw new InjectionException("More than one field found matching the criteria: " + injectionMD);
+         throw new InjectionException(BundleUtils.getMessage(bundle, "MORE_THAN_ONE_FIELD_FOUND_MATCHING_THE_CRITERIA",  injectionMD));
       }
    }
 

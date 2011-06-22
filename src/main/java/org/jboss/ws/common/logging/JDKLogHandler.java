@@ -40,6 +40,7 @@ import org.jboss.logging.Logger;
  */
 public class JDKLogHandler extends Handler
 {
+   
    public JDKLogHandler()
    {
       super.setFormatter(new SimpleFormatter());
@@ -72,12 +73,12 @@ public class JDKLogHandler extends Handler
          else if (level == Level.WARNING)
          {
             String msg = getMessage(record);
-            logger.warn(msg, th);
+            logger.warn(msg,  th);
          }
          else if (level == Level.SEVERE)
          {
             String msg = getMessage(record);
-            logger.error(msg, th);
+            logger.error(msg,  th);
          }
          else if (level == Level.OFF)
          {

@@ -31,11 +31,13 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Map;
 import java.util.Properties;
+import java.util.ResourceBundle;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.jboss.logging.Logger;
 import org.jboss.util.xml.JBossEntityResolver;
+import org.jboss.ws.api.util.BundleUtils;
 import org.jboss.wsf.spi.classloading.ClassLoaderProvider;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -48,6 +50,7 @@ import org.xml.sax.SAXException;
  */
 public class JBossWSEntityResolver extends JBossEntityResolver
 {
+   private static final ResourceBundle bundle = BundleUtils.getBundle(JBossWSEntityResolver.class);
    /**
     * A synchronized weak hash map that keeps entities' properties for each classloader.
     * Weak keys are used to remove entries when classloaders are garbage collected; values are filenames -> properties.
@@ -83,7 +86,7 @@ public class JBossWSEntityResolver extends JBossEntityResolver
          // load entities
          props = loadEntitiesMappingFromClasspath(entitiesResource, loader);
          if (props.size() == 0)
-            throw new IllegalArgumentException("No entities mapping defined in resource file: " + entitiesResource);
+            throw new IllegalArgumentException(BundleUtils.getMessage(bundle, "NO_ENTITIES_MAPPING_DEFINED_IN_RESOURCE_FILE",  entitiesResource));
          map.put(entitiesResource, props);
       }
       
@@ -110,7 +113,7 @@ public class JBossWSEntityResolver extends JBossEntityResolver
             InputStream is = new DelegateClassLoader(intCl, classLoader).getResourceAsStream(entitiesResource);
             // get stream
             if (is == null)
-               throw new IllegalArgumentException("Resource " + entitiesResource + " not found");
+               throw new IllegalArgumentException(BundleUtils.getMessage(bundle, "RESOURCE_NOT_FOUND",  entitiesResource ));
 
             // load props
             Properties props = new Properties();
@@ -120,7 +123,7 @@ public class JBossWSEntityResolver extends JBossEntityResolver
             }
             catch (IOException ioe)
             {
-               log.error("Cannot read resource: " + entitiesResource, ioe);
+               log.error(BundleUtils.getMessage(bundle, "CANNOT_READ_RESOURCE",  entitiesResource),  ioe);
             }
             finally
             {
@@ -169,7 +172,7 @@ public class JBossWSEntityResolver extends JBossEntityResolver
 
          URL url = new URL(id);
          if (url.getProtocol().equalsIgnoreCase("file") == false)
-            log.warn("Trying to resolve id as a non-file URL: " + id);
+            log.warn(BundleUtils.getMessage(bundle, "TRYING_TO_RESOLVE_ID_AS_A_NON-FILE_URL",  id));
 
          InputStream ins = new ResourceURL(url).openStream();
          if (ins != null)
@@ -179,7 +182,7 @@ public class JBossWSEntityResolver extends JBossEntityResolver
          }
          else
          {
-            log.warn("Cannot load id as URL: " + id);
+            log.warn(BundleUtils.getMessage(bundle, "CANNOT_LOAD_ID_AS_URL",  id));
          }
 
          if (trace)

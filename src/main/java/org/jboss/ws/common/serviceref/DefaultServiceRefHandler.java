@@ -21,8 +21,11 @@
  */
 package org.jboss.ws.common.serviceref;
 
+import java.util.ResourceBundle;
+
 import javax.naming.Referenceable;
 
+import org.jboss.ws.api.util.BundleUtils;
 import org.jboss.wsf.spi.SPIProvider;
 import org.jboss.wsf.spi.SPIProviderResolver;
 import org.jboss.wsf.spi.metadata.j2ee.serviceref.UnifiedServiceRefMetaData;
@@ -37,16 +40,17 @@ import org.jboss.wsf.spi.serviceref.ServiceRefHandler;
  */
 public final class DefaultServiceRefHandler implements ServiceRefHandler
 {
+   private static final ResourceBundle bundle = BundleUtils.getBundle(DefaultServiceRefHandler.class);
    @Override
    public Referenceable createReferenceable(final UnifiedServiceRefMetaData serviceRefMD)
    {
       if (serviceRefMD.getVfsRoot() == null)
       {
-         throw new IllegalStateException("VFSRoot must be provided");
+         throw new IllegalStateException(BundleUtils.getMessage(bundle, "VFSROOT_MUST_BE_PROVIDED"));
       }
       if (serviceRefMD.getType() == null)
       {
-         throw new IllegalStateException("Service reference type must be provided");
+         throw new IllegalStateException(BundleUtils.getMessage(bundle, "SERVICE_REFERENCE_TYPE_MUST_BE_PROVIDED"));
       }
 
       return this.getBinder(serviceRefMD.getType()).createReferenceable(serviceRefMD);

@@ -31,10 +31,12 @@ import java.security.PrivilegedAction;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import org.jboss.logging.Logger;
+import org.jboss.ws.api.util.BundleUtils;
 import org.jboss.wsf.spi.deployment.UnifiedVirtualFile;
 
 /**
@@ -48,6 +50,7 @@ import org.jboss.wsf.spi.deployment.UnifiedVirtualFile;
  */
 public class URLLoaderAdapter implements UnifiedVirtualFile
 {
+   private static final ResourceBundle bundle = BundleUtils.getBundle(URLLoaderAdapter.class);
    private static final long serialVersionUID = 8263115387770740414L;
    
    private URL rootURL;
@@ -113,7 +116,7 @@ public class URLLoaderAdapter implements UnifiedVirtualFile
       }
 
       if (resourceURL == null)
-         throw new IOException("Cannot get URL for: " + resourcePath);
+         throw new IOException(BundleUtils.getMessage(bundle, "CANNOT_GET_URL_FOR",  resourcePath));
 
       return new URLLoaderAdapter(rootURL, loader, resourceURL);
    }
@@ -201,7 +204,7 @@ public class URLLoaderAdapter implements UnifiedVirtualFile
          catch (Exception e)
          {
             e.printStackTrace();
-            log.error("Cannot get children for resource: " + url);
+            log.error(BundleUtils.getMessage(bundle, "CANNOT_GET_CHILDREN_FOR_RESOURCE",  url));
          }
       }
       else //std file/dir
@@ -223,7 +226,7 @@ public class URLLoaderAdapter implements UnifiedVirtualFile
          }
          catch (Exception e)
          {
-            log.error("Cannot get children for resource: " + url, e);
+            log.error(BundleUtils.getMessage(bundle, "CANNOT_GET_CHILDREN_FOR_RESOURCE",  url),  e);
          }
       }
       return list;
@@ -242,7 +245,7 @@ public class URLLoaderAdapter implements UnifiedVirtualFile
       }
       catch (Exception e)
       {
-         log.error("Cannot get name for resource: " + toURL(), e);
+         log.error(BundleUtils.getMessage(bundle, "CANNOT_GET_NAME_FOR_RESOURCE",  toURL()),  e);
       }
       return name;
    }

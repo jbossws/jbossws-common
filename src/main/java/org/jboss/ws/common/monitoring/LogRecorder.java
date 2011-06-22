@@ -24,10 +24,12 @@ package org.jboss.ws.common.monitoring;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import org.jboss.logging.Logger;
 import org.jboss.ws.api.monitoring.Record;
 import org.jboss.ws.api.monitoring.Record.MessageType;
+import org.jboss.ws.api.util.BundleUtils;
 
 /**
  * A simple record processor that writes records to the configured log.
@@ -37,6 +39,7 @@ import org.jboss.ws.api.monitoring.Record.MessageType;
  */
 public class LogRecorder extends AbstractRecordProcessor implements Serializable
 {
+   private static final ResourceBundle bundle = BundleUtils.getBundle(LogRecorder.class);
    private static final long serialVersionUID = -7126227194320867819L;
    
    private Logger log = Logger.getLogger(this.getClass());
@@ -72,7 +75,7 @@ public class LogRecorder extends AbstractRecordProcessor implements Serializable
          }
          else
          {
-            log.warn("Unknown message type: " + record.getMessageType());
+            log.warn(BundleUtils.getMessage(bundle, "UNKNOWN_MESSAGE_TYPE",  record.getMessageType()));
             if (this.isProcessSourceHost() && record.getSourceHost() != null)
             {
                sb.append("from ");

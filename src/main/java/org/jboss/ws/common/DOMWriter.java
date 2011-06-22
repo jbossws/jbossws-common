@@ -64,9 +64,9 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.ResourceBundle;
 
-import org.jboss.ws.common.DOMWriter;
-import org.jboss.ws.common.Normalizer;
+import org.jboss.ws.api.util.BundleUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -82,6 +82,7 @@ import org.w3c.dom.NodeList;
 @SuppressWarnings("unchecked")
 public class DOMWriter
 {
+   private static final ResourceBundle bundle = BundleUtils.getBundle(DOMWriter.class);
    // Print writer
    private PrintWriter out;
    // True, if canonical output
@@ -139,7 +140,7 @@ public class DOMWriter
       }
       catch (UnsupportedEncodingException e)
       {
-         throw new IllegalArgumentException("Unsupported encoding: " + charsetName);
+         throw new IllegalArgumentException(BundleUtils.getMessage(bundle, "UNSUPPORTED_ENCODING",  charsetName));
       }
    }
 
@@ -229,7 +230,7 @@ public class DOMWriter
    public void print(Node node)
    {
       if (prettyprint && ignoreWhitespace)
-         throw new IllegalStateException("Cannot pretty print and ignore whitespace");
+         throw new IllegalStateException(BundleUtils.getMessage(bundle, "CANNOT_PRETTY_PRINT_AND_IGNORE_WHITESPACE"));
       
       rootNode = node;
       printInternal(node, false);

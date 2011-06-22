@@ -29,10 +29,10 @@ import java.util.Set;
 
 import org.jboss.logging.Logger;
 import org.jboss.wsf.spi.deployment.Deployment;
+import org.jboss.wsf.spi.deployment.Deployment.DeploymentState;
 import org.jboss.wsf.spi.deployment.DeploymentAspect;
 import org.jboss.wsf.spi.deployment.DeploymentAspectManager;
 import org.jboss.wsf.spi.deployment.WSFDeploymentException;
-import org.jboss.wsf.spi.deployment.Deployment.DeploymentState;
 
 /**
  * A general service deployment manger.

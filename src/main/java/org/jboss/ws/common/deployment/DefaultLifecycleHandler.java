@@ -21,10 +21,13 @@
  */
 package org.jboss.ws.common.deployment;
 
+import java.util.ResourceBundle;
+
 import org.jboss.logging.Logger;
+import org.jboss.ws.api.util.BundleUtils;
+import org.jboss.wsf.spi.deployment.Endpoint;
 import org.jboss.wsf.spi.deployment.Endpoint.EndpointState;
 import org.jboss.wsf.spi.deployment.LifecycleHandler;
-import org.jboss.wsf.spi.deployment.Endpoint;
 import org.jboss.wsf.spi.invocation.InvocationHandler;
 
 /**
@@ -35,6 +38,7 @@ import org.jboss.wsf.spi.invocation.InvocationHandler;
  */
 public class DefaultLifecycleHandler implements LifecycleHandler
 {
+   private static final ResourceBundle bundle = BundleUtils.getBundle(DefaultLifecycleHandler.class);
    // provide logging
    protected final Logger log = Logger.getLogger(getClass());
 
@@ -46,7 +50,7 @@ public class DefaultLifecycleHandler implements LifecycleHandler
       EndpointState state = ep.getState();
       if (state != EndpointState.UNDEFINED)
       {
-         log.error("Cannot start endpoint in state: " + state);
+         log.error(BundleUtils.getMessage(bundle, "CANNOT_START_ENDPOINT_IN_STATE",  state));
       }
       else
       {
@@ -55,7 +59,7 @@ public class DefaultLifecycleHandler implements LifecycleHandler
 
          InvocationHandler invHandler = ep.getInvocationHandler();
          if (invHandler == null)
-            throw new IllegalStateException("Invocation handler not available");
+            throw new IllegalStateException(BundleUtils.getMessage(bundle, "INVOCATION_HANDLER_NOT_AVAILABLE"));
          invHandler.init(ep);
 
          ep.setState(EndpointState.STARTED);
@@ -70,7 +74,7 @@ public class DefaultLifecycleHandler implements LifecycleHandler
       EndpointState state = ep.getState();
       if (state != EndpointState.STARTED)
       {
-         log.error("Cannot stop endpoint in state: " + state);
+         log.error(BundleUtils.getMessage(bundle, "CANNOT_STOP_ENDPOINT_IN_STATE",  state));
       }
       else
       {

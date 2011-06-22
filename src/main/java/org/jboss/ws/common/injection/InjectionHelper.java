@@ -24,6 +24,7 @@ package org.jboss.ws.common.injection;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.ResourceBundle;
 
 import javax.annotation.Resource;
 import javax.ejb.EJB;
@@ -33,6 +34,7 @@ import javax.naming.NamingException;
 import javax.xml.ws.WebServiceContext;
 
 import org.jboss.logging.Logger;
+import org.jboss.ws.api.util.BundleUtils;
 import org.jboss.ws.common.injection.finders.EJBFieldFinder;
 import org.jboss.ws.common.injection.finders.EJBMethodFinder;
 import org.jboss.ws.common.injection.finders.InjectionFieldFinder;
@@ -52,6 +54,7 @@ import org.jboss.wsf.spi.metadata.injection.InjectionsMetaData;
  */
 public final class InjectionHelper
 {
+   private static final ResourceBundle bundle = BundleUtils.getBundle(InjectionHelper.class);
 
    private static final Logger LOG = Logger.getLogger(InjectionHelper.class);
 
@@ -95,7 +98,7 @@ public final class InjectionHelper
    public static void injectResources(final Object instance, final InjectionsMetaData injections, final Context ctx) 
    {
       if (instance == null)
-         throw new IllegalArgumentException("Object instance cannot be null");
+         throw new IllegalArgumentException(BundleUtils.getMessage(bundle, "OBJECT_INSTANCE_CANNOT_BE_NULL"));
 
       if (injections == null)
          return;
@@ -164,7 +167,7 @@ public final class InjectionHelper
    public static void callPostConstructMethod(final Object instance)
    {
       if (instance == null)
-         throw new IllegalArgumentException("Object instance cannot be null");
+         throw new IllegalArgumentException(BundleUtils.getMessage(bundle, "OBJECT_INSTANCE_CANNOT_BE_NULL"));
 
       final Collection<Method> methods = POST_CONSTRUCT_METHOD_FINDER.process(instance.getClass());
 
@@ -195,7 +198,7 @@ public final class InjectionHelper
    public static void callPreDestroyMethod(final Object instance)
    {
       if (instance == null)
-         throw new IllegalArgumentException("Object instance cannot be null");
+         throw new IllegalArgumentException(BundleUtils.getMessage(bundle, "OBJECT_INSTANCE_CANNOT_BE_NULL"));
 
       final Collection<Method> methods = PRE_DESTROY_METHOD_FINDER.process(instance.getClass());
 

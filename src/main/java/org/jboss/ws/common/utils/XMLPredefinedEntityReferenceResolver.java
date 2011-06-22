@@ -22,6 +22,9 @@
 package org.jboss.ws.common.utils;
 
 import java.util.HashMap;
+import java.util.ResourceBundle;
+
+import org.jboss.ws.api.util.BundleUtils;
 
 /**
  * Utility class for resolving predefined XML entity and character references.
@@ -30,6 +33,7 @@ import java.util.HashMap;
  */
 public class XMLPredefinedEntityReferenceResolver
 {
+   private static final ResourceBundle bundle = BundleUtils.getBundle(XMLPredefinedEntityReferenceResolver.class);
    private static HashMap<String, Character> entities = new HashMap<String, Character>();
 
    static
@@ -52,7 +56,7 @@ public class XMLPredefinedEntityReferenceResolver
 
       int end = source.indexOf(';', pos);
       if (end == -1)
-         throw new IllegalArgumentException("Invalid character reference");
+         throw new IllegalArgumentException(BundleUtils.getMessage(bundle, "INVALID_CHARACTER_REFERENCE"));
 
       int c = Integer.parseInt(source.substring(pos, end), radix);
       builder.append((char) c);
@@ -64,12 +68,12 @@ public class XMLPredefinedEntityReferenceResolver
    {
       int end = source.indexOf(';', ++pos);
       if (end == -1)
-         throw new IllegalArgumentException("Invalid entity reference");
+         throw new IllegalArgumentException(BundleUtils.getMessage(bundle, "INVALID_ENTITY_REFERENCE"));
 
       String entity = source.substring(pos, end);
       Character c = entities.get(entity);
       if (c == null)
-         throw new IllegalArgumentException("Invalid entity: " + entity);
+         throw new IllegalArgumentException(BundleUtils.getMessage(bundle, "INVALID_ENTITY",  entity));
 
       builder.append(c.charValue());
 
@@ -100,7 +104,7 @@ public class XMLPredefinedEntityReferenceResolver
          
          int peek = pos + 1;
          if (peek == end)
-            throw new IllegalArgumentException("Invalid entity reference");
+            throw new IllegalArgumentException(BundleUtils.getMessage(bundle, "INVALID_ENTITY_REFERENCE"));
 
          if (normalized.charAt(peek) == '#')
             pos = resolveCharRef(normalized, pos, builder);

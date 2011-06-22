@@ -24,12 +24,14 @@ package org.jboss.ws.common.deployment;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import org.jboss.ws.api.annotation.WebContext;
+import org.jboss.ws.api.util.BundleUtils;
 import org.jboss.ws.common.integration.AbstractDeploymentAspect;
 import org.jboss.wsf.spi.deployment.Deployment;
-import org.jboss.wsf.spi.deployment.Endpoint;
 import org.jboss.wsf.spi.deployment.Deployment.DeploymentType;
+import org.jboss.wsf.spi.deployment.Endpoint;
 
 /**
  * A deployer that assigns the virtual hosts to the service 
@@ -39,6 +41,7 @@ import org.jboss.wsf.spi.deployment.Deployment.DeploymentType;
  */
 public class VirtualHostDeploymentAspect extends AbstractDeploymentAspect
 {
+   private static final ResourceBundle bundle = BundleUtils.getBundle(VirtualHostDeploymentAspect.class);
 
    @Override
    public void start(Deployment dep)
@@ -74,7 +77,7 @@ public class VirtualHostDeploymentAspect extends AbstractDeploymentAspect
             {
                if (Arrays.equals(virtualHosts, temp) == false)
                {
-                  throw new IllegalStateException("virtualHosts must be the same for all deployed endpoints");
+                  throw new IllegalStateException(BundleUtils.getMessage(bundle, "VIRTUALHOSTS_MUST_BE_THE_SAME_FOR_ALL_DEPLOYED_ENDPOINTS"));
                }
             }
          }

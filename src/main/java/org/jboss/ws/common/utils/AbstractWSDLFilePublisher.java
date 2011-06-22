@@ -29,12 +29,14 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.wsdl.Definition;
 import javax.wsdl.Import;
 import javax.wsdl.factory.WSDLFactory;
 
 import org.jboss.logging.Logger;
+import org.jboss.ws.api.util.BundleUtils;
 import org.jboss.ws.common.DOMUtils;
 import org.jboss.ws.common.IOUtils;
 import org.jboss.wsf.spi.SPIProvider;
@@ -53,6 +55,7 @@ import org.w3c.dom.Element;
  */
 public abstract class AbstractWSDLFilePublisher
 {
+   private static final ResourceBundle bundle = BundleUtils.getBundle(AbstractWSDLFilePublisher.class);
    private static final Logger log = Logger.getLogger(AbstractWSDLFilePublisher.class);
    
    // The deployment info for the web service archive
@@ -182,7 +185,7 @@ public abstract class AbstractWSDLFilePublisher
 //                  URL resourceURL = dep.getMetaDataFileURL(resourcePath);
                   InputStream is = new ResourceURL(resourceURL).openStream();
                   if (is == null)
-                     throw new IllegalArgumentException("Cannot find schema import in deployment: " + resourcePath);
+                     throw new IllegalArgumentException(BundleUtils.getMessage(bundle, "CANNOT_FIND_SCHEMA_IMPORT_IN_DEPLOYMENT",  resourcePath));
 
                   FileOutputStream fos = null;
                   try
@@ -238,7 +241,7 @@ public abstract class AbstractWSDLFilePublisher
          else
          {
             if (file.delete() == false)
-               log.warn("Cannot delete published wsdl document: " + file.toURL());
+               log.warn(BundleUtils.getMessage(bundle, "CANNOT_DELETE_PUBLISHED_WSDL_DOCUMENT",  file.toURL()));
          }
       }
 

@@ -29,6 +29,7 @@ import java.util.Collection;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.naming.Context;
 import javax.naming.Name;
@@ -42,6 +43,7 @@ import javax.xml.ws.WebServiceFeature;
 import javax.xml.ws.soap.AddressingFeature;
 import javax.xml.ws.soap.MTOMFeature;
 
+import org.jboss.ws.api.util.BundleUtils;
 import org.jboss.wsf.spi.WSFException;
 import org.jboss.wsf.spi.metadata.j2ee.serviceref.UnifiedPortComponentRefMetaData;
 import org.jboss.wsf.spi.metadata.j2ee.serviceref.UnifiedServiceRefMetaData;
@@ -54,6 +56,7 @@ import org.jboss.wsf.spi.metadata.j2ee.serviceref.UnifiedServiceRefMetaData;
  */
 public abstract class AbstractServiceObjectFactoryJAXWS implements ObjectFactory
 {
+   private static final ResourceBundle bundle = BundleUtils.getBundle(AbstractServiceObjectFactoryJAXWS.class);
    /**
     * Creates an object using the location or reference information specified.
     * <p/>
@@ -232,8 +235,7 @@ public abstract class AbstractServiceObjectFactoryJAXWS implements ObjectFactory
          }
          else
          {
-            throw new IllegalArgumentException("Cannot create generic javax.xml.ws.Service without wsdlLocation: "
-                  + serviceRefMD);
+            throw new IllegalArgumentException(BundleUtils.getMessage(bundle, "CANNOT_CREATE_SERVICE_WITHOUT_WSDLLOCATION", serviceRefMD));
          }
       }
       else

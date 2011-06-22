@@ -26,9 +26,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ResourceBundle;
 
 import javax.naming.NamingException;
 
+import org.jboss.ws.api.util.BundleUtils;
 import org.jboss.wsf.spi.metadata.j2ee.serviceref.UnifiedServiceRefMetaData;
 
 /**
@@ -38,6 +40,7 @@ import org.jboss.wsf.spi.metadata.j2ee.serviceref.UnifiedServiceRefMetaData;
  */
 final class ServiceRefSerializer
 {
+   private static final ResourceBundle bundle = BundleUtils.getBundle(ServiceRefSerializer.class);
    static final String SERVICE_REF_META_DATA = "SERVICE_REF_META_DATA";
 
    private ServiceRefSerializer()
@@ -57,7 +60,7 @@ final class ServiceRefSerializer
       }
       catch (final IOException e)
       {
-         throw new NamingException("Cannot marshall service ref meta data, cause: " + e.toString());
+         throw new NamingException(BundleUtils.getMessage(bundle, "CANNOT_MARSHALL_SERVICE_REF_META_DATA", e.getMessage()));
       }
 
       return baos.toByteArray();
@@ -76,11 +79,11 @@ final class ServiceRefSerializer
       }
       catch (final IOException e)
       {
-         throw new NamingException("Cannot unmarshall service ref meta data, cause: " + e.toString());
+         throw new NamingException(BundleUtils.getMessage(bundle, "CANNOT_UNMARSHALL_SERVICE_REF_META_DATA", e.getMessage()));
       }
       catch (final ClassNotFoundException e)
       {
-         throw new NamingException("Cannot unmarshall service ref meta data, cause: " + e.toString());
+         throw new NamingException(BundleUtils.getMessage(bundle, "CANNOT_UNMARSHALL_SERVICE_REF_META_DATA", e.getMessage()));
       }
 
       return sref;

@@ -23,17 +23,19 @@ package org.jboss.ws.common.management;
 
 import java.util.Date;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.management.JMException;
 import javax.management.MBeanServer;
 
 import org.jboss.logging.Logger;
-import org.jboss.wsf.spi.deployment.Endpoint;
-import org.jboss.wsf.spi.management.EndpointMetrics;
 import org.jboss.ws.api.monitoring.Record;
 import org.jboss.ws.api.monitoring.RecordProcessor;
+import org.jboss.ws.api.util.BundleUtils;
 import org.jboss.ws.common.ObjectNameFactory;
 import org.jboss.ws.common.monitoring.ManagedRecordProcessor;
+import org.jboss.wsf.spi.deployment.Endpoint;
+import org.jboss.wsf.spi.management.EndpointMetrics;
 
 /**
  * The endpoint MBean representation 
@@ -43,6 +45,7 @@ import org.jboss.ws.common.monitoring.ManagedRecordProcessor;
  */
 public class ManagedEndpoint implements ManagedEndpointMBean
 {
+   private static final ResourceBundle bundle = BundleUtils.getBundle(ManagedEndpoint.class);
    private Endpoint endpoint;
    private MBeanServer mbeanServer;
    private Logger log = Logger.getLogger(this.getClass());
@@ -143,7 +146,7 @@ public class ManagedEndpoint implements ManagedEndpointMBean
          }
          catch (JMException innerEx)
          {
-            log.error("Cannot register endpoint with JMX server", innerEx);
+            log.error(BundleUtils.getMessage(bundle, "CANNOT_REGISTER_ENDPOINT_WITH_JMX_SERVER"),  innerEx);
          }
       }
    }
@@ -164,7 +167,7 @@ public class ManagedEndpoint implements ManagedEndpointMBean
          }
          catch (JMException ex)
          {
-            log.error("Cannot unregister record processor with JMX server", ex);
+            log.error(BundleUtils.getMessage(bundle, "CANNOT_UNREGISTER_RECORD_PROCESSOR_WITH_JMX_SERVER"),  ex);
          }
       }
       //set and register the new processors
@@ -184,7 +187,7 @@ public class ManagedEndpoint implements ManagedEndpointMBean
             }
             catch (JMException innerEx)
             {
-               log.error("Cannot register endpoint with JMX server", innerEx);
+               log.error(BundleUtils.getMessage(bundle, "CANNOT_REGISTER_ENDPOINT_WITH_JMX_SERVER"),  innerEx);
             }
          }
       }

@@ -24,6 +24,7 @@ package org.jboss.ws.common.servlet;
 import java.io.IOException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.ResourceBundle;
 
 import javax.management.ObjectName;
 import javax.servlet.ServletConfig;
@@ -31,7 +32,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.ws.WebServiceException;
 
+import org.jboss.ws.api.util.BundleUtils;
 import org.jboss.ws.common.ObjectNameFactory;
 import org.jboss.wsf.spi.SPIProvider;
 import org.jboss.wsf.spi.SPIProviderResolver;
@@ -44,8 +47,6 @@ import org.jboss.wsf.spi.management.EndpointRegistry;
 import org.jboss.wsf.spi.management.EndpointRegistryFactory;
 import org.jboss.wsf.spi.management.EndpointResolver;
 
-import javax.xml.ws.WebServiceException;
-
 /**
  * A cross stack webservice endpoint servlet.
  * @author thomas.diesler@jboss.org
@@ -54,6 +55,7 @@ import javax.xml.ws.WebServiceException;
  */
 public abstract class AbstractEndpointServlet extends HttpServlet
 {
+   private static final ResourceBundle bundle = BundleUtils.getBundle(AbstractEndpointServlet.class);
 
    protected Endpoint endpoint;
    private EndpointRegistry epRegistry;
@@ -154,7 +156,7 @@ public abstract class AbstractEndpointServlet extends HttpServlet
            Endpoint.SEPID_PROPERTY_CONTEXT + "=" + contextPath + "," +
            Endpoint.SEPID_PROPERTY_ENDPOINT + "=" + servletName
          );
-         throw new WebServiceException("Cannot obtain endpoint for: " + oname);
+         throw new WebServiceException(BundleUtils.getMessage(bundle, "CANNOT_OBTAIN_ENDPOINT_FOR",  oname));
       }
    }
    

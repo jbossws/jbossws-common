@@ -22,6 +22,8 @@
 package org.jboss.ws.common.management;
 
 import org.jboss.logging.Logger;
+import java.util.ResourceBundle;
+import org.jboss.ws.api.util.BundleUtils;
 import org.jboss.wsf.spi.SPIProvider;
 import org.jboss.wsf.spi.SPIProviderResolver;
 import org.jboss.wsf.spi.WSFException;
@@ -39,6 +41,7 @@ import org.jboss.wsf.spi.management.EndpointRegistryFactory;
  */
 public final class DefaultEndpointRegistryFactory extends EndpointRegistryFactory
 {
+   private static final ResourceBundle bundle = BundleUtils.getBundle(DefaultEndpointRegistryFactory.class);
 
    private Logger log = Logger.getLogger(DefaultEndpointRegistryFactory.class);
    /** The bean name in the kernel registry. */
@@ -88,7 +91,7 @@ public final class DefaultEndpointRegistryFactory extends EndpointRegistryFactor
       }
       catch (Exception e)
       {
-         log.warn("Unable to get WSEndpointRegistry from IoC, using default one");
+         log.warn(BundleUtils.getMessage(bundle, "UNABLE_TO_GET_WSENDPOINTREGISTRY"));
          return fallbackRegistry; // JSE environment
       }
    }

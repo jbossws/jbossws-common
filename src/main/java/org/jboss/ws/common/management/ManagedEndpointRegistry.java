@@ -22,6 +22,8 @@
 package org.jboss.ws.common.management;
 
 import javax.management.JMException;
+import java.util.ResourceBundle;
+import org.jboss.ws.api.util.BundleUtils;
 import javax.management.MBeanServer;
 
 import org.jboss.logging.Logger;
@@ -35,6 +37,7 @@ import org.jboss.wsf.spi.deployment.Endpoint;
  */
 public class ManagedEndpointRegistry extends DefaultEndpointRegistry implements ManagedEndpointRegistryMBean
 {
+   private static final ResourceBundle bundle = BundleUtils.getBundle(ManagedEndpointRegistry.class);
    // provide logging
    private static final Logger log = Logger.getLogger(ManagedEndpointRegistry.class);
 
@@ -63,7 +66,7 @@ public class ManagedEndpointRegistry extends DefaultEndpointRegistry implements 
       }
       catch (Exception ex)
       {
-         log.error("Cannot register endpoint with JMX server", ex);
+         log.error(BundleUtils.getMessage(bundle, "CANNOT_REGISTER_ENDPOINT_WITH_JMX_SERVER"),  ex);
       }
    }
 
@@ -76,11 +79,11 @@ public class ManagedEndpointRegistry extends DefaultEndpointRegistry implements 
          if (getMbeanServer() != null)
             getMbeanServer().unregisterMBean(endpoint.getName());
          else
-            log.warn("MBeanServer not available, cannot unregister endpoint with JMX server");
+            log.warn(BundleUtils.getMessage(bundle, "MBEANSERVER_NOT_AVAILABLE"));
       }
       catch (JMException ex)
       {
-         log.error("Cannot unregister endpoint with JMX server", ex);
+         log.error(BundleUtils.getMessage(bundle, "CANNOT_UNREGISTER_ENDPOINT_WITH_JMX_SERVER"),  ex);
       }
    }
 

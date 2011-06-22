@@ -21,12 +21,19 @@
  */
 package org.jboss.ws.common;
 
-import java.lang.reflect.*;
+import java.lang.reflect.Array;
+import java.lang.reflect.GenericArrayType;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.lang.reflect.WildcardType;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.ResourceBundle;
 
 import org.jboss.logging.Logger;
-import org.jboss.ws.common.JavaUtils;
+import org.jboss.ws.api.util.BundleUtils;
 
 /** Java utilities
  *
@@ -35,6 +42,7 @@ import org.jboss.ws.common.JavaUtils;
  */
 public class JavaUtils
 {
+   private static final ResourceBundle bundle = BundleUtils.getBundle(JavaUtils.class);
    // provide logging
    private static final Logger log = Logger.getLogger(JavaUtils.class);
 
@@ -211,7 +219,7 @@ public class JavaUtils
             componentType = loader.loadClass(name);
             break;
          default:
-            throw new IllegalArgumentException("Invalid binary component for array: " + javaType.charAt(componentStart));
+            throw new IllegalArgumentException(BundleUtils.getMessage(bundle, "INVALID_BINARY_COMPONENT_FOR_ARRAY",  javaType.charAt(componentStart)));
       }
 
       // componentStart doubles as the number of '['s which is the number of dimensions
@@ -431,9 +439,9 @@ public class JavaUtils
    public static boolean isAssignableFrom(Class<?> dest, Class<?> src)
    {
       if (dest == null)
-         throw new IllegalArgumentException("Destination class cannot be null");
+         throw new IllegalArgumentException(BundleUtils.getMessage(bundle, "DESTINATION_CLASS_CANNOT_BE_NULL"));
       if (src == null)
-         throw new IllegalArgumentException("Source class cannot be null");
+         throw new IllegalArgumentException(BundleUtils.getMessage(bundle, "SOURCE_CLASS_CANNOT_BE_NULL"));
 
       boolean isAssignable = dest.isAssignableFrom(src);
       if (isAssignable == false && dest.getName().equals(src.getName()))

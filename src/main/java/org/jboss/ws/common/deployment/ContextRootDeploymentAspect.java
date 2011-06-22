@@ -21,9 +21,12 @@
  */
 package org.jboss.ws.common.deployment;
 
+import java.util.ResourceBundle;
+
 import org.jboss.ws.api.annotation.AuthMethod;
 import org.jboss.ws.api.annotation.TransportGuarantee;
 import org.jboss.ws.api.annotation.WebContext;
+import org.jboss.ws.api.util.BundleUtils;
 import org.jboss.ws.common.Constants;
 import org.jboss.ws.common.integration.AbstractDeploymentAspect;
 import org.jboss.wsf.spi.deployment.ArchiveDeployment;
@@ -40,6 +43,7 @@ import org.jboss.wsf.spi.metadata.j2ee.JSEArchiveMetaData;
  */
 public class ContextRootDeploymentAspect extends AbstractDeploymentAspect
 {
+   private static final ResourceBundle bundle = BundleUtils.getBundle(ContextRootDeploymentAspect.class);
    @Override
    public void start(Deployment dep)
    {
@@ -78,7 +82,7 @@ public class ContextRootDeploymentAspect extends AbstractDeploymentAspect
             if (anWebContext != null && anWebContext.contextRoot().length() > 0)
             {
                if (contextRoot != null && contextRoot.equals(anWebContext.contextRoot()) == false)
-                  throw new IllegalStateException("Context root must be the same for all deployed endpoints");
+                  throw new IllegalStateException(BundleUtils.getMessage(bundle, "MUST_SHARE_THE_SAME_CONTEXT_ROOT"));
 
                contextRoot = anWebContext.contextRoot();
             }
