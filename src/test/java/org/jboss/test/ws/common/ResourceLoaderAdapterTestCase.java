@@ -50,16 +50,12 @@ public class ResourceLoaderAdapterTestCase extends TestCase
       assertNotNull(children);
       assertTrue(children.size() > 0);
       UnifiedVirtualFile unifiedVirtualFile = null;
-      UnifiedVirtualFile integration = null;
       for (UnifiedVirtualFile uvf : children)
       {
          if (uvf.getName().equals(UnifiedVirtualFile.class.getSimpleName() + ".class"))
             unifiedVirtualFile = uvf;
-         else if (uvf.getName().equals("integration/"))
-            integration = uvf;
       }
       assertNotNull(unifiedVirtualFile);
-      assertNotNull(integration);
       assertTrue(unifiedVirtualFile.getChildren().size() == 0);
    }
    
