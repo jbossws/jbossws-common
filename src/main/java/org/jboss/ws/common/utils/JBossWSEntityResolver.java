@@ -151,6 +151,26 @@ public class JBossWSEntityResolver extends JBossEntityResolver
       
       return inputSource;
    }
+   
+   protected InputStream loadClasspathResource(String resource, boolean trace)
+   {
+       InputStream is = super.loadClasspathResource(resource, trace);
+       if (is == null)
+       {
+           final ClassLoader origLoader = SecurityActions.getContextClassLoader();
+           try
+           {
+               SecurityActions.setContextClassLoader(ClassLoaderProvider.getDefaultProvider().getServerIntegrationClassLoader());
+               is = super.loadClasspathResource(resource, trace);
+           }
+           finally
+           {
+               SecurityActions.setContextClassLoader(origLoader);
+           }
+       }
+       
+       return is;
+   }
 
    /** Use a ResourceURL to access the resource.
     *  This method should be protected in the super class. */
