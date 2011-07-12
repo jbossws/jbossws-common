@@ -97,7 +97,7 @@ public final class DOMUtils
                   factory.setFeature(DEFER_NODE_EXPANSION_FEATURE, false);
                }
                
-               if (Boolean.getBoolean(ENABLE_DOCTYPE_DECL))
+               if (!Boolean.getBoolean(ENABLE_DOCTYPE_DECL))
                {
                   factory.setFeature(DISALLOW_DOCTYPE_DECL_FEATURE, true);
                }
