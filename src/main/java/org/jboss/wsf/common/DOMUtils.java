@@ -74,6 +74,8 @@ public final class DOMUtils
 
    private static final String DISABLE_DEFERRED_NODE_EXPANSION = "org.jboss.ws.disable_deferred_node_expansion";
    private static final String DEFER_NODE_EXPANSION_FEATURE = "http://apache.org/xml/features/dom/defer-node-expansion";
+   private static final String ENABLE_DOCTYPE_DECL = "org.jboss.ws.enable_doctype_decl";
+   private static final String DISALLOW_DOCTYPE_DECL_FEATURE = "http://apache.org/xml/features/disallow-doctype-decl";
 
    // All elements created by the same thread are created by the same builder and belong to the same doc
    private static ThreadLocal<Document> documentThreadLocal = new ThreadLocal<Document>();
@@ -93,6 +95,11 @@ public final class DOMUtils
                if (Boolean.getBoolean(DISABLE_DEFERRED_NODE_EXPANSION))
                {
                   factory.setFeature(DEFER_NODE_EXPANSION_FEATURE, false);
+               }
+               
+               if (Boolean.getBoolean(ENABLE_DOCTYPE_DECL))
+               {
+                  factory.setFeature(DISALLOW_DOCTYPE_DECL_FEATURE, true);
                }
             }
             catch (ParserConfigurationException pce)
