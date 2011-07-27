@@ -61,7 +61,9 @@ extends MethodFinder
    @Override
    public boolean matches(final Method method)
    {
-      if (method.getName().equals(injectionMD.getTargetName()))
+      final String targetName = injectionMD.getTargetName();
+      final String methodName = "set" + targetName.substring(0, 1).toUpperCase() + targetName.substring(1);
+      if (method.getName().equals(methodName))
       {
          if (injectionMD.getValueClass() != null)
          {
