@@ -40,10 +40,10 @@ public final class ThreadLocalAwareWebServiceContext implements WebServiceContex
 
    private static final long serialVersionUID = 126557512266764152L;
 
-   private static final transient ThreadLocalAwareWebServiceContext SINGLETON = new ThreadLocalAwareWebServiceContext();
+   private static final ThreadLocalAwareWebServiceContext SINGLETON = new ThreadLocalAwareWebServiceContext();
 
    private final transient ThreadLocal<WebServiceContext> contexts = new InheritableThreadLocal<WebServiceContext>();
-
+   
    public static ThreadLocalAwareWebServiceContext getInstance()
    {
       return SINGLETON;
@@ -113,6 +113,11 @@ public final class ThreadLocalAwareWebServiceContext implements WebServiceContex
       }
 
       return delegee.isUserInRole(role);
+   }
+
+   protected Object readResolve()
+   {
+       return SINGLETON;
    }
 
 }
