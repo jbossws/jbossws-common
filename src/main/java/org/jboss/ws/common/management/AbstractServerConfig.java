@@ -39,10 +39,13 @@ import org.jboss.ws.api.util.BundleUtils;
 import org.jboss.ws.common.ObjectNameFactory;
 import org.jboss.wsf.spi.SPIProvider;
 import org.jboss.wsf.spi.SPIProviderResolver;
+import org.jboss.wsf.spi.WSFException;
 import org.jboss.wsf.spi.classloading.ClassLoaderProvider;
 import org.jboss.wsf.spi.management.ServerConfig;
 import org.jboss.wsf.spi.management.StackConfig;
 import org.jboss.wsf.spi.management.StackConfigFactory;
+import org.jboss.wsf.spi.management.WebServerInfo;
+import org.jboss.wsf.spi.management.WebServerInfoFactory;
 import org.jboss.wsf.spi.metadata.config.EndpointConfig;
 
 /**
@@ -153,11 +156,25 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
          webServicePort = getConnectorPort("HTTP/1.1", false);
 
       int localPort = webServicePort;
-      if (localPort <= 0)
+      if (localPort <= 0)        
       {
-         // Do not initialize webServicePort with the default, the connector port may become available later 
-         log.debug("Unable to calculate 'WebServicePort', using default '8080'");
-         localPort = 8080;
+         ClassLoader cl = ClassLoaderProvider.getDefaultProvider().getServerIntegrationClassLoader();
+         SPIProvider spiProvider = SPIProviderResolver.getInstance(cl).getProvider();
+         try
+         {
+            WebServerInfo webServerInfo = spiProvider.getSPI(WebServerInfoFactory.class, cl).newWebServerInfo();
+            localPort = webServerInfo.getPort("HTTP/1.1", false);
+         }
+         catch (WSFException e)
+         {
+            log.warn(BundleUtils.getMessage(bundle, "COULD_NOT_GET_WEBSERVERINFO"),  e);
+         }
+         if (localPort <= 0)
+         {
+            // Do not initialize webServicePort with the default, the connector port may become available later 
+            log.debug("Unable to calculate 'WebServicePort', using default '8080'");
+            localPort = 8080;
+         }
       }
 
       return localPort;
@@ -171,9 +188,25 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
       int localPort = webServiceSecurePort;
       if (localPort <= 0)
       {
-         // Do not initialize webServiceSecurePort with the default, the connector port may become available later 
-         log.debug("Unable to calculate 'WebServiceSecurePort', using default '8443'");
-         localPort = 8443;
+         ClassLoader cl = ClassLoaderProvider.getDefaultProvider().getServerIntegrationClassLoader();
+         SPIProvider spiProvider = SPIProviderResolver.getInstance(cl).getProvider();
+         try
+         {
+            WebServerInfo webServerInfo = spiProvider.getSPI(WebServerInfoFactory.class, cl).newWebServerInfo();
+
+            localPort = webServerInfo.getPort("HTTP/1.1", true);
+         }
+         catch (WSFException e)
+         {
+            log.warn(BundleUtils.getMessage(bundle, "COULD_NOT_GET_WEBSERVERINFO"),  e);
+         }
+         
+         if (localPort <= 0)
+         {
+            // Do not initialize webServiceSecurePort with the default, the connector port may become available later 
+            log.debug("Unable to calculate 'WebServiceSecurePort', using default '8443'");
+            localPort = 8443;
+         }
       }
 
       return localPort;
