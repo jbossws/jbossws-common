@@ -190,7 +190,9 @@ public abstract class AbstractServiceObjectFactoryJAXWS implements ObjectFactory
             Class<?> retType = method.getReturnType();
             if (methodName.startsWith("get") && targetClass.isAssignableFrom(retType))
             {
-               port = method.invoke(target, new Object[0]);
+               final Method targetMethod = getMethodFor(methodName, features, serviceClass);
+               final Object[] args = getArgumentsFor(features);
+               port = targetMethod.invoke(target, args);
                retVal = port;
                break;
             }
@@ -199,7 +201,7 @@ public abstract class AbstractServiceObjectFactoryJAXWS implements ObjectFactory
 
       if (port == null)
       {
-         Method method = getMethodFor(portQName, features, serviceClass);
+         Method method = getMethodFor("getPort", portQName, features, serviceClass);
          Object[] args = getArgumentsFor(portQName, features, targetClass);
          port = method.invoke(target, args);
          retVal = port;
@@ -345,23 +347,36 @@ public abstract class AbstractServiceObjectFactoryJAXWS implements ObjectFactory
       return null;
    }
 
-   private Method getMethodFor(final QName portQName, final WebServiceFeature[] features, final Class<?> serviceClass)
+   private Method getMethodFor(final String methodName, final QName portQName, final WebServiceFeature[] features, final Class<?> serviceClass)
          throws NoSuchMethodException
    {
       if ((portQName == null) && (features == null))
-         return serviceClass.getMethod("getPort", new Class[]
+         return serviceClass.getMethod(methodName, new Class[]
          {Class.class});
       if ((portQName != null) && (features == null))
-         return serviceClass.getMethod("getPort", new Class[]
+         return serviceClass.getMethod(methodName, new Class[]
          {QName.class, Class.class});
       if ((portQName == null) && (features != null))
-         return serviceClass.getMethod("getPort", new Class[]
+         return serviceClass.getMethod(methodName, new Class[]
          {Class.class, WebServiceFeature[].class});
       if ((portQName != null) && (features != null))
-         return serviceClass.getMethod("getPort", new Class[]
+         return serviceClass.getMethod(methodName, new Class[]
          {QName.class, Class.class, WebServiceFeature[].class});
 
       throw new IllegalStateException();
+   }
+
+   private Method getMethodFor(final String methodName, final WebServiceFeature[] features, final Class<?> serviceClass)
+   throws NoSuchMethodException
+   {
+	  if (features == null)
+	  {
+		 return serviceClass.getMethod(methodName, new Class[] {});
+	  }
+	  else
+	  {
+		 return serviceClass.getMethod(methodName, new Class[] { WebServiceFeature[].class } );
+	  }
    }
 
    private Object[] getArgumentsFor(final QName portQName, final WebServiceFeature[] features,
@@ -381,6 +396,18 @@ public abstract class AbstractServiceObjectFactoryJAXWS implements ObjectFactory
          {portQName, targetClass, features};
 
       throw new IllegalStateException();
+   }
+
+   private Object[] getArgumentsFor(final WebServiceFeature[] features) throws NoSuchMethodException
+   {
+	   if (features == null)
+	   {
+		   return new Object[] {};
+	   }
+	   else
+	   {
+		   return new Object[] {features};
+	   }
    }
 
    private WebServiceFeature[] getFeatures(final UnifiedServiceRefMetaData serviceRef)
@@ -425,8 +452,9 @@ public abstract class AbstractServiceObjectFactoryJAXWS implements ObjectFactory
    {
       List<WebServiceFeature> features = new LinkedList<WebServiceFeature>();
       // configure @Addressing feature
-      if (portComponentRefMD.isAddressingEnabled())
+      if (portComponentRefMD.isAddressingAnnotationSpecified())
       {
+         final boolean enabled = portComponentRefMD.isAddressingEnabled();
          final boolean required = portComponentRefMD.isAddressingRequired();
          final String refResponses = portComponentRefMD.getAddressingResponses();
          AddressingFeature.Responses responses = AddressingFeature.Responses.ALL;
@@ -435,7 +463,7 @@ public abstract class AbstractServiceObjectFactoryJAXWS implements ObjectFactory
          if ("NON_ANONYMOUS".equals(refResponses))
             responses = AddressingFeature.Responses.NON_ANONYMOUS;
 
-         features.add(new AddressingFeature(true, required, responses));
+         features.add(new AddressingFeature(enabled, required, responses));
       }
 
       // configure @MTOM feature
@@ -445,9 +473,10 @@ public abstract class AbstractServiceObjectFactoryJAXWS implements ObjectFactory
       }
 
       // configure @RespectBinding feature
-      if (portComponentRefMD.isRespectBindingEnabled())
+      if (portComponentRefMD.isRespectBindingAnnotationSpecified())
       {
-         features.add(new RespectBindingFeature(true));
+         final boolean enabled = portComponentRefMD.isRespectBindingEnabled();
+         features.add(new RespectBindingFeature(enabled));
       }
 
       return features.size() == 0 ? null : features.toArray(new WebServiceFeature[]
