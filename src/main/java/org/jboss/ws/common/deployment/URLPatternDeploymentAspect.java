@@ -28,7 +28,6 @@ import javax.jws.WebService;
 
 import org.jboss.ws.api.annotation.WebContext;
 import org.jboss.ws.api.util.BundleUtils;
-import org.jboss.ws.common.Constants;
 import org.jboss.ws.common.integration.AbstractDeploymentAspect;
 import org.jboss.wsf.spi.deployment.Deployment;
 import org.jboss.wsf.spi.deployment.Endpoint;
@@ -41,7 +40,7 @@ import org.jboss.wsf.spi.metadata.j2ee.JSEArchiveMetaData;
  * A deployer that assigns the URLPattern to endpoints. 
  *
  * @author Thomas.Diesler@jboss.org
- * @since 19-May-2007
+ * @author <a href="mailto:ropalka@redhat.com">Richard Opalka</a>
  */
 public class URLPatternDeploymentAspect extends AbstractDeploymentAspect
 {
@@ -60,7 +59,7 @@ public class URLPatternDeploymentAspect extends AbstractDeploymentAspect
             {
                urlPattern = getExplicitPattern(dep, ep);
                if (urlPattern == null)
-                  urlPattern = getImplicitPattern(dep, ep);
+                  urlPattern = ep.getShortName();
    
                // Always prefix with '/'
                if (urlPattern.startsWith("/") == false)
@@ -110,42 +109,45 @@ public class URLPatternDeploymentAspect extends AbstractDeploymentAspect
       // #3 For EJB use @WebContext.urlPattern
       if (urlPattern == null)
       {
-         Class beanClass = ep.getTargetBeanClass();
+         Class<?> beanClass = ep.getTargetBeanClass();
          WebContext anWebContext = (WebContext)beanClass.getAnnotation(WebContext.class);
          if (anWebContext != null && anWebContext.urlPattern().length() > 0)
          {
             urlPattern = anWebContext.urlPattern();
          }
-         else if (!Constants.BC_CONTEXT_MODE)
-         {
-            WebService webServiceAnnotation = (WebService)beanClass.getAnnotation(WebService.class);
-            String name = webServiceAnnotation != null ? webServiceAnnotation.name() : null;
-            if (name != null && name.length() > 0)
-            {
-               urlPattern = name;
-            }
-            else
-            {
-               String fullClassName = beanClass.getName();
-               urlPattern = fullClassName.substring(fullClassName.lastIndexOf('.') + 1);
-            }
-            if (webServiceAnnotation != null && !"".equals(webServiceAnnotation.serviceName()))
-            {
-               urlPattern = webServiceAnnotation.serviceName() + "/" + urlPattern;
-            }
-            
-         }
 
+      }
+      
+      // #4 Use @WebService
+      if (urlPattern == null)
+      {
+          Class<?> beanClass = ep.getTargetBeanClass();
+          WebService webServiceAnnotation = (WebService)beanClass.getAnnotation(WebService.class);
+          if (webServiceAnnotation != null)
+          {
+              String name = webServiceAnnotation.name();
+              urlPattern = !isEmpty(name) ? name : beanClass.getSimpleName();
+              String serviceName = webServiceAnnotation.serviceName();
+              if (!isEmpty(serviceName))
+              {
+                  urlPattern = serviceName + "/" + urlPattern;
+              }
+          }
+      }
+      // TODO: WebServiceProvider ???
+      
+      // #5 Use simple class name
+      if (urlPattern == null) 
+      {
+          Class<?> beanClass = ep.getTargetBeanClass();
+          urlPattern = beanClass.getSimpleName();
       }
 
       return urlPattern;
    }
 
-   protected String getImplicitPattern(Deployment dep, Endpoint ep)
-   {
-      // #4 Fallback to the ejb-name 
-      String urlPattern = ep.getShortName();
-      return urlPattern;
+   private static boolean isEmpty(final String s) {
+       return s == null || s.length() == 0;
    }
 
 }

@@ -27,7 +27,6 @@ import org.jboss.ws.api.annotation.AuthMethod;
 import org.jboss.ws.api.annotation.TransportGuarantee;
 import org.jboss.ws.api.annotation.WebContext;
 import org.jboss.ws.api.util.BundleUtils;
-import org.jboss.ws.common.Constants;
 import org.jboss.ws.common.integration.AbstractDeploymentAspect;
 import org.jboss.wsf.spi.deployment.ArchiveDeployment;
 import org.jboss.wsf.spi.deployment.Deployment;
@@ -105,11 +104,6 @@ public class ContextRootDeploymentAspect extends AbstractDeploymentAspect
    {
       String simpleName = dep.getSimpleName();
       String contextRoot = simpleName.substring(0, simpleName.length() - 4);
-      if (dep.getParent() != null && Constants.BC_CONTEXT_MODE)
-      {
-         simpleName = dep.getParent().getSimpleName();
-         contextRoot = simpleName.substring(0, simpleName.length() - 4) + "-" + contextRoot;
-      }
       return contextRoot;
    }
    

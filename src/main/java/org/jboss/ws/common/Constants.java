@@ -331,6 +331,4 @@ public interface Constants
    static final String HTTP_MAX_CONNECTIONS = "org.jboss.ws.http.maxConnections";
 
    static final String NETTY_MESSAGE = "org.jboss.ws.http.netty.Message";
-
-   static final boolean BC_CONTEXT_MODE = Boolean.parseBoolean(System.getProperty("org.jboss.ws.backward_compatible_context_creator", "false"));
 }
