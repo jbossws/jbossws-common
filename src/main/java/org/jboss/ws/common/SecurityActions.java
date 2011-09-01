@@ -57,7 +57,31 @@ class SecurityActions
          });
       }
    }
-   
+
+   /**
+    * Set context classloader.
+    * 
+    * @param classLoader the context classloader
+    */
+   static void setContextClassLoader(final ClassLoader classLoader)
+   {
+      SecurityManager sm = System.getSecurityManager();
+      if (sm == null)
+      {
+         Thread.currentThread().setContextClassLoader(classLoader);
+      }
+      else
+      {
+         AccessController.doPrivileged(new PrivilegedAction<Object>() {
+            public Object run()
+            {
+               Thread.currentThread().setContextClassLoader(classLoader);
+               return null;
+            }
+         });
+      }
+   }
+
    /**
     * Load a class using the provided classloader
     * 
