@@ -77,59 +77,65 @@ public final class DOMUtils
    private static final String DISALLOW_DOCTYPE_DECL_FEATURE = "http://apache.org/xml/features/disallow-doctype-decl";
    
    private static String documentBuilderFactoryName;
+   private static DocumentBuilderFactory documentBuilderFactory;
    
    private static final boolean alwaysResolveFactoryName = Boolean.getBoolean(Constants.ALWAYS_RESOLVE_DOCUMENT_BUILDER_FACTORY);
    private static final boolean disableDeferedNodeExpansion = Boolean.getBoolean(DISABLE_DEFERRED_NODE_EXPANSION);
    private static final boolean enableDoctypeDeclaration = Boolean.getBoolean(ENABLE_DOCTYPE_DECL);
+   
+   static
+   {
+      //load default document builder factory using the DOMUtils' defining classloader
+      final ClassLoader classLoader = SecurityActions.getContextClassLoader();
+      SecurityActions.setContextClassLoader(DOMUtils.class.getClassLoader());
+      try
+      {
+         final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+
+         initializeFactory(factory);
+         documentBuilderFactoryName = factory.getClass().getCanonicalName();
+         documentBuilderFactory = factory;
+      }
+      finally
+      {
+         SecurityActions.setContextClassLoader(classLoader);
+      }
+   }
    
    // All elements created by the same thread are created by the same builder and belong to the same doc
    private static ThreadLocal<Document> documentThreadLocal = new ThreadLocal<Document>();
    private static ThreadLocal<DocumentBuilder> builderThreadLocal = new ThreadLocal<DocumentBuilder>() {
       protected DocumentBuilder initialValue()
       {
-         DocumentBuilderFactory factory = null;
          try
          {
-            //slow
-            //factory = DocumentBuilderFactory.newInstance();
-            
-            //fast (requires JDK6 or greater)
-            if (documentBuilderFactoryName == null || alwaysResolveFactoryName)
+            DocumentBuilderFactory factory = null;
+            if (alwaysResolveFactoryName)
             {
                factory = DocumentBuilderFactory.newInstance();
-               if (!alwaysResolveFactoryName)
-               {
-                  documentBuilderFactoryName = factory.getClass().getCanonicalName();
-               }
             }
             else
             {
+               //this is faster then DocumentBuilderFactory.newInstance(); but requires JDK6 or greater
                factory = DocumentBuilderFactory.newInstance(documentBuilderFactoryName, SecurityActions.getContextClassLoader());
             }
             
-            
-            factory.setValidating(false);
-            factory.setNamespaceAware(true);
-            factory.setExpandEntityReferences(false);
-
-            try
+            //check if the factory we'd get for this thread is equivalent to the default one;
+            //in that case re-use the default one and skip the initialization, which is time-consuming
+            final DocumentBuilderFactory threadFactory ;
+            if (factory.getClass().getClassLoader() == documentBuilderFactory.getClass().getClassLoader() &&
+               (!alwaysResolveFactoryName || documentBuilderFactoryName.equals(factory.getClass().getCanonicalName())))
             {
-               factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
-               if (disableDeferedNodeExpansion)
-               {
-                  factory.setFeature(DEFER_NODE_EXPANSION_FEATURE, false);
-               }
-               if (!enableDoctypeDeclaration)
-               {
-                  factory.setFeature(DISALLOW_DOCTYPE_DECL_FEATURE, true);
-               }
+               threadFactory = documentBuilderFactory ;
             }
-            catch (ParserConfigurationException pce)
+            else
             {
-               log.error(pce);
+               threadFactory = factory ;
+               initializeFactory(threadFactory) ;
+
             }
 
-            DocumentBuilder builder = factory.newDocumentBuilder();
+            DocumentBuilder builder = threadFactory.newDocumentBuilder();
             setEntityResolver(builder);
             return builder;
          }
@@ -169,6 +175,31 @@ public final class DOMUtils
             builder.setEntityResolver(entityResolver);
       }
    };
+   
+   private static void initializeFactory(final DocumentBuilderFactory factory)
+   {
+      factory.setValidating(false);
+      factory.setNamespaceAware(true);
+      factory.setExpandEntityReferences(false);
+
+      try
+      {
+         factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+         if (disableDeferedNodeExpansion)
+         {
+            factory.setFeature(DEFER_NODE_EXPANSION_FEATURE, false);
+         }
+         if (!enableDoctypeDeclaration)
+         {
+            factory.setFeature(DISALLOW_DOCTYPE_DECL_FEATURE, true);
+         }
+      }
+      catch (ParserConfigurationException pce)
+      {
+         log.error(pce);
+      }
+   }
+
 
    public static void clearThreadLocals()
    {
