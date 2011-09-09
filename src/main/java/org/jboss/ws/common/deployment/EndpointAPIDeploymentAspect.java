@@ -28,7 +28,6 @@ import org.jboss.ws.common.ResourceLoaderAdapter;
 import org.jboss.ws.common.integration.AbstractDeploymentAspect;
 import org.jboss.wsf.spi.deployment.ArchiveDeployment;
 import org.jboss.wsf.spi.deployment.Deployment;
-import org.jboss.wsf.spi.deployment.Deployment.DeploymentType;
 import org.jboss.wsf.spi.deployment.Endpoint;
 import org.jboss.wsf.spi.deployment.HttpEndpoint;
 import org.jboss.wsf.spi.deployment.UnifiedVirtualFile;
@@ -46,7 +45,6 @@ public class EndpointAPIDeploymentAspect extends AbstractDeploymentAspect
    @Override
    public void start(Deployment dep)
    {
-      dep.setType(DeploymentType.JAXWS_JSE);
 
       if (dep instanceof ArchiveDeployment)
       {

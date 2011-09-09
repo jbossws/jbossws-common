@@ -36,6 +36,7 @@ import javax.xml.ws.WebServiceException;
 
 import org.jboss.ws.api.util.BundleUtils;
 import org.jboss.ws.common.ObjectNameFactory;
+import org.jboss.ws.common.integration.WSHelper;
 import org.jboss.wsf.spi.SPIProvider;
 import org.jboss.wsf.spi.SPIProviderResolver;
 import org.jboss.wsf.spi.classloading.ClassLoaderProvider;
@@ -166,8 +167,8 @@ public abstract class AbstractEndpointServlet extends HttpServlet
    private void setRuntimeLoader()
    {
       final Deployment dep = endpoint.getService().getDeployment();
-      final boolean isJaxrpcJse = dep.getType() == Deployment.DeploymentType.JAXRPC_JSE;
-      final boolean isJaxwsJse = dep.getType() == Deployment.DeploymentType.JAXWS_JSE;
+      final boolean isJaxrpcJse = WSHelper.isJaxrpcJseDeployment(dep);
+      final boolean isJaxwsJse = WSHelper.isJaxwsJseDeployment(dep);
 
       if (isJaxrpcJse || isJaxwsJse)
       {

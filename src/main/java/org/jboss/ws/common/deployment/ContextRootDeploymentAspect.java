@@ -45,7 +45,7 @@ public class ContextRootDeploymentAspect extends AbstractDeploymentAspect
    private static final ResourceBundle bundle = BundleUtils.getBundle(ContextRootDeploymentAspect.class);
    @Override
    public void start(Deployment dep)
-   {
+   { 
       String contextRoot = dep.getService().getContextRoot();
       if (contextRoot == null)
       {

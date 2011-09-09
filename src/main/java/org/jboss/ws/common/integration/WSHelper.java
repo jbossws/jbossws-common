@@ -26,7 +26,8 @@ import java.util.ResourceBundle;
 import org.jboss.logging.Logger;
 import org.jboss.ws.api.util.BundleUtils;
 import org.jboss.wsf.spi.deployment.Deployment;
-import org.jboss.wsf.spi.deployment.Deployment.DeploymentType;
+import org.jboss.wsf.spi.deployment.Endpoint.EndpointType;
+import org.jboss.wsf.spi.deployment.EndpointTypeFilter;
 
 /**
  * Cross WS stack and JBoss AS integration helper.
@@ -102,7 +103,14 @@ public final class WSHelper
     */
    public static boolean isJaxrpcEjbDeployment( final Deployment dep )
    {
-      return DeploymentType.JAXRPC_EJB21.equals( dep.getType() );
+      return dep.getService().getEndpoints(new EndpointTypeFilter() {
+         public boolean accept(EndpointType type) {
+            if (type == EndpointType.JAXRPC_EJB21) {
+               return true;
+            }
+            return false;
+         }
+      }).size() > 0;
    }
 
    /**
@@ -113,7 +121,14 @@ public final class WSHelper
     */
    public static boolean isJaxrpcJseDeployment( final Deployment dep )
    {
-      return DeploymentType.JAXRPC_JSE.equals( dep.getType() );
+      return dep.getService().getEndpoints(new EndpointTypeFilter() {
+         public boolean accept(EndpointType type) {
+            if (type == EndpointType.JAXRPC_JSE) {
+               return true;
+            }
+            return false;
+         }
+      }).size() > 0;
    }
 
    /**
@@ -124,7 +139,15 @@ public final class WSHelper
     */
    public static boolean isJaxwsEjbDeployment( final Deployment dep )
    {
-      return DeploymentType.JAXWS_EJB3.equals( dep.getType() );
+     return dep.getService().getEndpoints(new EndpointTypeFilter() {
+         public boolean accept(EndpointType type) {
+            if (type == EndpointType.JAXWS_EJB3) {
+               return true;
+            }
+            return false;
+         }
+         
+      }).size() > 0;
    }
 
    /**
@@ -135,7 +158,14 @@ public final class WSHelper
     */
    public static boolean isJaxwsJseDeployment( final Deployment dep )
    {
-      return DeploymentType.JAXWS_JSE.equals( dep.getType() );
+      return dep.getService().getEndpoints(new EndpointTypeFilter() {
+         public boolean accept(EndpointType type) {
+            if (type == EndpointType.JAXWS_JSE || type == EndpointType.JAXWS_JMS) {
+               return true;
+            }
+            return false;
+         }
+      }).size() > 0;
    }
    
    /**

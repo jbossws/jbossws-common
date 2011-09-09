@@ -167,7 +167,7 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
          }
          catch (WSFException e)
          {
-            log.warn(BundleUtils.getMessage(bundle, "COULD_NOT_GET_WEBSERVERINFO"),  e);
+            log.warn(BundleUtils.getMessage(bundle, "COULD_NOT_GET_WEBSERVERINFO"));
          }
          if (localPort <= 0)
          {
@@ -198,7 +198,7 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
          }
          catch (WSFException e)
          {
-            log.warn(BundleUtils.getMessage(bundle, "COULD_NOT_GET_WEBSERVERINFO"),  e);
+            log.warn(BundleUtils.getMessage(bundle, "COULD_NOT_GET_WEBSERVERINFO"));
          }
          
          if (localPort <= 0)

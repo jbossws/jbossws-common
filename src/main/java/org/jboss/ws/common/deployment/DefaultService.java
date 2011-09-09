@@ -22,9 +22,11 @@
 package org.jboss.ws.common.deployment;
 
 import org.jboss.wsf.spi.deployment.AbstractExtensible;
+import org.jboss.wsf.spi.deployment.Endpoint.EndpointType;
 import org.jboss.wsf.spi.deployment.Service;
 import org.jboss.wsf.spi.deployment.Deployment;
 import org.jboss.wsf.spi.deployment.Endpoint;
+import org.jboss.wsf.spi.deployment.EndpointTypeFilter;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -69,6 +71,21 @@ public class DefaultService extends AbstractExtensible implements Service
    {
       return endpoints;
    }
+   
+   
+   public List<Endpoint> getEndpoints(EndpointTypeFilter filter)
+   {
+      List<Endpoint> result = new LinkedList<Endpoint>();
+      for (Endpoint endpoint : endpoints)
+      {
+         if (filter.accept(endpoint.getType()))
+         {
+            result.add(endpoint);
+         }
+      }
+      return result;
+   }
+   
 
    public Endpoint getEndpointByName(String shortName)
    {

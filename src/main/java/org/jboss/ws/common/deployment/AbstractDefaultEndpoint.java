@@ -37,6 +37,7 @@ import org.jboss.ws.common.injection.PreDestroyHolder;
 import org.jboss.wsf.spi.deployment.AbstractExtensible;
 import org.jboss.wsf.spi.deployment.Endpoint;
 import org.jboss.wsf.spi.deployment.Endpoint.EndpointState;
+import org.jboss.wsf.spi.deployment.Endpoint.EndpointType;
 import org.jboss.wsf.spi.deployment.LifecycleHandler;
 import org.jboss.wsf.spi.deployment.Service;
 import org.jboss.wsf.spi.deployment.WSFDeploymentException;
@@ -68,6 +69,7 @@ public class AbstractDefaultEndpoint extends AbstractExtensible
    protected String address;
    protected List<RecordProcessor> recordProcessors = new Vector<RecordProcessor>();
    protected SecurityDomainContext securityDomainContext;
+   protected EndpointType type;
    
    AbstractDefaultEndpoint(String targetBean)
    {
@@ -295,5 +297,13 @@ public class AbstractDefaultEndpoint extends AbstractExtensible
    {
       this.securityDomainContext = securityDomainContext;
    }
-
+   public void setType(EndpointType type)
+   {
+      this.type = type;
+   }
+   
+   public EndpointType getType()
+   {
+      return this.type;
+   }
 }

@@ -107,7 +107,7 @@ public class JAXBIntroDeploymentAspect extends AbstractDeploymentAspect
             try {
                introsConfigStream.close();
             } catch (IOException e) {
-               logger.error(BundleUtils.getMessage(bundle, "ERROR_CLOSING_JAXB_INTRODUCTIONS",  deployment.getService().getContextRoot() ),  e);
+               logger.error(BundleUtils.getMessage(bundle, "ERROR_CLOSING_JAXB_INTRODUCTIONS",  deployment.getService().getContextRoot()),  e);
             }
          }
       }

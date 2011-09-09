@@ -26,9 +26,9 @@ import org.jboss.wsf.spi.SPIProvider;
 import org.jboss.wsf.spi.SPIProviderResolver;
 import org.jboss.wsf.spi.deployment.Deployment;
 import org.jboss.wsf.spi.deployment.Endpoint;
+import org.jboss.wsf.spi.deployment.Endpoint.EndpointType;
 import org.jboss.wsf.spi.deployment.LifecycleHandler;
 import org.jboss.wsf.spi.deployment.LifecycleHandlerFactory;
-import org.jboss.wsf.spi.deployment.Deployment.DeploymentType;
 import org.jboss.wsf.spi.invocation.InvocationHandler;
 import org.jboss.wsf.spi.invocation.InvocationHandlerFactory;
 import org.jboss.wsf.spi.invocation.InvocationType;
@@ -86,21 +86,19 @@ public class EndpointHandlerDeploymentAspect extends AbstractDeploymentAspect
 
    private InvocationHandler getInvocationHandler(Endpoint ep)
    {
-      Deployment dep = ep.getService().getDeployment();
-      DeploymentType depType = dep.getType();
       
-      String key = depType.toString();
+      String key = ep.getType().toString();
 
       // Use a special key for MDB endpoints
-      EJBArchiveMetaData uapp = dep.getAttachment(EJBArchiveMetaData.class);
+      EJBArchiveMetaData uapp = ep.getService().getDeployment().getAttachment(EJBArchiveMetaData.class);
       if (uapp != null)
       {
          EJBMetaData bmd = uapp.getBeanByEjbName(ep.getShortName());
-         if (depType == DeploymentType.JAXRPC_EJB21 && bmd instanceof MDBMetaData)
+         if (ep.getType() == EndpointType.JAXRPC_EJB21 && bmd instanceof MDBMetaData)
          {
             key = InvocationType.JAXRPC_MDB21.toString();
          }
-         else if (depType == DeploymentType.JAXWS_EJB3 && bmd instanceof MDBMetaData)
+         else if (ep.getType() == EndpointType.JAXWS_EJB3 && bmd instanceof MDBMetaData)
          {
             key = InvocationType.JAXWS_MDB3.toString();
          }

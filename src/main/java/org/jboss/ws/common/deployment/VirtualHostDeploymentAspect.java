@@ -29,8 +29,8 @@ import java.util.ResourceBundle;
 import org.jboss.ws.api.annotation.WebContext;
 import org.jboss.ws.api.util.BundleUtils;
 import org.jboss.ws.common.integration.AbstractDeploymentAspect;
+import org.jboss.ws.common.integration.WSHelper;
 import org.jboss.wsf.spi.deployment.Deployment;
-import org.jboss.wsf.spi.deployment.Deployment.DeploymentType;
 import org.jboss.wsf.spi.deployment.Endpoint;
 
 /**
@@ -46,7 +46,7 @@ public class VirtualHostDeploymentAspect extends AbstractDeploymentAspect
    @Override
    public void start(Deployment dep)
    {
-      if ( DeploymentType.JAXWS_EJB3.equals(dep.getType()))
+      if (WSHelper.isEjbDeployment(dep) && !WSHelper.isJaxwsJseDeployment(dep))
       {
          dep.getService().setVirtualHosts(getExplicitVirtualHosts(dep));
       }

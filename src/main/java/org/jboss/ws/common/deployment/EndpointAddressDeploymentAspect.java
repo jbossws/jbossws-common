@@ -33,8 +33,8 @@ import org.jboss.ws.common.integration.AbstractDeploymentAspect;
 import org.jboss.wsf.spi.SPIProvider;
 import org.jboss.wsf.spi.SPIProviderResolver;
 import org.jboss.wsf.spi.deployment.Deployment;
-import org.jboss.wsf.spi.deployment.Deployment.DeploymentType;
 import org.jboss.wsf.spi.deployment.Endpoint;
+import org.jboss.wsf.spi.deployment.Endpoint.EndpointType;
 import org.jboss.wsf.spi.deployment.HttpEndpoint;
 import org.jboss.wsf.spi.management.ServerConfig;
 import org.jboss.wsf.spi.management.ServerConfigFactory;
@@ -121,7 +121,7 @@ public class EndpointAddressDeploymentAspect extends AbstractDeploymentAspect
    protected boolean isConfidentialTransportGuarantee(Deployment dep, Endpoint ep)
    {
       String transportGuarantee = null;
-      if (DeploymentType.JAXWS_JSE == dep.getType())
+      if (EndpointType.JAXWS_JSE == ep.getType())
       {
          JSEArchiveMetaData webMetaData = dep.getAttachment(JSEArchiveMetaData.class);
          if (webMetaData != null)
@@ -152,7 +152,7 @@ public class EndpointAddressDeploymentAspect extends AbstractDeploymentAspect
             }
          }
       }
-      else if (DeploymentType.JAXWS_EJB3 == dep.getType())
+      else if (EndpointType.JAXWS_EJB3 == ep.getType())
       {
          //TODO Unify annotation scans
          Class implClass = ep.getTargetBeanClass();

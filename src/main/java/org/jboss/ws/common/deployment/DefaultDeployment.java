@@ -39,8 +39,6 @@ public class DefaultDeployment extends AbstractExtensible implements Deployment
    private String simpleName;
    // A deployment has one service
    private Service service;
-   // The type of this deployment
-   private DeploymentType type;
    // The state for this deployment
    private DeploymentState state;
    // The deployment class loader
@@ -107,13 +105,4 @@ public class DefaultDeployment extends AbstractExtensible implements Deployment
       this.state = deploymentState;
    }
 
-   public DeploymentType getType()
-   {
-      return type;
-   }
-
-   public void setType(DeploymentType deploymentType)
-   {
-      this.type = deploymentType;
-   }
 }
