@@ -26,7 +26,6 @@ import org.jboss.wsf.spi.SPIProvider;
 import org.jboss.wsf.spi.SPIProviderResolver;
 import org.jboss.wsf.spi.deployment.Deployment;
 import org.jboss.wsf.spi.deployment.Endpoint;
-import org.jboss.wsf.spi.deployment.Endpoint.EndpointType;
 import org.jboss.wsf.spi.deployment.LifecycleHandler;
 import org.jboss.wsf.spi.deployment.LifecycleHandlerFactory;
 import org.jboss.wsf.spi.invocation.InvocationHandler;
@@ -34,15 +33,12 @@ import org.jboss.wsf.spi.invocation.InvocationHandlerFactory;
 import org.jboss.wsf.spi.invocation.InvocationType;
 import org.jboss.wsf.spi.invocation.RequestHandler;
 import org.jboss.wsf.spi.invocation.RequestHandlerFactory;
-import org.jboss.wsf.spi.metadata.j2ee.EJBArchiveMetaData;
-import org.jboss.wsf.spi.metadata.j2ee.EJBMetaData;
-import org.jboss.wsf.spi.metadata.j2ee.MDBMetaData;
 
 /**
- * A deployer that assigns the handlers to the Endpoint 
+ * An aspect that assigns the handlers to the Endpoint. 
  *
  * @author Thomas.Diesler@jboss.org
- * @since 25-Apr-2007
+ * @author <a href="mailto:ropalka@redhat.com">Richard Opalka</a>
  */
 public class EndpointHandlerDeploymentAspect extends AbstractDeploymentAspect
 {
@@ -50,62 +46,34 @@ public class EndpointHandlerDeploymentAspect extends AbstractDeploymentAspect
 
    public EndpointHandlerDeploymentAspect()
    {
-      super();
       spiProvider = SPIProviderResolver.getInstance().getProvider();
    }
 
    @Override
-   public void start(Deployment dep)
+   public void start(final Deployment dep)
    {
-      for (Endpoint ep : dep.getService().getEndpoints())
+      for (final Endpoint ep : dep.getService().getEndpoints())
       {
-         // Associate a request handler
          ep.setRequestHandler(getRequestHandler(dep));
-
-         // Associate a lifecycle handler
          ep.setLifecycleHandler(getLifecycleHandler(dep));
-
-         // Associate an invocation handler
-         // Invocation handlers are assigned per container or per stack
-         InvocationHandler invocationHandler = getInvocationHandler(ep);
-         if (invocationHandler != null)
-            ep.setInvocationHandler(invocationHandler);
-         
+         ep.setInvocationHandler(getInvocationHandler(ep));
       }
    }
 
-   private RequestHandler getRequestHandler(Deployment dep)
+   private RequestHandler getRequestHandler(final Deployment dep)
    {
       return spiProvider.getSPI(RequestHandlerFactory.class).newRequestHandler();
    }
 
-   private LifecycleHandler getLifecycleHandler(Deployment dep)
+   private LifecycleHandler getLifecycleHandler(final Deployment dep)
    {
       return spiProvider.getSPI(LifecycleHandlerFactory.class).newLifecycleHandler();
    }
 
-   private InvocationHandler getInvocationHandler(Endpoint ep)
+   private InvocationHandler getInvocationHandler(final Endpoint ep)
    {
-      
-      String key = ep.getType().toString();
-
-      // Use a special key for MDB endpoints
-      EJBArchiveMetaData uapp = ep.getService().getDeployment().getAttachment(EJBArchiveMetaData.class);
-      if (uapp != null)
-      {
-         EJBMetaData bmd = uapp.getBeanByEjbName(ep.getShortName());
-         if (ep.getType() == EndpointType.JAXRPC_EJB21 && bmd instanceof MDBMetaData)
-         {
-            key = InvocationType.JAXRPC_MDB21.toString();
-         }
-         else if (ep.getType() == EndpointType.JAXWS_EJB3 && bmd instanceof MDBMetaData)
-         {
-            key = InvocationType.JAXWS_MDB3.toString();
-         }
-      }
-
-      InvocationType type = InvocationType.valueOf(key);
-      InvocationHandler invocationHandler = spiProvider.getSPI(InvocationHandlerFactory.class).newInvocationHandler(type);
-      return invocationHandler;
+      final InvocationType invocationType = InvocationType.valueOf(ep.getType().toString());
+      return spiProvider.getSPI(InvocationHandlerFactory.class).newInvocationHandler(invocationType);
    }
+
 }

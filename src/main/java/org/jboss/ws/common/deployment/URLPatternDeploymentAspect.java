@@ -21,6 +21,9 @@
  */
 package org.jboss.ws.common.deployment;
 
+import static org.jboss.ws.common.integration.WSHelper.isEjbEndpoint;
+import static org.jboss.ws.common.integration.WSHelper.isJseEndpoint;
+
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 
@@ -31,7 +34,6 @@ import org.jboss.ws.api.util.BundleUtils;
 import org.jboss.ws.common.integration.AbstractDeploymentAspect;
 import org.jboss.wsf.spi.deployment.Deployment;
 import org.jboss.wsf.spi.deployment.Endpoint;
-import org.jboss.wsf.spi.deployment.Endpoint.EndpointType;
 import org.jboss.wsf.spi.deployment.HttpEndpoint;
 import org.jboss.wsf.spi.metadata.j2ee.EJBArchiveMetaData;
 import org.jboss.wsf.spi.metadata.j2ee.EJBMetaData;
@@ -78,7 +80,7 @@ public class URLPatternDeploymentAspect extends AbstractDeploymentAspect
 
       // #1 For JSE lookup the url-pattern from the servlet mappings 
       JSEArchiveMetaData webMetaData = dep.getAttachment(JSEArchiveMetaData.class);
-      if (webMetaData != null && (ep.getType() == EndpointType.JAXWS_JSE || ep.getType() == EndpointType.JAXRPC_JSE))
+      if (webMetaData != null && isJseEndpoint(ep))
       {
          String epName = ep.getShortName();
          urlPattern = webMetaData.getServletMappings().get(epName);
@@ -88,7 +90,7 @@ public class URLPatternDeploymentAspect extends AbstractDeploymentAspect
 
       // #2 Use the explicit urlPattern from port-component/port-component-uri
       EJBArchiveMetaData appMetaData = dep.getAttachment(EJBArchiveMetaData.class);
-      if (appMetaData != null && appMetaData.getBeanByEjbName(ep.getShortName()) != null && (ep.getType() == EndpointType.JAXWS_EJB3 || ep.getType() == EndpointType.JAXRPC_EJB21))
+      if (appMetaData != null && appMetaData.getBeanByEjbName(ep.getShortName()) != null && isEjbEndpoint(ep))
       {
          EJBMetaData bmd = appMetaData.getBeanByEjbName(ep.getShortName());
          urlPattern = bmd.getPortComponentURI();

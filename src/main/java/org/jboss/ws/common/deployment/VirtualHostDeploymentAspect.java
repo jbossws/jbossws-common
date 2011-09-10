@@ -22,6 +22,8 @@
 
 package org.jboss.ws.common.deployment;
 
+import static org.jboss.ws.common.integration.WSHelper.isJaxwsEjbDeployment;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -29,7 +31,6 @@ import java.util.ResourceBundle;
 import org.jboss.ws.api.annotation.WebContext;
 import org.jboss.ws.api.util.BundleUtils;
 import org.jboss.ws.common.integration.AbstractDeploymentAspect;
-import org.jboss.ws.common.integration.WSHelper;
 import org.jboss.wsf.spi.deployment.Deployment;
 import org.jboss.wsf.spi.deployment.Endpoint;
 
@@ -46,7 +47,7 @@ public class VirtualHostDeploymentAspect extends AbstractDeploymentAspect
    @Override
    public void start(Deployment dep)
    {
-      if (WSHelper.isEjbDeployment(dep) && !WSHelper.isJaxwsJseDeployment(dep))
+      if (isJaxwsEjbDeployment(dep))
       {
          dep.getService().setVirtualHosts(getExplicitVirtualHosts(dep));
       }
@@ -59,7 +60,7 @@ public class VirtualHostDeploymentAspect extends AbstractDeploymentAspect
       // Use the virtual hosts from @WebContext.virtualHosts
       for (Endpoint ep : dep.getService().getEndpoints())
       {
-         Class implClass = ep.getTargetBeanClass();
+         Class<?> implClass = ep.getTargetBeanClass();
          WebContext anWebContext = (WebContext)implClass.getAnnotation(WebContext.class);
          if (anWebContext != null && anWebContext.virtualHosts() != null && anWebContext.virtualHosts().length > 0)
          {

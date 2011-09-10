@@ -36,8 +36,8 @@ import org.jboss.ws.api.util.BundleUtils;
 import org.jboss.ws.common.injection.PreDestroyHolder;
 import org.jboss.wsf.spi.deployment.AbstractExtensible;
 import org.jboss.wsf.spi.deployment.Endpoint;
-import org.jboss.wsf.spi.deployment.Endpoint.EndpointState;
-import org.jboss.wsf.spi.deployment.Endpoint.EndpointType;
+import org.jboss.wsf.spi.deployment.EndpointState;
+import org.jboss.wsf.spi.deployment.EndpointType;
 import org.jboss.wsf.spi.deployment.LifecycleHandler;
 import org.jboss.wsf.spi.deployment.Service;
 import org.jboss.wsf.spi.deployment.WSFDeploymentException;
@@ -62,6 +62,7 @@ public class AbstractDefaultEndpoint extends AbstractExtensible
    protected String targetBean;
    protected Class<?> targetBeanClass;
    protected EndpointState state;
+   protected EndpointType type;
    protected RequestHandler requestHandler;
    protected InvocationHandler invocationHandler;
    protected LifecycleHandler lifecycleHandler;
@@ -69,7 +70,6 @@ public class AbstractDefaultEndpoint extends AbstractExtensible
    protected String address;
    protected List<RecordProcessor> recordProcessors = new Vector<RecordProcessor>();
    protected SecurityDomainContext securityDomainContext;
-   protected EndpointType type;
    
    AbstractDefaultEndpoint(String targetBean)
    {
@@ -167,6 +167,16 @@ public class AbstractDefaultEndpoint extends AbstractExtensible
    public void setState(EndpointState state)
    {
       this.state = state;
+   }
+
+   public EndpointType getType()
+   {
+      return type;
+   }
+
+   public void setType(EndpointType type)
+   {
+      this.type = type;
    }
 
    public RequestHandler getRequestHandler()
@@ -297,13 +307,5 @@ public class AbstractDefaultEndpoint extends AbstractExtensible
    {
       this.securityDomainContext = securityDomainContext;
    }
-   public void setType(EndpointType type)
-   {
-      this.type = type;
-   }
-   
-   public EndpointType getType()
-   {
-      return this.type;
-   }
+
 }

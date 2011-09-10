@@ -26,7 +26,7 @@ import java.util.ResourceBundle;
 import org.jboss.logging.Logger;
 import org.jboss.ws.api.util.BundleUtils;
 import org.jboss.wsf.spi.deployment.Endpoint;
-import org.jboss.wsf.spi.deployment.Endpoint.EndpointState;
+import org.jboss.wsf.spi.deployment.EndpointState;
 import org.jboss.wsf.spi.deployment.LifecycleHandler;
 import org.jboss.wsf.spi.invocation.InvocationHandler;
 

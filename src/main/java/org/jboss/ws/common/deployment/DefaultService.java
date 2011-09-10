@@ -22,12 +22,12 @@
 package org.jboss.ws.common.deployment;
 
 import org.jboss.wsf.spi.deployment.AbstractExtensible;
-import org.jboss.wsf.spi.deployment.Endpoint.EndpointType;
+import org.jboss.wsf.spi.deployment.EndpointTypeFilter;
 import org.jboss.wsf.spi.deployment.Service;
 import org.jboss.wsf.spi.deployment.Deployment;
 import org.jboss.wsf.spi.deployment.Endpoint;
-import org.jboss.wsf.spi.deployment.EndpointTypeFilter;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -71,9 +71,9 @@ public class DefaultService extends AbstractExtensible implements Service
    {
       return endpoints;
    }
-   
-   
-   public List<Endpoint> getEndpoints(EndpointTypeFilter filter)
+
+   @Override
+   public List<Endpoint> getEndpoints(final EndpointTypeFilter filter)
    {
       List<Endpoint> result = new LinkedList<Endpoint>();
       for (Endpoint endpoint : endpoints)
@@ -84,8 +84,7 @@ public class DefaultService extends AbstractExtensible implements Service
          }
       }
       return result;
-   }
-   
+   }      
 
    public Endpoint getEndpointByName(String shortName)
    {
@@ -129,6 +128,6 @@ public class DefaultService extends AbstractExtensible implements Service
    public void setVirtualHosts(List<String> virtualHosts)
    {
       this.virtualHosts = virtualHosts;      
-   }      
+   }
 
 }

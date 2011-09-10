@@ -28,45 +28,32 @@ import org.jboss.ws.common.ObjectNameFactory;
 import org.jboss.ws.common.integration.AbstractDeploymentAspect;
 import org.jboss.wsf.spi.deployment.Deployment;
 import org.jboss.wsf.spi.deployment.Endpoint;
-import org.jboss.wsf.spi.metadata.j2ee.EJBArchiveMetaData;
-import org.jboss.wsf.spi.metadata.j2ee.EJBMetaData;
-import org.jboss.wsf.spi.metadata.j2ee.MDBMetaData;
 
 /**
  * A deployer that assigns the complete name to the Endpoint 
  *
  * @author Thomas.Diesler@jboss.org
- * @since 25-Apr-2007
+ * @since <a href="mailto:ropalka@redhat.com">Richard Opalka</a>
  */
 public class EndpointNameDeploymentAspect extends AbstractDeploymentAspect
 {
+
    private static final ResourceBundle bundle = BundleUtils.getBundle(EndpointNameDeploymentAspect.class);
+
    @Override
    public void start(Deployment dep)
    {
-      String contextRoot = dep.getService().getContextRoot();
+      final String contextRoot = dep.getService().getContextRoot();
       if (contextRoot == null || contextRoot.startsWith("/") == false)
          throw new IllegalStateException(BundleUtils.getMessage(bundle, "CONTEXT_ROOT_EXPECTED_TO_START_WITH_LEADING_SLASH",  contextRoot));
 
       for (Endpoint ep : dep.getService().getEndpoints())
       {
-         StringBuilder name = new StringBuilder(Endpoint.SEPID_DOMAIN + ":");
+         final StringBuilder name = new StringBuilder(Endpoint.SEPID_DOMAIN + ":");
          name.append(Endpoint.SEPID_PROPERTY_CONTEXT + "=" + contextRoot.substring(1) + ",");
          name.append(Endpoint.SEPID_PROPERTY_ENDPOINT + "=" + ep.getShortName());
-
-         // Append the JMS destination, for an MDB endpoint
-         EJBArchiveMetaData uapp = dep.getAttachment(EJBArchiveMetaData.class);
-         if (uapp != null)
-         {
-            EJBMetaData bmd = uapp.getBeanByEjbName(ep.getShortName());
-            if (bmd instanceof MDBMetaData)
-            {
-               String destName = ((MDBMetaData)bmd).getDestinationJndiName();
-               name.append(",jms=" + destName);
-            }
-         }
-
          ep.setName(ObjectNameFactory.create(name.toString()));
       }
    }
+
 }

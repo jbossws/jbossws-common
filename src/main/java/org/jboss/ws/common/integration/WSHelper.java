@@ -23,10 +23,17 @@ package org.jboss.ws.common.integration;
 
 import java.util.ResourceBundle;
 
+import static org.jboss.wsf.spi.deployment.EndpointType.JAXRPC_EJB21;
+import static org.jboss.wsf.spi.deployment.EndpointType.JAXRPC_JSE;
+import static org.jboss.wsf.spi.deployment.EndpointType.JAXWS_EJB3;
+import static org.jboss.wsf.spi.deployment.EndpointType.JAXWS_JSE;
+import static org.jboss.wsf.spi.deployment.DeploymentType.JAXWS;
+import static org.jboss.wsf.spi.deployment.DeploymentType.JAXRPC;
+
 import org.jboss.logging.Logger;
 import org.jboss.ws.api.util.BundleUtils;
 import org.jboss.wsf.spi.deployment.Deployment;
-import org.jboss.wsf.spi.deployment.Endpoint.EndpointType;
+import org.jboss.wsf.spi.deployment.Endpoint;
 import org.jboss.wsf.spi.deployment.EndpointTypeFilter;
 
 /**
@@ -36,26 +43,30 @@ import org.jboss.wsf.spi.deployment.EndpointTypeFilter;
  */
 public final class WSHelper
 {
+
    private static final ResourceBundle bundle = BundleUtils.getBundle(WSHelper.class);
-   
-   /** Logger. */
    private static final Logger LOG = Logger.getLogger( WSHelper.class );
+
+   private static final EndpointTypeFilter JAXRPC_EJB_ENDPOINT_FILTER = new EndpointTypeFilterImpl( JAXRPC_EJB21 );
+   private static final EndpointTypeFilter JAXRPC_JSE_ENDPOINT_FILTER = new EndpointTypeFilterImpl( JAXRPC_JSE );
+   private static final EndpointTypeFilter JAXWS_EJB_ENDPOINT_FILTER = new EndpointTypeFilterImpl( JAXWS_EJB3 );
+   private static final EndpointTypeFilter JAXWS_JSE_ENDPOINT_FILTER = new EndpointTypeFilterImpl( JAXWS_JSE );
 
    /**
     * Forbidden constructor.
     */
    private WSHelper()
    {
-      super();
+      // forbidden inheritance
    }
 
    /**
     * Returns required attachment value from webservice deployment.
-    * 
+    *
     * @param <A> expected value
     * @param dep webservice deployment
     * @param key attachment key
-    * @return required attachment 
+    * @return required attachment
     * @throws IllegalStateException if attachment value is null
     */
    public static <A> A getRequiredAttachment( final Deployment dep, final Class< A > key )
@@ -66,13 +77,12 @@ public final class WSHelper
          LOG.error(BundleUtils.getMessage(bundle, "CAN_NOT_FIND_ATTACHMENT",  key ));
          throw new IllegalStateException();
       }
-      
       return value;
    }
-   
+
    /**
     * Returns optional attachment value from webservice deployment or null if not bound.
-    * 
+    *
     * @param <A> expected value
     * @param dep webservice deployment
     * @param key attachment key
@@ -85,7 +95,7 @@ public final class WSHelper
 
    /**
     * Returns true if webservice deployment have attachment value associated with the <b>key</b>.
-    *  
+    *
     * @param dep webservice deployment
     * @param key attachment key
     * @return true if contains attachment, false otherwise
@@ -96,39 +106,14 @@ public final class WSHelper
    }
 
    /**
-    * Returns true if deployment represents JAXRPC EJB deployment.
+    * Returns true if deployment represents JAXWS JSE deployment.
     *
     * @param dep webservice deployment
-    * @return true if JAXRPC EJB deployment, false otherwise
+    * @return true if JAXWS JSE deployment, false otherwise
     */
-   public static boolean isJaxrpcEjbDeployment( final Deployment dep )
+   public static boolean isJaxwsJseDeployment( final Deployment dep )
    {
-      return dep.getService().getEndpoints(new EndpointTypeFilter() {
-         public boolean accept(EndpointType type) {
-            if (type == EndpointType.JAXRPC_EJB21) {
-               return true;
-            }
-            return false;
-         }
-      }).size() > 0;
-   }
-
-   /**
-    * Returns true if deployment represents JAXRPC JSE deployment.
-    *
-    * @param dep webservice deployment
-    * @return true if JAXRPC JSE deployment, false otherwise
-    */
-   public static boolean isJaxrpcJseDeployment( final Deployment dep )
-   {
-      return dep.getService().getEndpoints(new EndpointTypeFilter() {
-         public boolean accept(EndpointType type) {
-            if (type == EndpointType.JAXRPC_JSE) {
-               return true;
-            }
-            return false;
-         }
-      }).size() > 0;
+      return isJaxwsDeployment( dep ) && dep.getService().getEndpoints( JAXWS_JSE_ENDPOINT_FILTER ).size() > 0;
    }
 
    /**
@@ -139,35 +124,31 @@ public final class WSHelper
     */
    public static boolean isJaxwsEjbDeployment( final Deployment dep )
    {
-     return dep.getService().getEndpoints(new EndpointTypeFilter() {
-         public boolean accept(EndpointType type) {
-            if (type == EndpointType.JAXWS_EJB3) {
-               return true;
-            }
-            return false;
-         }
-         
-      }).size() > 0;
+     return isJaxwsDeployment( dep ) && dep.getService().getEndpoints( JAXWS_EJB_ENDPOINT_FILTER ).size() > 0;
    }
 
    /**
-    * Returns true if deployment represents JAXWS JSE deployment.
+    * Returns true if deployment represents JAXRPC JSE deployment.
     *
     * @param dep webservice deployment
-    * @return true if JAXWS JSE deployment, false otherwise
+    * @return true if JAXRPC JSE deployment, false otherwise
     */
-   public static boolean isJaxwsJseDeployment( final Deployment dep )
+   public static boolean isJaxrpcJseDeployment( final Deployment dep )
    {
-      return dep.getService().getEndpoints(new EndpointTypeFilter() {
-         public boolean accept(EndpointType type) {
-            if (type == EndpointType.JAXWS_JSE || type == EndpointType.JAXWS_JMS) {
-               return true;
-            }
-            return false;
-         }
-      }).size() > 0;
+      return isJaxrpcDeployment( dep ) && dep.getService().getEndpoints( JAXRPC_JSE_ENDPOINT_FILTER ).size() > 0;
    }
-   
+
+   /**
+    * Returns true if deployment represents JAXRPC EJB deployment.
+    *
+    * @param dep webservice deployment
+    * @return true if JAXRPC EJB deployment, false otherwise
+    */
+   public static boolean isJaxrpcEjbDeployment( final Deployment dep )
+   {
+      return isJaxrpcDeployment( dep ) && dep.getService().getEndpoints( JAXRPC_EJB_ENDPOINT_FILTER ).size() > 0;
+   }
+
    /**
     * Returns true if deployment represents either JAXWS JSE or JAXRPC JSE deployment.
     *
@@ -176,10 +157,7 @@ public final class WSHelper
     */
    public static boolean isJseDeployment( final Deployment dep )
    {
-      final boolean isJaxwsJse = WSHelper.isJaxwsJseDeployment( dep );
-      final boolean isJaxrpcJse = WSHelper.isJaxrpcJseDeployment( dep );
-
-      return isJaxwsJse || isJaxrpcJse;
+      return isJaxwsJseDeployment( dep ) || isJaxrpcJseDeployment( dep );
    }
 
    /**
@@ -190,10 +168,7 @@ public final class WSHelper
     */
    public static boolean isEjbDeployment( final Deployment dep )
    {
-      final boolean isJaxwsEjb = WSHelper.isJaxwsEjbDeployment( dep );
-      final boolean isJaxrpcEjb = WSHelper.isJaxrpcEjbDeployment( dep );
-
-      return isJaxwsEjb || isJaxrpcEjb;
+      return isJaxwsEjbDeployment( dep ) || isJaxrpcEjbDeployment( dep );
    }
 
    /**
@@ -204,10 +179,7 @@ public final class WSHelper
     */
    public static boolean isJaxwsDeployment( final Deployment dep )
    {
-      final boolean isJaxwsEjb = WSHelper.isJaxwsEjbDeployment( dep );
-      final boolean isJaxwsJse = WSHelper.isJaxwsJseDeployment( dep );
-
-      return isJaxwsEjb || isJaxwsJse;
+      return JAXWS == dep.getType();
    }
 
    /**
@@ -218,9 +190,95 @@ public final class WSHelper
     */
    public static boolean isJaxrpcDeployment( final Deployment dep )
    {
-      final boolean isJaxrpcEjb = WSHelper.isJaxrpcEjbDeployment( dep );
-      final boolean isJaxrpcJse = WSHelper.isJaxrpcJseDeployment( dep );
-
-      return isJaxrpcEjb || isJaxrpcJse;
+      return JAXRPC == dep.getType();
    }
+
+   /**
+    * Returns true if endpoint represents JAXWS JSE endpoint.
+    *
+    * @param ep webservice endpoint
+    * @return true if either JAXWS JSE endpoint, false otherwise
+    */
+   public static boolean isJaxwsJseEndpoint( final Endpoint ep )
+   {
+      return JAXWS_JSE == ep.getType();
+   }
+
+   /**
+    * Returns true if endpoint represents JAXWS EJB3 endpoint.
+    *
+    * @param ep webservice endpoint
+    * @return true if JAXWS EJB3 endpoint, false otherwise
+    */
+   public static boolean isJaxwsEjbEndpoint( final Endpoint ep )
+   {
+      return JAXWS_EJB3 == ep.getType();
+   }
+
+   /**
+    * Returns true if endpoint represents JAXRPC JSE endpoint.
+    *
+    * @param ep webservice endpoint
+    * @return true if JAXRPC JSE endpoint, false otherwise
+    */
+   public static boolean isJaxrpcJseEndpoint( final Endpoint ep )
+   {
+      return JAXRPC_JSE == ep.getType();
+   }
+
+   /**
+    * Returns true if endpoint represents JAXRPC EJB21 endpoint.
+    *
+    * @param ep webservice endpoint
+    * @return true if JAXRPC EJB21 endpoint, false otherwise
+    */
+   public static boolean isJaxrpcEjbEndpoint( final Endpoint ep )
+   {
+      return JAXRPC_EJB21 == ep.getType();
+   }
+
+   /**
+    * Returns true if endpoint represents either JAXWS JSE or JAXRPC JSE endpoint.
+    *
+    * @param ep webservice endpoint
+    * @return true if either JAXWS JSE or JAXRPC JSE endpoint, false otherwise
+    */
+   public static boolean isJseEndpoint( final Endpoint ep )
+   {
+      return isJaxwsJseEndpoint( ep ) || isJaxrpcJseEndpoint( ep );
+   }
+
+   /**
+    * Returns true if endpoint represents either JAXWS EJB3 or JAXRPC EJB21 endpoint.
+    *
+    * @param ep webservice endpoint
+    * @return true if either JAXWS EJB3 or JAXRPC EJB21 endpoint, false otherwise
+    */
+   public static boolean isEjbEndpoint( final Endpoint ep )
+   {
+      return isJaxwsEjbEndpoint( ep ) || isJaxrpcEjbEndpoint( ep );
+   }
+
+   /**
+    * Returns true if endpoint represents either JAXWS JSE or JAXWS EJB3 endpoint.
+    *
+    * @param ep webservice endpoint
+    * @return true if either JAXWS JSE or JAXWS EJB3 endpoint, false otherwise
+    */
+   public static boolean isJaxwsEndpoint( final Endpoint ep )
+   {
+      return isJaxwsJseEndpoint( ep ) || isJaxwsEjbEndpoint( ep );
+   }
+
+   /**
+    * Returns true if endpoint represents either JAXRPC JSE or JAXRPC EJB21 endpoint.
+    *
+    * @param ep webservice endpoint
+    * @return true if either JAXRPC JSE or JAXRPC EJB21 endpoint, false otherwise
+    */
+   public static boolean isJaxrpcEndpoint( final Endpoint ep )
+   {
+      return isJaxrpcJseEndpoint( ep ) || isJaxrpcEjbEndpoint( ep );
+   }
+
 }

@@ -21,6 +21,10 @@
  */
 package org.jboss.ws.common.deployment;
 
+import static org.jboss.ws.common.integration.WSHelper.isJaxrpcDeployment;
+import static org.jboss.ws.common.integration.WSHelper.isJaxwsJseEndpoint;
+import static org.jboss.ws.common.integration.WSHelper.isJaxwsEjbEndpoint;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -34,7 +38,6 @@ import org.jboss.wsf.spi.SPIProvider;
 import org.jboss.wsf.spi.SPIProviderResolver;
 import org.jboss.wsf.spi.deployment.Deployment;
 import org.jboss.wsf.spi.deployment.Endpoint;
-import org.jboss.wsf.spi.deployment.Endpoint.EndpointType;
 import org.jboss.wsf.spi.deployment.HttpEndpoint;
 import org.jboss.wsf.spi.management.ServerConfig;
 import org.jboss.wsf.spi.management.ServerConfigFactory;
@@ -118,10 +121,12 @@ public class EndpointAddressDeploymentAspect extends AbstractDeploymentAspect
       }
    }
    
-   protected boolean isConfidentialTransportGuarantee(Deployment dep, Endpoint ep)
+   protected boolean isConfidentialTransportGuarantee(final Deployment dep, final Endpoint ep)
    {
+      if (isJaxrpcDeployment(dep)) return false;
+
       String transportGuarantee = null;
-      if (EndpointType.JAXWS_JSE == ep.getType())
+      if (isJaxwsJseEndpoint(ep))
       {
          JSEArchiveMetaData webMetaData = dep.getAttachment(JSEArchiveMetaData.class);
          if (webMetaData != null)
@@ -152,10 +157,10 @@ public class EndpointAddressDeploymentAspect extends AbstractDeploymentAspect
             }
          }
       }
-      else if (EndpointType.JAXWS_EJB3 == ep.getType())
+      else if (isJaxwsEjbEndpoint(ep))
       {
          //TODO Unify annotation scans
-         Class implClass = ep.getTargetBeanClass();
+         Class<?> implClass = ep.getTargetBeanClass();
          WebContext anWebContext = (WebContext)implClass.getAnnotation(WebContext.class);
          if (anWebContext != null)
          {
