@@ -99,7 +99,7 @@ public class EndpointAddressDeploymentAspect extends AbstractDeploymentAspect
                urlPattern = urlPattern.substring(0, urlPattern.length() - 2);
    
             protocol = confidential ? "https://" : "http://";
-            String address = protocol + hostAndPort + contextRoot + urlPattern;
+            String address = protocol + hostAndPort + (contextRoot.equals("/") && urlPattern.startsWith("/") ? "" : contextRoot) + urlPattern;
             httpEp.setAddress(address);
             //JBWS-2957: EJB3 binds the same endpoint class to multiple beans at multiple JNDI locations;
             //generally speaking we can't have multiple endpoints published at the same address and we
