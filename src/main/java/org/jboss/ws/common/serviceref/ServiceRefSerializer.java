@@ -24,8 +24,10 @@ package org.jboss.ws.common.serviceref;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.ObjectStreamClass;
 import java.util.ResourceBundle;
 
 import javax.naming.NamingException;
@@ -73,7 +75,7 @@ final class ServiceRefSerializer
       try
       {
          final ByteArrayInputStream bais = new ByteArrayInputStream(data);
-         final ObjectInputStream ois = new ObjectInputStream(bais);
+         final ObjectInputStream ois = new TCCLAwareObjectInputStream(bais);
          sref = (UnifiedServiceRefMetaData) ois.readObject();
          ois.close();
       }
@@ -88,4 +90,32 @@ final class ServiceRefSerializer
 
       return sref;
    }
+
+   private static final class TCCLAwareObjectInputStream extends ObjectInputStream
+   {
+      private TCCLAwareObjectInputStream(final InputStream in) throws IOException
+      {
+         super(in);
+      }
+
+      @Override
+      public Class<?> resolveClass(final ObjectStreamClass desc) throws IOException, ClassNotFoundException
+      {
+         try
+         {
+            final ClassLoader currentThreadLoader = Thread.currentThread().getContextClassLoader();
+            if (currentThreadLoader != null)
+            {
+               return currentThreadLoader.loadClass(desc.getName());
+            }
+         }
+         catch (Exception e)
+         {
+            // ignore
+         }
+
+         return super.resolveClass(desc);
+      }   
+   }
+
 }
