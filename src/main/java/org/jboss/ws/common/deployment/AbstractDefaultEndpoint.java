@@ -38,6 +38,7 @@ import org.jboss.wsf.spi.deployment.AbstractExtensible;
 import org.jboss.wsf.spi.deployment.Endpoint;
 import org.jboss.wsf.spi.deployment.EndpointState;
 import org.jboss.wsf.spi.deployment.EndpointType;
+import org.jboss.wsf.spi.deployment.InstanceProvider;
 import org.jboss.wsf.spi.deployment.LifecycleHandler;
 import org.jboss.wsf.spi.deployment.Service;
 import org.jboss.wsf.spi.deployment.WSFDeploymentException;
@@ -70,6 +71,7 @@ public class AbstractDefaultEndpoint extends AbstractExtensible
    protected String address;
    protected List<RecordProcessor> recordProcessors = new Vector<RecordProcessor>();
    protected SecurityDomainContext securityDomainContext;
+   protected InstanceProvider instanceProvider;
    
    AbstractDefaultEndpoint(String targetBean)
    {
@@ -306,6 +308,17 @@ public class AbstractDefaultEndpoint extends AbstractExtensible
    public void setSecurityDomainContext(SecurityDomainContext securityDomainContext)
    {
       this.securityDomainContext = securityDomainContext;
+   }
+
+   public InstanceProvider getInstanceProvider()
+   {
+      return instanceProvider;
+   }
+
+   public void setInstanceProvider(final InstanceProvider instanceProvider)
+   {
+      assertEndpointSetterAccess();
+      this.instanceProvider = instanceProvider;
    }
 
 }

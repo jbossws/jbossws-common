@@ -54,18 +54,18 @@ public class EndpointHandlerDeploymentAspect extends AbstractDeploymentAspect
    {
       for (final Endpoint ep : dep.getService().getEndpoints())
       {
-         ep.setRequestHandler(getRequestHandler(dep));
-         ep.setLifecycleHandler(getLifecycleHandler(dep));
+         ep.setRequestHandler(getRequestHandler());
+         ep.setLifecycleHandler(getLifecycleHandler());
          ep.setInvocationHandler(getInvocationHandler(ep));
       }
    }
 
-   private RequestHandler getRequestHandler(final Deployment dep)
+   private RequestHandler getRequestHandler()
    {
       return spiProvider.getSPI(RequestHandlerFactory.class).newRequestHandler();
    }
 
-   private LifecycleHandler getLifecycleHandler(final Deployment dep)
+   private LifecycleHandler getLifecycleHandler()
    {
       return spiProvider.getSPI(LifecycleHandlerFactory.class).newLifecycleHandler();
    }

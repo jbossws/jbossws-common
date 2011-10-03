@@ -59,7 +59,9 @@ public final class InvocationHandlerJAXWS extends AbstractInvocationHandlerJSE
    public void onEndpointInstantiated(final Endpoint endpoint, final Invocation invocation)
    {
       final InjectionsMetaData injectionsMD = endpoint.getAttachment(InjectionsMetaData.class);
-      final Object targetBean = this.getTargetBean(invocation);
+      final Object _targetBean = this.getTargetBean(invocation);
+      // TODO: refactor injection to AS IL
+      final Object targetBean = endpoint.getInstanceProvider().getInstance(_targetBean.getClass().getName());
 
       this.log.debug("Injecting resources on JAXWS JSE endpoint: " + targetBean);
       if (injectionsMD != null)
