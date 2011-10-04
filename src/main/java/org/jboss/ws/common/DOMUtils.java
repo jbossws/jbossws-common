@@ -142,40 +142,41 @@ public final class DOMUtils extends org.jboss.ws.api.util.DOMUtils
          }
       }
       
-      @SuppressWarnings("deprecation")
-      private void setEntityResolver(DocumentBuilder builder)
+   };
+   
+   @SuppressWarnings("deprecation")
+   private static void setEntityResolver(DocumentBuilder builder)
+   {
+      EntityResolver entityResolver = null;
+      try
       {
-         EntityResolver entityResolver = null;
-         try
+         entityResolver = new JBossWSEntityResolver();
+      }
+      catch (Throwable t)
+      {
+         boolean debugEnabled = log.isDebugEnabled();
+         if (debugEnabled)
+            log.debug("Cannot load JBossWSEntityResolver");
+         String[] resolvers = new String[] { "org.jboss.util.xml.JBossEntityResolver" };
+         ClassLoader loader = SecurityActions.getContextClassLoader();
+         for (String resolver : resolvers)
          {
-            entityResolver = new JBossWSEntityResolver();
-         }
-         catch (Throwable t)
-         {
-            boolean debugEnabled = log.isDebugEnabled();
-            if (debugEnabled)
-               log.debug("Cannot load JBossWSEntityResolver");
-            String[] resolvers = new String[] { "org.jboss.util.xml.JBossEntityResolver" };
-            ClassLoader loader = SecurityActions.getContextClassLoader();
-            for (String resolver : resolvers)
+            try
             {
-               try
-               {
-                  Class<?> resolverClass = SecurityActions.loadClass(loader, resolver);
-                  entityResolver = (EntityResolver)resolverClass.newInstance();
-                  break;
-               }
-               catch (Exception ex)
-               {
-                  if (debugEnabled)
-                     log.debug("Cannot load: " + resolver);
-               }
+               Class<?> resolverClass = SecurityActions.loadClass(loader, resolver);
+               entityResolver = (EntityResolver)resolverClass.newInstance();
+               break;
+            }
+            catch (Exception ex)
+            {
+               if (debugEnabled)
+                  log.debug("Cannot load: " + resolver);
             }
          }
-         if (entityResolver != null)
-            builder.setEntityResolver(entityResolver);
       }
-   };
+      if (entityResolver != null)
+         builder.setEntityResolver(entityResolver);
+   }
    
    private static void initializeFactory(final DocumentBuilderFactory factory)
    {
@@ -211,6 +212,26 @@ public final class DOMUtils extends org.jboss.ws.api.util.DOMUtils
    private DOMUtils()
    {
    }
+   
+   /**
+    * Creates a new DocumentBuilder instance using the provided DocumentBuilderFactory
+    * 
+    * @param factory
+    * @return
+    */
+   public static DocumentBuilder newDocumentBuilder(final DocumentBuilderFactory factory)
+   {
+      try
+      {
+         final DocumentBuilder builder = factory.newDocumentBuilder();
+         setEntityResolver(builder);
+         return builder;
+      }
+      catch (Exception e)
+      {
+         throw new RuntimeException(BundleUtils.getMessage(bundle, "UNABLE_TO_CREATE_DOCUMENT_BUILDER"),  e);
+      }
+   }
 
    /**
     * Initialize the DocumentBuilder, set the current thread association and returns it
@@ -239,14 +260,12 @@ public final class DOMUtils extends org.jboss.ws.api.util.DOMUtils
 
    /**
     * Parse the given XML stream and return the root Element
-    * This uses the document builder associated with the current thread.
     */
-   public static Element parse(InputStream xmlStream) throws IOException
+   public static Element parse(InputStream xmlStream, DocumentBuilder builder) throws IOException
    {
       try
       {
          Document doc;
-         DocumentBuilder builder = getDocumentBuilder();
          synchronized (builder) //synchronize to prevent concurrent parsing on the same DocumentBuilder
          {
             doc = builder.parse(xmlStream);
@@ -261,6 +280,16 @@ public final class DOMUtils extends org.jboss.ws.api.util.DOMUtils
       {
          xmlStream.close();
       }
+   }
+   
+   /**
+    * Parse the given XML stream and return the root Element
+    * This uses the document builder associated with the current thread.
+    */
+   public static Element parse(InputStream xmlStream) throws IOException
+   {
+      DocumentBuilder builder = getDocumentBuilder();
+      return parse(xmlStream, builder);
    }
 
    /**

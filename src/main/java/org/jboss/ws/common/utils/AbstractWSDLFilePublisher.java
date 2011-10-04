@@ -36,6 +36,10 @@ import java.util.ResourceBundle;
 import javax.wsdl.Definition;
 import javax.wsdl.Import;
 import javax.wsdl.factory.WSDLFactory;
+import javax.xml.XMLConstants;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.jboss.logging.Logger;
 import org.jboss.ws.api.util.BundleUtils;
@@ -67,6 +71,8 @@ public abstract class AbstractWSDLFilePublisher
    // The server config
    protected ServerConfig serverConfig;
    
+   private static DocumentBuilder builder;
+   
    public AbstractWSDLFilePublisher(ArchiveDeployment dep)
    {
       this.dep = dep;
@@ -86,6 +92,36 @@ public abstract class AbstractWSDLFilePublisher
       {
          expLocation = "META-INF/wsdl/";
       }
+   }
+   
+   private static synchronized DocumentBuilder getDocumentBuilder()
+   {
+      if (builder == null)
+      {
+         final ClassLoader classLoader = SecurityActions.getContextClassLoader();
+         SecurityActions.setContextClassLoader(AbstractWSDLFilePublisher.class.getClassLoader());
+         try
+         {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory.setValidating(false);
+            factory.setNamespaceAware(true);
+            factory.setExpandEntityReferences(false);
+            try
+            {
+               factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+            }
+            catch (ParserConfigurationException pce)
+            {
+               log.error(pce);
+            }
+            builder = DOMUtils.newDocumentBuilder(factory);
+         }
+         finally
+         {
+            SecurityActions.setContextClassLoader(classLoader);
+         }
+      }
+      return builder;
    }
    
    /** Publish the wsdl imports for a given wsdl definition
@@ -132,7 +168,7 @@ public abstract class AbstractWSDLFilePublisher
                publishWsdlImports(targetURL, subdef, published);
 
                // Publish XMLSchema imports
-               Element subdoc = DOMUtils.parse(targetURL.openStream());
+               Element subdoc = DOMUtils.parse(targetURL.openStream(), getDocumentBuilder());
                publishSchemaImports(targetURL, subdoc, published);
             }
          }
@@ -203,7 +239,7 @@ public abstract class AbstractWSDLFilePublisher
                   log.debug("XMLSchema import published to: " + xsdURL);
 
                   // recursively publish imports
-                  Element subdoc = DOMUtils.parse(xsdURL.openStream());
+                  Element subdoc = DOMUtils.parse(xsdURL.openStream(), getDocumentBuilder());
                   publishSchemaImports(xsdURL, subdoc, published);
                }
             }
@@ -243,7 +279,7 @@ public abstract class AbstractWSDLFilePublisher
          else
          {
             if (file.delete() == false)
-               log.warn(BundleUtils.getMessage(bundle, "CANNOT_DELETE_PUBLISHED_WSDL_DOCUMENT",  file.toURL()));
+               log.warn(BundleUtils.getMessage(bundle, "CANNOT_DELETE_PUBLISHED_WSDL_DOCUMENT",  file.toURI().toURL()));
          }
       }
 
