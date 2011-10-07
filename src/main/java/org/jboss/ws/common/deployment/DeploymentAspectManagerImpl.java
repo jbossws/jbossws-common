@@ -123,8 +123,19 @@ public class DeploymentAspectManagerImpl implements DeploymentAspectManager
          DeploymentAspect aspect = getDeploymentAspects().get(i);
          try
          {
-            logInvocation(aspect, "Start");
-            aspect.start(dep);
+            if (aspect.canHandle(dep)) {
+               logInvocation(aspect, "Start");
+               ClassLoader origClassLoader = SecurityActions.getContextClassLoader();
+               try
+               {
+                  SecurityActions.setContextClassLoader(aspect.getLoader());
+                  aspect.start(dep);
+               }
+               finally
+               {
+                  SecurityActions.setContextClassLoader(origClassLoader);
+               }
+            }
          }
          catch (RuntimeException rte)
          {
