@@ -27,6 +27,7 @@ import org.jboss.ws.common.injection.InjectionHelper;
 import org.jboss.ws.common.injection.PreDestroyHolder;
 import org.jboss.ws.common.injection.ThreadLocalAwareWebServiceContext;
 import org.jboss.wsf.spi.deployment.Endpoint;
+import org.jboss.wsf.spi.deployment.Reference;
 import org.jboss.wsf.spi.invocation.Invocation;
 import org.jboss.wsf.spi.invocation.InvocationContext;
 import org.jboss.wsf.spi.metadata.injection.InjectionsMetaData;
@@ -61,16 +62,22 @@ public final class InvocationHandlerJAXWS extends AbstractInvocationHandlerJSE
       final InjectionsMetaData injectionsMD = endpoint.getAttachment(InjectionsMetaData.class);
       final Object _targetBean = this.getTargetBean(invocation);
       // TODO: refactor injection to AS IL
-      final Object targetBean = endpoint.getInstanceProvider().getInstance(_targetBean.getClass().getName());
+      final Reference reference = endpoint.getInstanceProvider().getInstance(_targetBean.getClass().getName());
+      final Object targetBean = reference.getValue();
 
-      this.log.debug("Injecting resources on JAXWS JSE endpoint: " + targetBean);
-      if (injectionsMD != null)
+      if (!reference.isInitialized() && injectionsMD != null)
+      {
+         this.log.debug("Injecting resources on JAXWS JSE endpoint: " + targetBean);
          InjectionHelper.injectResources(targetBean, injectionsMD, endpoint.getJNDIContext());
+      }
 
-      InjectionHelper.injectWebServiceContext(targetBean, ThreadLocalAwareWebServiceContext.getInstance());
+      if (!reference.isInitialized())
+      {
+         InjectionHelper.injectWebServiceContext(targetBean, ThreadLocalAwareWebServiceContext.getInstance());
 
-      this.log.debug("Calling postConstruct method on JAXWS JSE endpoint: " + targetBean);
-      InjectionHelper.callPostConstructMethod(targetBean);
+         this.log.debug("Calling postConstruct method on JAXWS JSE endpoint: " + targetBean);
+         InjectionHelper.callPostConstructMethod(targetBean);
+      }
 
       endpoint.addAttachment(PreDestroyHolder.class, new PreDestroyHolder(targetBean));
    }
