@@ -60,7 +60,7 @@ public final class ReferenceFactory {
     private static final class ReferenceImpl implements Reference {
 
         private final Object reference;
-        private final boolean initialized;
+        private volatile boolean initialized;
         
         private ReferenceImpl(final Object reference, final boolean initialized) {
             this.reference = reference;
@@ -75,6 +75,11 @@ public final class ReferenceFactory {
         @Override
         public boolean isInitialized() {
             return initialized;
+        }
+
+        @Override
+        public void setInitialized() {
+            initialized = true;
         }
 
     }

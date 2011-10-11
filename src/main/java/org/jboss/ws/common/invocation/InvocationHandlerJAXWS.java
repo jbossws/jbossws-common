@@ -65,19 +65,17 @@ public final class InvocationHandlerJAXWS extends AbstractInvocationHandlerJSE
       final Reference reference = endpoint.getInstanceProvider().getInstance(_targetBean.getClass().getName());
       final Object targetBean = reference.getValue();
 
-      if (!reference.isInitialized() && injectionsMD != null)
+      if (!reference.isInitialized())
       {
          this.log.debug("Injecting resources on JAXWS JSE endpoint: " + targetBean);
          InjectionHelper.injectResources(targetBean, injectionsMD, endpoint.getJNDIContext());
-      }
-
-      if (!reference.isInitialized())
-      {
-         InjectionHelper.injectWebServiceContext(targetBean, ThreadLocalAwareWebServiceContext.getInstance());
 
          this.log.debug("Calling postConstruct method on JAXWS JSE endpoint: " + targetBean);
          InjectionHelper.callPostConstructMethod(targetBean);
+         reference.setInitialized();
       }
+
+      InjectionHelper.injectWebServiceContext(targetBean, ThreadLocalAwareWebServiceContext.getInstance());
 
       endpoint.addAttachment(PreDestroyHolder.class, new PreDestroyHolder(targetBean));
    }
