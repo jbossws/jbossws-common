@@ -59,19 +59,32 @@ public class JBossWSEntityResolver extends JBossEntityResolver
    
    // provide logging
    private static final Logger log = Logger.getLogger(JBossWSEntityResolver.class);
+   
+   private ClassLoader additionalClassLoader;
 
    public JBossWSEntityResolver()
    {
-	  this("META-INF/jbossws-entities.properties");
+      this(ClassLoaderProvider.getDefaultProvider().getServerIntegrationClassLoader());
+   }
+   
+   public JBossWSEntityResolver(ClassLoader loader)
+   {
+      this("META-INF/jbossws-entities.properties", loader);
    }
    
    public JBossWSEntityResolver(final String entitiesResource)
    {
+      this(entitiesResource, ClassLoaderProvider.getDefaultProvider().getServerIntegrationClassLoader());
+   }
+   
+   public JBossWSEntityResolver(final String entitiesResource, final ClassLoader loader)
+   {
       super();
       
+      this.additionalClassLoader = loader;
       Properties props = null;
-      ClassLoader loader = SecurityActions.getContextClassLoader();
-      Map<String, Properties> map = propertiesMap.get(loader);
+      ClassLoader tccl = SecurityActions.getContextClassLoader();
+      Map<String, Properties> map = propertiesMap.get(tccl);
       if (map != null && map.containsKey(entitiesResource))
       {
          props = map.get(entitiesResource);
@@ -81,10 +94,10 @@ public class JBossWSEntityResolver extends JBossEntityResolver
          if (map == null)
          {
             map = new ConcurrentHashMap<String, Properties>();
-            propertiesMap.put(loader, map);
+            propertiesMap.put(tccl, map);
          }
          // load entities
-         props = loadEntitiesMappingFromClasspath(entitiesResource, loader);
+         props = loadEntitiesMappingFromClasspath(entitiesResource, tccl, this.additionalClassLoader);
          if (props.size() == 0)
             throw new IllegalArgumentException(BundleUtils.getMessage(bundle, "NO_ENTITIES_MAPPING_DEFINED_IN_RESOURCE_FILE",  entitiesResource));
          map.put(entitiesResource, props);
@@ -101,16 +114,16 @@ public class JBossWSEntityResolver extends JBossEntityResolver
 	   }
    }
    
-   private Properties loadEntitiesMappingFromClasspath(final String entitiesResource, final ClassLoader classLoader)
+   private Properties loadEntitiesMappingFromClasspath(final String entitiesResource, final ClassLoader classLoader, final ClassLoader additionalClassLoader)
    {
       return AccessController.doPrivileged(new PrivilegedAction<Properties>()
       {
          public Properties run()
          {
-            //use a delegate classloader: first try lookup using the provided classloader,
-            //otherwise use server integration classloader which has the default configuration
-            final ClassLoader intCl = ClassLoaderProvider.getDefaultProvider().getServerIntegrationClassLoader();
-            InputStream is = new DelegateClassLoader(intCl, classLoader).getResourceAsStream(entitiesResource);
+            //use a delegate classloader: first try lookup using the provided (tccl) classloader,
+            //otherwise use the constructor provided classloader if any (that defaults to the
+            //server integration classloader which should have the default configuration)
+            InputStream is = new DelegateClassLoader(additionalClassLoader, classLoader).getResourceAsStream(entitiesResource);
             // get stream
             if (is == null)
                throw new IllegalArgumentException(BundleUtils.getMessage(bundle, "RESOURCE_NOT_FOUND",  entitiesResource ));
@@ -160,7 +173,7 @@ public class JBossWSEntityResolver extends JBossEntityResolver
            final ClassLoader origLoader = SecurityActions.getContextClassLoader();
            try
            {
-               SecurityActions.setContextClassLoader(ClassLoaderProvider.getDefaultProvider().getServerIntegrationClassLoader());
+               SecurityActions.setContextClassLoader(this.additionalClassLoader);
                is = super.loadClasspathResource(resource, trace);
            }
            finally
