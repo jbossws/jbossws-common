@@ -45,7 +45,7 @@ public class DefaultService extends AbstractExtensible implements Service
    private Deployment dep;
    private List<Endpoint> endpoints = new LinkedList<Endpoint>();
    private String contextRoot;
-   private List<String> virtualHosts;
+   private String virtualHost;
 
    DefaultService()
    {
@@ -110,24 +110,14 @@ public class DefaultService extends AbstractExtensible implements Service
       this.contextRoot = contextRoot;
    }
 
-   public List<String> getVirtualHosts()
+   public String getVirtualHost()
    {
-      if ( virtualHosts != null )
-      {
-         final List<String> retVal = new LinkedList<String>();
-         for ( String virtualHost : virtualHosts )
-         {
-            retVal.add( virtualHost );
-         }
-         return retVal;
-      }
-      
-      return null;
+      return virtualHost;
    }
 
-   public void setVirtualHosts(List<String> virtualHosts)
+   public void setVirtualHost(String virtualHost)
    {
-      this.virtualHosts = virtualHosts;      
+      this.virtualHost = virtualHost;      
    }
 
 }

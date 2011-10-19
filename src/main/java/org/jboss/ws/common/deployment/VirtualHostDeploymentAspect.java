@@ -24,8 +24,6 @@ package org.jboss.ws.common.deployment;
 
 import static org.jboss.ws.common.integration.WSHelper.isJaxwsEjbDeployment;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.ResourceBundle;
 
 import org.jboss.ws.api.annotation.WebContext;
@@ -35,12 +33,12 @@ import org.jboss.wsf.spi.deployment.Deployment;
 import org.jboss.wsf.spi.deployment.Endpoint;
 
 /**
- * A deployer that assigns the virtual hosts to the service 
+ * A deployment aspect that assigns the virtual host to a WS service. 
  *
  * @author darran.lofthouse@jboss.com
- * @since 10-Jul-2008
+ * @author <a href="mailto:ropalka@redhat.com">Richard Opalka</a>
  */
-public class VirtualHostDeploymentAspect extends AbstractDeploymentAspect
+public final class VirtualHostDeploymentAspect extends AbstractDeploymentAspect
 {
    private static final ResourceBundle bundle = BundleUtils.getBundle(VirtualHostDeploymentAspect.class);
 
@@ -49,48 +47,41 @@ public class VirtualHostDeploymentAspect extends AbstractDeploymentAspect
    {
       if (isJaxwsEjbDeployment(dep))
       {
-         dep.getService().setVirtualHosts(getExplicitVirtualHosts(dep));
+         dep.getService().setVirtualHost(getExplicitVirtualHost(dep));
       }
    }
 
-   protected List<String> getExplicitVirtualHosts(Deployment dep)
+   protected String getExplicitVirtualHost(final Deployment dep)
    {
-      String[] virtualHosts = null;
+      String virtualHost = null;
 
-      // Use the virtual hosts from @WebContext.virtualHosts
-      for (Endpoint ep : dep.getService().getEndpoints())
+      for (final Endpoint ep : dep.getService().getEndpoints())
       {
-         Class<?> implClass = ep.getTargetBeanClass();
-         WebContext anWebContext = (WebContext)implClass.getAnnotation(WebContext.class);
-         if (anWebContext != null && anWebContext.virtualHosts() != null && anWebContext.virtualHosts().length > 0)
-         {
-            String[] anVirtualHosts = anWebContext.virtualHosts();
-            // Avoid modifying the annotation values.
-            String[] temp = new String[anVirtualHosts.length];
-            System.arraycopy(anVirtualHosts, 0, temp, 0, anVirtualHosts.length);
-            Arrays.sort(temp);
+         final Class<?> implClass = ep.getTargetBeanClass();
+         final WebContext webContext = implClass.getAnnotation(WebContext.class);
 
-            if (virtualHosts == null)
+         if (hasVirtualHost(webContext))
+         {
+            final String currentVirtualHost = webContext.virtualHost().trim();
+            if (virtualHost == null)
             {
-               virtualHosts = temp;
+                virtualHost = currentVirtualHost;
             }
             else
             {
-               if (Arrays.equals(virtualHosts, temp) == false)
+               if (!currentVirtualHost.equals(virtualHost))
                {
-                  throw new IllegalStateException(BundleUtils.getMessage(bundle, "VIRTUALHOSTS_MUST_BE_THE_SAME_FOR_ALL_DEPLOYED_ENDPOINTS"));
+                  throw new IllegalStateException(BundleUtils.getMessage(bundle, "VIRTUALHOST_MUST_BE_THE_SAME_FOR_ALL_DEPLOYED_ENDPOINTS"));
                }
             }
          }
       }
       
-      if ( virtualHosts != null )
-      {
-         return Arrays.asList(virtualHosts);
-      }
-      else
-      {
-         return null;
-      }
+      return virtualHost;
    }
+
+   private static boolean hasVirtualHost(final WebContext webContext) {
+       return webContext != null && webContext.virtualHost().trim().length() > 0;
+   }
+
 }
