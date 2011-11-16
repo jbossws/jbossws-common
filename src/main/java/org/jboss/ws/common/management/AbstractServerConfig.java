@@ -167,7 +167,10 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
          }
          catch (WSFException e)
          {
-            log.warn(BundleUtils.getMessage(bundle, "COULD_NOT_GET_WEBSERVERINFO"));
+            log.debug("Can not get local webservice port from configured WebServerInfo!");
+            if (log.isTraceEnabled()) {
+               log.trace("Ignoring exception: ", e);
+            }
          }
          if (localPort <= 0)
          {
