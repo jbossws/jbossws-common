@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
-import org.jboss.logging.Logger;
 import org.jboss.wsf.spi.deployment.ArchiveDeployment;
 import org.jboss.wsf.spi.deployment.ResourceResolver;
 import org.jboss.wsf.spi.deployment.UnifiedVirtualFile;
@@ -42,8 +41,6 @@ public class ArchiveDeploymentImpl extends DefaultDeployment implements ArchiveD
    private ArchiveDeployment parent;
    // The root file for this deployment
    private UnifiedVirtualFile rootFile;
-   
-   private static Logger log = Logger.getLogger(ArchiveDeploymentImpl.class);
    
    private List<UnifiedVirtualFile> metadataFiles;
 
