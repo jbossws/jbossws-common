@@ -21,8 +21,6 @@
  */
 package org.jboss.ws.common.deployment;
 
-import java.io.IOException;
-import java.net.URL;
 import java.util.List;
 
 import org.jboss.wsf.spi.deployment.ArchiveDeployment;
@@ -77,12 +75,6 @@ public class ArchiveDeploymentImpl extends DefaultDeployment implements ArchiveD
       return name;
    }
 
-   @Deprecated
-   public URL getMetaDataFileURL(String resourcePath) throws IOException
-   {
-      return getResourceResolver().resolve(resourcePath);
-   }
-   
    public List<UnifiedVirtualFile> getMetadataFiles()
    {
       return metadataFiles;

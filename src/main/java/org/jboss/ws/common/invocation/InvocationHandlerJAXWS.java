@@ -30,7 +30,6 @@ import org.jboss.wsf.spi.deployment.Endpoint;
 import org.jboss.wsf.spi.deployment.Reference;
 import org.jboss.wsf.spi.invocation.Invocation;
 import org.jboss.wsf.spi.invocation.InvocationContext;
-import org.jboss.wsf.spi.metadata.injection.InjectionsMetaData;
 
 /**
  * Handles invocations on JAXWS endpoints.
@@ -42,14 +41,6 @@ public final class InvocationHandlerJAXWS extends AbstractInvocationHandlerJSE
 {
 
    /**
-    * Constructor.
-    */
-   public InvocationHandlerJAXWS()
-   {
-      super();
-   }
-
-   /**
     * Injects resources on target bean and calls post construct method.
     * Finally it registers target bean for predestroy phase.
     *
@@ -59,7 +50,6 @@ public final class InvocationHandlerJAXWS extends AbstractInvocationHandlerJSE
    @Override
    public void onEndpointInstantiated(final Endpoint endpoint, final Invocation invocation)
    {
-      final InjectionsMetaData injectionsMD = endpoint.getAttachment(InjectionsMetaData.class);
       final Object _targetBean = this.getTargetBean(invocation);
       // TODO: refactor injection to AS IL
       final Reference reference = endpoint.getInstanceProvider().getInstance(_targetBean.getClass().getName());
@@ -69,9 +59,6 @@ public final class InvocationHandlerJAXWS extends AbstractInvocationHandlerJSE
 
       if (!reference.isInitialized())
       {
-         this.log.debug("Injecting resources on JAXWS JSE endpoint: " + targetBean);
-         InjectionHelper.injectResources(targetBean, injectionsMD, endpoint.getJNDIContext());
-
          this.log.debug("Calling postConstruct method on JAXWS JSE endpoint: " + targetBean);
          InjectionHelper.callPostConstructMethod(targetBean);
          reference.setInitialized();

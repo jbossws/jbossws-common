@@ -19,44 +19,32 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.ws.common.injection.finders;
+package org.jboss.ws.common.injection;
 
-import java.lang.reflect.Method;
-
-import javax.ejb.EJB;
-
-import org.jboss.ws.common.reflection.AnnotatedMethodFinder;
+import java.lang.reflect.AccessibleObject;
 
 /**
- * Setter based EJB injection.
+ * JNDI reference resolver.
  *
  * @author <a href="mailto:richard.opalka@jboss.org">Richard Opalka</a>
  */
-public final class EJBMethodFinder
-extends AnnotatedMethodFinder<EJB>
+public interface ReferenceResolver
 {
 
    /**
-    * Constructor.
+    * Resolves JNDI name.
+    * 
+    * @param accessibleObject object
+    * @return JNDI name.
     */
-   public EJBMethodFinder()
-   {
-      super(EJB.class);
-   }
-
-   @Override
-   public void validate(Method method)
-   {
-      super.validate(method);
-
-      // Ensure all method preconditions
-      Class<EJB> annotation = getAnnotation();
-      ReflectionUtils.assertVoidReturnType(method, annotation);
-      ReflectionUtils.assertOneParameter(method, annotation);
-      ReflectionUtils.assertNoPrimitiveParameters(method, annotation);
-      ReflectionUtils.assertValidSetterName(method, annotation);
-      ReflectionUtils.assertNoCheckedExceptionsAreThrown(method, annotation);
-      ReflectionUtils.assertNotStatic(method, annotation);
-   }
-
+   String resolve(AccessibleObject accessibleObject);
+   
+   /**
+    * Returns <b>true</b> if can resolve, <b>false</b> otherwise.
+    * 
+    * @param accessibleObject object
+    * @return true if can resolve, false otherwise
+    */
+   boolean canResolve(AccessibleObject accessibleObject);
+   
 }

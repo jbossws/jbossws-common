@@ -21,9 +21,6 @@
  */
 package org.jboss.ws.common.deployment;
 
-import javax.naming.Context;
-import javax.naming.NamingException;
-
 import org.jboss.wsf.spi.deployment.HttpEndpoint;
 import org.jboss.wsf.spi.management.EndpointMetrics;
 
@@ -62,22 +59,6 @@ public class DefaultHttpEndpoint extends AbstractDefaultEndpoint implements Http
    {
       assertEndpointSetterAccess();
       this.urlPattern = urlPattern;
-   }
-
-   public Context getJNDIContext()
-   {
-      Context retVal = null;
-
-      try
-      {
-         retVal = getInvocationHandler().getJNDIContext(this);
-      }
-      catch (NamingException e)
-      {
-         // JNDI not available neither in JSE environment nor in SAR archives
-      }
-
-      return retVal;
    }
 
 }

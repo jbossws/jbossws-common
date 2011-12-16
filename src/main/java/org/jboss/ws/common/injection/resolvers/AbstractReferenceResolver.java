@@ -28,7 +28,7 @@ import java.lang.reflect.Method;
 import java.util.ResourceBundle;
 
 import org.jboss.ws.api.util.BundleUtils;
-import org.jboss.wsf.spi.metadata.injection.ReferenceResolver;
+import org.jboss.ws.common.injection.ReferenceResolver;
 
 /**
  * This class adds support for notion of annotated fields and methods.

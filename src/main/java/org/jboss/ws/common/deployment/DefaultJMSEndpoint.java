@@ -96,11 +96,6 @@ public class DefaultJMSEndpoint extends AbstractDefaultEndpoint implements JMSEn
    {
       return null;
    }
-   @Override
-   public Context getJNDIContext()
-   {
-      return null;
-   }
    
    @Override
    public void setEndpointMetrics(EndpointMetrics metrics)

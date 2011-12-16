@@ -21,15 +21,6 @@
  */
 package org.jboss.ws.common.management;
 
-import org.jboss.logging.Logger;
-import java.util.ResourceBundle;
-import org.jboss.ws.api.util.BundleUtils;
-import org.jboss.wsf.spi.SPIProvider;
-import org.jboss.wsf.spi.SPIProviderResolver;
-import org.jboss.wsf.spi.WSFException;
-import org.jboss.wsf.spi.classloading.ClassLoaderProvider;
-import org.jboss.wsf.spi.ioc.IoCContainerProxy;
-import org.jboss.wsf.spi.ioc.IoCContainerProxyFactory;
 import org.jboss.wsf.spi.management.EndpointRegistry;
 import org.jboss.wsf.spi.management.EndpointRegistryFactory;
 
@@ -41,59 +32,12 @@ import org.jboss.wsf.spi.management.EndpointRegistryFactory;
  */
 public final class DefaultEndpointRegistryFactory extends EndpointRegistryFactory
 {
-   private static final ResourceBundle bundle = BundleUtils.getBundle(DefaultEndpointRegistryFactory.class);
 
-   private Logger log = Logger.getLogger(DefaultEndpointRegistryFactory.class);
-   /** The bean name in the kernel registry. */
-   private static final String BEAN_NAME = "WSEndpointRegistry";
-   private static final String SERVICE_NAME = "jboss.ws.registry";
-   private static final EndpointRegistry fallbackRegistry = new DefaultEndpointRegistry();;
+   private static final EndpointRegistry ENDPOINT_REGISTRY = new DefaultEndpointRegistry();;
 
-   /**
-    * Constructor.
-    */
-   public DefaultEndpointRegistryFactory()
-   {
-      super();
-   }
-   
-   /**
-    * Returns endpoint registry registered in MC kernel.
-    * 
-    * @return endpoint registry
-    */
    public EndpointRegistry getEndpointRegistry()
    {
-      try
-      {
-         final ClassLoader cl = ClassLoaderProvider.getDefaultProvider().getServerIntegrationClassLoader();
-         final SPIProvider spiProvider = SPIProviderResolver.getInstance(cl).getProvider();
-         final IoCContainerProxyFactory iocContainerFactory = spiProvider.getSPI(IoCContainerProxyFactory.class, cl);
-         final IoCContainerProxy iocContainer = iocContainerFactory.getContainer();
-         
-         EndpointRegistry registry = null;
-         try
-         {
-            //try MSC service name
-            registry = iocContainer.getBean(DefaultEndpointRegistryFactory.SERVICE_NAME, EndpointRegistry.class);
-         }
-         catch (Exception e)
-         {
-            log.debug("Can't get endpoint registry: ", e);
-            //ignore
-         }
-         if (registry == null)
-         {
-            //try MC bean name
-            registry = iocContainer.getBean(DefaultEndpointRegistryFactory.BEAN_NAME, EndpointRegistry.class);
-         }
-         return registry;
-      }
-      catch (Exception e)
-      {
-         log.warn(BundleUtils.getMessage(bundle, "UNABLE_TO_GET_WSENDPOINTREGISTRY"));
-         return fallbackRegistry; // JSE environment
-      }
+	  return ENDPOINT_REGISTRY;
    }
 
 }
