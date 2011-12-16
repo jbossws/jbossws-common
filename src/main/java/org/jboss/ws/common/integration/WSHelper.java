@@ -51,6 +51,9 @@ public final class WSHelper
    private static final EndpointTypeFilter JAXRPC_JSE_ENDPOINT_FILTER = new EndpointTypeFilterImpl( JAXRPC_JSE );
    private static final EndpointTypeFilter JAXWS_EJB_ENDPOINT_FILTER = new EndpointTypeFilterImpl( JAXWS_EJB3 );
    private static final EndpointTypeFilter JAXWS_JSE_ENDPOINT_FILTER = new EndpointTypeFilterImpl( JAXWS_JSE );
+   private static final String WAR_EXTENSION = ".war";
+   private static final String JAR_EXTENSION = ".jar";
+   private static final String EAR_EXTENSION = ".ear";
 
    /**
     * Forbidden constructor.
@@ -191,6 +194,39 @@ public final class WSHelper
    public static boolean isJaxrpcDeployment( final Deployment dep )
    {
       return JAXRPC == dep.getType();
+   }
+
+   /**
+    * Returns true if archive name ends with '.jar' suffix.
+    *
+    * @param dep webservice deployment
+    * @return true if archive name ends with '.jar' suffix, false otherwise
+    */
+   public static boolean isJarArchive( final Deployment dep )
+   {
+      return dep.getSimpleName().endsWith(JAR_EXTENSION);
+   }
+
+   /**
+    * Returns true if archive name ends with '.war' suffix.
+    *
+    * @param dep webservice deployment
+    * @return true if archive name ends with '.war' suffix, false otherwise
+    */
+   public static boolean isWarArchive( final Deployment dep )
+   {
+      return dep.getSimpleName().endsWith(WAR_EXTENSION);
+   }
+
+   /**
+    * Returns true if archive name ends with '.ear' suffix.
+    *
+    * @param dep webservice deployment
+    * @return true if archive name ends with '.ear' suffix, false otherwise
+    */
+   public static boolean isEarArchive( final Deployment dep )
+   {
+      return dep.getSimpleName().endsWith(EAR_EXTENSION);
    }
 
    /**

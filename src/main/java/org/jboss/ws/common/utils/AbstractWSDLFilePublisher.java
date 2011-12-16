@@ -22,6 +22,7 @@
 package org.jboss.ws.common.utils;
 
 import static org.jboss.ws.common.integration.WSHelper.isJseDeployment;
+import static org.jboss.ws.common.integration.WSHelper.isWarArchive;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -84,7 +85,7 @@ public abstract class AbstractWSDLFilePublisher
          serverConfig = spiProvider.getSPI(ServerConfigFactory.class).getServerConfig();
       }
       
-      if (isJseDeployment(dep))
+      if (isJseDeployment(dep) || isWarArchive(dep))
       {
          expLocation = "WEB-INF/wsdl/";
       }
