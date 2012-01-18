@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.jboss.logging.Logger;
+import org.jboss.ws.api.util.BundleUtils;
 import org.jboss.wsf.spi.deployment.Deployment;
 import org.jboss.wsf.spi.deployment.DeploymentState;
 import org.jboss.wsf.spi.deployment.DeploymentAspect;
@@ -99,9 +100,10 @@ public class DeploymentAspectManagerImpl implements DeploymentAspectManager
    {
       // create the deployment
       Set<String> providedConditions = new HashSet<String>();
-      for (int i = 0; i < getDeploymentAspects().size(); i++)
+      final List<DeploymentAspect> deploymentAspects = getDeploymentAspects();
+      for (int i = 0; i < deploymentAspects.size(); i++)
       {
-         DeploymentAspect aspect = getDeploymentAspects().get(i);
+         DeploymentAspect aspect = deploymentAspects.get(i);
 
          // Check that all required aspects are met 
          /*
@@ -118,9 +120,9 @@ public class DeploymentAspectManagerImpl implements DeploymentAspectManager
       }
 
       // start the deployment
-      for (int i = 0; i < getDeploymentAspects().size(); i++)
+      for (int i = 0; i < deploymentAspects.size(); i++)
       {
-         DeploymentAspect aspect = getDeploymentAspects().get(i);
+         DeploymentAspect aspect = deploymentAspects.get(i);
          try
          {
             if (aspect.canHandle(dep)) {
@@ -139,10 +141,19 @@ public class DeploymentAspectManagerImpl implements DeploymentAspectManager
          }
          catch (RuntimeException rte)
          {
-            while (i-- >= 0)
+            while (--i >= 0)
             {
                // destroy the deployment
-               failsafeStop(aspect, dep);
+               try
+               {
+                  failsafeStop(deploymentAspects.get(i), dep);
+               }
+               catch (RuntimeException destroyRte)
+               {
+                  //log previous exception in the exotic case in which also stopping already started aspects fails
+                  log.error(BundleUtils.getMessage(BundleUtils.getBundle(DeploymentAspectManagerImpl.class),"ERROR_DESTROYING_DEPLOYMENT"), rte);
+                  throw destroyRte;
+               }
             }
             throw rte;
          }
@@ -153,9 +164,10 @@ public class DeploymentAspectManagerImpl implements DeploymentAspectManager
 
    public void undeploy(Deployment dep)
    {
-      for (int i = getDeploymentAspects().size(); 0 < i; i--)
+      final List<DeploymentAspect> deploymentAspects = getDeploymentAspects();
+      for (int i = deploymentAspects.size(); 0 < i; i--)
       {
-         DeploymentAspect aspect = getDeploymentAspects().get(i - 1);
+         DeploymentAspect aspect = deploymentAspects.get(i - 1);
          failsafeStop(aspect, dep);
       }
 
