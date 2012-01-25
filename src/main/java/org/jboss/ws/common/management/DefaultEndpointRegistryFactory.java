@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source.
- * Copyright 2009, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2012, Red Hat Middleware LLC, and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -25,15 +25,14 @@ import org.jboss.wsf.spi.management.EndpointRegistry;
 import org.jboss.wsf.spi.management.EndpointRegistryFactory;
 
 /**
- * Retrieves registry from MC kernel.
+ * Retrieves default registry
  *
- * @author <a href="mailto:hbraun@redhat.com">Heiko Braun</a>
  * @author <a href="mailto:ropalka@redhat.com">Richard Opalka</a>
  */
 public final class DefaultEndpointRegistryFactory extends EndpointRegistryFactory
 {
 
-   private static final EndpointRegistry ENDPOINT_REGISTRY = new DefaultEndpointRegistry();;
+   private static final EndpointRegistry ENDPOINT_REGISTRY = new DefaultEndpointRegistry();
 
    public EndpointRegistry getEndpointRegistry()
    {
