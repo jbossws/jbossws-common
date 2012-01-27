@@ -67,8 +67,8 @@ public class EndpointAddressDeploymentAspect extends AbstractDeploymentAspect
       // TODO: remove this hack - review API
       String protocol = (String)dep.getService().getProperty("protocol");
       String host = (String)dep.getService().getProperty("host");
-      Integer port = (Integer)dep.getService().getProperty("port");
-      Integer securePort = null;
+      
+      PortValue port = new PortValue((Integer)dep.getService().getProperty("port"), null);
       
       if (protocol == null)
       {
@@ -77,8 +77,7 @@ public class EndpointAddressDeploymentAspect extends AbstractDeploymentAspect
          ServerConfig serverConfig = spi.getServerConfig();
 
          host = serverConfig.getWebServiceHost();
-         port = serverConfig.getWebServicePort();
-         securePort = serverConfig.getWebServiceSecurePort();
+         port.setServerConfig(serverConfig);
       }
       Map<String, Endpoint> endpointsMap = new HashMap<String, Endpoint>();
       List<Endpoint> deleteList = new LinkedList<Endpoint>();
@@ -87,7 +86,7 @@ public class EndpointAddressDeploymentAspect extends AbstractDeploymentAspect
          if (ep instanceof HttpEndpoint)
          {
             boolean confidential = isConfidentialTransportGuarantee(dep, ep);
-            int currentPort = confidential ? securePort : port;
+            int currentPort = port.getValue(confidential);
             String hostAndPort = host + (currentPort > 0 ? ":" + currentPort : ""); 
             
             HttpEndpoint httpEp = (HttpEndpoint)ep;
@@ -120,6 +119,7 @@ public class EndpointAddressDeploymentAspect extends AbstractDeploymentAspect
          dep.getService().getEndpoints().remove(ep);
       }
    }
+   
    
    protected boolean isConfidentialTransportGuarantee(final Deployment dep, final Endpoint ep)
    {
@@ -182,4 +182,43 @@ public class EndpointAddressDeploymentAspect extends AbstractDeploymentAspect
       return "CONFIDENTIAL".equals(transportGuarantee);
    }
    
+   private class PortValue {
+      private ServerConfig config;
+      private Integer port;
+      private Integer securePort;
+      
+      public PortValue(Integer port, Integer securePort) {
+         this.port = port;
+         this.securePort = securePort;
+      }
+      
+      public void setServerConfig(ServerConfig config)
+      {
+         this.port = null;
+         this.securePort = null;
+         this.config = config;
+      }
+      
+      public Integer getValue(boolean confidential) {
+         return confidential ? getSecurePortValue() : getPortValue();
+      }
+      
+      public Integer getPortValue()
+      {
+         if (this.port == null && this.config != null)
+         {
+            this.port = this.config.getWebServicePort();
+         }
+         return this.port;
+      }
+      
+      public Integer getSecurePortValue()
+      {
+         if (this.securePort == null && this.config != null)
+         {
+            this.securePort = this.config.getWebServiceSecurePort();
+         }
+         return this.securePort;
+      }
+   }
 }

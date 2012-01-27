@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source.
- * Copyright 2006, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2012, Red Hat Middleware LLC, and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -27,10 +27,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.Set;
 
-import javax.management.AttributeNotFoundException;
-import javax.management.JMException;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
@@ -153,31 +150,14 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
    public int getWebServicePort()
    {
       if (webServicePort <= 0)
-         webServicePort = getConnectorPort("HTTP/1.1", false);
+         webServicePort = getConnectorPort(false);
 
       int localPort = webServicePort;
       if (localPort <= 0)        
       {
-         ClassLoader cl = ClassLoaderProvider.getDefaultProvider().getServerIntegrationClassLoader();
-         SPIProvider spiProvider = SPIProviderResolver.getInstance(cl).getProvider();
-         try
-         {
-            WebServerInfo webServerInfo = spiProvider.getSPI(WebServerInfoFactory.class, cl).newWebServerInfo();
-            localPort = webServerInfo.getPort("HTTP/1.1", false);
-         }
-         catch (WSFException e)
-         {
-            log.debug("Can not get local webservice port from configured WebServerInfo!");
-            if (log.isTraceEnabled()) {
-               log.trace("Ignoring exception: ", e);
-            }
-         }
-         if (localPort <= 0)
-         {
-            // Do not initialize webServicePort with the default, the connector port may become available later 
-            log.debug("Unable to calculate 'WebServicePort', using default '8080'");
-            localPort = 8080;
-         }
+         // Do not initialize webServicePort with the default, the connector port may become available later 
+         log.debug("Unable to calculate 'WebServicePort', using default '8080'");
+         localPort = 8080;
       }
 
       return localPort;
@@ -186,33 +166,33 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
    public int getWebServiceSecurePort()
    {
       if (webServiceSecurePort <= 0)
-         webServiceSecurePort = getConnectorPort("HTTP/1.1", true);
+         webServiceSecurePort = getConnectorPort(true);
 
       int localPort = webServiceSecurePort;
       if (localPort <= 0)
       {
-         ClassLoader cl = ClassLoaderProvider.getDefaultProvider().getServerIntegrationClassLoader();
-         SPIProvider spiProvider = SPIProviderResolver.getInstance(cl).getProvider();
-         try
-         {
-            WebServerInfo webServerInfo = spiProvider.getSPI(WebServerInfoFactory.class, cl).newWebServerInfo();
-
-            localPort = webServerInfo.getPort("HTTP/1.1", true);
-         }
-         catch (WSFException e)
-         {
-            log.warn(BundleUtils.getMessage(bundle, "COULD_NOT_GET_WEBSERVERINFO"));
-         }
-         
-         if (localPort <= 0)
-         {
-            // Do not initialize webServiceSecurePort with the default, the connector port may become available later 
-            log.debug("Unable to calculate 'WebServiceSecurePort', using default '8443'");
-            localPort = 8443;
-         }
+         // Do not initialize webServiceSecurePort with the default, the connector port may become available later 
+         log.debug("Unable to calculate 'WebServiceSecurePort', using default '8443'");
+         localPort = 8443;
       }
 
       return localPort;
+   }
+   
+   private int getConnectorPort(boolean secure) {
+      ClassLoader cl = ClassLoaderProvider.getDefaultProvider().getServerIntegrationClassLoader();
+      SPIProvider spiProvider = SPIProviderResolver.getInstance(cl).getProvider();
+      int port = 0;
+      try
+      {
+         WebServerInfo webServerInfo = spiProvider.getSPI(WebServerInfoFactory.class, cl).newWebServerInfo();
+         port = webServerInfo.getPort("HTTP/1.1", secure);
+      }
+      catch (WSFException e)
+      {
+         log.warn(BundleUtils.getMessage(bundle, "COULD_NOT_GET_WEBSERVERINFO"));
+      }
+      return port;
    }
 
    public void create() throws Exception
@@ -229,51 +209,6 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
    public void destroy() throws Exception
    {
       getMbeanServer().unregisterMBean(AbstractServerConfigMBean.OBJECT_NAME);
-   }
-
-   @SuppressWarnings("rawtypes")
-   private int getConnectorPort(final String protocol, final boolean secure)
-   {
-      int port = -1;
-
-      try
-      {
-         ObjectName connectors = new ObjectName("jboss.web:type=Connector,*");
-
-         Set connectorNames = getMbeanServer().queryNames(connectors, null);
-         for (Object current : connectorNames)
-         {
-            ObjectName currentName = (ObjectName)current;
-
-            try
-            {
-               int connectorPort = (Integer)getMbeanServer().getAttribute(currentName, "port");
-               boolean connectorSecure = (Boolean)getMbeanServer().getAttribute(currentName, "secure");
-               String connectorProtocol = (String)getMbeanServer().getAttribute(currentName, "protocol");
-
-               if (protocol.equals(connectorProtocol) && secure == connectorSecure)
-               {
-                  if (port > -1)
-                  {
-                     log.warn(BundleUtils.getMessage(bundle, "FOUND_MULTIPLE_CONNECTORS", new Object[]{ protocol, secure,  port }));
-                  }
-                  else
-                  {
-                     port = connectorPort;
-                  }
-               }
-            }
-            catch (AttributeNotFoundException ignored)
-            {
-            }
-         }
-
-         return port;
-      }
-      catch (JMException e)
-      {
-         return -1;
-      }
    }
    
    public String getImplementationTitle()
