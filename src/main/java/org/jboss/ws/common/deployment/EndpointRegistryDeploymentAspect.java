@@ -36,13 +36,15 @@ import org.jboss.wsf.spi.management.EndpointRegistryFactory;
  */
 public class EndpointRegistryDeploymentAspect extends AbstractDeploymentAspect
 {
-   private EndpointRegistry registry;
+   private EndpointRegistryFactory factory;
    
    public void start(Deployment dep)
    {
-      SPIProvider spiProvider = SPIProviderResolver.getInstance().getProvider();
-      if (registry == null)
-         registry = spiProvider.getSPI(EndpointRegistryFactory.class).getEndpointRegistry();
+      if (factory == null) {
+         SPIProvider spiProvider = SPIProviderResolver.getInstance().getProvider();
+         factory = spiProvider.getSPI(EndpointRegistryFactory.class);
+      }
+      EndpointRegistry registry = factory.getEndpointRegistry();
       for (Endpoint ep : dep.getService().getEndpoints())
       {
          registry.register(ep);
@@ -51,9 +53,11 @@ public class EndpointRegistryDeploymentAspect extends AbstractDeploymentAspect
 
    public void stop(Deployment dep)
    {
-      SPIProvider spiProvider = SPIProviderResolver.getInstance().getProvider();
-      if (registry == null)
-         registry = spiProvider.getSPI(EndpointRegistryFactory.class).getEndpointRegistry();
+      if (factory == null) {
+         SPIProvider spiProvider = SPIProviderResolver.getInstance().getProvider();
+         factory = spiProvider.getSPI(EndpointRegistryFactory.class);
+      }
+      EndpointRegistry registry = factory.getEndpointRegistry();
       for (Endpoint ep : dep.getService().getEndpoints())
       {
          registry.unregister(ep);
