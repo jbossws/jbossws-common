@@ -304,4 +304,6 @@ public interface Constants
    static final String DOM_CONTENT_CANONICAL_NORMALIZATION = "org.jboss.ws.DOMContentCanonicalNormalization";
    
    static final String ALWAYS_RESOLVE_DOCUMENT_BUILDER_FACTORY = "org.jboss.ws.alwaysResolveDocumentBuilderFactory";
+
+   static final String FLUSH_ONLY_ONCE = "org.jboss.ws.domwriter.FlushOnlyOnce";
 }

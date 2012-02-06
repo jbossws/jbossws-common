@@ -71,6 +71,8 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import org.jboss.ws.Constants;
+
 /**
  * Traverse a DOM tree in order to print a document that is parsed.
  *
@@ -102,6 +104,14 @@ public class DOMWriter
    private boolean completeNamespaces = true;
    // The current default namespace
    private String currentDefaultNamespace;
+   // How often should we flush the output stream?
+   private static final boolean flushOnlyOnce;
+
+   static
+   {
+      flushOnlyOnce = System.getProperty(Constants.FLUSH_ONLY_ONCE, "false")
+         .equals("true");
+   }
 
    public DOMWriter(Writer w)
    {
@@ -231,6 +241,8 @@ public class DOMWriter
       
       rootNode = node;
       printInternal(node, false);
+      if(flushOnlyOnce)
+         out.flush();
    }
 
    private void printInternal(Node node, boolean indentEndMarker)
@@ -510,7 +522,9 @@ public class DOMWriter
             out.print('\n');
          }
       }
-      out.flush();
+
+      if(!flushOnlyOnce)
+         out.flush();
    }
 
    private String getNamespaceURI(String prefix, Element element, Node stopNode)
