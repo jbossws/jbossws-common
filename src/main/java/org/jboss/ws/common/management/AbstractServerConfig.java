@@ -203,12 +203,18 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
       this.stackConfig = spiProvider.getSPI(StackConfigFactory.class, cl).getStackConfig();
 
       log.info(getImplementationTitle() + ' ' + getImplementationVersion());
-      getMbeanServer().registerMBean(this, AbstractServerConfigMBean.OBJECT_NAME);
+      MBeanServer mbeanServer = getMbeanServer();
+      if (mbeanServer != null) {
+         mbeanServer.registerMBean(this, AbstractServerConfigMBean.OBJECT_NAME);
+      }
    }
 
    public void destroy() throws Exception
    {
-      getMbeanServer().unregisterMBean(AbstractServerConfigMBean.OBJECT_NAME);
+      MBeanServer mbeanServer = getMbeanServer();
+      if (mbeanServer != null) {
+         mbeanServer.unregisterMBean(AbstractServerConfigMBean.OBJECT_NAME);
+      }
    }
    
    public String getImplementationTitle()
