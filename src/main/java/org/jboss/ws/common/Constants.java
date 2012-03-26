@@ -64,10 +64,6 @@ public interface Constants
    static final String NS_SWA_MIME = "http://schemas.xmlsoap.org/wsdl/mime/";
    /** Default namespace for WSDL-1.1 http://schemas.xmlsoap.org/wsdl/ */
    static final String NS_WSDL11 = "http://schemas.xmlsoap.org/wsdl/";
-   /** The namespace for the MTOM content type attribute. */
-   static final String NS_XML_MIME = "http://www.w3.org/2005/05/xmlmime";
-   /** The namespace for XOP. */
-   static final String NS_XOP = "http://www.w3.org/2004/08/xop/include";   
    
    /** A constant representing the identity of the SOAP 1.1 over HTTP binding. */
    public static final String SOAP11HTTP_BINDING = SOAPBinding.SOAP11HTTP_BINDING;
@@ -115,14 +111,10 @@ public interface Constants
    static final String PREFIX_SOAP11_ENC = "soap11-enc";
    static final String PREFIX_TNS = "tns";
    static final String PREFIX_WSDL = "wsdl";
-   static final String PREFIX_XOP = "xop";
    static final String PREFIX_XSD = "xsd";
    static final String PREFIX_XSI = "xsi";
    static final String PREFIX_XML = "xml";
 
-   /** XOP Include */
-   static final QName NAME_XOP_INCLUDE = new QName(NS_XOP, "Include", PREFIX_XOP);
-   
    /** SOAP-1.1 roles */
    static final String URI_SOAP11_NEXT_ACTOR = "http://schemas.xmlsoap.org/soap/actor/next";
 
@@ -257,8 +249,6 @@ public interface Constants
    static final QName TYPE_MIME_TEXT_PLAIN = new QName(NS_ATTACHMENT_MIME_TYPE, "text_plain");
    static final QName TYPE_MIME_TEXT_XML = new QName(NS_ATTACHMENT_MIME_TYPE, "text_xml");
 
-   static final QName TYPE_XMIME_DEFAULT = new QName(NS_XML_MIME, "base64Binary");   
-   
    /** For out of bound transport (i.e. in headers); http://www.w3.org/2004/08/wsdl/feature/AD/data */
    static final String WSDL_PROPERTY_APPLICATION_DATA = "http://www.w3.org/2004/08/wsdl/feature/AD/data";
    /** The key to the original message part name */
