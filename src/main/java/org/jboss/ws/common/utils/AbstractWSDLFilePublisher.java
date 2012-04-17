@@ -154,7 +154,7 @@ public abstract class AbstractWSDLFilePublisher
                }
                
                URL targetURL = new URL(baseURI.substring(0, baseURI.lastIndexOf("/") + 1) + locationURI);
-               File targetFile = new File(targetURL.getPath());
+               File targetFile = new File(targetURL.toURI()); //JBWS-3488
                targetFile.getParentFile().mkdirs();
 
                WSDLFactory wsdlFactory = WSDLFactory.newInstance();
@@ -204,7 +204,7 @@ public abstract class AbstractWSDLFilePublisher
                   }
                   
                   URL xsdURL = new URL(baseURI.substring(0, baseURI.lastIndexOf("/") + 1) + schemaLocation);
-                  File targetFile = new File(xsdURL.getPath());
+                  File targetFile = new File(xsdURL.toURI()); //JBWS-3488
                   targetFile.getParentFile().mkdirs();
 
                   String deploymentName = dep.getCanonicalName();
@@ -221,7 +221,6 @@ public abstract class AbstractWSDLFilePublisher
                      resourcePath = resourcePath.replace("//", "/");
                   }
                   URL resourceURL = dep.getResourceResolver().resolve(resourcePath);
-//                  URL resourceURL = dep.getMetaDataFileURL(resourcePath);
                   InputStream is = new ResourceURL(resourceURL).openStream();
                   if (is == null)
                      throw new IllegalArgumentException(BundleUtils.getMessage(bundle, "CANNOT_FIND_SCHEMA_IMPORT_IN_DEPLOYMENT",  resourcePath));
