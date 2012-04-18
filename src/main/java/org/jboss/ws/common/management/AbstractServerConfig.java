@@ -119,7 +119,7 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
       }
       catch (UnknownHostException e)
       {
-         log.warn(BundleUtils.getMessage(bundle, "COULD_NOT_GET_ADDRESS_FOR_HOST",  host),  e);
+         log.debug(BundleUtils.getMessage(bundle, "COULD_NOT_GET_ADDRESS_FOR_HOST",  host),  e);
          //ignore, leave isIPv6Address to false
       }
       final boolean isIPv6Formatted = isIPv6Address && host.startsWith("[");
