@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source.
- * Copyright 2006, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2012, Red Hat Middleware LLC, and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -21,10 +21,10 @@
  */
 package org.jboss.ws.common.management;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.management.ObjectName;
 
@@ -38,6 +38,8 @@ import org.jboss.wsf.spi.management.EndpointResolver;
  * A general endpoint registry.
  *
  * @author Thomas.Diesler@jboss.com
+ * @author alessio.soldano@jboss.com
+ * 
  * @since 20-Apr-2007
  */
 public class DefaultEndpointRegistry implements EndpointRegistry
@@ -46,7 +48,7 @@ public class DefaultEndpointRegistry implements EndpointRegistry
    // provide logging
    private static final Logger log = Logger.getLogger(DefaultEndpointRegistry.class);
 
-   private Map<ObjectName, Endpoint> endpoints = new HashMap<ObjectName, Endpoint>();
+   private Map<ObjectName, Endpoint> endpoints = new ConcurrentHashMap<ObjectName, Endpoint>();
 
    public Endpoint getEndpoint(ObjectName epName)
    {
