@@ -29,8 +29,8 @@
   <properties>
     <jbossws.spi.version>2.1.0-SNAPSHOT</jbossws.spi.version>
     <jboss.jaxbintros.version>1.0.2.GA</jboss.jaxbintros.version>
-    <jboss.common.core.version>2.2.14.GA</jboss.common.core.version>
-    <jboss-logging-spi.version>2.0.5.GA</jboss-logging-spi.version>
+    <jboss.common.core.version>2.2.17.GA</jboss.common.core.version>
+    <jboss-logging-spi.version>2.1.0.GA</jboss-logging-spi.version>
     <wsdl4j.version>1.6.2</wsdl4j.version>
     <ejb.api.version>1.0.0.CR2</ejb.api.version>
     <jms.api.version>1.0.0.Final</jms.api.version>
