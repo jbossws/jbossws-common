@@ -97,8 +97,14 @@ public class ConfigHelper implements ClientConfigurer
       }
    }
    
+   /**
+    * Setups a given Binding instance using a specified CommonConfig
+    * 
+    * @param binding    the Binding instance to setup
+    * @param config     the CommonConfig with the input configuration
+    */
    @SuppressWarnings("rawtypes")
-   private static void setupConfigHandlers(Binding binding, CommonConfig config)
+   public void setupConfigHandlers(Binding binding, CommonConfig config)
    {
       if (config != null) {
          List<Handler> handlers = convertToHandlers(config.getPreHandlerChains(), binding); //PRE
