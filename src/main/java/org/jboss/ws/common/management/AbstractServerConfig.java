@@ -43,6 +43,7 @@ import org.jboss.wsf.spi.management.StackConfig;
 import org.jboss.wsf.spi.management.StackConfigFactory;
 import org.jboss.wsf.spi.management.WebServerInfo;
 import org.jboss.wsf.spi.management.WebServerInfoFactory;
+import org.jboss.wsf.spi.metadata.config.ClientConfig;
 import org.jboss.wsf.spi.metadata.config.EndpointConfig;
 
 /**
@@ -76,6 +77,8 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
    private boolean modifySOAPAddress;
    //The stack config
    protected StackConfig stackConfig;
+   // The default endpoint configs, if any
+   private final List<ClientConfig> clientConfigs = new ArrayList<ClientConfig>();
    // The default endpoint configs, if any
    private final List<EndpointConfig> endpointConfigs = new ArrayList<EndpointConfig>();
 
@@ -232,8 +235,18 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
       this.endpointConfigs.add(config);
    }
 
+   public void addClientConfig(ClientConfig config)
+   {
+      this.clientConfigs.add(config);
+   }
+
    public List<EndpointConfig> getEndpointConfigs()
    {
       return this.endpointConfigs;
+   }
+
+   public List<ClientConfig> getClientConfigs()
+   {
+      return this.clientConfigs;
    }
 }
