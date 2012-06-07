@@ -33,6 +33,7 @@ import java.util.StringTokenizer;
 import javax.xml.ws.Binding;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.handler.Handler;
+import javax.xml.ws.handler.LogicalHandler;
 import javax.xml.ws.http.HTTPBinding;
 import javax.xml.ws.soap.SOAPBinding;
 
@@ -40,7 +41,11 @@ import org.jboss.logging.Logger;
 import org.jboss.ws.api.configuration.ClientConfigurer;
 import org.jboss.ws.api.util.BundleUtils;
 import org.jboss.ws.common.utils.DelegateClassLoader;
+import org.jboss.wsf.spi.SPIProvider;
+import org.jboss.wsf.spi.SPIProviderResolver;
 import org.jboss.wsf.spi.classloading.ClassLoaderProvider;
+import org.jboss.wsf.spi.management.ServerConfig;
+import org.jboss.wsf.spi.management.ServerConfigFactory;
 import org.jboss.wsf.spi.metadata.config.ClientConfig;
 import org.jboss.wsf.spi.metadata.config.CommonConfig;
 import org.jboss.wsf.spi.metadata.config.ConfigMetaDataParser;
@@ -76,24 +81,37 @@ public class ConfigHelper implements ClientConfigurer
    }
    
    private static ClientConfig readConfig(String configFile, String configName) {
-      InputStream is = null;
-      try
-      {
-         is = SecurityActions.getContextClassLoader().getResourceAsStream(configFile);
-         ConfigRoot config = ConfigMetaDataParser.parse(is);
-         return config.getClientConfigByName(configName);
-      }
-      catch (Exception e)
-      {
-         throw new RuntimeException(BundleUtils.getMessage(bundle, "COULD_NOT_READ_CONFIG",  configFile));
-      }
-      finally
-      {
-         if (is != null) {
-            try {
-               is.close();
-            } catch (IOException e) { } //ignore
+      if (configFile != null) {
+         InputStream is = null;
+         try
+         {
+            is = SecurityActions.getContextClassLoader().getResourceAsStream(configFile);
+            ConfigRoot config = ConfigMetaDataParser.parse(is);
+            return config.getClientConfigByName(configName);
          }
+         catch (Exception e)
+         {
+            throw new RuntimeException(BundleUtils.getMessage(bundle, "COULD_NOT_READ_CONFIG",  configFile));
+         }
+         finally
+         {
+            if (is != null) {
+               try {
+                  is.close();
+               } catch (IOException e) { } //ignore
+            }
+         }
+      } else {
+         ServerConfig sc = getServerConfig();
+         if (sc != null) {
+            for (ClientConfig config : sc.getClientConfigs()) {
+               if (config.getConfigName().equals(configName))
+               {
+                  return config;
+               }
+            }
+         }
+         throw new RuntimeException(BundleUtils.getMessage(bundle, "CONFIG_NOT_FOUND",  configName));
       }
    }
    
@@ -107,15 +125,15 @@ public class ConfigHelper implements ClientConfigurer
    public void setupConfigHandlers(Binding binding, CommonConfig config)
    {
       if (config != null) {
-         List<Handler> handlers = convertToHandlers(config.getPreHandlerChains(), binding); //PRE
+         List<Handler> handlers = convertToHandlers(config.getPreHandlerChains(), binding, true); //PRE
          handlers.addAll(binding.getHandlerChain()); //ENDPOINT
-         handlers.addAll(convertToHandlers(config.getPostHandlerChains(), binding)); //POST
+         handlers.addAll(convertToHandlers(config.getPostHandlerChains(), binding, false)); //POST
          binding.setHandlerChain(handlers);
       }
    }
    
-   @SuppressWarnings("rawtypes")
-   private static List<Handler> convertToHandlers(List<UnifiedHandlerChainMetaData> handlerChains, Binding binding)
+   @SuppressWarnings({"rawtypes", "unchecked"})
+   private static List<Handler> convertToHandlers(List<UnifiedHandlerChainMetaData> handlerChains, Binding binding, boolean isPre)
    {
       List<Handler> handlers = new LinkedList<Handler>();
       if (handlerChains != null && !handlerChains.isEmpty())
@@ -139,7 +157,14 @@ public class ConfigHelper implements ClientConfigurer
                   {
                      if (h instanceof Handler)
                      {
-                        handlers.add((Handler)h);
+                        if (h instanceof LogicalHandler)
+                        {
+                           handlers.add(new LogicalConfigDelegateHandler((LogicalHandler)h, isPre));
+                        }
+                        else
+                        {
+                           handlers.add(new ConfigDelegateHandler((Handler)h, isPre));
+                        }
                      }
                      else
                      {
@@ -180,5 +205,13 @@ public class ConfigHelper implements ClientConfigurer
          Logger.getLogger(ConfigHelper.class).warnf(e, BundleUtils.getMessage(bundle, "CAN_NOT_ADD_HANDLER" , className));
          return null;
       }
+   }
+   
+   private static ServerConfig getServerConfig()
+   {
+      final ClassLoader cl = ClassLoaderProvider.getDefaultProvider().getServerIntegrationClassLoader();
+      SPIProvider spiProvider = SPIProviderResolver.getInstance(cl).getProvider();
+      ServerConfigFactory scf = spiProvider.getSPI(ServerConfigFactory.class, cl);
+      return scf != null ? scf.getServerConfig() : null;
    }
 }
