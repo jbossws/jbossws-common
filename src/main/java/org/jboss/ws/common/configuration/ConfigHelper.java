@@ -125,20 +125,33 @@ public class ConfigHelper implements ClientConfigurer
    public void setupConfigHandlers(Binding binding, CommonConfig config)
    {
       if (config != null) {
-         List<Handler> handlers = convertToHandlers(config.getPreHandlerChains(), binding, true); //PRE
-         handlers.addAll(binding.getHandlerChain()); //ENDPOINT
-         handlers.addAll(convertToHandlers(config.getPostHandlerChains(), binding, false)); //POST
+         //start with the use handlers only to remove the previously set configuration
+         List<Handler> userHandlers = getNonConfigHandlers(binding.getHandlerChain());
+         List<Handler> handlers = convertToHandlers(config.getPreHandlerChains(), binding.getBindingID(), true); //PRE
+         handlers.addAll(userHandlers); //ENDPOINT
+         handlers.addAll(convertToHandlers(config.getPostHandlerChains(), binding.getBindingID(), false)); //POST
          binding.setHandlerChain(handlers);
       }
    }
    
+   @SuppressWarnings("rawtypes")
+   private static List<Handler> getNonConfigHandlers(List<Handler> handlerChain) {
+      List<Handler> list = new LinkedList<Handler>();
+      for (Handler h : handlerChain) {
+         if (!(h instanceof ConfigDelegateHandler)) {
+            list.add(h);
+         }
+      }
+      return list;
+   }
+   
    @SuppressWarnings({"rawtypes", "unchecked"})
-   private static List<Handler> convertToHandlers(List<UnifiedHandlerChainMetaData> handlerChains, Binding binding, boolean isPre)
+   private static List<Handler> convertToHandlers(List<UnifiedHandlerChainMetaData> handlerChains, String bindingID, boolean isPre)
    {
       List<Handler> handlers = new LinkedList<Handler>();
       if (handlerChains != null && !handlerChains.isEmpty())
       {
-         final String protocolBinding = bindingIDs.get(binding.getBindingID());
+         final String protocolBinding = bindingIDs.get(bindingID);
          for (UnifiedHandlerChainMetaData handlerChain : handlerChains)
          {
             if (handlerChain.getPortNamePattern() != null || handlerChain.getServiceNamePattern() != null)
