@@ -74,7 +74,7 @@ public class ConfigHelper implements ClientConfigurer
    }
    
    @Override
-   public void addConfigHandlers(BindingProvider port, String configFile, String configName)
+   public void setConfigHandlers(BindingProvider port, String configFile, String configName)
    {
       ClientConfig config = readConfig(configFile, configName);
       setupConfigHandlers(port.getBinding(), config);
