@@ -219,7 +219,9 @@ public class JBossWSTestHelper
             if (jbossVersion == null)
                throw new IllegalStateException("Cannot obtain jboss version");
 
-            if (jbossVersion.startsWith("5.2"))
+            if (jbossVersion.startsWith("5.3"))
+               jbossVersion = "jboss51"; // SOA-P is in version 5.3, but it's based on AS 5.1.0
+            else if (jbossVersion.startsWith("5.2"))
                jbossVersion = "jboss51"; // EAP is in version 5.2, but it's based on AS 5.1.0
             else if (jbossVersion.startsWith("5.1"))
                jbossVersion = "jboss51";
