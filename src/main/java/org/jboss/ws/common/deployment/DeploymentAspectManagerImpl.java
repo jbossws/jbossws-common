@@ -141,6 +141,7 @@ public class DeploymentAspectManagerImpl implements DeploymentAspectManager
          }
          catch (RuntimeException rte)
          {
+            log.debug("Error during deployment!", rte);
             while (--i >= 0)
             {
                // destroy the deployment

@@ -64,7 +64,7 @@ public class EndpointLifecycleDeploymentAspect extends AbstractDeploymentAspect
       }
    }
 
-   private LifecycleHandler getLifecycleHandler(Endpoint ep, boolean assertHandler)
+   protected LifecycleHandler getLifecycleHandler(Endpoint ep, boolean assertHandler)
    {
       LifecycleHandler lifecycleHandler = ep.getLifecycleHandler();
       if (lifecycleHandler == null && assertHandler)
