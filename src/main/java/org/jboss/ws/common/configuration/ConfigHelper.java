@@ -79,8 +79,14 @@ public class ConfigHelper implements ClientConfigurer
       ClientConfig config = readConfig(configFile, configName);
       setupConfigHandlers(port.getBinding(), config);
    }
+
+   @Override
+   public void setConfigProperties(Object proxy, String configFile, String configName)
+   {
+      throw new RuntimeException(BundleUtils.getMessage(bundle, "NOT_SUPPORTED", this.getClass()));
+   }
    
-   private static ClientConfig readConfig(String configFile, String configName) {
+   protected ClientConfig readConfig(String configFile, String configName) {
       if (configFile != null) {
          InputStream is = null;
          try
