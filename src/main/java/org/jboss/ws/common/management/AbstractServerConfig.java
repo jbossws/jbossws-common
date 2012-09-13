@@ -25,6 +25,7 @@ import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -78,9 +79,9 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
    //The stack config
    protected StackConfig stackConfig;
    // The default endpoint configs, if any
-   private final List<ClientConfig> clientConfigs = new ArrayList<ClientConfig>();
+   private final List<ClientConfig> clientConfigs = Collections.synchronizedList(new ArrayList<ClientConfig>(2));
    // The default endpoint configs, if any
-   private final List<EndpointConfig> endpointConfigs = new ArrayList<EndpointConfig>();
+   private final List<EndpointConfig> endpointConfigs = Collections.synchronizedList(new ArrayList<EndpointConfig>(3));
 
    public MBeanServer getMbeanServer()
    {
