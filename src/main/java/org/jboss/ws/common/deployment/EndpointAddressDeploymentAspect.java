@@ -39,6 +39,7 @@ import org.jboss.wsf.spi.SPIProviderResolver;
 import org.jboss.wsf.spi.deployment.Deployment;
 import org.jboss.wsf.spi.deployment.Endpoint;
 import org.jboss.wsf.spi.deployment.HttpEndpoint;
+import org.jboss.wsf.spi.deployment.Service;
 import org.jboss.wsf.spi.management.ServerConfig;
 import org.jboss.wsf.spi.management.ServerConfigFactory;
 import org.jboss.wsf.spi.metadata.j2ee.EJBArchiveMetaData;
@@ -60,15 +61,16 @@ public class EndpointAddressDeploymentAspect extends AbstractDeploymentAspect
    @Override
    public void start(Deployment dep)
    {
-      String contextRoot = dep.getService().getContextRoot();
+      final Service service = dep.getService();
+      String contextRoot = service.getContextRoot();
       if (contextRoot == null)
          throw new IllegalStateException(BundleUtils.getMessage(bundle, "CANNOT_OBTAIN_CONTEXT_ROOT"));
       
       // TODO: remove this hack - review API
-      String protocol = (String)dep.getService().getProperty("protocol");
-      String host = (String)dep.getService().getProperty("host");
+      String protocol = (String)service.getProperty("protocol");
+      String host = (String)service.getProperty("host");
       
-      PortValue port = new PortValue((Integer)dep.getService().getProperty("port"), null);
+      PortValue port = new PortValue((Integer)service.getProperty("port"), null);
       
       if (protocol == null)
       {
@@ -81,7 +83,7 @@ public class EndpointAddressDeploymentAspect extends AbstractDeploymentAspect
       }
       Map<String, Endpoint> endpointsMap = new HashMap<String, Endpoint>();
       List<Endpoint> deleteList = new LinkedList<Endpoint>();
-      for (Endpoint ep : dep.getService().getEndpoints())
+      for (Endpoint ep : service.getEndpoints())
       {
          if (ep instanceof HttpEndpoint)
          {
@@ -116,7 +118,7 @@ public class EndpointAddressDeploymentAspect extends AbstractDeploymentAspect
       //Remove endpoints with duplicated address
       for (Endpoint ep : deleteList)
       {
-         dep.getService().getEndpoints().remove(ep);
+         service.getEndpoints().remove(ep);
       }
    }
    

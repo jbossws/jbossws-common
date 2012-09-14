@@ -69,12 +69,13 @@ public class AbstractDefaultEndpoint extends AbstractExtensible
    protected LifecycleHandler lifecycleHandler;
    protected EndpointMetrics metrics;
    protected String address;
-   protected List<RecordProcessor> recordProcessors = new Vector<RecordProcessor>();
+   protected List<RecordProcessor> recordProcessors = new Vector<RecordProcessor>(2);
    protected SecurityDomainContext securityDomainContext;
    protected InstanceProvider instanceProvider;
    
    AbstractDefaultEndpoint(String targetBean)
    {
+      super(8, 4);
       this.targetBean = targetBean;
       this.state = EndpointState.UNDEFINED;
    }

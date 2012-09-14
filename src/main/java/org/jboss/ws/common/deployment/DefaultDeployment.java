@@ -52,6 +52,7 @@ public class DefaultDeployment extends AbstractExtensible implements Deployment
 
    DefaultDeployment(String name, ClassLoader classLoader)
    {
+      super(8, 4);
       simpleName = name;
       state = DeploymentState.UNDEFINED;
       initialLoader = classLoader;

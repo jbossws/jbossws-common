@@ -34,7 +34,7 @@ import org.jboss.ws.api.util.BundleUtils;
 public class XMLPredefinedEntityReferenceResolver
 {
    private static final ResourceBundle bundle = BundleUtils.getBundle(XMLPredefinedEntityReferenceResolver.class);
-   private static HashMap<String, Character> entities = new HashMap<String, Character>();
+   private static HashMap<String, Character> entities = new HashMap<String, Character>(8);
 
    static
    {

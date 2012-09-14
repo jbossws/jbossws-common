@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source.
- * Copyright 2006, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2012, Red Hat Middleware LLC, and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -27,7 +27,6 @@ import org.jboss.wsf.spi.deployment.Service;
 import org.jboss.wsf.spi.deployment.Deployment;
 import org.jboss.wsf.spi.deployment.Endpoint;
 
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -49,6 +48,7 @@ public class DefaultService extends AbstractExtensible implements Service
 
    DefaultService()
    {
+      super(4, 4);
    }
 
    public Deployment getDeployment()

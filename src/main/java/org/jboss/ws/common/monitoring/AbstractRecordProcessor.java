@@ -37,7 +37,7 @@ import org.jboss.ws.api.monitoring.RecordProcessor;
  */
 public abstract class AbstractRecordProcessor implements RecordProcessor
 {
-   protected List<RecordFilter> filters = new Vector<RecordFilter>();
+   protected List<RecordFilter> filters = new Vector<RecordFilter>(1);
    protected boolean processDestinationHost = true;
    protected boolean processSourceHost = true;
    protected boolean processHeaders = true;

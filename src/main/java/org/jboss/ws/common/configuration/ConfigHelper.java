@@ -64,7 +64,7 @@ public class ConfigHelper implements ClientConfigurer
 {
    private static final ResourceBundle bundle = BundleUtils.getBundle(ConfigHelper.class);
    
-   private static Map<String, String> bindingIDs = new HashMap<String, String>();
+   private static Map<String, String> bindingIDs = new HashMap<String, String>(8);
    static {
       bindingIDs.put(SOAPBinding.SOAP11HTTP_BINDING, "##SOAP11_HTTP");
       bindingIDs.put(SOAPBinding.SOAP12HTTP_BINDING, "##SOAP12_HTTP");

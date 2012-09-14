@@ -21,6 +21,7 @@
  */
 package org.jboss.ws.common.deployment;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -43,9 +44,18 @@ public class ContextPropertiesDeploymentAspect extends AbstractDeploymentAspect
       return contextProperties;
    }
 
+   /**
+    * This is called once at AS boot time during deployment aspect parsing;
+    * this provided map is copied.
+    * 
+    * @param contextProperties
+    */
    public void setContextProperties(Map<String, String> contextProperties)
    {
-      this.contextProperties = contextProperties;
+      if (contextProperties != null) {
+         this.contextProperties = new HashMap<String, String>(4);
+         this.contextProperties.putAll(contextProperties);
+      }
    }
 
    @Override

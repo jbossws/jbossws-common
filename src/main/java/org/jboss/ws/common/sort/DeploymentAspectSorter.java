@@ -21,6 +21,7 @@
  */
 package org.jboss.ws.common.sort;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -98,9 +99,11 @@ public final class DeploymentAspectSorter
    {
       private Map<String, Dependency> dependencies = new HashMap<String, Dependency>();
       private Set<Vertex> vertices = new HashSet<Vertex>();
+      private int size = 0;
 
       public void addVertex(final DeploymentAspect aspect)
       {
+         size++;
          // create disjunct sets
          final Set<String> inputs = new HashSet<String>();
          inputs.addAll(aspect.getRequiresAsSet());
@@ -136,7 +139,7 @@ public final class DeploymentAspectSorter
       public List<DeploymentAspect> sort()
       {
          // L ← Empty list that will contain the sorted elements
-         List<DeploymentAspect> retVal = new LinkedList<DeploymentAspect>();
+         List<DeploymentAspect> retVal = new ArrayList<DeploymentAspect>(size);
          // S ← Set of all nodes with no incoming edges
          List<Vertex> roots = this.getRoots();
 
