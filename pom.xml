@@ -27,7 +27,7 @@
 
   <!-- Properties -->
   <properties>
-    <jbossws.spi.version>2.1.0.Beta3</jbossws.spi.version>
+    <jbossws.spi.version>2.1.0-SNAPSHOT</jbossws.spi.version>
     <jboss.jaxbintros.version>1.0.2.GA</jboss.jaxbintros.version>
     <jboss.common.core.version>2.2.17.GA</jboss.common.core.version>
     <jboss-logging-spi.version>2.1.0.GA</jboss-logging-spi.version>
