@@ -21,15 +21,15 @@
  */
 package org.jboss.ws.common.deployment;
 
+import static org.jboss.ws.common.Loggers.ROOT_LOGGER;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.ResourceBundle;
 
-import org.jboss.logging.Logger;
-import org.jboss.ws.api.util.BundleUtils;
+import org.jboss.ws.common.Messages;
 import org.jboss.wsf.spi.deployment.ResourceResolver;
 import org.jboss.wsf.spi.deployment.UnifiedVirtualFile;
 
@@ -42,9 +42,6 @@ import org.jboss.wsf.spi.deployment.UnifiedVirtualFile;
  */
 public class ResourceResolverImpl implements ResourceResolver
 {
-   private static final ResourceBundle bundle = BundleUtils.getBundle(ResourceResolverImpl.class);
-   private static Logger log = Logger.getLogger(ResourceResolverImpl.class);
-   
    private UnifiedVirtualFile rootFile;
    private Collection<UnifiedVirtualFile> metadataFiles;
    
@@ -87,8 +84,7 @@ public class ResourceResolverImpl implements ResourceResolver
                }
                else
                {
-                  if (log.isTraceEnabled())
-                     log.trace("Cannot get " + resourcePath + " from root file, trying with additional metadata files", e);
+                  ROOT_LOGGER.cannotGetRootFileTryingWithAdditionalMetaData(resourcePath);
                }
             }
          }
@@ -115,13 +111,12 @@ public class ResourceResolverImpl implements ResourceResolver
                   }
                   catch (IOException e)
                   {
-                     if (log.isTraceEnabled())
-                        log.trace("Cannot get " + resourcePath + " from " + uvf, e);
+                     ROOT_LOGGER.cannotGetRootResourceFrom(resourcePath, uvf, e);
                   }
                }
             }
             if (vfResource == null)
-               throw new IOException(BundleUtils.getMessage(bundle, "COULD_NOT_FIND_IN_THE_ADDITIONAL_METADATAFILES",  resourcePath ));
+               throw Messages.MESSAGES.cannotFindInAdditionalMetaData(resourcePath);
             
             resourceURL = vfResource.toURL();
          }

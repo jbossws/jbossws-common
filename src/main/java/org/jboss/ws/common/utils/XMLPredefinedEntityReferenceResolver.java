@@ -21,10 +21,9 @@
  */
 package org.jboss.ws.common.utils;
 
-import java.util.HashMap;
-import java.util.ResourceBundle;
+import static org.jboss.ws.common.Messages.MESSAGES;
 
-import org.jboss.ws.api.util.BundleUtils;
+import java.util.HashMap;
 
 /**
  * Utility class for resolving predefined XML entity and character references.
@@ -33,7 +32,6 @@ import org.jboss.ws.api.util.BundleUtils;
  */
 public class XMLPredefinedEntityReferenceResolver
 {
-   private static final ResourceBundle bundle = BundleUtils.getBundle(XMLPredefinedEntityReferenceResolver.class);
    private static HashMap<String, Character> entities = new HashMap<String, Character>(8);
 
    static
@@ -56,7 +54,7 @@ public class XMLPredefinedEntityReferenceResolver
 
       int end = source.indexOf(';', pos);
       if (end == -1)
-         throw new IllegalArgumentException(BundleUtils.getMessage(bundle, "INVALID_CHARACTER_REFERENCE"));
+         throw MESSAGES.entityResolutionInvalidCharacterReference(source);
 
       int c = Integer.parseInt(source.substring(pos, end), radix);
       builder.append((char) c);
@@ -68,12 +66,12 @@ public class XMLPredefinedEntityReferenceResolver
    {
       int end = source.indexOf(';', ++pos);
       if (end == -1)
-         throw new IllegalArgumentException(BundleUtils.getMessage(bundle, "INVALID_ENTITY_REFERENCE"));
+         throw MESSAGES.entityResolutionInvalidEntityReference(source);
 
       String entity = source.substring(pos, end);
       Character c = entities.get(entity);
       if (c == null)
-         throw new IllegalArgumentException(BundleUtils.getMessage(bundle, "INVALID_ENTITY",  entity));
+         throw MESSAGES.entityResolutionInvalidEntity(entity);
 
       builder.append(c.charValue());
 
@@ -104,7 +102,7 @@ public class XMLPredefinedEntityReferenceResolver
          
          int peek = pos + 1;
          if (peek == end)
-            throw new IllegalArgumentException(BundleUtils.getMessage(bundle, "INVALID_ENTITY_REFERENCE"));
+            throw MESSAGES.entityResolutionInvalidEntityReference(normalized);
 
          if (normalized.charAt(peek) == '#')
             pos = resolveCharRef(normalized, pos, builder);

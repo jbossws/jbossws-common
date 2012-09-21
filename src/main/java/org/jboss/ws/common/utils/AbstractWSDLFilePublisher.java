@@ -21,6 +21,8 @@
  */
 package org.jboss.ws.common.utils;
 
+import static org.jboss.ws.common.Loggers.DEPLOYMENT_LOGGER;;
+import static org.jboss.ws.common.Messages.MESSAGES;
 import static org.jboss.ws.common.integration.WSHelper.isJseDeployment;
 import static org.jboss.ws.common.integration.WSHelper.isWarArchive;
 
@@ -32,7 +34,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ResourceBundle;
 
 import javax.wsdl.Definition;
 import javax.wsdl.Import;
@@ -42,8 +43,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.jboss.logging.Logger;
-import org.jboss.ws.api.util.BundleUtils;
 import org.jboss.ws.common.DOMUtils;
 import org.jboss.ws.common.IOUtils;
 import org.jboss.wsf.spi.SPIProvider;
@@ -62,9 +61,6 @@ import org.w3c.dom.Element;
  */
 public abstract class AbstractWSDLFilePublisher
 {
-   private static final ResourceBundle bundle = BundleUtils.getBundle(AbstractWSDLFilePublisher.class);
-   private static final Logger log = Logger.getLogger(AbstractWSDLFilePublisher.class);
-   
    // The deployment info for the web service archive
    protected ArchiveDeployment dep;
    // The expected wsdl location in the deployment
@@ -113,7 +109,7 @@ public abstract class AbstractWSDLFilePublisher
             }
             catch (ParserConfigurationException pce)
             {
-               log.error(pce);
+               DEPLOYMENT_LOGGER.error(pce);
             }
             builder = DOMUtils.newDocumentBuilder(factory);
          }
@@ -168,7 +164,7 @@ public abstract class AbstractWSDLFilePublisher
                wsdlWriter.writeWSDL(subdef, fw);
                fw.close();
 
-               log.debug("WSDL import published to: " + targetURL);
+               DEPLOYMENT_LOGGER.wsdlImportPublishedTo(targetURL);
 
                // recursively publish imports
                publishWsdlImports(targetURL, subdef, published, expLocation);
@@ -233,7 +229,7 @@ public abstract class AbstractWSDLFilePublisher
                   URL resourceURL = dep.getResourceResolver().resolve(resourcePath);
                   InputStream is = new ResourceURL(resourceURL).openStream();
                   if (is == null)
-                     throw new IllegalArgumentException(BundleUtils.getMessage(bundle, "CANNOT_FIND_SCHEMA_IMPORT_IN_DEPLOYMENT",  resourcePath));
+                     throw MESSAGES.cannotFindSchemaImportInDeployment(resourcePath, deploymentName);
 
                   FileOutputStream fos = null;
                   try
@@ -246,7 +242,7 @@ public abstract class AbstractWSDLFilePublisher
                      if (fos != null) fos.close();
                   }
 
-                  log.debug("XMLSchema import published to: " + xsdURL);
+                  DEPLOYMENT_LOGGER.xmlSchemaImportPublishedTo(xsdURL);
 
                   // recursively publish imports
                   Element subdoc = DOMUtils.parse(xsdURL.openStream(), getDocumentBuilder());
@@ -289,7 +285,7 @@ public abstract class AbstractWSDLFilePublisher
          else
          {
             if (file.delete() == false)
-               log.warn(BundleUtils.getMessage(bundle, "CANNOT_DELETE_PUBLISHED_WSDL_DOCUMENT",  file.toURI().toURL()));
+               DEPLOYMENT_LOGGER.cannotDeletePublishedWsdlDoc(file.toURI().toURL());
          }
       }
 

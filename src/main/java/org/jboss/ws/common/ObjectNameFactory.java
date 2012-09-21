@@ -42,7 +42,7 @@ public class ObjectNameFactory
       }
       catch (MalformedObjectNameException e)
       {
-         throw new Error("Invalid ObjectName: " + name + "; " + e);
+         throw Messages.MESSAGES.invalidObjectName(e, name);
       }
    }
 
@@ -54,7 +54,7 @@ public class ObjectNameFactory
       }
       catch (MalformedObjectNameException e)
       {
-         throw new Error("Invalid ObjectName: " + domain + "," + key + "," + value + "; " + e);
+         throw Messages.MESSAGES.invalidObjectName(e, domain + "," + key + "," + value);
       }
    }
 
@@ -66,7 +66,7 @@ public class ObjectNameFactory
       }
       catch (MalformedObjectNameException e)
       {
-         throw new Error("Invalid ObjectName: " + domain + "," + table + "; " + e);
+         throw Messages.MESSAGES.invalidObjectName(e, domain + "," + table);
       }
    }
 }

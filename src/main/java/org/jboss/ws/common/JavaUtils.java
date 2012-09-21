@@ -21,6 +21,9 @@
  */
 package org.jboss.ws.common;
 
+import static org.jboss.ws.common.Loggers.ROOT_LOGGER;
+import static org.jboss.ws.common.Messages.MESSAGES;
+
 import java.lang.reflect.Array;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Method;
@@ -30,10 +33,6 @@ import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.ResourceBundle;
-
-import org.jboss.logging.Logger;
-import org.jboss.ws.api.util.BundleUtils;
 
 /** Java utilities
  *
@@ -42,13 +41,9 @@ import org.jboss.ws.api.util.BundleUtils;
  */
 public class JavaUtils
 {
-   private static final ResourceBundle bundle = BundleUtils.getBundle(JavaUtils.class);
-   // provide logging
-   private static final Logger log = Logger.getLogger(JavaUtils.class);
-
-   private static HashMap<String, Class<?>> primitiveNames = new HashMap<String, Class<?>>(8);
-   private static HashMap<String, String> primitiveNameDescriptors = new HashMap<String, String>(8);
-   private static HashSet<String> reservedKeywords = new HashSet<String>(50);
+   private static HashMap<String, Class<?>> primitiveNames = new HashMap<String, Class<?>>();
+   private static HashMap<String, String> primitiveNameDescriptors = new HashMap<String, String>();
+   private static HashSet<String> reservedKeywords = new HashSet<String>(64,0.8f);
 
    static
    {
@@ -219,7 +214,7 @@ public class JavaUtils
             componentType = loader.loadClass(name);
             break;
          default:
-            throw new IllegalArgumentException(BundleUtils.getMessage(bundle, "INVALID_BINARY_COMPONENT_FOR_ARRAY",  javaType.charAt(componentStart)));
+            throw MESSAGES.invalidBinaryComponentForArray(javaType);
       }
 
       // componentStart doubles as the number of '['s which is the number of dimensions
@@ -438,17 +433,15 @@ public class JavaUtils
     */
    public static boolean isAssignableFrom(Class<?> dest, Class<?> src)
    {
-      if (dest == null)
-         throw new IllegalArgumentException(BundleUtils.getMessage(bundle, "DESTINATION_CLASS_CANNOT_BE_NULL"));
-      if (src == null)
-         throw new IllegalArgumentException(BundleUtils.getMessage(bundle, "SOURCE_CLASS_CANNOT_BE_NULL"));
+      if (dest == null || src == null)
+         throw MESSAGES.cannotCheckClassIsAssignableFrom(dest, src);
 
       boolean isAssignable = dest.isAssignableFrom(src);
       if (isAssignable == false && dest.getName().equals(src.getName()))
       {
          ClassLoader destLoader = dest.getClassLoader();
          ClassLoader srcLoader = src.getClassLoader();
-         if(log.isTraceEnabled()) log.trace("Not assignable because of conflicting class loaders:\ndstLoader=" + destLoader + "\nsrcLoader=" + srcLoader);
+         if (ROOT_LOGGER.isTraceEnabled()) ROOT_LOGGER.notAssignableDueToConflictingClassLoaders(dest, src, destLoader, srcLoader);
       }
 
       if (isAssignable == false && isPrimitive(dest))
@@ -683,7 +676,7 @@ public class JavaUtils
 					}
 					catch (Exception e)
 					{
-						if(log.isTraceEnabled()) log.trace("Could not clear blacklists on " + loader);
+					    if (ROOT_LOGGER.isTraceEnabled()) ROOT_LOGGER.couldNotClearBlacklist(loader, e);
 					}
 				}
 			}			

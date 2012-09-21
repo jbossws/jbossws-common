@@ -40,9 +40,8 @@ import org.jboss.wsf.spi.invocation.InvocationHandler;
 public abstract class AbstractInvocationHandler extends InvocationHandler
 {
 
-   /** Logger. */
-   protected final Logger log = Logger.getLogger(this.getClass());
-
+   protected final Logger log = Logger.getLogger(this.getClass()); //TODO! remove after having refactored the AbstractInvocationHandlerEJB3 in ASIL
+   
    /**
     * Constructor.
     */

@@ -59,7 +59,6 @@ public final class InvocationHandlerJAXWS extends AbstractInvocationHandlerJSE
 
       if (!reference.isInitialized())
       {
-         this.log.debug("Calling postConstruct method on JAXWS JSE endpoint: " + targetBean);
          InjectionHelper.callPostConstructMethod(targetBean);
          reference.setInitialized();
       }

@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source.
- * Copyright 2006, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2012, Red Hat Middleware LLC, and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -21,6 +21,9 @@
  */
 package org.jboss.ws.common;
 
+import static org.jboss.ws.common.Loggers.ROOT_LOGGER;
+import static org.jboss.ws.common.Messages.MESSAGES;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -30,12 +33,9 @@ import java.security.PrivilegedAction;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import org.jboss.logging.Logger;
-import org.jboss.ws.api.util.BundleUtils;
 import org.jboss.wsf.spi.deployment.UnifiedVirtualFile;
 
 /**
@@ -48,10 +48,8 @@ import org.jboss.wsf.spi.deployment.UnifiedVirtualFile;
  */
 public class ResourceLoaderAdapter implements UnifiedVirtualFile
 {
-   private static final ResourceBundle bundle = BundleUtils.getBundle(ResourceLoaderAdapter.class);
    private URL resourceURL;
    private ClassLoader loader;
-   private static Logger log = Logger.getLogger(ResourceLoaderAdapter.class);
    private static final String jarFileSeparator = "/";
 
    public ResourceLoaderAdapter()
@@ -115,7 +113,7 @@ public class ResourceLoaderAdapter implements UnifiedVirtualFile
       }
 
       if (resourceURL == null)
-         throw new IOException(BundleUtils.getMessage(bundle, "CANNOT_GET_URL_FOR",  resourcePath));
+         throw MESSAGES.cannotGetURLFor(resourcePath);
 
       return new ResourceLoaderAdapter(loader, resourceURL);
    }
@@ -123,14 +121,14 @@ public class ResourceLoaderAdapter implements UnifiedVirtualFile
    public URL toURL()
    {
       if (null == this.resourceURL)
-         throw new IllegalStateException(BundleUtils.getMessage(bundle, "UNIFIEDVIRTUALFILE_NOT_INITIALIZED"));
+         throw MESSAGES.unifiedVirtualFileNotInitialized(loader);
       return resourceURL;
    }
 
    public List<UnifiedVirtualFile> getChildren() throws IOException
    {
       if (null == this.resourceURL)
-         throw new IllegalStateException(BundleUtils.getMessage(bundle, "UNIFIEDVIRTUALFILE_NOT_INITIALIZED"));
+         throw MESSAGES.unifiedVirtualFileNotInitialized(loader);
       List<UnifiedVirtualFile> list = new LinkedList<UnifiedVirtualFile>();
       if (resourceURL.getProtocol().equals("jar"))
       {
@@ -191,7 +189,7 @@ public class ResourceLoaderAdapter implements UnifiedVirtualFile
          }
          catch (Exception e)
          {
-            log.error(BundleUtils.getMessage(bundle, "CANNOT_GET_CHILDREN_FOR_RESOURCE",  resourceURL),  e);
+            ROOT_LOGGER.cannotGetChildrenForResource(e, resourceURL);
          }
       }
       else //std file/dir
@@ -213,7 +211,7 @@ public class ResourceLoaderAdapter implements UnifiedVirtualFile
          }
          catch (Exception e)
          {
-            log.error(BundleUtils.getMessage(bundle, "CANNOT_GET_CHILDREN_FOR_RESOURCE",  resourceURL),  e);
+            ROOT_LOGGER.cannotGetChildrenForResource(e, resourceURL);
          }
       }
       return list;
@@ -222,7 +220,7 @@ public class ResourceLoaderAdapter implements UnifiedVirtualFile
    public String getName()
    {
       if (null == this.resourceURL)
-         throw new IllegalStateException(BundleUtils.getMessage(bundle, "UNIFIEDVIRTUALFILE_NOT_INITIALIZED"));
+         throw MESSAGES.unifiedVirtualFileNotInitialized(loader);
       String name = null;
       try
       {
@@ -234,7 +232,7 @@ public class ResourceLoaderAdapter implements UnifiedVirtualFile
       }
       catch (Exception e)
       {
-         log.error(BundleUtils.getMessage(bundle, "CANNOT_GET_NAME_FOR_RESOURCE",  resourceURL));
+         ROOT_LOGGER.cannotGetNameForResource(e, resourceURL);
       }
       return name;
    }

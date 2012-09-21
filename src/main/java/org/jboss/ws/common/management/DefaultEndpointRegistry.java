@@ -21,15 +21,15 @@
  */
 package org.jboss.ws.common.management;
 
+import static org.jboss.ws.common.Loggers.MANAGEMENT_LOGGER;
+import static org.jboss.ws.common.Messages.MESSAGES;
+
 import java.util.Map;
-import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.management.ObjectName;
 
-import org.jboss.logging.Logger;
-import org.jboss.ws.api.util.BundleUtils;
 import org.jboss.wsf.spi.deployment.Endpoint;
 import org.jboss.wsf.spi.management.EndpointRegistry;
 import org.jboss.wsf.spi.management.EndpointResolver;
@@ -44,19 +44,15 @@ import org.jboss.wsf.spi.management.EndpointResolver;
  */
 public class DefaultEndpointRegistry implements EndpointRegistry
 {
-   private static final ResourceBundle bundle = BundleUtils.getBundle(DefaultEndpointRegistry.class);
-   // provide logging
-   private static final Logger log = Logger.getLogger(DefaultEndpointRegistry.class);
-
    private Map<ObjectName, Endpoint> endpoints = new ConcurrentHashMap<ObjectName, Endpoint>();
 
    public Endpoint getEndpoint(ObjectName epName)
    {
       if (epName == null)
-         throw new IllegalArgumentException(BundleUtils.getMessage(bundle, "ENDPOINT_NAME_CANNOT_BE_NULL"));
+         throw MESSAGES.endpointNameCannotBeNull();
 
       if (isRegistered(epName) == false)
-         throw new IllegalStateException(BundleUtils.getMessage(bundle, "ENDPOINT_NOT_REGISTERED",  epName));
+         throw MESSAGES.endpointNotRegistered(epName);
 
       Endpoint endpoint = endpoints.get(epName);
       return endpoint;
@@ -70,7 +66,7 @@ public class DefaultEndpointRegistry implements EndpointRegistry
    public boolean isRegistered(ObjectName epName)
    {
       if (epName == null)
-         throw new IllegalArgumentException(BundleUtils.getMessage(bundle, "ENDPOINT_NAME_CANNOT_BE_NULL"));
+         throw MESSAGES.endpointNameCannotBeNull();
 
       return endpoints.get(epName) != null;
    }
@@ -83,29 +79,29 @@ public class DefaultEndpointRegistry implements EndpointRegistry
    public void register(Endpoint endpoint)
    {
       if (endpoint == null)
-         throw new IllegalArgumentException(BundleUtils.getMessage(bundle, "ENDPOINT_CANNOT_BE_NULL"));
+         throw MESSAGES.cannotRegisterUnregisterNullEndpoint();
 
       ObjectName epName = endpoint.getName();
       if (epName == null)
-         throw new IllegalStateException(BundleUtils.getMessage(bundle, "ENDPOINT_NAME_CANNOT_BE_NULL_FOR",  endpoint));
+         throw MESSAGES.cannotRegisterEndpointWithNullName(endpoint.getName());
 
       if (isRegistered(epName))
-         throw new IllegalStateException(BundleUtils.getMessage(bundle, "ENDPOINT_ALREADY_REGISTERED",  epName));
+         throw MESSAGES.endpointAlreadyRegistered(epName);
 
-      log.info("register: " + epName);
+      MANAGEMENT_LOGGER.endpointRegistered(epName);
       endpoints.put(epName, endpoint);
    }
 
    public void unregister(Endpoint endpoint)
    {
       if (endpoint == null)
-         throw new IllegalArgumentException(BundleUtils.getMessage(bundle, "ENDPOINT_CANNOT_BE_NULL"));
+         throw MESSAGES.cannotRegisterUnregisterNullEndpoint();
 
       ObjectName epName = endpoint.getName();
       if (isRegistered(epName) == false)
-         throw new IllegalStateException(BundleUtils.getMessage(bundle, "ENDPOINT_NOT_REGISTERED",  epName));
+         throw MESSAGES.endpointNotRegistered(epName);
 
-      log.info("remove: " + epName);
+      MANAGEMENT_LOGGER.endpointUnregistered(epName);
       endpoints.remove(epName);
    }
 }

@@ -21,10 +21,8 @@
  */
 package org.jboss.ws.common.spi;
 
-import java.util.ResourceBundle;
-
-import org.jboss.ws.api.util.BundleUtils;
 import org.jboss.ws.api.util.ServiceLoader;
+import org.jboss.ws.common.Messages;
 import org.jboss.ws.common.deployment.DefaultDeploymentModelFactory;
 import org.jboss.ws.common.deployment.DefaultLifecycleHandlerFactory;
 import org.jboss.ws.common.invocation.DefaultResourceInjectorFactory;
@@ -34,7 +32,6 @@ import org.jboss.ws.common.management.DefaultJMSEndpointResolver;
 import org.jboss.ws.common.security.DefaultSecurityAdapterFactory;
 import org.jboss.ws.common.serviceref.DefaultServiceRefHandlerFactory;
 import org.jboss.wsf.spi.SPIProvider;
-import org.jboss.wsf.spi.WSFException;
 import org.jboss.wsf.spi.deployment.DeploymentModelFactory;
 import org.jboss.wsf.spi.deployment.LifecycleHandlerFactory;
 import org.jboss.wsf.spi.invocation.ResourceInjectorFactory;
@@ -50,7 +47,6 @@ import org.jboss.wsf.spi.serviceref.ServiceRefHandlerFactory;
  */
 class DefaultSPIProvider extends SPIProvider
 {
-   private static final ResourceBundle bundle = BundleUtils.getBundle(DefaultSPIProvider.class);
    /**
     * Gets the specified SPI, using the provided classloader
     */
@@ -99,7 +95,7 @@ class DefaultSPIProvider extends SPIProvider
       }
 
       if (returnType == null)
-         throw new WSFException(BundleUtils.getMessage(bundle, "FAILED_TO_PROVIDE_SPI",  spiType ));
+         throw Messages.MESSAGES.failedToProvideSPI(spiType);
       
       return returnType;
    }

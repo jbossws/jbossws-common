@@ -21,9 +21,7 @@
  */
 package org.jboss.ws.common.deployment;
 
-import java.util.ResourceBundle;
-
-import org.jboss.ws.api.util.BundleUtils;
+import org.jboss.ws.common.Messages;
 import org.jboss.ws.common.ObjectNameFactory;
 import org.jboss.ws.common.integration.AbstractDeploymentAspect;
 import org.jboss.wsf.spi.deployment.Deployment;
@@ -37,15 +35,12 @@ import org.jboss.wsf.spi.deployment.Endpoint;
  */
 public class EndpointNameDeploymentAspect extends AbstractDeploymentAspect
 {
-
-   private static final ResourceBundle bundle = BundleUtils.getBundle(EndpointNameDeploymentAspect.class);
-
    @Override
    public void start(Deployment dep)
    {
       final String contextRoot = dep.getService().getContextRoot();
       if (contextRoot == null || contextRoot.startsWith("/") == false)
-         throw new IllegalStateException(BundleUtils.getMessage(bundle, "CONTEXT_ROOT_EXPECTED_TO_START_WITH_LEADING_SLASH",  contextRoot));
+         throw Messages.MESSAGES.contextRootExpectedToStartWithLeadingSlash(contextRoot);
 
       for (Endpoint ep : dep.getService().getEndpoints())
       {

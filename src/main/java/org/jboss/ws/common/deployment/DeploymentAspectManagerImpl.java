@@ -21,18 +21,18 @@
  */
 package org.jboss.ws.common.deployment;
 
+import static org.jboss.ws.common.Loggers.DEPLOYMENT_LOGGER;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.jboss.logging.Logger;
-import org.jboss.ws.api.util.BundleUtils;
 import org.jboss.wsf.spi.deployment.Deployment;
-import org.jboss.wsf.spi.deployment.DeploymentState;
 import org.jboss.wsf.spi.deployment.DeploymentAspect;
 import org.jboss.wsf.spi.deployment.DeploymentAspectManager;
+import org.jboss.wsf.spi.deployment.DeploymentState;
 import org.jboss.wsf.spi.deployment.WSFDeploymentException;
 
 /**
@@ -42,9 +42,6 @@ import org.jboss.wsf.spi.deployment.WSFDeploymentException;
  */
 public class DeploymentAspectManagerImpl implements DeploymentAspectManager
 {
-   // provide logging
-   private static final Logger log = Logger.getLogger(DeploymentAspectManagerImpl.class);
-
    private String name;
    private DeploymentAspectManager parent;
    private List<DeploymentAspect> depAspects = new ArrayList<DeploymentAspect>();
@@ -79,14 +76,14 @@ public class DeploymentAspectManagerImpl implements DeploymentAspectManager
       depAspects.clear();
       depAspects.addAll(aspects);
 
-      if (log.isTraceEnabled())
+      if (DEPLOYMENT_LOGGER.isTraceEnabled())
       {
          // Debug the aspect list
          StringBuilder builder = new StringBuilder("setDeploymentAspects on " + name);
          for (DeploymentAspect aspect : aspects)
             builder.append("\n  " + aspect.getClass().getName() + " provides: " + aspect.getProvidesAsSet() + " requires: " + aspect.getRequiresAsSet());
    
-         log.trace(builder);
+         DEPLOYMENT_LOGGER.trace(builder);
       }
    }
 
@@ -141,7 +138,7 @@ public class DeploymentAspectManagerImpl implements DeploymentAspectManager
          }
          catch (RuntimeException rte)
          {
-            log.debug("Error during deployment!", rte);
+            DEPLOYMENT_LOGGER.errorDuringDeployment(dep.getSimpleName(), rte);
             while (--i >= 0)
             {
                // destroy the deployment
@@ -152,7 +149,7 @@ public class DeploymentAspectManagerImpl implements DeploymentAspectManager
                catch (RuntimeException destroyRte)
                {
                   //log previous exception in the exotic case in which also stopping already started aspects fails
-                  log.error(BundleUtils.getMessage(BundleUtils.getBundle(DeploymentAspectManagerImpl.class),"ERROR_DESTROYING_DEPLOYMENT"), rte);
+                  DEPLOYMENT_LOGGER.errorDestroyingDeployment(dep.getSimpleName(), rte);
                   throw destroyRte;
                }
             }
@@ -190,11 +187,11 @@ public class DeploymentAspectManagerImpl implements DeploymentAspectManager
 
    private void logInvocation(DeploymentAspect aspect, String method)
    {
-      if (log.isTraceEnabled())
+      if (DEPLOYMENT_LOGGER.isTraceEnabled())
       {
          String name = aspect.getClass().getName();
          name = name.substring(name.lastIndexOf(".") + 1);
-         log.trace("[" + this.name + "]" + name + ":" + method);
+         DEPLOYMENT_LOGGER.trace("[" + this.name + "]" + name + ":" + method);
       }
    }
 

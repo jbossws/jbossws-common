@@ -21,6 +21,9 @@
  */
 package org.jboss.ws.common;
 
+import static org.jboss.ws.common.Loggers.ROOT_LOGGER;
+import static org.jboss.ws.common.Messages.MESSAGES;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -28,7 +31,6 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
-import java.util.ResourceBundle;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
@@ -45,8 +47,6 @@ import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.jboss.logging.Logger;
-import org.jboss.ws.api.util.BundleUtils;
 import org.jboss.ws.common.utils.JBossWSEntityResolver;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -66,9 +66,6 @@ import org.xml.sax.SAXException;
  */
 public final class DOMUtils extends org.jboss.ws.api.util.DOMUtils
 {
-   private static final ResourceBundle bundle = BundleUtils.getBundle(DOMUtils.class);
-   private static Logger log = Logger.getLogger(DOMUtils.class);
-
    private static final String DISABLE_DEFERRED_NODE_EXPANSION = "org.jboss.ws.disable_deferred_node_expansion";
    private static final String DEFER_NODE_EXPANSION_FEATURE = "http://apache.org/xml/features/dom/defer-node-expansion";
    private static final String ENABLE_DOCTYPE_DECL = "org.jboss.ws.enable_doctype_decl";
@@ -138,7 +135,7 @@ public final class DOMUtils extends org.jboss.ws.api.util.DOMUtils
          }
          catch (Exception e)
          {
-            throw new RuntimeException(BundleUtils.getMessage(bundle, "UNABLE_TO_CREATE_DOCUMENT_BUILDER"),  e);
+            throw MESSAGES.unableToCreateInstanceOf(e, DocumentBuilder.class.getName());
          }
       }
       
@@ -154,9 +151,9 @@ public final class DOMUtils extends org.jboss.ws.api.util.DOMUtils
       }
       catch (Throwable t)
       {
-         boolean debugEnabled = log.isDebugEnabled();
+         boolean debugEnabled = ROOT_LOGGER.isDebugEnabled();
          if (debugEnabled)
-            log.debug("Cannot load JBossWSEntityResolver");
+            ROOT_LOGGER.couldNotLoad("JBossWSEntityResolver");
          String[] resolvers = new String[] { "org.jboss.util.xml.JBossEntityResolver" };
          ClassLoader loader = SecurityActions.getContextClassLoader();
          for (String resolver : resolvers)
@@ -170,7 +167,7 @@ public final class DOMUtils extends org.jboss.ws.api.util.DOMUtils
             catch (Exception ex)
             {
                if (debugEnabled)
-                  log.debug("Cannot load: " + resolver);
+                  ROOT_LOGGER.couldNotLoad(resolver);
             }
          }
       }
@@ -198,7 +195,7 @@ public final class DOMUtils extends org.jboss.ws.api.util.DOMUtils
       }
       catch (ParserConfigurationException pce)
       {
-         log.error(pce);
+         ROOT_LOGGER.error(pce);
       }
    }
 
@@ -229,7 +226,7 @@ public final class DOMUtils extends org.jboss.ws.api.util.DOMUtils
       }
       catch (Exception e)
       {
-         throw new RuntimeException(BundleUtils.getMessage(bundle, "UNABLE_TO_CREATE_DOCUMENT_BUILDER"),  e);
+         throw MESSAGES.unableToCreateInstanceOf(e, DocumentBuilder.class.getName());
       }
    }
 
@@ -253,7 +250,7 @@ public final class DOMUtils extends org.jboss.ws.api.util.DOMUtils
       }
       catch (IOException e)
       {
-         log.error(BundleUtils.getMessage(bundle, "CANNOT_PARSE",  xmlString));
+         ROOT_LOGGER.cannotParse(xmlString);
          throw e;
       }
    }
@@ -334,7 +331,7 @@ public final class DOMUtils extends org.jboss.ws.api.util.DOMUtils
    public static Element createElement(String localPart)
    {
       Document doc = getOwnerDocument();
-      if (log.isTraceEnabled()) log.trace("createElement {}" + localPart);
+      if (ROOT_LOGGER.isTraceEnabled()) ROOT_LOGGER.trace("createElement {}" + localPart);
       return doc.createElement(localPart);
    }
 
@@ -345,7 +342,7 @@ public final class DOMUtils extends org.jboss.ws.api.util.DOMUtils
    public static Element createElement(String localPart, String prefix)
    {
       Document doc = getOwnerDocument();
-      if (log.isTraceEnabled()) log.trace("createElement {}" + prefix + ":" + localPart);
+      if (ROOT_LOGGER.isTraceEnabled()) ROOT_LOGGER.trace("createElement {}" + prefix + ":" + localPart);
       return doc.createElement(prefix + ":" + localPart);
    }
 
@@ -358,12 +355,12 @@ public final class DOMUtils extends org.jboss.ws.api.util.DOMUtils
       Document doc = getOwnerDocument();
       if (prefix == null || prefix.length() == 0)
       {
-         if (log.isTraceEnabled()) log.trace("createElement {" + uri + "}" + localPart);
+         if (ROOT_LOGGER.isTraceEnabled()) ROOT_LOGGER.trace("createElement {" + uri + "}" + localPart);
          return doc.createElementNS(uri, localPart);
       }
       else
       {
-         if (log.isTraceEnabled()) log.trace("createElement {" + uri + "}" + prefix + ":" + localPart);
+         if (ROOT_LOGGER.isTraceEnabled()) ROOT_LOGGER.trace("createElement {" + uri + "}" + prefix + ":" + localPart);
          return doc.createElementNS(uri, prefix + ":" + localPart);
       }
    }
@@ -479,7 +476,7 @@ public final class DOMUtils extends org.jboss.ws.api.util.DOMUtils
       }
       else
       {
-         throw new RuntimeException(BundleUtils.getMessage(bundle, "SOURCE_TYPE_NOT_IMPLEMENTED",  source.getClass()));
+         throw MESSAGES.sourceTypeNotImplemented(source.getClass());
       }
 
       return retElement;

@@ -21,6 +21,9 @@
  */
 package org.jboss.ws.common.utils;
 
+import static org.jboss.ws.common.Loggers.ROOT_LOGGER;
+import static org.jboss.ws.common.Messages.MESSAGES;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -31,13 +34,10 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Map;
 import java.util.Properties;
-import java.util.ResourceBundle;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.jboss.logging.Logger;
 import org.jboss.util.xml.JBossEntityResolver;
-import org.jboss.ws.api.util.BundleUtils;
 import org.jboss.wsf.spi.classloading.ClassLoaderProvider;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -50,15 +50,11 @@ import org.xml.sax.SAXException;
  */
 public class JBossWSEntityResolver extends JBossEntityResolver
 {
-   private static final ResourceBundle bundle = BundleUtils.getBundle(JBossWSEntityResolver.class);
    /**
     * A synchronized weak hash map that keeps entities' properties for each classloader.
     * Weak keys are used to remove entries when classloaders are garbage collected; values are filenames -> properties.
     */
    private static Map<ClassLoader, Map<String, Properties>> propertiesMap = Collections.synchronizedMap(new WeakHashMap<ClassLoader, Map<String, Properties>>());
-   
-   // provide logging
-   private static final Logger log = Logger.getLogger(JBossWSEntityResolver.class);
    
    private ClassLoader additionalClassLoader;
 
@@ -99,7 +95,7 @@ public class JBossWSEntityResolver extends JBossEntityResolver
          // load entities
          props = loadEntitiesMappingFromClasspath(entitiesResource, tccl, this.additionalClassLoader);
          if (props.size() == 0)
-            throw new IllegalArgumentException(BundleUtils.getMessage(bundle, "NO_ENTITIES_MAPPING_DEFINED_IN_RESOURCE_FILE",  entitiesResource));
+            throw MESSAGES.entityResolutionNoEntityMapppingDefined(entitiesResource);
          map.put(entitiesResource, props);
       }
       
@@ -126,7 +122,7 @@ public class JBossWSEntityResolver extends JBossEntityResolver
             InputStream is = new DelegateClassLoader(additionalClassLoader, classLoader).getResourceAsStream(entitiesResource);
             // get stream
             if (is == null)
-               throw new IllegalArgumentException(BundleUtils.getMessage(bundle, "RESOURCE_NOT_FOUND",  entitiesResource ));
+               throw MESSAGES.entityResolutionResourceNotFound(entitiesResource);
 
             // load props
             Properties props = new Properties();
@@ -136,7 +132,7 @@ public class JBossWSEntityResolver extends JBossEntityResolver
             }
             catch (IOException ioe)
             {
-               log.error(BundleUtils.getMessage(bundle, "CANNOT_READ_RESOURCE",  entitiesResource),  ioe);
+               ROOT_LOGGER.cannotReadResource(entitiesResource, ioe);
             }
             finally
             {
@@ -150,16 +146,16 @@ public class JBossWSEntityResolver extends JBossEntityResolver
 
    public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException
    {
-      if(log.isTraceEnabled()) log.trace("resolveEntity: [pub=" + publicId + ",sysid=" + systemId + "]");
+      if(ROOT_LOGGER.isTraceEnabled()) ROOT_LOGGER.trace(this.getClass().getName(), "resolveEntity: [pub=" + publicId + ",sysid=" + systemId + "]", null);
       InputSource inputSource = super.resolveEntity(publicId, systemId);
 
       if (inputSource == null)
-         inputSource = resolveSystemIDAsURL(systemId, log.isTraceEnabled());
+         inputSource = resolveSystemIDAsURL(systemId, ROOT_LOGGER.isTraceEnabled());
 
       if (inputSource == null)
       {
-         if (log.isDebugEnabled())
-            log.debug("Cannot resolve entity: [pub=" + publicId + ",sysid=" + systemId + "]");
+         if (ROOT_LOGGER.isDebugEnabled())
+            ROOT_LOGGER.debug(this.getClass().getName(), "Cannot resolve entity: [pub=" + publicId + ",sysid=" + systemId + "]", null);
       }
       
       return inputSource;
@@ -193,7 +189,7 @@ public class JBossWSEntityResolver extends JBossEntityResolver
          return null;
 
       if (trace)
-         log.trace("resolveIDAsResourceURL, id=" + id);
+         ROOT_LOGGER.trace(this.getClass().getName(), "resolveIDAsResourceURL, id=" + id, null);
 
       InputSource inputSource = null;
 
@@ -201,12 +197,9 @@ public class JBossWSEntityResolver extends JBossEntityResolver
       try
       {
          if (trace)
-            log.trace("Trying to resolve id as a URL");
+            ROOT_LOGGER.trace(this.getClass().getName(), "Trying to resolve id as a URL", null);
 
          URL url = new URL(id);
-         if (url.getProtocol().equalsIgnoreCase("file") == false)
-            log.warn(BundleUtils.getMessage(bundle, "TRYING_TO_RESOLVE_ID_AS_A_NON-FILE_URL",  id));
-
          InputStream ins = new ResourceURL(url).openStream();
          if (ins != null)
          {
@@ -215,21 +208,21 @@ public class JBossWSEntityResolver extends JBossEntityResolver
          }
          else
          {
-            log.warn(BundleUtils.getMessage(bundle, "CANNOT_LOAD_ID_AS_URL",  id));
+            ROOT_LOGGER.cannotLoadIDAsURL(id, url.getProtocol());
          }
 
          if (trace)
-            log.trace("Resolved id as a URL");
+            ROOT_LOGGER.trace(this.getClass().getName(), "Resolved id as a URL", null);
       }
       catch (MalformedURLException ignored)
       {
          if (trace)
-            log.trace("id is not a url: " + id, ignored);
+            ROOT_LOGGER.trace(this.getClass().getName(), "id is not a url: " + id, ignored);
       }
       catch (IOException e)
       {
          if (trace)
-            log.trace("Failed to obtain URL.InputStream from id: " + id, e);
+            ROOT_LOGGER.trace(this.getClass().getName(), "Failed to obtain URL.InputStream from id: " + id, e);
       }
       return inputSource;
    }

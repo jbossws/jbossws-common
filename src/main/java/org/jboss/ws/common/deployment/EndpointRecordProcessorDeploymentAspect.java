@@ -23,13 +23,13 @@ package org.jboss.ws.common.deployment;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ResourceBundle;
 
 import javax.management.JMException;
 import javax.management.MBeanServer;
+import javax.management.ObjectName;
 
 import org.jboss.ws.api.monitoring.RecordProcessor;
-import org.jboss.ws.api.util.BundleUtils;
+import org.jboss.ws.common.Loggers;
 import org.jboss.ws.common.ObjectNameFactory;
 import org.jboss.ws.common.integration.AbstractDeploymentAspect;
 import org.jboss.ws.common.monitoring.ManagedRecordProcessor;
@@ -44,7 +44,6 @@ import org.jboss.wsf.spi.deployment.Endpoint;
  */
 public class EndpointRecordProcessorDeploymentAspect extends AbstractDeploymentAspect
 {
-   private static final ResourceBundle bundle = BundleUtils.getBundle(EndpointRecordProcessorDeploymentAspect.class);
    private MBeanServer mbeanServer;
    private List<RecordProcessor> processors;
 
@@ -94,33 +93,35 @@ public class EndpointRecordProcessorDeploymentAspect extends AbstractDeploymentA
 
    private void registerRecordProcessor(RecordProcessor processor, Endpoint ep)
    {
+      final ObjectName on = ObjectNameFactory.create(ep.getName() + ",recordProcessor=" + processor.getName());
       try
       {
-         mbeanServer.registerMBean(processor, ObjectNameFactory.create(ep.getName() + ",recordProcessor=" + processor.getName()));
+         mbeanServer.registerMBean(processor, on);
       }
       catch (JMException ex)
       {
-         log.debug("Cannot register endpoint with JMX server, trying with the default ManagedRecordProcessor: " + ex.getMessage());
+         Loggers.MANAGEMENT_LOGGER.cannotRegisterProvidedProcessor(on, ex);
          try
          {
-            mbeanServer.registerMBean(new ManagedRecordProcessor(processor), ObjectNameFactory.create(ep.getName() + ",recordProcessor=" + processor.getName()));
+            mbeanServer.registerMBean(new ManagedRecordProcessor(processor), on);
          }
          catch (JMException innerEx)
          {
-            log.error(BundleUtils.getMessage(bundle, "CANNOT_REGISTER_ENDPOINT_WITH_JMX_SERVER"),  innerEx);
+            Loggers.MANAGEMENT_LOGGER.cannotRegisterProcessorWithJmxServer(on, innerEx);
          }
       }
    }
 
    private void unregisterRecordProcessor(RecordProcessor processor, Endpoint ep)
    {
+      final ObjectName on = ObjectNameFactory.create(ep.getName() + ",recordProcessor=" + processor.getName());
       try
       {
-         mbeanServer.unregisterMBean(ObjectNameFactory.create(ep.getName() + ",recordProcessor=" + processor.getName()));
+         mbeanServer.unregisterMBean(on);
       }
       catch (JMException ex)
       {
-         log.error(BundleUtils.getMessage(bundle, "CANNOT_UNREGISTER_RECORD_PROCESSOR_WITH_JMX_SERVER"),  ex);
+         Loggers.MANAGEMENT_LOGGER.cannotUnregisterProcessorWithJmxServer(on, ex);
       }
    }
 

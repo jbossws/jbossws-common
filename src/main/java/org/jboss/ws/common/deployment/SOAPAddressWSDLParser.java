@@ -23,6 +23,7 @@ package org.jboss.ws.common.deployment;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+import static org.jboss.ws.common.Messages.MESSAGES;
 import static org.jboss.wsf.spi.util.StAXUtils.attributeAsQName;
 import static org.jboss.wsf.spi.util.StAXUtils.match;
 import static org.jboss.wsf.spi.util.StAXUtils.nextElement;
@@ -32,15 +33,12 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.ResourceBundle;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import javax.xml.ws.WebServiceException;
 
-import org.jboss.ws.api.util.BundleUtils;
 import org.jboss.wsf.spi.util.StAXUtils;
 
 /**
@@ -50,7 +48,6 @@ import org.jboss.wsf.spi.util.StAXUtils;
  */
 public final class SOAPAddressWSDLParser
 {
-   private static final ResourceBundle bundle = BundleUtils.getBundle(SOAPAddressWSDLParser.class);
    public static final String SOAP_OVER_JMS_NS = "http://www.w3.org/2010/soapjms/";
    private static final String WSDL_NS = "http://schemas.xmlsoap.org/wsdl/";
    private static final String SOAP_NS = "http://schemas.xmlsoap.org/wsdl/soap/";
@@ -98,11 +95,11 @@ public final class SOAPAddressWSDLParser
       {
          is = wsdlUrl.openStream();
          XMLStreamReader xmlr = StAXUtils.createXMLStreamReader(is);
-         return getMetaData(xmlr);
+         return getMetaData(xmlr, wsdlUrl);
       }
       catch (Exception e)
       {
-         throw new WebServiceException(BundleUtils.getMessage(bundle, "FAILED_TO_READ", new Object[]{ wsdlUrl ,  e.getMessage()}),  e);
+         throw MESSAGES.failedToRead(wsdlUrl.toExternalForm(), e.getMessage(), e);
       }
       finally
       {
@@ -114,7 +111,7 @@ public final class SOAPAddressWSDLParser
       }
    }
    
-   private static WSDLMetaData getMetaData(XMLStreamReader reader) throws XMLStreamException
+   private static WSDLMetaData getMetaData(XMLStreamReader reader, URL wsdlUrl) throws XMLStreamException
    {
       int iterate;
       try
@@ -138,18 +135,18 @@ public final class SOAPAddressWSDLParser
             if (match(reader, WSDL_NS, DEFINITIONS))
             {
                String targetNS = reader.getAttributeValue(null, TARGET_NAMESPACE);
-               parseDefinitions(reader, metadata, targetNS);
+               parseDefinitions(reader, metadata, targetNS, wsdlUrl);
             }
             else
             {
-               throw new IllegalStateException(BundleUtils.getMessage(bundle, "UNEXPECTED_ELEMENT",  reader.getLocalName()));
+               throw MESSAGES.unexpectedElement(wsdlUrl.toExternalForm(), reader.getLocalName());
             }
          }
       }
       return metadata;
    }
    
-   private static void parseDefinitions(XMLStreamReader reader, WSDLMetaData metadata, String targetNS) throws XMLStreamException
+   private static void parseDefinitions(XMLStreamReader reader, WSDLMetaData metadata, String targetNS, URL wsdlUrl) throws XMLStreamException
    {
       while (reader.hasNext())
       {
@@ -165,13 +162,13 @@ public final class SOAPAddressWSDLParser
             case XMLStreamConstants.START_ELEMENT : {
                if (match(reader, WSDL_NS, SERVICE)) {
                   QName name = attributeAsQName(reader, null, NAME, targetNS);
-                  WSDLServiceMetaData smd = parseService(reader, targetNS);
+                  WSDLServiceMetaData smd = parseService(reader, targetNS, wsdlUrl);
                   smd.setName(name);
                   metadata.getServices().put(smd.getName(), smd);
                }
                else if (match(reader, WSDL_NS, BINDING)) {
                   QName name = attributeAsQName(reader, null, NAME, targetNS);
-                  WSDLBindingMetaData bmd = parseBinding(reader);
+                  WSDLBindingMetaData bmd = parseBinding(reader, wsdlUrl);
                   bmd.setName(name);
                   metadata.getBindings().put(bmd.getName(), bmd);
                }
@@ -179,10 +176,10 @@ public final class SOAPAddressWSDLParser
             }
          }
       }
-      throw new IllegalStateException(BundleUtils.getMessage(bundle, "REACHED_END_OF_XML_DOCUMENT_UNEXPECTEDLY"));
+      throw MESSAGES.reachedEndOfXMLDocUnexpectedly(wsdlUrl.toExternalForm());
    }
    
-   private static WSDLServiceMetaData parseService(XMLStreamReader reader, String targetNS) throws XMLStreamException
+   private static WSDLServiceMetaData parseService(XMLStreamReader reader, String targetNS, URL wsdlUrl) throws XMLStreamException
    {
       WSDLServiceMetaData smd = new WSDLServiceMetaData();
       while (reader.hasNext())
@@ -200,7 +197,7 @@ public final class SOAPAddressWSDLParser
                if (match(reader, WSDL_NS, PORT)) {
                   QName name = attributeAsQName(reader, null, NAME, targetNS);
                   QName binding = attributeAsQName(reader, null, BINDING, targetNS);
-                  WSDLPortMetaData pmd = parsePort(reader);
+                  WSDLPortMetaData pmd = parsePort(reader, wsdlUrl);
                   pmd.setName(name);
                   pmd.setBindingName(binding);
                   smd.getPorts().put(pmd.getName(), pmd);
@@ -209,10 +206,10 @@ public final class SOAPAddressWSDLParser
             }
          }
       }
-      throw new IllegalStateException(BundleUtils.getMessage(bundle, "REACHED_END_OF_XML_DOCUMENT_UNEXPECTEDLY"));
+      throw MESSAGES.reachedEndOfXMLDocUnexpectedly(wsdlUrl.toExternalForm());
    }
    
-   private static WSDLPortMetaData parsePort(XMLStreamReader reader) throws XMLStreamException
+   private static WSDLPortMetaData parsePort(XMLStreamReader reader, URL wsdlUrl) throws XMLStreamException
    {
       WSDLPortMetaData pmd = new WSDLPortMetaData();
       while (reader.hasNext())
@@ -236,10 +233,10 @@ public final class SOAPAddressWSDLParser
             }
          }
       }
-      throw new IllegalStateException(BundleUtils.getMessage(bundle, "REACHED_END_OF_XML_DOCUMENT_UNEXPECTEDLY"));
+      throw MESSAGES.reachedEndOfXMLDocUnexpectedly(wsdlUrl.toExternalForm());
    }
    
-   private static WSDLBindingMetaData parseBinding(XMLStreamReader reader) throws XMLStreamException
+   private static WSDLBindingMetaData parseBinding(XMLStreamReader reader, URL wsdlUrl) throws XMLStreamException
    {
       WSDLBindingMetaData bmd = new WSDLBindingMetaData();
       while (reader.hasNext())
@@ -263,7 +260,7 @@ public final class SOAPAddressWSDLParser
             }
          }
       }
-      throw new IllegalStateException(BundleUtils.getMessage(bundle, "REACHED_END_OF_XML_DOCUMENT_UNEXPECTEDLY"));
+      throw MESSAGES.reachedEndOfXMLDocUnexpectedly(wsdlUrl.toExternalForm());
    }
    
    private static class WSDLMetaData

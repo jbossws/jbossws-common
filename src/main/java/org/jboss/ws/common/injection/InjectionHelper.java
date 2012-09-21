@@ -24,12 +24,9 @@ package org.jboss.ws.common.injection;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collection;
-import java.util.ResourceBundle;
 
 import javax.xml.ws.WebServiceContext;
 
-import org.jboss.logging.Logger;
-import org.jboss.ws.api.util.BundleUtils;
 import org.jboss.ws.common.injection.finders.PostConstructMethodFinder;
 import org.jboss.ws.common.injection.finders.PreDestroyMethodFinder;
 import org.jboss.ws.common.injection.finders.ResourceFieldFinder;
@@ -43,10 +40,6 @@ import org.jboss.ws.common.reflection.ClassProcessor;
  */
 public final class InjectionHelper
 {
-   private static final ResourceBundle bundle = BundleUtils.getBundle(InjectionHelper.class);
-
-   private static final Logger LOG = Logger.getLogger(InjectionHelper.class);
-
    private static final ClassProcessor<Method> POST_CONSTRUCT_METHOD_FINDER = new PostConstructMethodFinder();
    private static final ClassProcessor<Method> PRE_DESTROY_METHOD_FINDER = new PreDestroyMethodFinder();
    private static final ClassProcessor<Method> WEB_SERVICE_CONTEXT_METHOD_FINDER = new ResourceMethodFinder(WebServiceContext.class, true);
@@ -111,15 +104,13 @@ public final class InjectionHelper
    public static void callPostConstructMethod(final Object instance)
    {
       if (instance == null)
-         throw new IllegalArgumentException(BundleUtils.getMessage(bundle, "OBJECT_INSTANCE_CANNOT_BE_NULL"));
+         throw new IllegalArgumentException();
 
       final Collection<Method> methods = POST_CONSTRUCT_METHOD_FINDER.process(instance.getClass());
 
       if (methods.size() > 0)
       {
          final Method method = methods.iterator().next();
-         if (LOG.isTraceEnabled())
-            LOG.trace("Calling @PostConstruct annotated method: " + method);
          try
          {
             invokeMethod(instance, method, null);
@@ -142,15 +133,13 @@ public final class InjectionHelper
    public static void callPreDestroyMethod(final Object instance)
    {
       if (instance == null)
-         throw new IllegalArgumentException(BundleUtils.getMessage(bundle, "OBJECT_INSTANCE_CANNOT_BE_NULL"));
+         throw new IllegalArgumentException();
 
       final Collection<Method> methods = PRE_DESTROY_METHOD_FINDER.process(instance.getClass());
 
       if (methods.size() > 0)
       {
          final Method method = methods.iterator().next();
-         if (LOG.isTraceEnabled())
-            LOG.trace("Calling @PreDestroy annotated method: " + method);
          try
          {
             invokeMethod(instance, method, null);

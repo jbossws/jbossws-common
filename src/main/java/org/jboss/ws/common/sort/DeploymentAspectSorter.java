@@ -28,10 +28,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.ResourceBundle;
 import java.util.Set;
 
-import org.jboss.ws.api.util.BundleUtils;
+import org.jboss.ws.common.Messages;
 import org.jboss.wsf.spi.deployment.DeploymentAspect;
 
 /**
@@ -42,8 +41,6 @@ import org.jboss.wsf.spi.deployment.DeploymentAspect;
  */
 public final class DeploymentAspectSorter 
 {
-   private static final ResourceBundle bundle = BundleUtils.getBundle(DeploymentAspectSorter.class);
-    
    private static final DeploymentAspectSorter INSTANCE = new DeploymentAspectSorter();
 
    private DeploymentAspectSorter()
@@ -77,8 +74,7 @@ public final class DeploymentAspectSorter
             return aspect;
          }
       }
-      
-      throw new IllegalStateException(BundleUtils.getMessage(bundle, "NO_DEPLOYMENT_ASPECT_FOUND"));
+      throw Messages.MESSAGES.noDeploymentAspectFoundWithAttributeLast();
    }
 
    private Graph createOrientedGraph(final List<DeploymentAspect> aspects)
@@ -177,7 +173,7 @@ public final class DeploymentAspectSorter
          if (this.vertices.size() > 0)
          {
             // if graph has edges then graph has at least one cycle
-            throw new IllegalStateException(BundleUtils.getMessage(bundle, "CYCLE_DETECTED_IN_SUBGRAPH",  this.vertices));
+            throw Messages.MESSAGES.cycleDetectedInSubGraph(this.vertices);
          }
          else
          {

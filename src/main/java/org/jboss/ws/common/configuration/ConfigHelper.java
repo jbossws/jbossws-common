@@ -21,13 +21,15 @@
  */
 package org.jboss.ws.common.configuration;
 
+import static org.jboss.ws.common.Loggers.ROOT_LOGGER;
+import static org.jboss.ws.common.Messages.MESSAGES;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 
 import javax.xml.ws.Binding;
@@ -37,9 +39,7 @@ import javax.xml.ws.handler.LogicalHandler;
 import javax.xml.ws.http.HTTPBinding;
 import javax.xml.ws.soap.SOAPBinding;
 
-import org.jboss.logging.Logger;
 import org.jboss.ws.api.configuration.ClientConfigurer;
-import org.jboss.ws.api.util.BundleUtils;
 import org.jboss.ws.common.utils.DelegateClassLoader;
 import org.jboss.wsf.spi.SPIProvider;
 import org.jboss.wsf.spi.SPIProviderResolver;
@@ -62,8 +62,6 @@ import org.jboss.wsf.spi.metadata.j2ee.serviceref.UnifiedHandlerMetaData;
  */
 public class ConfigHelper implements ClientConfigurer
 {
-   private static final ResourceBundle bundle = BundleUtils.getBundle(ConfigHelper.class);
-   
    private static Map<String, String> bindingIDs = new HashMap<String, String>(8);
    static {
       bindingIDs.put(SOAPBinding.SOAP11HTTP_BINDING, "##SOAP11_HTTP");
@@ -83,7 +81,7 @@ public class ConfigHelper implements ClientConfigurer
    @Override
    public void setConfigProperties(Object proxy, String configFile, String configName)
    {
-      throw new RuntimeException(BundleUtils.getMessage(bundle, "NOT_SUPPORTED", this.getClass()));
+      throw MESSAGES.operationNotSupportedBy("setConfigProperties", this.getClass());
    }
    
    protected ClientConfig readConfig(String configFile, String configName) {
@@ -97,7 +95,7 @@ public class ConfigHelper implements ClientConfigurer
          }
          catch (Exception e)
          {
-            throw new RuntimeException(BundleUtils.getMessage(bundle, "COULD_NOT_READ_CONFIG",  configFile));
+            throw MESSAGES.couldNotReadConfiguration(configFile, e);
          }
          finally
          {
@@ -117,7 +115,7 @@ public class ConfigHelper implements ClientConfigurer
                }
             }
          }
-         throw new RuntimeException(BundleUtils.getMessage(bundle, "CONFIG_NOT_FOUND",  configName));
+         throw MESSAGES.configurationNotFound(configName);
       }
    }
    
@@ -162,14 +160,14 @@ public class ConfigHelper implements ClientConfigurer
          {
             if (handlerChain.getPortNamePattern() != null || handlerChain.getServiceNamePattern() != null)
             {
-               Logger.getLogger(ConfigHelper.class).warn(BundleUtils.getMessage(bundle, "FILTERS_NOT_SUPPORTED"));
+               ROOT_LOGGER.filtersNotSupported();
             }
             if (matchProtocolBinding(protocolBinding, handlerChain.getProtocolBindings())) {
                for (UnifiedHandlerMetaData uhmd : handlerChain.getHandlers())
                {
                   if (uhmd.getInitParams() != null && !uhmd.getInitParams().isEmpty())
                   {
-                     Logger.getLogger(ConfigHelper.class).warn(BundleUtils.getMessage(bundle, "INIT_PARAMS_NOT_SUPPORTED"));
+                     ROOT_LOGGER.initParamsNotSupported();
                   }
                   Object h = newInstance(uhmd.getHandlerClass());
                   if (h != null)
@@ -187,7 +185,7 @@ public class ConfigHelper implements ClientConfigurer
                      }
                      else
                      {
-                        throw new RuntimeException(BundleUtils.getMessage(bundle, "NOT_HANDLER_INSTANCE", h));
+                        throw MESSAGES.notJAXWSHandler(uhmd.getHandlerClass());
                      }
                   }
                }
@@ -221,7 +219,7 @@ public class ConfigHelper implements ClientConfigurer
       }
       catch (Exception e)
       {
-         Logger.getLogger(ConfigHelper.class).warnf(e, BundleUtils.getMessage(bundle, "CAN_NOT_ADD_HANDLER" , className));
+         ROOT_LOGGER.cannotAddHandler(className, e);
          return null;
       }
    }

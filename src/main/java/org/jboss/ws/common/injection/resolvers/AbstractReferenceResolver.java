@@ -25,9 +25,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ResourceBundle;
 
-import org.jboss.ws.api.util.BundleUtils;
+import org.jboss.ws.common.Messages;
 import org.jboss.ws.common.injection.ReferenceResolver;
 
 /**
@@ -42,8 +41,6 @@ import org.jboss.ws.common.injection.ReferenceResolver;
 public abstract class AbstractReferenceResolver<A extends Annotation>
 implements ReferenceResolver
 {
-   private static final ResourceBundle bundle = BundleUtils.getBundle(AbstractReferenceResolver.class);
-
    /**
     * Resolved annotation.
     */
@@ -58,7 +55,7 @@ implements ReferenceResolver
 
       if (annotationClass == null)
       {
-         throw new IllegalArgumentException(BundleUtils.getMessage(bundle, "ANNOTATION_CLASS_CANNOT_BE_NULL"));
+         throw Messages.MESSAGES.annotationClassCannotBeNull();
       }
 
       this.annotationClass = annotationClass; 
@@ -71,7 +68,7 @@ implements ReferenceResolver
    {
       if (!this.canResolve(accessibleObject))
       {
-         throw new IllegalArgumentException(BundleUtils.getMessage(bundle, "CANNOT_RESOLVE",  accessibleObject));
+         throw Messages.MESSAGES.cannotResolve(accessibleObject);
       }
 
       if (accessibleObject.getClass().equals(Method.class))
@@ -123,7 +120,7 @@ implements ReferenceResolver
    {
       if (accessibleObject == null)
       {
-         throw new IllegalArgumentException(BundleUtils.getMessage(bundle, "ACCESSIBLEOBJECT_CANNOT_BE_NULL"));
+         throw Messages.MESSAGES.accessibleObjectClassCannotBeNull();
       }
    }
 

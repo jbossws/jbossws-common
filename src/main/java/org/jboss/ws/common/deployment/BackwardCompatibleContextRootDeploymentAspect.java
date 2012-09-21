@@ -21,10 +21,9 @@
  */
 package org.jboss.ws.common.deployment;
 
-import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 
-import org.jboss.ws.api.util.BundleUtils;
+import org.jboss.ws.common.Messages;
 import org.jboss.wsf.spi.deployment.Deployment;
 import org.jboss.wsf.spi.deployment.Endpoint;
 import org.jboss.wsf.spi.metadata.j2ee.EJBArchiveMetaData;
@@ -41,7 +40,6 @@ import org.jboss.wsf.spi.metadata.j2ee.EJBMetaData;
  */
 public class BackwardCompatibleContextRootDeploymentAspect extends ContextRootDeploymentAspect
 {
-   private static final ResourceBundle bundle = BundleUtils.getBundle(BackwardCompatibleContextRootDeploymentAspect.class);
    @Override
    protected String getExplicitContextRoot(Deployment dep)
    {
@@ -58,7 +56,7 @@ public class BackwardCompatibleContextRootDeploymentAspect extends ContextRootDe
                {
                   String firstToken = st.nextToken();
                   if (contextRoot != null && contextRoot.equals(firstToken) == false)
-                     throw new IllegalStateException(BundleUtils.getMessage(bundle, "MUST_SHARE_THE_SAME_CONTEXT_ROOT", new Object[]{ contextRoot ,firstToken}));
+                     throw Messages.MESSAGES.allEndpointsMustShareSameContextRoot(dep.getSimpleName());
 
                   contextRoot = firstToken;
                }

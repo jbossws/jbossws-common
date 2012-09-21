@@ -21,15 +21,13 @@
  */
 package org.jboss.ws.common.injection.finders;
 
+import static org.jboss.ws.common.Messages.MESSAGES;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
-import java.util.ResourceBundle;
-
-import org.jboss.ws.api.util.BundleUtils;
-import org.jboss.ws.common.injection.InjectionException;
 
 /**
  * Reflection utility class.
@@ -38,8 +36,6 @@ import org.jboss.ws.common.injection.InjectionException;
  */
 final class ReflectionUtils
 {
-   private static final ResourceBundle bundle = BundleUtils.getBundle(ReflectionUtils.class);
-
    /**
     * Constructor.
     */
@@ -60,7 +56,7 @@ final class ReflectionUtils
       {
          if (type.isPrimitive())
          {
-            throw new InjectionException(BundleUtils.getMessage(bundle, "METHOD_CANNOT_DECLARE_PRIMITIVE_PARAMETERS", new Object[]{ getAnnotationMessage(annotation) , method}));
+            throw annotation == null ? MESSAGES.methodCannotDeclarePrimitiveParameters(method) : MESSAGES.methodCannotDeclarePrimitiveParameters2(method, annotation);
          }
       }
    }
@@ -85,7 +81,7 @@ final class ReflectionUtils
    {
       if (field.getType().isPrimitive())
       {
-         throw new InjectionException(BundleUtils.getMessage(bundle, "FIELD_CANNOT_BE_OF_PRIMITIVE_TYPE", new Object[]{ getAnnotationMessage(annotation) ,  field}));
+         throw annotation == null ? MESSAGES.fieldCannotBeOfPrimitiveOrVoidType(field) : MESSAGES.fieldCannotBeOfPrimitiveOrVoidType2(field, annotation);
       }
    }
 
@@ -109,7 +105,7 @@ final class ReflectionUtils
    {
       if (method.getParameterTypes().length != 0)
       {
-         throw new InjectionException(BundleUtils.getMessage(bundle, "METHOD_HAVE_TO_HAVE_NO_PARAMETERS", new Object[]{ getAnnotationMessage(annotation) ,  method}));
+         throw annotation == null ? MESSAGES.methodHasToHaveNoParameters(method) : MESSAGES.methodHasToHaveNoParameters2(method, annotation);
       }
    }
 
@@ -133,7 +129,7 @@ final class ReflectionUtils
    {
       if ((!method.getReturnType().equals(Void.class)) && (!method.getReturnType().equals(Void.TYPE)))
       {
-         throw new InjectionException(BundleUtils.getMessage(bundle, "METHOD_HAVE_TO_RETURN_VOID", new Object[]{ getAnnotationMessage(annotation) ,  method}));
+         throw annotation == null ? MESSAGES.methodHasToReturnVoid(method) : MESSAGES.methodHasToReturnVoid2(method, annotation);
       }
    }
 
@@ -157,7 +153,7 @@ final class ReflectionUtils
    {
       if ((field.getClass().equals(Void.class)) && (field.getClass().equals(Void.TYPE)))
       {
-         throw new InjectionException(BundleUtils.getMessage(bundle, "FIELD_CANNOT_BE_OF_VOID_TYPE", new Object[]{ getAnnotationMessage(annotation) ,  field}));
+         throw annotation == null ? MESSAGES.fieldCannotBeOfPrimitiveOrVoidType(field) : MESSAGES.fieldCannotBeOfPrimitiveOrVoidType2(field, annotation);
       }
    }
 
@@ -185,7 +181,7 @@ final class ReflectionUtils
          Class<?> exception = declaredExceptions[i];
          if (!exception.isAssignableFrom(RuntimeException.class))
          {
-            throw new InjectionException(BundleUtils.getMessage(bundle, "METHOD_CANNOT_THROW_CHECKED_EXCEPTIONS", new Object[]{ getAnnotationMessage(annotation) ,  method}));
+            throw annotation == null ? MESSAGES.methodCannotThrowCheckedException(method) : MESSAGES.methodCannotThrowCheckedException2(method, annotation);
          }
       }
    }
@@ -210,7 +206,7 @@ final class ReflectionUtils
    {
       if (Modifier.isStatic(method.getModifiers()))
       {
-         throw new InjectionException(BundleUtils.getMessage(bundle, "METHOD_CANNOT_BE_STATIC", new Object[]{ getAnnotationMessage(annotation) ,  method}));
+         throw annotation == null ? MESSAGES.methodCannotBeStatic(method) : MESSAGES.methodCannotBeStatic2(method, annotation);
       }
    }
 
@@ -234,7 +230,7 @@ final class ReflectionUtils
    {
       if (Modifier.isStatic(field.getModifiers()))
       {
-         throw new InjectionException(BundleUtils.getMessage(bundle, "FIELD_CANNOT_BE_STATIC", new Object[]{ getAnnotationMessage(annotation) ,  field}));
+         throw annotation == null ? MESSAGES.fieldCannotBeStaticOrFinal(field) : MESSAGES.fieldCannotBeStaticOrFinal2(field, annotation);
       }
    }
 
@@ -258,7 +254,7 @@ final class ReflectionUtils
    {
       if (Modifier.isFinal(field.getModifiers()))
       {
-         throw new InjectionException(BundleUtils.getMessage(bundle, "FIELD_CANNOT_BE_FINAL", new Object[]{ getAnnotationMessage(annotation) ,  field}));
+         throw annotation == null ? MESSAGES.fieldCannotBeStaticOrFinal(field) : MESSAGES.fieldCannotBeStaticOrFinal2(field, annotation);
       }
    }
 
@@ -282,7 +278,7 @@ final class ReflectionUtils
    {
       if (method.getParameterTypes().length != 1)
       {
-         throw new InjectionException(BundleUtils.getMessage(bundle, "METHOD_HAVE_TO_DECLARE_EXACTLY_ONE_PARAMETER", new Object[]{ getAnnotationMessage(annotation) ,  method}));
+         throw annotation == null ? MESSAGES.methodHasToDeclareExactlyOneParameter(method) : MESSAGES.methodHasToDeclareExactlyOneParameter2(method, annotation);
       }
    }
 
@@ -311,7 +307,7 @@ final class ReflectionUtils
 
       if (!correctMethodNameLength || !isSetterMethodName || !isUpperCasedPropertyName)
       {
-         throw new InjectionException(BundleUtils.getMessage(bundle, "METHOD_DOESN'T_FOLLOW_JAVA_BEANS_SETTER_METHOD_NAME", new Object[]{ getAnnotationMessage(annotation) ,  method}));
+         throw annotation == null ? MESSAGES.methodDoesNotRespectJavaBeanSetterMethodName(method) : MESSAGES.methodDoesNotRespectJavaBeanSetterMethodName2(method, annotation);
       }
    }
 
@@ -335,7 +331,7 @@ final class ReflectionUtils
    {
       if (methods.size() > 1)
       {
-         throw new InjectionException(BundleUtils.getMessage(bundle, "ONLY_ONE_METHOD_CAN_EXIST",  getAnnotationMessage(annotation) ));
+         throw annotation == null ? MESSAGES.onlyOneMethodCanExist() : MESSAGES.onlyOneMethodCanExist2(annotation);
       }
    }
 
@@ -347,17 +343,6 @@ final class ReflectionUtils
    public static void assertOnlyOneMethod(final Collection<Method> methods)
    {
       assertOnlyOneMethod(methods, null);
-   }
-
-   /**
-    * Constructs annotation message. If annotation class is null it returns empty string.
-    *
-    * @param annotation to construct message for
-    * @return annotation message or empty string
-    */
-   private static String getAnnotationMessage(Class<? extends Annotation> annotation)
-   {
-      return annotation == null ? "" : "annotated with @" + annotation + " annotation "; 
    }
 
 }

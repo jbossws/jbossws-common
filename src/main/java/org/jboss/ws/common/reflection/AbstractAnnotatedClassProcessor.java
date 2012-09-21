@@ -23,9 +23,8 @@ package org.jboss.ws.common.reflection;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
-import java.util.ResourceBundle;
 
-import org.jboss.ws.api.util.BundleUtils;
+import org.jboss.ws.common.Messages;
 
 /**
  * All annotation aware class processors should extend this class.
@@ -36,8 +35,6 @@ public abstract class AbstractAnnotatedClassProcessor<AO extends AccessibleObjec
 extends AbstractClassProcessor<AO>
 implements AnnotationAware<A>
 {
-   private static final ResourceBundle bundle = BundleUtils.getBundle(AbstractAnnotatedClassProcessor.class);
-
    /**
     * Annotation class.
     */
@@ -51,7 +48,7 @@ implements AnnotationAware<A>
    public AbstractAnnotatedClassProcessor(final Class<A> annotationClass)
    {
       if (annotationClass == null)
-         throw new IllegalArgumentException(BundleUtils.getMessage(bundle, "ANNOTATION_CLASS_CANNOT_BE_NULL"));
+         throw Messages.MESSAGES.annotationClassCannotBeNull();
       
       this.annotationClass = annotationClass;
    }

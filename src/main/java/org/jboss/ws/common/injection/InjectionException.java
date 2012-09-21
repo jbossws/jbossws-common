@@ -21,10 +21,8 @@
  */
 package org.jboss.ws.common.injection;
 
-import java.util.ResourceBundle;
+import org.jboss.ws.common.Loggers;
 
-import org.jboss.logging.Logger;
-import org.jboss.ws.api.util.BundleUtils;
 
 /**
  * Represents generic injection error.
@@ -33,16 +31,10 @@ import org.jboss.ws.api.util.BundleUtils;
  */
 public class InjectionException extends RuntimeException
 {
-   private static final ResourceBundle bundle = BundleUtils.getBundle(InjectionException.class);
-
    /**
     * Serial version UID.
     */
    private static final long serialVersionUID = 1L;
-   /**
-    * Logger.
-    */
-   private static final Logger LOG = Logger.getLogger(InjectionException.class);
 
    /**
     * Constructor.
@@ -103,10 +95,10 @@ public class InjectionException extends RuntimeException
    {
       if (reason == null)
       {
-         throw new IllegalArgumentException(BundleUtils.getMessage(bundle, "REASON_EXPECTED"));
+         throw new IllegalArgumentException();
       }
 
-      LOG.error(message == null ? reason.getMessage() : message, reason);
+      Loggers.ROOT_LOGGER.error(message == null ? reason.getMessage() : message, reason);
       throw new InjectionException(message, reason);
    }
 

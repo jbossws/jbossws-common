@@ -21,13 +21,13 @@
 */
 package org.jboss.ws.common.invocation;
 
+import static org.jboss.ws.common.Loggers.MONITORING_LOGGER;
 
 import java.net.URL;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.ResourceBundle;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.namespace.QName;
@@ -36,13 +36,11 @@ import javax.xml.soap.SOAPException;
 import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
-import org.jboss.logging.Logger;
 import org.jboss.ws.api.handler.GenericSOAPHandler;
 import org.jboss.ws.api.monitoring.Record;
 import org.jboss.ws.api.monitoring.Record.MessageType;
 import org.jboss.ws.api.monitoring.RecordGroupAssociation;
 import org.jboss.ws.api.monitoring.RecordProcessor;
-import org.jboss.ws.api.util.BundleUtils;
 import org.jboss.ws.common.DOMWriter;
 import org.jboss.ws.common.monitoring.RecordFactory;
 import org.jboss.wsf.spi.deployment.Endpoint;
@@ -59,10 +57,6 @@ import org.jboss.wsf.spi.invocation.EndpointAssociation;
  */
 public class RecordingServerHandler extends GenericSOAPHandler
 {
-   private static final ResourceBundle bundle = BundleUtils.getBundle(RecordingServerHandler.class);
-   // provide logging
-   private static Logger log = Logger.getLogger(RecordingServerHandler.class);
-   
    @SuppressWarnings("unchecked")
    protected boolean handleInbound(MessageContext ctx)
    {
@@ -82,7 +76,7 @@ public class RecordingServerHandler extends GenericSOAPHandler
             }
             catch (Exception e)
             {
-               log.warn(BundleUtils.getMessage(bundle, "UNABLE_TO_READ_FROM_THE_HTTP_SERVLET_REQUEST",  e.getMessage()));
+               MONITORING_LOGGER.unableToReadFromHttpServletRequest(e);
             }
          }
          record.setHeaders((Map<String,List<String>>)(ctx.get(MessageContext.HTTP_REQUEST_HEADERS)));
@@ -106,7 +100,7 @@ public class RecordingServerHandler extends GenericSOAPHandler
             }
             catch (SOAPException ex)
             {
-               log.error(BundleUtils.getMessage(bundle, "CANNOT_TRACE_SOAPMESSAGE"),  ex);
+               MONITORING_LOGGER.cannotTraceSoapMessage(ex);
             }
          }
          endpoint.processRecord(record);
@@ -144,7 +138,7 @@ public class RecordingServerHandler extends GenericSOAPHandler
             }
             catch (SOAPException ex)
             {
-               log.error(BundleUtils.getMessage(bundle, "CANNOT_TRACE_SOAPMESSAGE"),  ex);
+               MONITORING_LOGGER.cannotTraceSoapMessage(ex);
             }
          }
          endpoint.processRecord(record);

@@ -21,10 +21,8 @@
  */
 package org.jboss.ws.common.deployment;
 
-import java.util.ResourceBundle;
-
-import org.jboss.logging.Logger;
-import org.jboss.ws.api.util.BundleUtils;
+import org.jboss.ws.common.Loggers;
+import org.jboss.ws.common.Messages;
 import org.jboss.wsf.spi.deployment.Endpoint;
 import org.jboss.wsf.spi.deployment.EndpointState;
 import org.jboss.wsf.spi.deployment.LifecycleHandler;
@@ -38,19 +36,12 @@ import org.jboss.wsf.spi.invocation.InvocationHandler;
  */
 public class DefaultLifecycleHandler implements LifecycleHandler
 {
-   private static final ResourceBundle bundle = BundleUtils.getBundle(DefaultLifecycleHandler.class);
-   // provide logging
-   protected final Logger log = Logger.getLogger(getClass());
-
    public void start(Endpoint ep)
    {
-      if (log.isTraceEnabled())
-         log.trace("Start: " + ep.getName());
-
       EndpointState state = ep.getState();
       if (state != EndpointState.UNDEFINED)
       {
-         log.error(BundleUtils.getMessage(bundle, "CANNOT_START_ENDPOINT_IN_STATE",  state));
+         Loggers.DEPLOYMENT_LOGGER.cannotStartEndpoint(state, ep.getName());
       }
       else
       {
@@ -59,7 +50,7 @@ public class DefaultLifecycleHandler implements LifecycleHandler
 
          InvocationHandler invHandler = ep.getInvocationHandler();
          if (invHandler == null)
-            throw new IllegalStateException(BundleUtils.getMessage(bundle, "INVOCATION_HANDLER_NOT_AVAILABLE"));
+            throw Messages.MESSAGES.invocationHandlerNotAvailable(ep.getName());
          invHandler.init(ep);
 
          ep.setState(EndpointState.STARTED);
@@ -68,13 +59,10 @@ public class DefaultLifecycleHandler implements LifecycleHandler
 
    public void stop(Endpoint ep)
    {
-      if (log.isTraceEnabled())
-         log.trace("Stop: " + ep.getName());
-
       EndpointState state = ep.getState();
       if (state != EndpointState.STARTED)
       {
-         log.error(BundleUtils.getMessage(bundle, "CANNOT_STOP_ENDPOINT_IN_STATE",  state));
+         Loggers.DEPLOYMENT_LOGGER.cannotStopEndpoint(state, ep.getName());
       }
       else
       {

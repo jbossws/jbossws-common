@@ -21,17 +21,14 @@
  */
 package org.jboss.ws.common.integration;
 
-import java.util.ResourceBundle;
-
+import static org.jboss.wsf.spi.deployment.DeploymentType.JAXRPC;
+import static org.jboss.wsf.spi.deployment.DeploymentType.JAXWS;
 import static org.jboss.wsf.spi.deployment.EndpointType.JAXRPC_EJB21;
 import static org.jboss.wsf.spi.deployment.EndpointType.JAXRPC_JSE;
 import static org.jboss.wsf.spi.deployment.EndpointType.JAXWS_EJB3;
 import static org.jboss.wsf.spi.deployment.EndpointType.JAXWS_JSE;
-import static org.jboss.wsf.spi.deployment.DeploymentType.JAXWS;
-import static org.jboss.wsf.spi.deployment.DeploymentType.JAXRPC;
 
-import org.jboss.logging.Logger;
-import org.jboss.ws.api.util.BundleUtils;
+import org.jboss.ws.common.Messages;
 import org.jboss.wsf.spi.deployment.Deployment;
 import org.jboss.wsf.spi.deployment.Endpoint;
 import org.jboss.wsf.spi.deployment.EndpointTypeFilter;
@@ -41,11 +38,7 @@ import org.jboss.wsf.spi.deployment.EndpointTypeFilter;
  *
  * @author <a href="mailto:ropalka@redhat.com">Richard Opalka</a>
  */
-public final class WSHelper
-{
-
-   private static final ResourceBundle bundle = BundleUtils.getBundle(WSHelper.class);
-   private static final Logger LOG = Logger.getLogger( WSHelper.class );
+public final class WSHelper {
 
    private static final EndpointTypeFilter JAXRPC_EJB_ENDPOINT_FILTER = new EndpointTypeFilterImpl( JAXRPC_EJB21 );
    private static final EndpointTypeFilter JAXRPC_JSE_ENDPOINT_FILTER = new EndpointTypeFilterImpl( JAXRPC_JSE );
@@ -77,8 +70,7 @@ public final class WSHelper
       final A value = dep.getAttachment( key );
       if ( value == null )
       {
-         LOG.error(BundleUtils.getMessage(bundle, "CAN_NOT_FIND_ATTACHMENT",  key ));
-         throw new IllegalStateException();
+         throw Messages.MESSAGES.cannotFindAttachmentInDeployment(key, dep.getSimpleName());
       }
       return value;
    }

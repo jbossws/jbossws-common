@@ -26,7 +26,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import org.jboss.logging.Logger;
 import org.jboss.wsf.spi.deployment.Deployment;
 import org.jboss.wsf.spi.deployment.DeploymentAspect;
 
@@ -39,9 +38,6 @@ import org.jboss.wsf.spi.deployment.DeploymentAspect;
  */
 public class AbstractDeploymentAspect implements DeploymentAspect
 {
-   // provide logging
-   protected final Logger log = Logger.getLogger(getClass());
-
    private String provides;
    private String requires;
    private int relativeOrder;

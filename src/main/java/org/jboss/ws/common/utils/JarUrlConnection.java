@@ -29,13 +29,12 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
 
-import org.jboss.ws.api.util.BundleUtils;
+import org.jboss.ws.common.Messages;
 
 /** <code>URLConnection</code> capable of handling multiply-nested jars.
  *
@@ -43,7 +42,6 @@ import org.jboss.ws.api.util.BundleUtils;
  */
 public class JarUrlConnection extends JarURLConnection
 {
-   private static final ResourceBundle bundle = BundleUtils.getBundle(JarUrlConnection.class);
    // ----------------------------------------------------------------------
    //     Instance members
    // ----------------------------------------------------------------------
@@ -93,10 +91,10 @@ public class JarUrlConnection extends JarURLConnection
       }
       else
       {
-         throw new MalformedURLException(BundleUtils.getMessage(bundle, "ERROR_IN_URL",  url.toExternalForm()));
+         throw Messages.MESSAGES.jarUrlConnectionBuildError(url.toExternalForm());
       }
 
-      List segments = new ArrayList();
+      List<String> segments = new ArrayList<String>();
 
       StringTokenizer tokens = new StringTokenizer(extraText, "!");
 
@@ -105,7 +103,7 @@ public class JarUrlConnection extends JarURLConnection
          segments.add(tokens.nextToken());
       }
 
-      this.segments = (String[])segments.toArray(new String[segments.size()]);
+      this.segments = segments.toArray(new String[segments.size()]);
 
       this.baseResource = new URL(baseResourceText);
    }
@@ -218,7 +216,7 @@ public class JarUrlConnection extends JarURLConnection
          }
       }
 
-      throw new IOException(BundleUtils.getMessage(bundle, "UNABLE_TO_LOCATE_SEGMENT",  segment));
+      throw Messages.MESSAGES.jarUrlConnectionUnableToLocateSegment(segment, getURL().toExternalForm());
    }
 
    /** @see java.net.URLConnection

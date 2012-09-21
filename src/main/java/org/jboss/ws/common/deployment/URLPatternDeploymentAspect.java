@@ -24,13 +24,12 @@ package org.jboss.ws.common.deployment;
 import static org.jboss.ws.common.integration.WSHelper.isEjbEndpoint;
 import static org.jboss.ws.common.integration.WSHelper.isJseEndpoint;
 
-import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 
 import javax.jws.WebService;
 
 import org.jboss.ws.api.annotation.WebContext;
-import org.jboss.ws.api.util.BundleUtils;
+import org.jboss.ws.common.Messages;
 import org.jboss.ws.common.integration.AbstractDeploymentAspect;
 import org.jboss.wsf.spi.deployment.Deployment;
 import org.jboss.wsf.spi.deployment.Endpoint;
@@ -47,8 +46,6 @@ import org.jboss.wsf.spi.metadata.j2ee.JSEArchiveMetaData;
  */
 public class URLPatternDeploymentAspect extends AbstractDeploymentAspect
 {
-   private static final ResourceBundle bundle = BundleUtils.getBundle(URLPatternDeploymentAspect.class);
-
    @Override
    public void start(Deployment dep)
    {
@@ -85,7 +82,7 @@ public class URLPatternDeploymentAspect extends AbstractDeploymentAspect
          String epName = ep.getShortName();
          urlPattern = webMetaData.getServletMappings().get(epName);
          if (urlPattern == null)
-            throw new IllegalStateException(BundleUtils.getMessage(bundle, "CANNOT_OBTAIN_SERVLET_MAPPING_FOR",  epName));
+            throw Messages.MESSAGES.cannotObtainServletMapping(epName);
       }
 
       // #2 Use the explicit urlPattern from port-component/port-component-uri

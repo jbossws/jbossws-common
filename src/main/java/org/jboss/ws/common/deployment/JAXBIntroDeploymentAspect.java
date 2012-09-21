@@ -23,13 +23,12 @@ package org.jboss.ws.common.deployment;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ResourceBundle;
+import java.net.URL;
 
 import org.jboss.jaxb.intros.BindingCustomizationFactory;
-import org.jboss.logging.Logger;
 import org.jboss.ws.api.binding.BindingCustomization;
 import org.jboss.ws.api.binding.JAXBBindingCustomization;
-import org.jboss.ws.api.util.BundleUtils;
+import org.jboss.ws.common.Loggers;
 import org.jboss.ws.common.integration.AbstractDeploymentAspect;
 import org.jboss.wsf.spi.deployment.ArchiveDeployment;
 import org.jboss.wsf.spi.deployment.Deployment;
@@ -44,8 +43,6 @@ import org.jboss.wsf.spi.deployment.UnifiedVirtualFile;
  */
 public class JAXBIntroDeploymentAspect extends AbstractDeploymentAspect
 {
-   private static final ResourceBundle bundle = BundleUtils.getBundle(JAXBIntroDeploymentAspect.class);
-   private static Logger logger = Logger.getLogger(JAXBIntroDeploymentAspect.class);
    private static final String META_INF_JAXB_INTROS_XML = "META-INF/jaxb-intros.xml";
    private static final String WEB_INF_JAXB_INTROS_XML = "WEB-INF/jaxb-intros.xml";
 
@@ -54,19 +51,21 @@ public class JAXBIntroDeploymentAspect extends AbstractDeploymentAspect
       // assert ArchiveDeployment
       if(! (deployment instanceof ArchiveDeployment) )
       {
-         if (log.isTraceEnabled())
-            log.trace("JAXBIntroDeploymentAspect doesn't work on " + deployment.getClass());
+         if (Loggers.DEPLOYMENT_LOGGER.isTraceEnabled())
+            Loggers.DEPLOYMENT_LOGGER.aspectDoesNotWorkOnDeployment(this.getClass(), deployment.getClass());
          return;
       }
 
       ArchiveDeployment archive = (ArchiveDeployment)deployment;
       InputStream introsConfigStream = null;
 
+      URL url = null;
       try
       {
          // META-INF first
          UnifiedVirtualFile vfs = archive.getRootFile().findChild(META_INF_JAXB_INTROS_XML);
-         introsConfigStream = vfs.toURL().openStream();
+         url = vfs.toURL();
+         introsConfigStream = url.openStream();
       } catch (Exception e) {}
 
       if(null == introsConfigStream)
@@ -75,7 +74,8 @@ public class JAXBIntroDeploymentAspect extends AbstractDeploymentAspect
          {
             // WEB-INF second
             UnifiedVirtualFile vfs = archive.getRootFile().findChild(WEB_INF_JAXB_INTROS_XML);
-            introsConfigStream = vfs.toURL().openStream();
+            url = vfs.toURL();
+            introsConfigStream = url.openStream();
          } catch (Exception e) {
             return;
          }
@@ -107,7 +107,7 @@ public class JAXBIntroDeploymentAspect extends AbstractDeploymentAspect
             try {
                introsConfigStream.close();
             } catch (IOException e) {
-               logger.error(BundleUtils.getMessage(bundle, "ERROR_CLOSING_JAXB_INTRODUCTIONS",  deployment.getService().getContextRoot() ),  e);
+               Loggers.DEPLOYMENT_LOGGER.errorClosingJAXBIntroConf(url, e);
             }
          }
       }

@@ -30,7 +30,8 @@
     <jbossws.spi.version>2.1.0-SNAPSHOT</jbossws.spi.version>
     <jboss.jaxbintros.version>1.0.2.GA</jboss.jaxbintros.version>
     <jboss.common.core.version>2.2.17.GA</jboss.common.core.version>
-    <jboss-logging-spi.version>2.1.0.GA</jboss-logging-spi.version>
+    <jboss-logging.version>3.1.2.GA</jboss-logging.version>
+    <jboss-logging-processor.version>1.0.3.Final</jboss-logging-processor.version>
     <wsdl4j.version>1.6.2</wsdl4j.version>
     <ejb.api.version>1.0.0.CR2</ejb.api.version>
     <jms.api.version>1.0.0.Final</jms.api.version>
@@ -80,11 +81,23 @@
       <artifactId>jboss-common-core</artifactId>
       <version>${jboss.common.core.version}</version>
       <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.jboss.logging</groupId>
+          <artifactId>jboss-logging-spi</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.jboss.logging</groupId>
-      <artifactId>jboss-logging-spi</artifactId>
-      <version>${jboss-logging-spi.version}</version>
+      <artifactId>jboss-logging</artifactId>
+      <version>${jboss-logging.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.logging</groupId>
+      <artifactId>jboss-logging-processor</artifactId>
+      <version>${jboss-logging-processor.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -122,6 +135,7 @@
           <showDeprecation>false</showDeprecation>
           <compilerArguments>
             <endorseddirs>${project.build.directory}/endorsed</endorseddirs>
+            <AgeneratedTranslationFilesPath>${project.basedir}/target/generated-translation-files</AgeneratedTranslationFilesPath>
           </compilerArguments>
         </configuration>
       </plugin>

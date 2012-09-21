@@ -24,10 +24,8 @@ package org.jboss.ws.common.deployment;
 
 import static org.jboss.ws.common.integration.WSHelper.isJaxwsEjbDeployment;
 
-import java.util.ResourceBundle;
-
 import org.jboss.ws.api.annotation.WebContext;
-import org.jboss.ws.api.util.BundleUtils;
+import org.jboss.ws.common.Messages;
 import org.jboss.ws.common.integration.AbstractDeploymentAspect;
 import org.jboss.wsf.spi.deployment.Deployment;
 import org.jboss.wsf.spi.deployment.Endpoint;
@@ -40,8 +38,6 @@ import org.jboss.wsf.spi.deployment.Endpoint;
  */
 public final class VirtualHostDeploymentAspect extends AbstractDeploymentAspect
 {
-   private static final ResourceBundle bundle = BundleUtils.getBundle(VirtualHostDeploymentAspect.class);
-
    @Override
    public void start(Deployment dep)
    {
@@ -71,7 +67,7 @@ public final class VirtualHostDeploymentAspect extends AbstractDeploymentAspect
             {
                if (!currentVirtualHost.equals(virtualHost))
                {
-                  throw new IllegalStateException(BundleUtils.getMessage(bundle, "VIRTUALHOST_MUST_BE_THE_SAME_FOR_ALL_DEPLOYED_ENDPOINTS"));
+                  throw Messages.MESSAGES.virtualHostMustBeTheSameForAllEndpoints(dep.getSimpleName());
                }
             }
          }

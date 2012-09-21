@@ -23,9 +23,6 @@ package org.jboss.ws.common.deployment;
 
 import java.net.URI;
 
-import javax.naming.Context;
-
-import org.jboss.wsf.spi.deployment.EndpointType;
 import org.jboss.wsf.spi.deployment.JMSEndpoint;
 import org.jboss.wsf.spi.management.EndpointMetrics;
 

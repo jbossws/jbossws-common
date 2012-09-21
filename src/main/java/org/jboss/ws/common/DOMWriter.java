@@ -55,6 +55,8 @@
  */
 package org.jboss.ws.common;
 
+import static org.jboss.ws.common.Messages.MESSAGES;
+
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -64,9 +66,7 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.ResourceBundle;
 
-import org.jboss.ws.api.util.BundleUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -79,10 +79,8 @@ import org.w3c.dom.NodeList;
  * @author Andy Clark, IBM
  * @author Thomas.Diesler@jboss.org
  */
-@SuppressWarnings("unchecked")
 public class DOMWriter
 {
-   private static final ResourceBundle bundle = BundleUtils.getBundle(DOMWriter.class);
    // Print writer
    private PrintWriter out;
    // True, if canonical output
@@ -140,7 +138,7 @@ public class DOMWriter
       }
       catch (UnsupportedEncodingException e)
       {
-         throw new IllegalArgumentException(BundleUtils.getMessage(bundle, "UNSUPPORTED_ENCODING",  charsetName));
+         throw new IllegalArgumentException(e);
       }
    }
 
@@ -230,7 +228,7 @@ public class DOMWriter
    public void print(Node node)
    {
       if (prettyprint && ignoreWhitespace)
-         throw new IllegalStateException(BundleUtils.getMessage(bundle, "CANNOT_PRETTY_PRINT_AND_IGNORE_WHITESPACE"));
+         throw MESSAGES.cannotPrettyPrintAndIgnoreWhiteSpaces();
       
       rootNode = node;
       printInternal(node, false);
@@ -295,7 +293,7 @@ public class DOMWriter
             out.print('<');
             out.print(nodeName);
 
-            Map nsMap = new HashMap();
+            Map<String, String> nsMap = new HashMap<String, String>();
             String elPrefix = node.getPrefix();
             String elNamespaceURI = node.getNamespaceURI();
             if (elPrefix != null)
@@ -342,11 +340,11 @@ public class DOMWriter
             // that are defined further up the tree
             if (completeNamespaces)
             {
-               Iterator itPrefix = nsMap.keySet().iterator();
+               Iterator<String> itPrefix = nsMap.keySet().iterator();
                while (itPrefix.hasNext())
                {
-                  String prefix = (String)itPrefix.next();
-                  String nsURI = (String)nsMap.get(prefix);
+                  String prefix = itPrefix.next();
+                  String nsURI = nsMap.get(prefix);
                   if (nsURI == null)
                   {
                      nsURI = getNamespaceURI(prefix, element, null);

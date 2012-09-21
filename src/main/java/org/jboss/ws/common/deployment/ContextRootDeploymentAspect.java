@@ -21,12 +21,10 @@
  */
 package org.jboss.ws.common.deployment;
 
-import java.util.ResourceBundle;
-
 import org.jboss.ws.api.annotation.AuthMethod;
 import org.jboss.ws.api.annotation.TransportGuarantee;
 import org.jboss.ws.api.annotation.WebContext;
-import org.jboss.ws.api.util.BundleUtils;
+import org.jboss.ws.common.Messages;
 import org.jboss.ws.common.integration.AbstractDeploymentAspect;
 import org.jboss.wsf.spi.deployment.ArchiveDeployment;
 import org.jboss.wsf.spi.deployment.Deployment;
@@ -42,7 +40,6 @@ import org.jboss.wsf.spi.metadata.j2ee.JSEArchiveMetaData;
  */
 public class ContextRootDeploymentAspect extends AbstractDeploymentAspect
 {
-   private static final ResourceBundle bundle = BundleUtils.getBundle(ContextRootDeploymentAspect.class);
    @Override
    public void start(Deployment dep)
    {
@@ -75,13 +72,13 @@ public class ContextRootDeploymentAspect extends AbstractDeploymentAspect
       {
          for (Endpoint ep : dep.getService().getEndpoints())
          {
-            Class implClass = ep.getTargetBeanClass();
-            WebContext anWebContext = (WebContext)implClass.getAnnotation(WebContext.class);
+            Class<?> implClass = ep.getTargetBeanClass();
+            WebContext anWebContext = implClass.getAnnotation(WebContext.class);
             this.validateSecuritySettings(anWebContext);
             if (anWebContext != null && anWebContext.contextRoot().length() > 0)
             {
                if (contextRoot != null && contextRoot.equals(anWebContext.contextRoot()) == false)
-                  throw new IllegalStateException(BundleUtils.getMessage(bundle, "MUST_SHARE_THE_SAME_CONTEXT_ROOT"));
+                  throw Messages.MESSAGES.allEndpointsMustShareSameContextRoot(dep.getSimpleName());
 
                contextRoot = anWebContext.contextRoot();
             }

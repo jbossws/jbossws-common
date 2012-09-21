@@ -21,19 +21,18 @@
  */
 package org.jboss.ws.common.management;
 
+import static org.jboss.ws.common.Loggers.MANAGEMENT_LOGGER;
+
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.ResourceBundle;
 
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
-import org.jboss.logging.Logger;
-import org.jboss.ws.api.util.BundleUtils;
 import org.jboss.ws.common.ObjectNameFactory;
 import org.jboss.wsf.spi.SPIProvider;
 import org.jboss.wsf.spi.SPIProviderResolver;
@@ -57,9 +56,6 @@ import org.jboss.wsf.spi.metadata.config.EndpointConfig;
  */
 public abstract class AbstractServerConfig implements AbstractServerConfigMBean, ServerConfig
 {
-   private static final ResourceBundle bundle = BundleUtils.getBundle(AbstractServerConfig.class);
-   private static final Logger log = Logger.getLogger(AbstractServerConfig.class);
-   
    protected static final ObjectName OBJECT_NAME_SERVER_CONFIG;
    static
    {
@@ -102,13 +98,13 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
    {
       if (host == null || host.trim().length() == 0)
       {
-         log.debug("Using undefined host: " + UNDEFINED_HOSTNAME);
+         MANAGEMENT_LOGGER.usingUndefinedWebServicesHost(UNDEFINED_HOSTNAME);
          host = UNDEFINED_HOSTNAME;
       }
       if ("0.0.0.0".equals(host))
       {
          InetAddress localHost = InetAddress.getLocalHost();
-         log.debug("Using local host: " + localHost.getHostName());
+         if (MANAGEMENT_LOGGER.isDebugEnabled()) MANAGEMENT_LOGGER.usingLocalHostWebServicesHost(localHost.getHostName());
          host = localHost.getHostName();
       }
       this.webServiceHost = toIPv6URLFormat("127.0.0.1".equals(host) ? "localhost" : host); // TCK workaround
@@ -123,7 +119,7 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
       }
       catch (UnknownHostException e)
       {
-         log.debug(BundleUtils.getMessage(bundle, "COULD_NOT_GET_ADDRESS_FOR_HOST",  host),  e);
+         MANAGEMENT_LOGGER.couldNotGetAddressForHost(host, e);
          //ignore, leave isIPv6Address to false
       }
       final boolean isIPv6Formatted = isIPv6Address && host.startsWith("[");
@@ -159,8 +155,7 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
       int localPort = webServicePort;
       if (localPort <= 0)        
       {
-         // Do not initialize webServicePort with the default, the connector port may become available later 
-         log.debug("Unable to calculate 'WebServicePort', using default '8080'");
+         if (MANAGEMENT_LOGGER.isDebugEnabled()) MANAGEMENT_LOGGER.unableToCalculateWebServicesPort("8080");
          localPort = 8080;
       }
 
@@ -175,8 +170,7 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
       int localPort = webServiceSecurePort;
       if (localPort <= 0)
       {
-         // Do not initialize webServiceSecurePort with the default, the connector port may become available later 
-         log.debug("Unable to calculate 'WebServiceSecurePort', using default '8443'");
+         if (MANAGEMENT_LOGGER.isDebugEnabled()) MANAGEMENT_LOGGER.unableToCalculateWebServicesSecurePort("8443");
          localPort = 8443;
       }
 
@@ -194,7 +188,7 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
       }
       catch (WSFException e)
       {
-         log.warn(BundleUtils.getMessage(bundle, "COULD_NOT_GET_WEBSERVERINFO"));
+         MANAGEMENT_LOGGER.couldNotGetPortFromConfiguredHTTPConnector();
       }
       return port;
    }
@@ -206,7 +200,7 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
       SPIProvider spiProvider = SPIProviderResolver.getInstance(cl).getProvider();
       this.stackConfig = spiProvider.getSPI(StackConfigFactory.class, cl).getStackConfig();
 
-      log.info(getImplementationTitle() + ' ' + getImplementationVersion());
+      MANAGEMENT_LOGGER.startingWSServerConfig(getImplementationTitle(), getImplementationVersion());
       MBeanServer mbeanServer = getMbeanServer();
       if (mbeanServer != null) {
          mbeanServer.registerMBean(this, AbstractServerConfigMBean.OBJECT_NAME);

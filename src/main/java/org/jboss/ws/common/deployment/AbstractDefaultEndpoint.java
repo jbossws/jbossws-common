@@ -23,7 +23,6 @@ package org.jboss.ws.common.deployment;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.Vector;
 
 import javax.management.MalformedObjectNameException;
@@ -32,7 +31,7 @@ import javax.management.ObjectName;
 import org.jboss.ws.api.monitoring.Record;
 import org.jboss.ws.api.monitoring.RecordFilter;
 import org.jboss.ws.api.monitoring.RecordProcessor;
-import org.jboss.ws.api.util.BundleUtils;
+import org.jboss.ws.common.Messages;
 import org.jboss.ws.common.injection.PreDestroyHolder;
 import org.jboss.wsf.spi.deployment.AbstractExtensible;
 import org.jboss.wsf.spi.deployment.Endpoint;
@@ -55,7 +54,6 @@ import org.jboss.wsf.spi.security.SecurityDomainContext;
  */
 public class AbstractDefaultEndpoint extends AbstractExtensible
 {
-   private static final ResourceBundle bundle = BundleUtils.getBundle(AbstractDefaultEndpoint.class);
    protected Service service;
    protected ObjectName name;
    protected String shortName;
@@ -104,8 +102,6 @@ public class AbstractDefaultEndpoint extends AbstractExtensible
 
    public synchronized Class<?> getTargetBeanClass()
    {
-      if (targetBean == null)
-         throw new IllegalStateException(BundleUtils.getMessage(bundle, "TARGET_BEAN_NOT_SET"));
       if (targetBeanClass != null)
          return targetBeanClass;
 
@@ -256,7 +252,7 @@ public class AbstractDefaultEndpoint extends AbstractExtensible
    protected void assertEndpointSetterAccess()
    {
       if (state == EndpointState.STARTED)
-         throw new IllegalStateException(BundleUtils.getMessage(bundle, "CANNOT_MODIFY_ENDPOINT_PROPERTIES_IN_STATE",  state));
+         throw Messages.MESSAGES.cannotModifyEndpointInState(state, getName());
    }
 
    public List<RecordProcessor> getRecordProcessors()

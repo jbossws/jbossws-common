@@ -22,8 +22,8 @@
 package org.jboss.ws.common.utils;
 
 import java.security.SecureRandom;
-import java.util.ResourceBundle;
-import org.jboss.ws.api.util.BundleUtils;
+
+import org.jboss.ws.common.Messages;
 
 /**
  * Generates the string form of IETF variant UUIDs.
@@ -37,7 +37,6 @@ import org.jboss.ws.api.util.BundleUtils;
  */
 public class UUIDGenerator
 {
-   private static final ResourceBundle bundle = BundleUtils.getBundle(UUIDGenerator.class);
    private static SecureRandom rand;
    
    private static String bytesToHex(byte[] buffer, int offset, int length) 
@@ -111,7 +110,7 @@ public class UUIDGenerator
    public static String convertToString(byte[] uuid) 
    {
       if (uuid.length != 16)
-         throw new IllegalArgumentException(BundleUtils.getMessage(bundle, "A_UUID_MUST_BE_16_BYTES"));
+         throw Messages.MESSAGES.uuidMustBeOf16Bytes();
       
       String string = bytesToHex(uuid, 0, 4) + "-" 
                     + bytesToHex(uuid, 4, 2) + "-" 
