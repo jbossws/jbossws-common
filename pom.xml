@@ -9,7 +9,7 @@
   <packaging>jar</packaging>
   <description>JBossWS Common</description>
 
-  <version>2.1.0-SNAPSHOT</version>
+  <version>2.1.0.CR1</version>
 
   <!-- Parent -->
   <parent>
@@ -20,14 +20,14 @@
 
   <!-- Source Control Management -->
   <scm>
-    <connection>scm:svn:http://anonsvn.jboss.org/repos/jbossws/common/trunk</connection>
-    <developerConnection>scm:svn:https://svn.jboss.org/repos/jbossws/common/trunk</developerConnection>
-    <url>http://fisheye.jboss.com/viewrep/JBossWS/common/trunk</url>
+    <connection>scm:svn:http://anonsvn.jboss.org/repos/jbossws/common/tags/jbossws-common-2.1.0.CR1</connection>
+    <developerConnection>scm:svn:https://svn.jboss.org/repos/jbossws/common/tags/jbossws-common-2.1.0.CR1</developerConnection>
+    <url>http://fisheye.jboss.com/viewrep/JBossWS/common/tags/jbossws-common-2.1.0.CR1</url>
   </scm>
 
   <!-- Properties -->
   <properties>
-    <jbossws.spi.version>2.1.0-SNAPSHOT</jbossws.spi.version>
+    <jbossws.spi.version>2.1.0.CR1</jbossws.spi.version>
     <jboss.jaxbintros.version>1.0.2.GA</jboss.jaxbintros.version>
     <jboss.common.core.version>2.2.17.GA</jboss.common.core.version>
     <jboss-logging.version>3.1.2.GA</jboss-logging.version>
