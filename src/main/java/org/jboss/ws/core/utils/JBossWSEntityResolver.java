@@ -56,73 +56,78 @@ public class JBossWSEntityResolver extends JBossEntityResolver
    // provide logging
    private static final Logger log = Logger.getLogger(JBossWSEntityResolver.class);
 
+  
    public JBossWSEntityResolver()
    {
-	  this("META-INF/jbossws-entities.properties");
+      super();
+      loadEntity(getClass().getClassLoader(), "META-INF/jbossws-entities.properties");
+      loadEntity(Thread.currentThread().getContextClassLoader(), "jbossws-entities.properties");
+
    }
    
-   public JBossWSEntityResolver(final String entitiesResource)
-   {
-      super();
-      
-      Properties props = null;
-      ClassLoader loader = this.getClass().getClassLoader();
+   private void loadEntity(final ClassLoader loader, final String entityResource) {
       Map<String, Properties> map = propertiesMap.get(loader);
-      if (map != null && map.containsKey(entitiesResource))
+      Properties props = null;
+      if (map != null && map.containsKey(entityResource))
       {
-         props = map.get(entitiesResource);
+         props = map.get(entityResource);
       }
       else
       {
-         if (map == null)
+         props = loadEntitiesMappingFromClasspath(loader, entityResource);
+         if (map == null && props.size() > 1)
          {
             map = new ConcurrentHashMap<String, Properties>();
             propertiesMap.put(loader, map);
          }
-         // load entities
-         props = loadEntitiesMappingFromClasspath(entitiesResource);
-         if (props.size() == 0)
-            throw new IllegalArgumentException("No entities mapping defined in resource file: " + entitiesResource);
-         map.put(entitiesResource, props);
+         if (map != null && props.size() > 1)
+            map.put(entityResource, props);
       }
-      
-	   // register entities
-	   String key = null, val = null;
-	   for (Enumeration<Object> keys = props.keys(); keys.hasMoreElements();)
-	   {
-		   key = (String)keys.nextElement();
-		   val = props.getProperty(key);
-		   
-		   registerEntity(key, val);
-	   }
+
+		   // register entities
+      String key = null, val = null;
+      for (Enumeration<Object> keys = props.keys(); keys.hasMoreElements();)
+      {
+         key = (String) keys.nextElement();
+         val = props.getProperty(key);
+
+         registerEntity(key, val);
+      }
    }
    
-   private Properties loadEntitiesMappingFromClasspath(final String entitiesResource)
+   private Properties loadEntitiesMappingFromClasspath(final ClassLoader loader, final String entitiesResource)
    {
       return AccessController.doPrivileged(new PrivilegedAction<Properties>()
       {
          public Properties run()
          {
-            InputStream is = this.getClass().getClassLoader().getResourceAsStream(entitiesResource);
-            // get stream
-            if (is == null)
-               throw new IllegalArgumentException("Resource " + entitiesResource + " not found");
-
-            // load props
             Properties props = new Properties();
-            try
+            InputStream is = loader.getResourceAsStream(entitiesResource);
+            // get stream
+            if (is != null)
             {
-               props.load(is);
-            }
-            catch (IOException ioe)
-            {
-               log.error("Cannot read resource: " + entitiesResource, ioe);
-            }
-            finally
-            {
-               try { is.close(); } catch (IOException ioe) {} // ignore
-            }
 
+               // load props
+
+               try
+               {
+                  props.load(is);
+               }
+               catch (IOException ioe)
+               {
+                  log.error("Cannot read resource: " + entitiesResource, ioe);
+               }
+               finally
+               {
+                  try
+                  {
+                     is.close();
+                  }
+                  catch (IOException ioe)
+                  {
+                  } // ignore
+               }
+            }
             return props;
          }
       });
