@@ -8,7 +8,7 @@
   <artifactId>jbossws-common</artifactId>
   <packaging>jar</packaging>
   
-  <version>1.1.0-SP10</version>
+  <version>1.1.0.SP10</version>
   
   <!-- Parent -->
   <parent>
