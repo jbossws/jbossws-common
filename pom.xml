@@ -8,7 +8,7 @@
   <artifactId>jbossws-common</artifactId>
   <packaging>jar</packaging>
   
-  <version>1.1.0-SP10</version>
+  <version>1.1.0-SNAPSHOT</version>
   
   <!-- Parent -->
   <parent>
@@ -19,9 +19,9 @@
   
   <!-- Source Control Management -->
   <scm>
-    <connection>scm:svn:http://anonsvn.jboss.org/repos/jbossws/common/tags/jbossws-common-1.1.0.SP10</connection>
-    <developerConnection>scm:svn:https://svn.jboss.org/repos/jbossws/common/tags/jbossws-common-1.1.0.SP10</developerConnection>
-    <url>http://fisheye.jboss.com/viewrep/JBossWS/common/tags/jbossws-common-1.1.0.SP10</url>
+    <connection>scm:svn:http://anonsvn.jboss.org/repos/jbossws/common/branches/jbossws-common-1.1.0</connection>
+    <developerConnection>scm:svn:https://svn.jboss.org/repos/jbossws/common/branches/jbossws-common-1.1.0</developerConnection>
+    <url>http://fisheye.jboss.com/viewrep/JBossWS/common/branches/jbossws-common-1.1.0</url>
   </scm>
   
   <!-- Properties -->
