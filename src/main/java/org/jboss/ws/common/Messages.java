@@ -29,7 +29,6 @@ import java.net.MalformedURLException;
 import java.util.Collection;
 
 import javax.management.ObjectName;
-import javax.naming.NamingException;
 import javax.xml.ws.WebServiceException;
 
 import org.jboss.logging.Cause;
@@ -112,12 +111,6 @@ public interface Messages {
     
     @Message(id = 22031, value = "Cycle detected in sub-graph: %s")
     IllegalStateException cycleDetectedInSubGraph(Collection<?> c);
-    
-    @Message(id = 22032, value = "Cannot marshall service ref meta data")
-    NamingException cannotMarshallServiceRefMetaData(@Cause Throwable cause);
-    
-    @Message(id = 22033, value = "Cannot unmarshall service ref meta data")
-    NamingException cannotUnMarshallServiceRefMetaData(@Cause Throwable cause);
     
     @Message(id = 22034, value = "Missing VFS root for service-ref: %s")
     IllegalStateException missingVFSRootInServiceRef(String serviceRefName);
