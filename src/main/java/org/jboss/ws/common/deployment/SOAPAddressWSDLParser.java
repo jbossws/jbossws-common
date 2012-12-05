@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source.
- * Copyright 2010, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2012, Red Hat Middleware LLC, and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -30,9 +30,12 @@ import static org.jboss.wsf.spi.util.StAXUtils.nextElement;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
@@ -49,6 +52,7 @@ import org.jboss.wsf.spi.util.StAXUtils;
 public final class SOAPAddressWSDLParser
 {
    public static final String SOAP_OVER_JMS_NS = "http://www.w3.org/2010/soapjms/";
+   public static final String SOAP_HTTP_NS = "http://schemas.xmlsoap.org/soap/http";
    private static final String WSDL_NS = "http://schemas.xmlsoap.org/wsdl/";
    private static final String SOAP_NS = "http://schemas.xmlsoap.org/wsdl/soap/";
    private static final String SOAP12_NS = "http://schemas.xmlsoap.org/wsdl/soap12/";
@@ -56,6 +60,7 @@ public final class SOAPAddressWSDLParser
    private static final String SERVICE = "service";
    private static final String PORT = "port";
    private static final String BINDING = "binding";
+   private static final String IMPORT = "import";
    private static final String TRANSPORT = "transport";
    private static final String ADDRESS = "address";
    private static final String LOCATION = "location";
@@ -66,12 +71,22 @@ public final class SOAPAddressWSDLParser
    
    public SOAPAddressWSDLParser(URL wsdlUrl)
    {
-      this.metadata = getMetaData(wsdlUrl);
+      this.metadata = new WSDLMetaData();
+      parse(this.metadata, wsdlUrl);
+      Map<String, Boolean> map = this.metadata.getImports();
+      while (!map.isEmpty() && map.containsValue(false)) {
+         Set<String> imports = new HashSet<String>(map.keySet());
+         for (String i : imports) {
+            if (!map.get(i)) {
+               parse(this.metadata, i);
+               map.put(i, true);
+            }
+         }
+      }
    }
    
-   public String filterSoapAddress(QName serviceName, QName portName, String transportNamespace)
+   public String filterSoapAddress(QName serviceName, QName portName, String[] transportNamespaces)
    {
-      //get the soap:address of the required service/port if the corresponding binding uses SOAP over JMS transport
       WSDLServiceMetaData smd = metadata.getServices().get(serviceName);
       if (smd != null)
       {
@@ -79,23 +94,46 @@ public final class SOAPAddressWSDLParser
          if (pmd != null)
          {
             WSDLBindingMetaData bmd = metadata.getBindings().get(pmd.getBindingName());
-            if (bmd != null && transportNamespace.equals(bmd.getSoapTransport()))
+            if (bmd != null)
             {
-               return pmd.getSoapAddress();
+               for (String txNs : transportNamespaces)
+               {
+                  if (txNs.equals(bmd.getSoapTransport()))
+                  {
+                     return pmd.getSoapAddress();
+                  }
+               }
             }
          }
       }
       return null;
    }
    
-   protected static WSDLMetaData getMetaData(URL wsdlUrl)
+   public String filterSoapAddress(QName serviceName, QName portName, String transportNamespace)
+   {
+      return filterSoapAddress(serviceName, portName, new String[]{transportNamespace});
+   }
+   
+   protected static void parse(WSDLMetaData metadata, String wsdlUrl)
+   {
+      try
+      {
+         parse(metadata, new URL(wsdlUrl));
+      }
+      catch (MalformedURLException e)
+      {
+         throw MESSAGES.failedToRead(wsdlUrl, e.getMessage(), e);
+      }
+   }
+   
+   protected static void parse(WSDLMetaData metadata, URL wsdlUrl)
    {
       InputStream is = null;
       try
       {
          is = wsdlUrl.openStream();
          XMLStreamReader xmlr = StAXUtils.createXMLStreamReader(is);
-         return getMetaData(xmlr, wsdlUrl);
+         parse(metadata, xmlr, wsdlUrl);
       }
       catch (Exception e)
       {
@@ -111,7 +149,7 @@ public final class SOAPAddressWSDLParser
       }
    }
    
-   private static WSDLMetaData getMetaData(XMLStreamReader reader, URL wsdlUrl) throws XMLStreamException
+   private static void parse(WSDLMetaData metadata, XMLStreamReader reader, URL wsdlUrl) throws XMLStreamException
    {
       int iterate;
       try
@@ -123,7 +161,6 @@ public final class SOAPAddressWSDLParser
          // skip non-tag elements
          iterate = reader.nextTag();
       }
-      WSDLMetaData metadata = new WSDLMetaData();
       switch (iterate)
       {
          case END_ELEMENT : {
@@ -143,7 +180,6 @@ public final class SOAPAddressWSDLParser
             }
          }
       }
-      return metadata;
    }
    
    private static void parseDefinitions(XMLStreamReader reader, WSDLMetaData metadata, String targetNS, URL wsdlUrl) throws XMLStreamException
@@ -171,6 +207,14 @@ public final class SOAPAddressWSDLParser
                   WSDLBindingMetaData bmd = parseBinding(reader, wsdlUrl);
                   bmd.setName(name);
                   metadata.getBindings().put(bmd.getName(), bmd);
+               }
+               else if (match(reader, WSDL_NS, IMPORT)) {
+                  final String location = reader.getAttributeValue(null, LOCATION);
+                  final String url = wsdlUrl.toString();
+                  final String newUrl = url.substring(0, url.lastIndexOf("/") + (location.startsWith("/") ? 0 : 1)) + location;
+                  if (!metadata.getImports().containsKey(newUrl)) {
+                     metadata.getImports().put(newUrl, false);
+                  }
                }
                continue;
             }
@@ -267,6 +311,7 @@ public final class SOAPAddressWSDLParser
    {
       private Map<QName, WSDLServiceMetaData> services = new HashMap<QName, SOAPAddressWSDLParser.WSDLServiceMetaData>();
       private Map<QName, WSDLBindingMetaData> bindings = new HashMap<QName, SOAPAddressWSDLParser.WSDLBindingMetaData>();
+      private Map<String, Boolean> imports = new HashMap<String, Boolean>(); //<url, processed>
       
       public Map<QName, WSDLServiceMetaData> getServices()
       {
@@ -275,6 +320,11 @@ public final class SOAPAddressWSDLParser
       public Map<QName, WSDLBindingMetaData> getBindings()
       {
          return bindings;
+      }
+      
+      public Map<String, Boolean> getImports()
+      {
+         return imports;
       }
    }
    
