@@ -24,6 +24,7 @@ package org.jboss.ws.common.monitoring;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.jboss.ws.api.monitoring.Record;
 import org.jboss.ws.api.monitoring.Record.MessageType;
@@ -103,18 +104,17 @@ public class LogRecorder extends AbstractRecordProcessor implements Serializable
       Map<String, List<String>> headers = record.getHeaders();
       if (this.isProcessHeaders() && headers != null)
       {
-         for (String key : headers.keySet())
+         for (Entry<String, List<String>> e : headers.entrySet())
          {
-            sb.append(key);
+            sb.append(e.getKey());
             sb.append(": ");
-            for (String h : headers.get(key))
+            for (String h : e.getValue())
             {
                sb.append(h);
                sb.append("; ");
             }
             sb.append("\n");
          }
-         sb.append("\n");
       }
       sb.append("\n");
       if (this.isProcessEnvelope())

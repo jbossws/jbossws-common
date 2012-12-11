@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -196,11 +197,10 @@ public class MemoryBufferRecorder extends AbstractRecordProcessor implements Mem
       sb.append("</pre></span>");
       if (!groupRecords)
          openTable(sb, showDetails);
-      for (String key : records.keySet())
-      {
+      for (Entry<String, List<Record>> e : records.entrySet()) {
          if (groupRecords)
             openTable(sb, showDetails);
-         for (Record record : records.get(key))
+         for (Record record : e.getValue())
          {
             appendRecordRow(sb, record, showDetails);
          }

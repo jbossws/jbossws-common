@@ -66,6 +66,7 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
@@ -340,11 +341,9 @@ public class DOMWriter
             // that are defined further up the tree
             if (completeNamespaces)
             {
-               Iterator<String> itPrefix = nsMap.keySet().iterator();
-               while (itPrefix.hasNext())
-               {
-                  String prefix = itPrefix.next();
-                  String nsURI = nsMap.get(prefix);
+               for (Entry<String, String> e : nsMap.entrySet()) {
+                  String prefix = e.getKey();
+                  String nsURI = e.getValue();
                   if (nsURI == null)
                   {
                      nsURI = getNamespaceURI(prefix, element, null);

@@ -91,7 +91,10 @@ public class ConfigHelper implements ClientConfigurer
          {
             is = SecurityActions.getContextClassLoader().getResourceAsStream(configFile);
             ConfigRoot config = ConfigMetaDataParser.parse(is);
-            return config.getClientConfigByName(configName);
+            ClientConfig cc = config.getClientConfigByName(configName);
+            if (cc != null) {
+               return cc;
+            }
          }
          catch (Exception e)
          {
@@ -115,8 +118,8 @@ public class ConfigHelper implements ClientConfigurer
                }
             }
          }
-         throw MESSAGES.configurationNotFound(configName);
       }
+      throw MESSAGES.configurationNotFound(configName);
    }
    
    /**
