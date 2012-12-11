@@ -51,7 +51,7 @@ public class ConfigDelegateHandler<T extends MessageContext> implements Handler<
    @Override
    public boolean handleFault(T context)
    {
-      return handleFault(context);
+      return delegate.handleFault(context);
    }
 
    @Override

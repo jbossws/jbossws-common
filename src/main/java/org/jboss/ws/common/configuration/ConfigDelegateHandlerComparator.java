@@ -21,6 +21,7 @@
  */
 package org.jboss.ws.common.configuration;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 import javax.xml.ws.handler.Handler;
@@ -33,8 +34,10 @@ import javax.xml.ws.handler.Handler;
  *
  */
 @SuppressWarnings("rawtypes")
-public final class ConfigDelegateHandlerComparator<T extends Handler> implements Comparator<T>
+public final class ConfigDelegateHandlerComparator<T extends Handler> implements Comparator<T>, Serializable
 {
+   static final long serialVersionUID = 5045492270035185007L;
+
    @Override
    public int compare(Handler o1, Handler o2)
    {

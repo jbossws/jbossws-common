@@ -523,15 +523,15 @@ public class JavaUtils
       if (! type.isArray())
          return type.getName();
 
-      String arrayNotation = "";
+      StringBuilder arrayNotation = new StringBuilder();
       Class<?> component = type;
       while(component.isArray())
       {
          component = component.getComponentType();
-         arrayNotation += "[]";
+         arrayNotation.append("[]");
       }
 
-      return component.getName() + arrayNotation;
+      return component.getName() + arrayNotation.toString();
    }
 
    public static String capitalize(String source)

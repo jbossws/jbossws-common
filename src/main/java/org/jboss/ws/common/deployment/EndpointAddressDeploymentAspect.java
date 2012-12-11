@@ -182,7 +182,7 @@ public class EndpointAddressDeploymentAspect extends AbstractDeploymentAspect
       return "CONFIDENTIAL".equals(transportGuarantee);
    }
    
-   private class PortValue {
+   private static class PortValue {
       private ServerConfig config;
       private Integer port;
       private Integer securePort;
