@@ -33,14 +33,12 @@ import java.util.Map;
 import org.jboss.ws.api.annotation.WebContext;
 import org.jboss.ws.common.Messages;
 import org.jboss.ws.common.integration.AbstractDeploymentAspect;
-import org.jboss.wsf.spi.SPIProvider;
-import org.jboss.wsf.spi.SPIProviderResolver;
+import org.jboss.ws.common.management.AbstractServerConfig;
 import org.jboss.wsf.spi.deployment.Deployment;
 import org.jboss.wsf.spi.deployment.Endpoint;
 import org.jboss.wsf.spi.deployment.HttpEndpoint;
 import org.jboss.wsf.spi.deployment.Service;
 import org.jboss.wsf.spi.management.ServerConfig;
-import org.jboss.wsf.spi.management.ServerConfigFactory;
 import org.jboss.wsf.spi.metadata.j2ee.EJBArchiveMetaData;
 import org.jboss.wsf.spi.metadata.j2ee.EJBMetaData;
 import org.jboss.wsf.spi.metadata.j2ee.EJBSecurityMetaData;
@@ -52,6 +50,7 @@ import org.jboss.wsf.spi.metadata.j2ee.JSESecurityMetaData.JSEResourceCollection
  * A deployer that assigns the endpoint address. 
  *
  * @author Thomas.Diesler@jboss.org
+ * @author alessio.soldano@jboss.com
  * @since 19-May-2007
  */
 public class EndpointAddressDeploymentAspect extends AbstractDeploymentAspect
@@ -64,21 +63,10 @@ public class EndpointAddressDeploymentAspect extends AbstractDeploymentAspect
       if (contextRoot == null)
          throw Messages.MESSAGES.cannotObtainContextRoot(dep.getSimpleName());
       
-      // TODO: remove this hack - review API
-      String protocol = (String)service.getProperty("protocol");
-      String host = (String)service.getProperty("host");
-      
       PortValue port = new PortValue((Integer)service.getProperty("port"), null);
-      
-      if (protocol == null)
-      {
-         SPIProvider provider = SPIProviderResolver.getInstance().getProvider();
-         ServerConfigFactory spi = provider.getSPI(ServerConfigFactory.class);
-         ServerConfig serverConfig = spi.getServerConfig();
-
-         host = serverConfig.getWebServiceHost();
-         port.setServerConfig(serverConfig);
-      }
+      ServerConfig serverConfig = AbstractServerConfig.getServerIntegrationServerConfig();
+      port.setServerConfig(serverConfig);
+      String host = serverConfig.getWebServiceHost();
       Map<String, Endpoint> endpointsMap = new HashMap<String, Endpoint>();
       List<Endpoint> deleteList = new LinkedList<Endpoint>();
       for (Endpoint ep : service.getEndpoints())
@@ -97,7 +85,7 @@ public class EndpointAddressDeploymentAspect extends AbstractDeploymentAspect
             if (urlPattern.endsWith("/*"))
                urlPattern = urlPattern.substring(0, urlPattern.length() - 2);
    
-            protocol = confidential ? "https://" : "http://";
+            String protocol = confidential ? "https://" : "http://";
             String address = protocol + hostAndPort + (contextRoot.equals("/") && urlPattern.startsWith("/") ? "" : contextRoot) + urlPattern;
             httpEp.setAddress(address);
             //JBWS-2957: EJB3 binds the same endpoint class to multiple beans at multiple JNDI locations;

@@ -21,7 +21,7 @@
  */
 package org.jboss.ws.common.utils;
 
-import static org.jboss.ws.common.Loggers.DEPLOYMENT_LOGGER;;
+import static org.jboss.ws.common.Loggers.DEPLOYMENT_LOGGER;
 import static org.jboss.ws.common.Messages.MESSAGES;
 import static org.jboss.ws.common.integration.WSHelper.isJseDeployment;
 import static org.jboss.ws.common.integration.WSHelper.isWarArchive;
@@ -45,11 +45,9 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.jboss.ws.common.DOMUtils;
 import org.jboss.ws.common.IOUtils;
-import org.jboss.wsf.spi.SPIProvider;
-import org.jboss.wsf.spi.SPIProviderResolver;
+import org.jboss.ws.common.management.AbstractServerConfig;
 import org.jboss.wsf.spi.deployment.ArchiveDeployment;
 import org.jboss.wsf.spi.management.ServerConfig;
-import org.jboss.wsf.spi.management.ServerConfigFactory;
 import org.w3c.dom.Element;
 
 /**
@@ -77,8 +75,7 @@ public abstract class AbstractWSDLFilePublisher
       serverConfig = dep.getAttachment(ServerConfig.class);
       if (serverConfig == null)
       {
-         SPIProvider spiProvider = SPIProviderResolver.getInstance().getProvider();
-         serverConfig = spiProvider.getSPI(ServerConfigFactory.class).getServerConfig();
+         serverConfig = AbstractServerConfig.getServerIntegrationServerConfig();
       }
       
       if (isJseDeployment(dep) || isWarArchive(dep))

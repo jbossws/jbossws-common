@@ -39,6 +39,7 @@ import org.jboss.wsf.spi.SPIProviderResolver;
 import org.jboss.wsf.spi.WSFException;
 import org.jboss.wsf.spi.classloading.ClassLoaderProvider;
 import org.jboss.wsf.spi.management.ServerConfig;
+import org.jboss.wsf.spi.management.ServerConfigFactory;
 import org.jboss.wsf.spi.management.StackConfig;
 import org.jboss.wsf.spi.management.StackConfigFactory;
 import org.jboss.wsf.spi.management.WebServerInfo;
@@ -78,6 +79,9 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
    private final List<ClientConfig> clientConfigs = Collections.synchronizedList(new ArrayList<ClientConfig>(2));
    // The default endpoint configs, if any
    private final List<EndpointConfig> endpointConfigs = Collections.synchronizedList(new ArrayList<EndpointConfig>(3));
+   
+   // The server integration classloader' ServerConfig instance reference
+   private static ServerConfig serverConfig;
 
    public MBeanServer getMbeanServer()
    {
@@ -213,6 +217,17 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
       if (mbeanServer != null) {
          mbeanServer.unregisterMBean(AbstractServerConfigMBean.OBJECT_NAME);
       }
+   }
+   
+   public static synchronized ServerConfig getServerIntegrationServerConfig()
+   {
+       if (serverConfig == null)
+       {
+           final ClassLoader cl = ClassLoaderProvider.getDefaultProvider().getServerIntegrationClassLoader();
+           SPIProvider spiProvider = SPIProviderResolver.getInstance(cl).getProvider();
+           serverConfig = spiProvider.getSPI(ServerConfigFactory.class, cl).getServerConfig();
+       }
+       return serverConfig;
    }
    
    public String getImplementationTitle()
