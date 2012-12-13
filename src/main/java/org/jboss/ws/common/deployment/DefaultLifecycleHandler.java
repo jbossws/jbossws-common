@@ -36,6 +36,17 @@ import org.jboss.wsf.spi.invocation.InvocationHandler;
  */
 public class DefaultLifecycleHandler implements LifecycleHandler
 {
+   private static DefaultLifecycleHandler me;
+   
+   public static DefaultLifecycleHandler getInstance()
+   {
+      if (me == null)
+      {
+         me = new DefaultLifecycleHandler();
+      }
+      return me;
+   }
+   
    public void start(Endpoint ep)
    {
       EndpointState state = ep.getState();

@@ -52,22 +52,24 @@ public class EndpointHandlerDeploymentAspect extends AbstractDeploymentAspect
    @Override
    public void start(final Deployment dep)
    {
+      final RequestHandler reqHandler = getRequestHandler();
+      final LifecycleHandler lcHandler = getLifecycleHandler();
       for (final Endpoint ep : dep.getService().getEndpoints())
       {
-         ep.setRequestHandler(getRequestHandler());
-         ep.setLifecycleHandler(getLifecycleHandler());
+         ep.setRequestHandler(reqHandler);
+         ep.setLifecycleHandler(lcHandler);
          ep.setInvocationHandler(getInvocationHandler(ep));
       }
    }
 
    private RequestHandler getRequestHandler()
    {
-      return spiProvider.getSPI(RequestHandlerFactory.class).newRequestHandler();
+      return spiProvider.getSPI(RequestHandlerFactory.class).getRequestHandler();
    }
 
    private LifecycleHandler getLifecycleHandler()
    {
-      return spiProvider.getSPI(LifecycleHandlerFactory.class).newLifecycleHandler();
+      return spiProvider.getSPI(LifecycleHandlerFactory.class).getLifecycleHandler();
    }
 
    private InvocationHandler getInvocationHandler(final Endpoint ep)
