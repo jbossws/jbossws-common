@@ -21,6 +21,7 @@
  */
 package org.jboss.test.ws.common;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
@@ -88,6 +89,26 @@ public class URLLoaderAdapterTestCase extends TestCase
       assertNotNull(urlLoaderAdapter);
       assertNotNull(utils);
       assertTrue(urlLoaderAdapter.getChildren().size() == 0);
+   }
+   
+   public void testFailSafeGetChild() throws Exception
+   {
+      ClassLoader cl = UnifiedVirtualFile.class.getClassLoader();
+      URL rootURL = getJarUrl(cl.getResource("org/jboss/wsf/spi/deployment"));
+      assertNotNull(rootURL);
+      URLLoaderAdapter ula = new URLLoaderAdapter(rootURL);
+      try {
+         ula.findChild("foo/bar/");
+         fail("IOException expected");
+      } catch (IOException e) {
+         //expected
+      }
+      try {
+         UnifiedVirtualFile uvf = ula.findChildFailSafe("foo/bar/");
+         assertNull(uvf);
+      } catch (Exception e) {
+         fail("Exception not expected, 'null' should have been returned instead: " + e.getMessage());
+      }
    }
    
    private static URL getJarUrl(URL url) throws Exception
