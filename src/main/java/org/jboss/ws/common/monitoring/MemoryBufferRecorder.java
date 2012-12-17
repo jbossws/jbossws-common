@@ -52,7 +52,7 @@ public class MemoryBufferRecorder extends AbstractRecordProcessor implements Mem
    private Map<String, List<Record>> recentRecords = Collections.synchronizedMap(new HashMap<String, List<Record>>());
    private ConcurrentLinkedQueue<String> recentRecordGroups = new ConcurrentLinkedQueue<String>();
    private int size = 0;
-   private int maxSize = 50;
+   private volatile int maxSize = 50;
 
    public MemoryBufferRecorder()
    {

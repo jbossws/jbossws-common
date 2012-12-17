@@ -117,35 +117,6 @@ public final class IOUtils
       }
    }
 
-   /**
-    * Transform a Reader to an InputStream
-    * Background is that DocumentBuilder.parse() cannot take the Reader directly
-    */
-   public static InputStream transformReader(Reader reader) throws IOException
-   {
-      try
-      {
-         int capacity = 1024;
-         char[] charBuffer = new char[capacity];
-         StringBuilder strBuffer = new StringBuilder(capacity);
-
-         int len = reader.read(charBuffer, 0, capacity);
-         while (len > 0)
-         {
-            strBuffer.append(charBuffer, 0, len);
-            len = reader.read(charBuffer, 0, capacity);
-         }
-         return new ByteArrayInputStream(strBuffer.toString().getBytes());
-      }
-      catch (IOException e)
-      {
-         throw e;
-      }
-      finally{
-         reader.close();
-      }
-   }
-
    public static File createTempDirectory() throws IOException
    {
       File tmpdir = null;
@@ -162,6 +133,7 @@ public final class IOUtils
       catch (Throwable t)
       {
          // Use the Java temp directory if there is no server config (the client)
+          tmpdir = null;
       }
 
       return tmpdir;
