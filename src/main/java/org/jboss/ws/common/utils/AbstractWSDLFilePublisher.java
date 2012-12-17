@@ -153,7 +153,11 @@ public abstract class AbstractWSDLFilePublisher
                
                URL targetURL = new URL(baseURI.substring(0, baseURI.lastIndexOf("/") + 1) + locationURI);
                File targetFile = new File(targetURL.getFile()); //JBWS-3488
-               targetFile.getParentFile().mkdirs();
+               if (targetFile.getParentFile() != null) {
+                   if (!targetFile.getParentFile().mkdirs()) {
+                       ; // exception will be thrown later in this code
+                   }
+                }
 
                WSDLFactory wsdlFactory = WSDLFactory.newInstance();
                javax.wsdl.xml.WSDLWriter wsdlWriter = wsdlFactory.newWSDLWriter();
@@ -208,7 +212,11 @@ public abstract class AbstractWSDLFilePublisher
                   
                   URL xsdURL = new URL(baseURI.substring(0, baseURI.lastIndexOf("/") + 1) + schemaLocation);
                   File targetFile = new File(xsdURL.getFile()); //JBWS-3488
-                  targetFile.getParentFile().mkdirs();
+                  if (targetFile.getParentFile() != null) {
+                     if (!targetFile.getParentFile().mkdirs()) {
+                         ; // exception will be thrown later in this code
+                     }
+                  }
 
                   String deploymentName = dep.getCanonicalName();
 
@@ -287,6 +295,8 @@ public abstract class AbstractWSDLFilePublisher
       }
 
       // delete the directory as well
-      dir.delete();
+      if (!dir.delete()) {
+          dir.deleteOnExit();
+      }
    }
 }

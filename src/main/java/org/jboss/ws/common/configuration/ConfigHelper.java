@@ -92,7 +92,7 @@ public class ConfigHelper implements ClientConfigurer
             is = SecurityActions.getContextClassLoader().getResourceAsStream(configFile);
             if (is != null) {
                ConfigRoot config = ConfigMetaDataParser.parse(is);
-               ClientConfig cc = config.getClientConfigByName(configName);
+               ClientConfig cc = config != null ? config.getClientConfigByName(configName) : null;
                if (cc != null) {
                   return cc;
                }

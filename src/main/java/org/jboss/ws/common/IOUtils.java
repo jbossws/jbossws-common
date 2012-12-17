@@ -128,7 +128,9 @@ public final class IOUtils
          SPIProvider spiProvider = SPIProviderResolver.getInstance().getProvider();
          ServerConfig config = spiProvider.getSPI(ServerConfigFactory.class).getServerConfig();        
          tmpdir = new File(config.getServerTempDir().getCanonicalPath() + "/jbossws");
-         tmpdir.mkdirs();
+         if (!tmpdir.mkdirs()) {
+             tmpdir = null;
+         }
       }
       catch (Throwable t)
       {
