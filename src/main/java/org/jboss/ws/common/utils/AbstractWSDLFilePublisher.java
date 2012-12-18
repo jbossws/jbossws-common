@@ -263,10 +263,12 @@ public abstract class AbstractWSDLFilePublisher
    private static Element getFirstChildElement(Node node) {
       Node fc = node.getFirstChild();
       Element e = null;
-      if (fc.getNodeType() == Node.ELEMENT_NODE) {
-         e = (Element)fc;
-      } else{
-         e = getNextSiblingElement(fc);
+      if (fc != null) {
+         if (fc.getNodeType() == Node.ELEMENT_NODE) {
+            e = (Element)fc;
+         } else{
+            e = getNextSiblingElement(fc);
+         }
       }
       return e;
    }
