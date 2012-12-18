@@ -201,20 +201,12 @@ public abstract class AbstractWSDLFilePublisher
             final String ln = childElement.getLocalName();
             if ("import".equals(ln) || "include".equals(ln)) {
                String schemaLocation = childElement.getAttribute("schemaLocation");
-               if (schemaLocation.length() > 0)
+               if (schemaLocation.length() > 0 && schemaLocation.startsWith("http://") == false)
                {
-                  if (schemaLocation.startsWith("http://") == false)
+                  // infinity loops prevention
+                  if (!published.contains(schemaLocation))
                   {
-                     // infinity loops prevention
-                     if (published.contains(schemaLocation))
-                     {
-                        continue;
-                     }
-                     else
-                     {
-                        published.add(schemaLocation);
-                     }
-                     
+                     published.add(schemaLocation);
                      String baseURI = parentURL.toExternalForm();
                      URL xsdURL = new URL(baseURI.substring(0, baseURI.lastIndexOf("/") + 1) + schemaLocation);
                      File targetFile = new File(xsdURL.getFile()); //JBWS-3488
