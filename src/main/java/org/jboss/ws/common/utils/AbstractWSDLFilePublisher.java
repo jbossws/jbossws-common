@@ -153,8 +153,9 @@ public abstract class AbstractWSDLFilePublisher
                
                URL targetURL = new URL(baseURI.substring(0, baseURI.lastIndexOf("/") + 1) + locationURI);
                File targetFile = new File(targetURL.getFile()); //JBWS-3488
-               if (targetFile.getParentFile() != null) {
-                   if (!targetFile.getParentFile().mkdirs()) {
+               File parentFile = targetFile.getParentFile(); 
+               if (parentFile != null) {
+                   if (!parentFile.mkdirs()) {
                        ; // exception will be thrown later in this code
                    }
                 }
@@ -212,8 +213,9 @@ public abstract class AbstractWSDLFilePublisher
                   
                   URL xsdURL = new URL(baseURI.substring(0, baseURI.lastIndexOf("/") + 1) + schemaLocation);
                   File targetFile = new File(xsdURL.getFile()); //JBWS-3488
-                  if (targetFile.getParentFile() != null) {
-                     if (!targetFile.getParentFile().mkdirs()) {
+                  File parentFile = targetFile.getParentFile(); 
+                  if (parentFile != null) {
+                     if (!parentFile.mkdirs()) {
                          ; // exception will be thrown later in this code
                      }
                   }
