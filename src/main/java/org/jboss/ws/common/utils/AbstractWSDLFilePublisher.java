@@ -43,12 +43,14 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.jboss.ws.common.Constants;
 import org.jboss.ws.common.DOMUtils;
 import org.jboss.ws.common.IOUtils;
 import org.jboss.ws.common.management.AbstractServerConfig;
 import org.jboss.wsf.spi.deployment.ArchiveDeployment;
 import org.jboss.wsf.spi.management.ServerConfig;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 /**
  * Abstract WSDL file publisher
@@ -128,16 +130,12 @@ public abstract class AbstractWSDLFilePublisher
    @SuppressWarnings("unchecked")
    protected void publishWsdlImports(URL parentURL, Definition parentDefinition, List<String> published, String expLocation) throws Exception
    {
-      String baseURI = parentURL.toExternalForm();
-
       Iterator it = parentDefinition.getImports().values().iterator();
       while (it.hasNext())
       {
          for (Import wsdlImport : (List<Import>)it.next())
          {
             String locationURI = wsdlImport.getLocationURI();
-            Definition subdef = wsdlImport.getDefinition();
-
             // its an external import, don't publish locally
             if (locationURI.startsWith("http://") == false)
             {
@@ -151,15 +149,12 @@ public abstract class AbstractWSDLFilePublisher
                   published.add(locationURI);
                }
                
+               String baseURI = parentURL.toExternalForm();
                URL targetURL = new URL(baseURI.substring(0, baseURI.lastIndexOf("/") + 1) + locationURI);
                File targetFile = new File(targetURL.getFile()); //JBWS-3488
-               File parentFile = targetFile.getParentFile(); 
-               if (parentFile != null) {
-                   if (!parentFile.mkdirs()) {
-                       ; // exception will be thrown later in this code
-                   }
-                }
+               createParentDir(targetFile);
 
+               Definition subdef = wsdlImport.getDefinition();
                WSDLFactory wsdlFactory = WSDLFactory.newInstance();
                javax.wsdl.xml.WSDLWriter wsdlWriter = wsdlFactory.newWSDLWriter();
                FileWriter fw = new FileWriter(targetFile);
@@ -179,6 +174,16 @@ public abstract class AbstractWSDLFilePublisher
       }
    }
    
+   private static void createParentDir(File targetFile)
+   {
+      File parentFile = targetFile.getParentFile();
+      if (parentFile != null) {
+         if (!parentFile.mkdirs()) {
+            ; // exception will be thrown later in this code
+         }
+      }
+   }
+   
    protected void publishSchemaImports(URL parentURL, Element element, List<String> published) throws Exception
    {
       this.publishSchemaImports(parentURL, element, published, expLocation);
@@ -188,80 +193,102 @@ public abstract class AbstractWSDLFilePublisher
     */
    protected void publishSchemaImports(URL parentURL, Element element, List<String> published, String expLocation) throws Exception
    {
-      String baseURI = parentURL.toExternalForm();
-
-      Iterator<Element> it = DOMUtils.getChildElements(element);
-      while (it.hasNext())
-      {
-         Element childElement = (Element)it.next();
-         if ("import".equals(childElement.getLocalName()) || "include".equals(childElement.getLocalName()))
-         {
-            String schemaLocation = childElement.getAttribute("schemaLocation");
-            if (schemaLocation.length() > 0)
-            {
-               if (schemaLocation.startsWith("http://") == false)
+      Element childElement = getFirstChildElement(element);
+      while (childElement != null) {
+         //first check on namespace only to avoid doing anything on any other wsdl/schema elements
+         final String ns = childElement.getNamespaceURI();
+         if (Constants.NS_SCHEMA_XSD.equals(ns)) {
+            final String ln = childElement.getLocalName();
+            if ("import".equals(ln) || "include".equals(ln)) {
+               String schemaLocation = childElement.getAttribute("schemaLocation");
+               if (schemaLocation.length() > 0)
                {
-                  // infinity loops prevention
-                  if (published.contains(schemaLocation))
+                  if (schemaLocation.startsWith("http://") == false)
                   {
-                     continue;
-                  }
-                  else
-                  {
-                     published.add(schemaLocation);
-                  }
-                  
-                  URL xsdURL = new URL(baseURI.substring(0, baseURI.lastIndexOf("/") + 1) + schemaLocation);
-                  File targetFile = new File(xsdURL.getFile()); //JBWS-3488
-                  File parentFile = targetFile.getParentFile(); 
-                  if (parentFile != null) {
-                     if (!parentFile.mkdirs()) {
-                         ; // exception will be thrown later in this code
+                     // infinity loops prevention
+                     if (published.contains(schemaLocation))
+                     {
+                        continue;
                      }
+                     else
+                     {
+                        published.add(schemaLocation);
+                     }
+                     
+                     String baseURI = parentURL.toExternalForm();
+                     URL xsdURL = new URL(baseURI.substring(0, baseURI.lastIndexOf("/") + 1) + schemaLocation);
+                     File targetFile = new File(xsdURL.getFile()); //JBWS-3488
+                     createParentDir(targetFile);
+
+                     String deploymentName = dep.getCanonicalName();
+
+                     // get the resource path including the separator
+                     int index = baseURI.indexOf(deploymentName) + 1;
+                     String resourcePath = baseURI.substring(index + deploymentName.length());
+                     //check for sub-directories
+                     resourcePath = resourcePath.substring(0, resourcePath.lastIndexOf("/") + 1);
+
+                     resourcePath = expLocation + resourcePath + schemaLocation;
+                     while (resourcePath.indexOf("//") != -1)
+                     {
+                        resourcePath = resourcePath.replace("//", "/");
+                     }
+                     URL resourceURL = dep.getResourceResolver().resolve(resourcePath);
+                     InputStream is = new ResourceURL(resourceURL).openStream();
+                     if (is == null)
+                        throw MESSAGES.cannotFindSchemaImportInDeployment(resourcePath, deploymentName);
+
+                     FileOutputStream fos = null;
+                     try
+                     {
+                        fos = new FileOutputStream(targetFile);
+                        IOUtils.copyStream(fos, is);
+                     }
+                     finally
+                     {
+                        if (fos != null) fos.close();
+                     }
+
+                     DEPLOYMENT_LOGGER.xmlSchemaImportPublishedTo(xsdURL);
+
+                     // recursively publish imports
+                     Element subdoc = DOMUtils.parse(xsdURL.openStream(), getDocumentBuilder());
+                     publishSchemaImports(xsdURL, subdoc, published, expLocation);
                   }
-
-                  String deploymentName = dep.getCanonicalName();
-
-                  // get the resource path including the separator
-                  int index = baseURI.indexOf(deploymentName) + 1;
-                  String resourcePath = baseURI.substring(index + deploymentName.length());
-                  //check for sub-directories
-                  resourcePath = resourcePath.substring(0, resourcePath.lastIndexOf("/") + 1);
-
-                  resourcePath = expLocation + resourcePath + schemaLocation;
-                  while (resourcePath.indexOf("//") != -1)
-                  {
-                     resourcePath = resourcePath.replace("//", "/");
-                  }
-                  URL resourceURL = dep.getResourceResolver().resolve(resourcePath);
-                  InputStream is = new ResourceURL(resourceURL).openStream();
-                  if (is == null)
-                     throw MESSAGES.cannotFindSchemaImportInDeployment(resourcePath, deploymentName);
-
-                  FileOutputStream fos = null;
-                  try
-                  {
-                     fos = new FileOutputStream(targetFile);
-                     IOUtils.copyStream(fos, is);
-                  }
-                  finally
-                  {
-                     if (fos != null) fos.close();
-                  }
-
-                  DEPLOYMENT_LOGGER.xmlSchemaImportPublishedTo(xsdURL);
-
-                  // recursively publish imports
-                  Element subdoc = DOMUtils.parse(xsdURL.openStream(), getDocumentBuilder());
-                  publishSchemaImports(xsdURL, subdoc, published, expLocation);
                }
+            } else if ("schema".equals(ln)) {
+               //recurse, as xsd:schema might contain an import
+               publishSchemaImports(parentURL, childElement, published, expLocation);
             }
-         }
-         else
-         {
+         } else if (Constants.NS_WSDL11.equals(ns) && "types".equals(childElement.getLocalName())) {
+            //recurse as wsdl:types might contain a schema
             publishSchemaImports(parentURL, childElement, published, expLocation);
          }
+         childElement = getNextSiblingElement(childElement);
       }
+   }
+   
+   private static Element getFirstChildElement(Node node) {
+      Node fc = node.getFirstChild();
+      Element e = null;
+      if (fc.getNodeType() == Node.ELEMENT_NODE) {
+         e = (Element)fc;
+      } else{
+         e = getNextSiblingElement(fc);
+      }
+      return e;
+   }
+   
+   private static Element getNextSiblingElement(Node node) {
+      Element e = null;
+      Node nextSibling = node.getNextSibling();
+      while (e == null && nextSibling != null) {
+         if (nextSibling.getNodeType() == Node.ELEMENT_NODE) {
+            e = (Element)nextSibling;
+         }
+         nextSibling = nextSibling.getNextSibling();
+      }
+      return e;
    }
    
    /**
@@ -297,8 +324,8 @@ public abstract class AbstractWSDLFilePublisher
       }
 
       // delete the directory as well
-      if (!dir.delete()) {
-          dir.deleteOnExit();
+      if (dir.delete() == false) {
+         DEPLOYMENT_LOGGER.cannotDeletePublishedWsdlDoc(dir.toURI().toURL());
       }
    }
 }
