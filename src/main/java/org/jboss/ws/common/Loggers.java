@@ -214,4 +214,12 @@ public interface Loggers extends BasicLogger
     @LogMessage(level = TRACE)
     @Message(id = 22114, value = "%s doesn't work on %s")
     void aspectDoesNotWorkOnDeployment(Class<?> aspect, Class<?> deployment);
+    
+    @LogMessage(level = TRACE)
+    @Message(id = 22115, value = "Cannot get URL for %s")
+    void cannotGetURLFor(String path);
+    
+    @LogMessage(level = TRACE)
+    @Message(id = 22116, value = "Could not find %s in the additional metadatafiles")
+    void cannotFindInAdditionalMetaData(String resourcePath);
 }

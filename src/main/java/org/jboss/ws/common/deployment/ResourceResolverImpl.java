@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source.
- * Copyright 2009, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2012, Red Hat Middleware LLC, and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -119,6 +119,80 @@ public class ResourceResolverImpl implements ResourceResolver
                throw Messages.MESSAGES.cannotFindInAdditionalMetaData(resourcePath);
             
             resourceURL = vfResource.toURL();
+         }
+      }
+      return resourceURL;
+   }
+   
+   public URL resolveFailSafe(String resourcePath)
+   {
+      final boolean traceEnabled = ROOT_LOGGER.isTraceEnabled();
+      URL resourceURL = null;
+      if (resourcePath != null && resourcePath.length() > 0)
+      {
+         if (resourcePath.startsWith("/"))
+            resourcePath = resourcePath.substring(1);
+
+         try
+         {
+            // assign an absolute URL 
+            resourceURL = new URL(resourcePath);
+         }
+         catch (MalformedURLException ex)
+         {
+            // ignore
+         }
+
+         if (resourceURL == null && rootFile != null)
+         {
+            UnifiedVirtualFile vfResource = rootFile.findChildFailSafe(resourcePath);
+            if (vfResource == null)
+            {
+               if (metadataFiles == null || metadataFiles.isEmpty())
+               {
+                  if (traceEnabled) ROOT_LOGGER.cannotGetRootResourceFrom(resourcePath, rootFile, null);
+               }
+               else
+               {
+                  if (traceEnabled) ROOT_LOGGER.cannotGetRootFileTryingWithAdditionalMetaData(resourcePath);
+               }
+            }
+            else
+            {
+               resourceURL = vfResource.toURL();
+            }
+         }
+         //scan additional metadata files (for instance originally attached to a VFSDeploymentUnit)
+         if (resourceURL == null && metadataFiles != null && !metadataFiles.isEmpty())
+         {
+            UnifiedVirtualFile vfResource = null;
+            for (Iterator<UnifiedVirtualFile> it = metadataFiles.iterator(); it.hasNext() && vfResource == null;)
+            {
+               UnifiedVirtualFile uvf = it.next();
+               URL wsdlUrl = uvf.toURL();
+               String wsdlPath = wsdlUrl.getPath();
+               if (wsdlPath.startsWith("/"))
+                  wsdlPath = wsdlPath.substring(1);
+               if (resourcePath.equals(wsdlPath))
+               {
+                  vfResource = uvf;
+               }
+               else
+               {
+                  vfResource = uvf.findChildFailSafe(resourcePath);
+                  if (traceEnabled && vfResource == null) {
+                     ROOT_LOGGER.cannotGetRootResourceFrom(resourcePath, uvf, null);
+                  }
+               }
+            }
+            if (vfResource == null)
+            {
+               if (traceEnabled) ROOT_LOGGER.cannotFindInAdditionalMetaData(resourcePath);
+            }
+            else
+            {
+               resourceURL = vfResource.toURL();
+            }
          }
       }
       return resourceURL;

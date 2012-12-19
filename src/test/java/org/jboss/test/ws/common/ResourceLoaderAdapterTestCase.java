@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source.
- * Copyright 2006, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2012, Red Hat Middleware LLC, and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -21,6 +21,7 @@
  */
 package org.jboss.test.ws.common;
 
+import java.io.IOException;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -84,5 +85,23 @@ public class ResourceLoaderAdapterTestCase extends TestCase
       assertNotNull(resourceLoaderAdapter);
       assertNotNull(utils);
       assertTrue(resourceLoaderAdapter.getChildren().size() == 0);
+   }
+   
+   public void testFailSafeGetChild()
+   {
+      ClassLoader cl = UnifiedVirtualFile.class.getClassLoader();
+      ResourceLoaderAdapter ula = new ResourceLoaderAdapter(cl);
+      try {
+         ula.findChild("foo/bar/");
+         fail("IOException expected");
+      } catch (IOException e) {
+         //expected
+      }
+      try {
+         UnifiedVirtualFile uvf = ula.findChildFailSafe("foo/bar/");
+         assertNull(uvf);
+      } catch (Exception e) {
+         fail("Exception not expected, 'null' should have been returned instead: " + e.getMessage());
+      }
    }
 }

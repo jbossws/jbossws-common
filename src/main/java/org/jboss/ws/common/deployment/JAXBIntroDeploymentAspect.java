@@ -63,9 +63,11 @@ public class JAXBIntroDeploymentAspect extends AbstractDeploymentAspect
       try
       {
          // META-INF first
-         UnifiedVirtualFile vfs = archive.getRootFile().findChild(META_INF_JAXB_INTROS_XML);
-         url = vfs.toURL();
-         introsConfigStream = url.openStream();
+         UnifiedVirtualFile vfs = archive.getRootFile().findChildFailSafe(META_INF_JAXB_INTROS_XML);
+         if (vfs != null) {
+            url = vfs.toURL();
+            introsConfigStream = url.openStream();
+         }
       } catch (Exception e) {}
 
       if(null == introsConfigStream)
@@ -73,9 +75,11 @@ public class JAXBIntroDeploymentAspect extends AbstractDeploymentAspect
          try 
          {
             // WEB-INF second
-            UnifiedVirtualFile vfs = archive.getRootFile().findChild(WEB_INF_JAXB_INTROS_XML);
-            url = vfs.toURL();
-            introsConfigStream = url.openStream();
+            UnifiedVirtualFile vfs = archive.getRootFile().findChildFailSafe(WEB_INF_JAXB_INTROS_XML);
+            if (vfs != null) {
+               url = vfs.toURL();
+               introsConfigStream = url.openStream();
+            }
          } catch (Exception e) {
             return;
          }
