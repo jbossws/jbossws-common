@@ -174,7 +174,7 @@ public abstract class AbstractWSDLFilePublisher
       }
    }
    
-   private static void createParentDir(File targetFile)
+   protected void createParentDir(File targetFile)
    {
       File parentFile = targetFile.getParentFile();
       if (parentFile != null) {
