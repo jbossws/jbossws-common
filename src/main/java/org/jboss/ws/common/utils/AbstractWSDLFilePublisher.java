@@ -125,10 +125,15 @@ public abstract class AbstractWSDLFilePublisher
       return builder;
    }
    
+   protected void publishWsdlImports(URL parentURL, Definition parentDefinition, List<String> published) throws Exception
+   {
+      this.publishWsdlImports(parentURL, parentDefinition, published, expLocation);
+   }
+   
    /** Publish the wsdl imports for a given wsdl definition
     */
    @SuppressWarnings("unchecked")
-   protected void publishWsdlImports(URL parentURL, Definition parentDefinition, List<String> published) throws Exception
+   protected void publishWsdlImports(URL parentURL, Definition parentDefinition, List<String> published, String expLocation) throws Exception
    {
       String baseURI = parentURL.toExternalForm();
 
@@ -166,19 +171,24 @@ public abstract class AbstractWSDLFilePublisher
                log.debug("WSDL import published to: " + targetURL);
 
                // recursively publish imports
-               publishWsdlImports(targetURL, subdef, published);
+               publishWsdlImports(targetURL, subdef, published, expLocation);
 
                // Publish XMLSchema imports
                Element subdoc = DOMUtils.parse(targetURL.openStream(), getDocumentBuilder());
-               publishSchemaImports(targetURL, subdoc, published);
+               publishSchemaImports(targetURL, subdoc, published, expLocation);
             }
          }
       }
    }
+   
+   protected void publishSchemaImports(URL parentURL, Element element, List<String> published) throws Exception
+   {
+      this.publishSchemaImports(parentURL, element, published, expLocation);
+   }
 
    /** Publish the schema imports for a given wsdl definition
     */
-   protected void publishSchemaImports(URL parentURL, Element element, List<String> published) throws Exception
+   protected void publishSchemaImports(URL parentURL, Element element, List<String> published, String expLocation) throws Exception
    {
       String baseURI = parentURL.toExternalForm();
 
@@ -240,13 +250,13 @@ public abstract class AbstractWSDLFilePublisher
 
                   // recursively publish imports
                   Element subdoc = DOMUtils.parse(xsdURL.openStream(), getDocumentBuilder());
-                  publishSchemaImports(xsdURL, subdoc, published);
+                  publishSchemaImports(xsdURL, subdoc, published, expLocation);
                }
             }
          }
          else
          {
-            publishSchemaImports(parentURL, childElement, published);
+            publishSchemaImports(parentURL, childElement, published, expLocation);
          }
       }
    }
