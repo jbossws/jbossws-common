@@ -33,9 +33,9 @@
     <jboss-logging.version>3.1.2.GA</jboss-logging.version>
     <jboss-logging-processor.version>1.0.3.Final</jboss-logging-processor.version>
     <wsdl4j.version>1.6.2</wsdl4j.version>
-    <ejb.api.version>1.0.0.CR2</ejb.api.version>
+    <ejb.api.version>1.0.0.Final</ejb.api.version>
     <jms.api.version>1.0.0.Final</jms.api.version>
-    <jaxws.api.version>1.0.0.Final</jaxws.api.version>
+    <jaxws.api.version>2.0.0.Final</jaxws.api.version>
     <junit.version>3.8.2</junit.version>
     <servlet.api.version>1.0.0.Final</servlet.api.version>
   </properties>
