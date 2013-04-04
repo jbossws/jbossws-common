@@ -54,7 +54,7 @@ public final class JBossWebservicesDescriptorParserImpl implements JBossWebservi
    @Override
    public JBossWebservicesMetaData parse(URL url)
    {
-      return JBossWebservicesFactory.load(url);
+      return new JBossWebservicesFactory(url).load(url);
    }
 
 }
