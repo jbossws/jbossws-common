@@ -55,6 +55,6 @@ public final class WebservicesDescriptorParserImpl implements WebservicesDescrip
    @Override
    public WebservicesMetaData parse(URL url)
    {
-      return new WebservicesFactory(url).load(url);
+      return WebservicesFactory.load(url);
    }
 }
