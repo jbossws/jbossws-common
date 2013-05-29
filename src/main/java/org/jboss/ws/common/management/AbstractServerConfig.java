@@ -26,9 +26,8 @@ import static org.jboss.ws.common.Loggers.MANAGEMENT_LOGGER;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
@@ -76,9 +75,9 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
    //The stack config
    protected StackConfig stackConfig;
    // The default endpoint configs, if any
-   private final List<ClientConfig> clientConfigs = Collections.synchronizedList(new ArrayList<ClientConfig>(2));
+   private final List<ClientConfig> clientConfigs = new CopyOnWriteArrayList<ClientConfig>();
    // The default endpoint configs, if any
-   private final List<EndpointConfig> endpointConfigs = Collections.synchronizedList(new ArrayList<EndpointConfig>(3));
+   private final List<EndpointConfig> endpointConfigs = new CopyOnWriteArrayList<EndpointConfig>();
    
    // The server integration classloader' ServerConfig instance reference
    private static ServerConfig serverConfig;
