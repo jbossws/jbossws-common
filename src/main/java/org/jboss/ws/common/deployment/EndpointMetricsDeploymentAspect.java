@@ -23,7 +23,6 @@ package org.jboss.ws.common.deployment;
 
 import org.jboss.ws.common.integration.AbstractDeploymentAspect;
 import org.jboss.wsf.spi.SPIProvider;
-import org.jboss.wsf.spi.SPIProviderResolver;
 import org.jboss.wsf.spi.deployment.Deployment;
 import org.jboss.wsf.spi.deployment.Endpoint;
 import org.jboss.wsf.spi.management.EndpointMetrics;
@@ -40,8 +39,7 @@ public class EndpointMetricsDeploymentAspect extends AbstractDeploymentAspect
    @Override
    public void start(Deployment dep)
    {
-      SPIProvider provider = SPIProviderResolver.getInstance().getProvider();
-      EndpointMetricsFactory factory = provider.getSPI(EndpointMetricsFactory.class);
+      EndpointMetricsFactory factory = SPIProvider.getInstance().getSPI(EndpointMetricsFactory.class);
       for (Endpoint ep : dep.getService().getEndpoints())
       {
          EndpointMetrics metrics = factory.newEndpointMetrics();

@@ -34,7 +34,6 @@ import javax.management.ObjectName;
 
 import org.jboss.ws.common.ObjectNameFactory;
 import org.jboss.wsf.spi.SPIProvider;
-import org.jboss.wsf.spi.SPIProviderResolver;
 import org.jboss.wsf.spi.WSFException;
 import org.jboss.wsf.spi.classloading.ClassLoaderProvider;
 import org.jboss.wsf.spi.management.ServerConfig;
@@ -181,12 +180,11 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
    }
    
    private int getConnectorPort(boolean secure) {
-      ClassLoader cl = ClassLoaderProvider.getDefaultProvider().getServerIntegrationClassLoader();
-      SPIProvider spiProvider = SPIProviderResolver.getInstance(cl).getProvider();
+      final ClassLoader cl = ClassLoaderProvider.getDefaultProvider().getServerIntegrationClassLoader();
       int port = 0;
       try
       {
-         WebServerInfo webServerInfo = spiProvider.getSPI(WebServerInfoFactory.class, cl).newWebServerInfo();
+         WebServerInfo webServerInfo = SPIProvider.getInstance().getSPI(WebServerInfoFactory.class, cl).newWebServerInfo();
          port = webServerInfo.getPort("HTTP/1.1", secure);
       }
       catch (WSFException e)
@@ -199,9 +197,8 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
    public void create() throws Exception
    {
       //Retrieve the stackConfig using SPIProvider
-      ClassLoader cl = ClassLoaderProvider.getDefaultProvider().getServerIntegrationClassLoader();
-      SPIProvider spiProvider = SPIProviderResolver.getInstance(cl).getProvider();
-      this.stackConfig = spiProvider.getSPI(StackConfigFactory.class, cl).getStackConfig();
+      final ClassLoader cl = ClassLoaderProvider.getDefaultProvider().getServerIntegrationClassLoader();
+      this.stackConfig = SPIProvider.getInstance().getSPI(StackConfigFactory.class, cl).getStackConfig();
 
       MANAGEMENT_LOGGER.startingWSServerConfig(getImplementationTitle(), getImplementationVersion());
       MBeanServer mbeanServer = getMbeanServer();
@@ -223,8 +220,7 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
        if (serverConfig == null)
        {
            final ClassLoader cl = ClassLoaderProvider.getDefaultProvider().getServerIntegrationClassLoader();
-           SPIProvider spiProvider = SPIProviderResolver.getInstance(cl).getProvider();
-           serverConfig = spiProvider.getSPI(ServerConfigFactory.class, cl).getServerConfig();
+           serverConfig = SPIProvider.getInstance().getSPI(ServerConfigFactory.class, cl).getServerConfig();
        }
        return serverConfig;
    }

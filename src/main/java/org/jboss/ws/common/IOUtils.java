@@ -21,7 +21,6 @@
  */
 package org.jboss.ws.common;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -35,7 +34,6 @@ import java.io.Writer;
 import javax.activation.DataHandler;
 
 import org.jboss.wsf.spi.SPIProvider;
-import org.jboss.wsf.spi.SPIProviderResolver;
 import org.jboss.wsf.spi.management.ServerConfig;
 import org.jboss.wsf.spi.management.ServerConfigFactory;
 
@@ -125,8 +123,7 @@ public final class IOUtils
       {
          // TODO: recursive dependency, ohoh
 
-         SPIProvider spiProvider = SPIProviderResolver.getInstance().getProvider();
-         ServerConfig config = spiProvider.getSPI(ServerConfigFactory.class).getServerConfig();        
+         ServerConfig config = SPIProvider.getInstance().getSPI(ServerConfigFactory.class).getServerConfig();        
          tmpdir = new File(config.getServerTempDir().getCanonicalPath() + "/jbossws");
          if (!tmpdir.mkdirs()) {
              tmpdir = null;

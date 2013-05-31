@@ -23,7 +23,6 @@ package org.jboss.ws.common.deployment;
 
 import org.jboss.ws.common.integration.AbstractDeploymentAspect;
 import org.jboss.wsf.spi.SPIProvider;
-import org.jboss.wsf.spi.SPIProviderResolver;
 import org.jboss.wsf.spi.deployment.Deployment;
 import org.jboss.wsf.spi.deployment.Endpoint;
 import org.jboss.wsf.spi.deployment.LifecycleHandler;
@@ -46,7 +45,7 @@ public class EndpointHandlerDeploymentAspect extends AbstractDeploymentAspect
 
    public EndpointHandlerDeploymentAspect()
    {
-      spiProvider = SPIProviderResolver.getInstance().getProvider();
+      spiProvider = SPIProvider.getInstance();
    }
 
    @Override

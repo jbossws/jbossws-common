@@ -42,7 +42,6 @@ import javax.xml.ws.soap.SOAPBinding;
 import org.jboss.ws.api.configuration.ClientConfigurer;
 import org.jboss.ws.common.utils.DelegateClassLoader;
 import org.jboss.wsf.spi.SPIProvider;
-import org.jboss.wsf.spi.SPIProviderResolver;
 import org.jboss.wsf.spi.classloading.ClassLoaderProvider;
 import org.jboss.wsf.spi.management.ServerConfig;
 import org.jboss.wsf.spi.management.ServerConfigFactory;
@@ -232,8 +231,7 @@ public class ConfigHelper implements ClientConfigurer
    private static ServerConfig getServerConfig()
    {
       final ClassLoader cl = ClassLoaderProvider.getDefaultProvider().getServerIntegrationClassLoader();
-      SPIProvider spiProvider = SPIProviderResolver.getInstance(cl).getProvider();
-      ServerConfigFactory scf = spiProvider.getSPI(ServerConfigFactory.class, cl);
+      final ServerConfigFactory scf = SPIProvider.getInstance().getSPI(ServerConfigFactory.class, cl);
       return scf != null ? scf.getServerConfig() : null;
    }
 }
