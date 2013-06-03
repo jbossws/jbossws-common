@@ -30,12 +30,6 @@ import org.jboss.wsf.spi.deployment.LifecycleHandler;
  */
 public class DefaultLifecycleHandlerFactory extends LifecycleHandlerFactory
 {
-   @Deprecated
-   public LifecycleHandler newLifecycleHandler()
-   {
-      return new DefaultLifecycleHandler();  
-   }
-
    @Override
    public LifecycleHandler getLifecycleHandler()
    {
