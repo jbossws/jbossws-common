@@ -249,7 +249,7 @@ public class AbstractDefaultEndpoint extends AbstractExtensible
       super.setProperty(key, value);
    }
 
-   protected void assertEndpointSetterAccess()
+   protected synchronized void assertEndpointSetterAccess()
    {
       if (state == EndpointState.STARTED)
          throw Messages.MESSAGES.cannotModifyEndpointInState(state, getName());
