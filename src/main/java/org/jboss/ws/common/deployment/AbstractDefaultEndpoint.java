@@ -158,12 +158,12 @@ public class AbstractDefaultEndpoint extends AbstractExtensible
    }
 
 
-   public EndpointState getState()
+   public synchronized EndpointState getState()
    {
       return state;
    }
 
-   public void setState(EndpointState state)
+   public synchronized void setState(EndpointState state)
    {
       this.state = state;
    }
