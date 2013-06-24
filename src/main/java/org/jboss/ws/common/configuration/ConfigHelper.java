@@ -79,7 +79,7 @@ public class ConfigHelper implements ClientConfigurer
    }
 
    @Override
-   public void setConfigProperties(Object proxy, String configFile, String configName)
+   public void setConfigProperties(Object client, String configFile, String configName)
    {
       throw MESSAGES.operationNotSupportedBy("setConfigProperties", this.getClass());
    }
