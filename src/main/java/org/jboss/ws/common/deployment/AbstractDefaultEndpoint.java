@@ -158,12 +158,12 @@ public class AbstractDefaultEndpoint extends AbstractExtensible
    }
 
 
-   public EndpointState getState()
+   public synchronized EndpointState getState()
    {
       return state;
    }
 
-   public void setState(EndpointState state)
+   public synchronized void setState(EndpointState state)
    {
       this.state = state;
    }
@@ -249,7 +249,7 @@ public class AbstractDefaultEndpoint extends AbstractExtensible
       super.setProperty(key, value);
    }
 
-   protected void assertEndpointSetterAccess()
+   protected synchronized void assertEndpointSetterAccess()
    {
       if (state == EndpointState.STARTED)
          throw Messages.MESSAGES.cannotModifyEndpointInState(state, getName());
