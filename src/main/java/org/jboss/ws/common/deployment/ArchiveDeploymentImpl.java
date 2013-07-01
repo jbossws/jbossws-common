@@ -31,6 +31,7 @@ import org.jboss.wsf.spi.deployment.UnifiedVirtualFile;
  * A general web service deployment that is based on an archive. 
  * 
  * @author Thomas.Diesler@jboss.com
+ * @author ema@redhat.com
  * @since 20-Apr-2007 
  */
 public class ArchiveDeploymentImpl extends DefaultDeployment implements ArchiveDeployment
@@ -87,6 +88,6 @@ public class ArchiveDeploymentImpl extends DefaultDeployment implements ArchiveD
    
    public ResourceResolver getResourceResolver()
    {
-      return new ResourceResolverImpl(rootFile, metadataFiles);
+      return new ResourceResolverImpl(this);
    }
 }

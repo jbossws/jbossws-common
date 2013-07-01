@@ -223,8 +223,8 @@ public interface Messages {
     @Message(id = 22089, value = "Unexpectedly reached end of XML document: %s")
     IllegalStateException reachedEndOfXMLDocUnexpectedly(String descriptor);
     
-    @Message(id = 22092, value = "Could not find %s in the additional metadatafiles")
-    IOException cannotFindInAdditionalMetaData(String resourcePath);
+    @Message(id = 22092, value = "Could not resolve %s in deployment %s")
+    IOException cannotResolveResource(String resourcePath, String deploymentName);
     
     @Message(id = 22093, value = "Context root expected to start with leading slash: %s")
     IllegalStateException contextRootExpectedToStartWithLeadingSlash(String contextRoot);

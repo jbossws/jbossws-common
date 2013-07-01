@@ -30,13 +30,16 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import org.jboss.ws.common.Messages;
+import org.jboss.wsf.spi.deployment.ArchiveDeployment;
 import org.jboss.wsf.spi.deployment.ResourceResolver;
 import org.jboss.wsf.spi.deployment.UnifiedVirtualFile;
 
 /**
- * A resource resolver implementation using unified virtual files
+ * A resource resolver implementation using unified virtual files 
+ * and classloader
  * 
  * @author alessio.soldano@jboss.com
+ * @author ema@redhat.com
  * @since 19-Nov-2009
  *  
  */
@@ -44,11 +47,13 @@ public class ResourceResolverImpl implements ResourceResolver
 {
    private UnifiedVirtualFile rootFile;
    private Collection<UnifiedVirtualFile> metadataFiles;
+   private ArchiveDeployment deployment; 
    
-   public ResourceResolverImpl(UnifiedVirtualFile rootFile, Collection<UnifiedVirtualFile> metadataFiles)
+   public ResourceResolverImpl(final ArchiveDeployment deployment)
    {
-      this.rootFile = rootFile;
-      this.metadataFiles = metadataFiles;
+      this.deployment = deployment;
+      this.rootFile = deployment.getRootFile();
+      this.metadataFiles = deployment.getMetadataFiles();
    }
    
    public URL resolve(String resourcePath) throws IOException
@@ -78,19 +83,13 @@ public class ResourceResolverImpl implements ResourceResolver
             }
             catch (IOException e)
             {
-               if (metadataFiles == null || metadataFiles.isEmpty())
-               {
-                  throw e;
-               }
-               else
-               {
-                  ROOT_LOGGER.cannotGetRootFileTryingWithAdditionalMetaData(resourcePath);
-               }
+               //ignore this to try metadataFiles and load it from classLoader
             }
          }
          //scan additional metadata files (for instance originally attached to a VFSDeploymentUnit)
          if (resourceURL == null && metadataFiles != null && !metadataFiles.isEmpty())
          {
+            ROOT_LOGGER.cannotGetRootFileTryingWithAdditionalMetaData(resourcePath);
             UnifiedVirtualFile vfResource = null;
             for (Iterator<UnifiedVirtualFile> it = metadataFiles.iterator(); it.hasNext() && vfResource == null;)
             {
@@ -115,10 +114,22 @@ public class ResourceResolverImpl implements ResourceResolver
                   }
                }
             }
-            if (vfResource == null)
-               throw Messages.MESSAGES.cannotFindInAdditionalMetaData(resourcePath);
-            
-            resourceURL = vfResource.toURL();
+            if (vfResource != null)
+            {
+               resourceURL = vfResource.toURL();
+            }
+         }
+         if (resourceURL == null && deployment.getRuntimeClassLoader() != null)
+         {
+            resourceURL = deployment.getRuntimeClassLoader().getResource(resourcePath);
+         }
+         if (resourceURL == null && deployment.getInitialClassLoader() != null)
+         {
+            resourceURL = deployment.getInitialClassLoader().getResource(resourcePath);
+         }
+         if (resourceURL == null)
+         {
+            throw Messages.MESSAGES.cannotResolveResource(resourcePath, deployment.getSimpleName());
          }
       }
       return resourceURL;
