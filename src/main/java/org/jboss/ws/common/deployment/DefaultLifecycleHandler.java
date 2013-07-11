@@ -71,6 +71,10 @@ public class DefaultLifecycleHandler implements LifecycleHandler
    public void stop(Endpoint ep)
    {
       EndpointState state = ep.getState();
+      if (state == EndpointState.STOPPED) {
+    	  //if the endpoint is stopped in EndpointServiceDA
+    	  return;
+      }
       if (state != EndpointState.STARTED)
       {
          Loggers.DEPLOYMENT_LOGGER.cannotStopEndpoint(state, ep.getName());
