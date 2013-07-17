@@ -31,6 +31,8 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -135,7 +137,7 @@ public class JavaUtils
    public static Class<?> loadJavaType(String typeName, ClassLoader classLoader) throws ClassNotFoundException
    {
       if (classLoader == null)
-         classLoader = Thread.currentThread().getContextClassLoader();
+         classLoader = getContextClassLoader();
 
       Class<?> javaType = primitiveNames.get(typeName);
       if (javaType == null)
@@ -145,6 +147,24 @@ public class JavaUtils
          javaType = classLoader.loadClass(typeName);
 
       return javaType;
+   }
+   
+   private static ClassLoader getContextClassLoader()
+   {
+      SecurityManager sm = System.getSecurityManager();
+      if (sm == null)
+      {
+         return Thread.currentThread().getContextClassLoader();
+      }
+      else
+      {
+         return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+            public ClassLoader run()
+            {
+               return Thread.currentThread().getContextClassLoader();
+            }
+         });
+      }
    }
 
    /**
