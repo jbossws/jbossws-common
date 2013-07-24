@@ -208,6 +208,10 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
       if (mbeanServer != null) {
          mbeanServer.registerMBean(this, AbstractServerConfigMBean.OBJECT_NAME);
       }
+      
+      //cleanup the server integration classloader' service config reference as
+      //a new server config can be created due to a server reload.
+      serverConfig = null;
    }
 
    public void destroy() throws Exception
