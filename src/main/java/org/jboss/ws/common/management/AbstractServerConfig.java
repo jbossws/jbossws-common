@@ -62,15 +62,17 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
    }
 
    // The MBeanServer
-   private MBeanServer mbeanServer;
+   private volatile MBeanServer mbeanServer;
    // The webservice host name that will be used when updating the wsdl
-   private String webServiceHost = UNDEFINED_HOSTNAME;
+   private volatile String webServiceHost = UNDEFINED_HOSTNAME;
    // The webservice port that will be used when updating the wsdl
    private int webServicePort;
+   private final Object webServicePortLock = new Object();
    // The webservice port that will be used when updating the wsdl
    private int webServiceSecurePort;
+   private final Object webServiceSecurePortLock = new Object();
    // Whether we should always modify the soap address to the deployed endpoint location
-   private boolean modifySOAPAddress;
+   private volatile boolean modifySOAPAddress;
    //The stack config
    protected StackConfig stackConfig;
    // The default endpoint configs, if any
@@ -131,12 +133,18 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
 
    public void setWebServicePort(int port)
    {
-      this.webServicePort = port;
+      synchronized (webServicePortLock)
+      {
+         this.webServicePort = port;
+      }
    }
 
    public void setWebServiceSecurePort(int port)
    {
-      this.webServiceSecurePort = port;
+      synchronized (webServiceSecurePortLock)
+      {
+         this.webServiceSecurePort = port;
+      }
    }
 
    public boolean isModifySOAPAddress()
@@ -151,32 +159,38 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
 
    public int getWebServicePort()
    {
-      if (webServicePort <= 0)
-         webServicePort = getConnectorPort(false);
-
-      int localPort = webServicePort;
-      if (localPort <= 0)        
+      synchronized (webServicePortLock)
       {
-         if (MANAGEMENT_LOGGER.isDebugEnabled()) MANAGEMENT_LOGGER.unableToCalculateWebServicesPort("8080");
-         localPort = 8080;
+         if (webServicePort <= 0)
+            webServicePort = getConnectorPort(false);
+   
+         int localPort = webServicePort;
+         if (localPort <= 0)        
+         {
+            if (MANAGEMENT_LOGGER.isDebugEnabled()) MANAGEMENT_LOGGER.unableToCalculateWebServicesPort("8080");
+            localPort = 8080;
+         }
+   
+         return localPort;
       }
-
-      return localPort;
    }
 
    public int getWebServiceSecurePort()
    {
-      if (webServiceSecurePort <= 0)
-         webServiceSecurePort = getConnectorPort(true);
-
-      int localPort = webServiceSecurePort;
-      if (localPort <= 0)
+      synchronized (webServiceSecurePortLock)
       {
-         if (MANAGEMENT_LOGGER.isDebugEnabled()) MANAGEMENT_LOGGER.unableToCalculateWebServicesSecurePort("8443");
-         localPort = 8443;
+         if (webServiceSecurePort <= 0)
+            webServiceSecurePort = getConnectorPort(true);
+   
+         int localPort = webServiceSecurePort;
+         if (localPort <= 0)
+         {
+            if (MANAGEMENT_LOGGER.isDebugEnabled()) MANAGEMENT_LOGGER.unableToCalculateWebServicesSecurePort("8443");
+            localPort = 8443;
+         }
+   
+         return localPort;
       }
-
-      return localPort;
    }
    
    private int getConnectorPort(boolean secure) {
@@ -208,7 +222,10 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
       
       //cleanup the server integration classloader' service config reference as
       //a new server config can be created due to a server reload.
-      serverConfig = null;
+      synchronized (AbstractServerConfig.class) //synchronization to ensure visibility
+      {
+         serverConfig = null;
+      }
    }
 
    public void destroy() throws Exception
@@ -219,14 +236,17 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
       }
    }
    
-   public static synchronized ServerConfig getServerIntegrationServerConfig()
+   public static ServerConfig getServerIntegrationServerConfig()
    {
-       if (serverConfig == null)
-       {
-           final ClassLoader cl = ClassLoaderProvider.getDefaultProvider().getServerIntegrationClassLoader();
-           serverConfig = SPIProvider.getInstance().getSPI(ServerConfigFactory.class, cl).getServerConfig();
-       }
-       return serverConfig;
+      synchronized (AbstractServerConfig.class) //ensure both atomicity and visibility
+      {
+         if (serverConfig == null)
+         {
+            final ClassLoader cl = ClassLoaderProvider.getDefaultProvider().getServerIntegrationClassLoader();
+            serverConfig = SPIProvider.getInstance().getSPI(ServerConfigFactory.class, cl).getServerConfig();
+         }
+         return serverConfig;
+      }
    }
    
    public String getImplementationTitle()
