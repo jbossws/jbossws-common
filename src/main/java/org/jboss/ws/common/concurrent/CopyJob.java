@@ -33,7 +33,7 @@ import java.io.OutputStream;
  * new Thread( copyJob ).start();
  * try
  * {
- *    // do some other staff
+ *    // do some other stuff
  *    ...
  * }
  * finally
@@ -58,15 +58,29 @@ public final class CopyJob implements Runnable
    /**
     * Whether this job is terminated.
     */
-   private boolean terminated;
+   private volatile boolean terminated;
+   
+   private final boolean closeOsOnExit;
 
    /**
-    * Constructor.
+    * Constructor; the input stream will automatically be closed on exit, while the output stream won't.
+    * 
     * @param is input stream to read data from
     * @param os output stream to write data to
     */
    public CopyJob( InputStream is, OutputStream os )
    {
+      this(is, os, false);
+   }
+   
+   /**
+    * 
+    * Constructor.
+    * @param is input stream to read data from
+    * @param os output stream to write data to
+    * @param closeOutputStreamOnExit whether to flush and close the output stream on exit
+    */
+   public CopyJob( InputStream is, OutputStream os, boolean closeOutputStreamOnExit) {
       super();
 
       if ( ( is == null ) || ( os == null ) )
@@ -76,6 +90,7 @@ public final class CopyJob implements Runnable
 
       this.is = is;
       this.os = os;
+      this.closeOsOnExit = closeOutputStreamOnExit;
    }
 
    /**
@@ -93,7 +108,26 @@ public final class CopyJob implements Runnable
       }
       finally
       {
-         try { this.is.close(); } catch ( IOException ioe ) { ioe.printStackTrace( System.err ); }
+         try
+         {
+            this.is.close();
+         }
+         catch (IOException ioe)
+         {
+            ioe.printStackTrace(System.err);
+         }
+         if (this.closeOsOnExit)
+         {
+            try
+            {
+               this.os.flush();
+               this.os.close();
+            }
+            catch (IOException ioe)
+            {
+               ioe.printStackTrace(System.err);
+            }
+         }
       }
    }
 
