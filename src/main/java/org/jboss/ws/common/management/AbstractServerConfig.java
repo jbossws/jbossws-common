@@ -120,8 +120,9 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
       String resolvedAddress = null;
       try
       {
-         isIPv6Address = !UNDEFINED_HOSTNAME.equals(host) && InetAddress.getByName(host) instanceof Inet6Address;
-         resolvedAddress = InetAddress.getByName(host).getHostAddress();
+    	 InetAddress address = InetAddress.getByName(host);
+         isIPv6Address = !UNDEFINED_HOSTNAME.equals(host) && address instanceof Inet6Address;
+         resolvedAddress = isIPv6Address ? address.getHostAddress() : null;
       }
       catch (UnknownHostException e)
       {
