@@ -117,18 +117,20 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
    private String toIPv6URLFormat(final String host)
    {
       boolean isIPv6Address = false;
+      String resolvedAddress = null;
       try
       {
          isIPv6Address = !UNDEFINED_HOSTNAME.equals(host) && InetAddress.getByName(host) instanceof Inet6Address;
+         resolvedAddress = InetAddress.getByName(host).getHostAddress();
       }
       catch (UnknownHostException e)
       {
          MANAGEMENT_LOGGER.couldNotGetAddressForHost(host, e);
          //ignore, leave isIPv6Address to false
       }
-      final boolean isIPv6Formatted = isIPv6Address && host.startsWith("[");
+      final boolean isIPv6AddressHost = isIPv6Address && host.equals(resolvedAddress);
 
-      return isIPv6Address && !isIPv6Formatted ? "[" + host + "]" : host;
+      return isIPv6AddressHost ? "[" + host + "]" : host;
    }
 
    public void setWebServicePort(int port)
