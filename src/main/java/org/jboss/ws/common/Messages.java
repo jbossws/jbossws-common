@@ -261,4 +261,7 @@ public interface Messages {
     
     @Message(id = 22109, value = "%s is not a JAX-WS Handler")
     RuntimeException notJAXWSHandler(String className);
+    
+    @Message(id = 22117, value = "Invalid address provided: %s")
+    IllegalArgumentException invalidAddressProvided(String address);
 }

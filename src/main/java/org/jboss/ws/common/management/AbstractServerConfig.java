@@ -22,8 +22,8 @@
 package org.jboss.ws.common.management;
 
 import static org.jboss.ws.common.Loggers.MANAGEMENT_LOGGER;
+import static org.jboss.ws.common.Messages.MESSAGES;
 
-import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.List;
@@ -33,6 +33,7 @@ import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
 import org.jboss.ws.common.ObjectNameFactory;
+import org.jboss.ws.common.utils.AddressUtils;
 import org.jboss.wsf.spi.SPIProvider;
 import org.jboss.wsf.spi.WSFException;
 import org.jboss.wsf.spi.classloading.ClassLoaderProvider;
@@ -116,22 +117,23 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
 
    private String toIPv6URLFormat(final String host)
    {
-      boolean isIPv6Address = false;
-      String resolvedAddress = null;
-      try
-      {
-    	 InetAddress address = InetAddress.getByName(host);
-         isIPv6Address = !UNDEFINED_HOSTNAME.equals(host) && address instanceof Inet6Address;
-         resolvedAddress = isIPv6Address ? address.getHostAddress() : null;
+      String address = host;
+      boolean isIPv6URLFormatted = false;
+      //strip out IPv6 URL formatting if already provided...
+      if (host.startsWith("[") && host.endsWith("]")) {
+         isIPv6URLFormatted = true;
+         address = host.substring(1, host.length() - 1);
       }
-      catch (UnknownHostException e)
-      {
-         MANAGEMENT_LOGGER.couldNotGetAddressForHost(host, e);
-         //ignore, leave isIPv6Address to false
+      //verify...
+      if (!AddressUtils.isValidAddress(address)) {
+         throw MESSAGES.invalidAddressProvided(address);
       }
-      final boolean isIPv6AddressHost = isIPv6Address && host.equals(resolvedAddress);
-
-      return isIPv6AddressHost ? "[" + host + "]" : host;
+      //return IPv6 URL formatted address
+      if (isIPv6URLFormatted) {
+         return host;
+      } else {
+         return AddressUtils.isValidIPv6Address(host) ? "[" + host + "]" : host;
+      }
    }
 
    public void setWebServicePort(int port)
