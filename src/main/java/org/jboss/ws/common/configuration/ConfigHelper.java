@@ -36,6 +36,7 @@ import javax.xml.ws.Binding;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.handler.Handler;
 import javax.xml.ws.handler.LogicalHandler;
+import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.http.HTTPBinding;
 import javax.xml.ws.soap.SOAPBinding;
 
@@ -181,6 +182,10 @@ public class ConfigHelper implements ClientConfigurer
                         if (h instanceof LogicalHandler)
                         {
                            handlers.add(new LogicalConfigDelegateHandler((LogicalHandler)h, isPre));
+                        }
+                        else if (h instanceof SOAPHandler)
+                        {
+                           handlers.add(new SOAPConfigDelegateHandler((SOAPHandler)h, isPre));
                         }
                         else
                         {
