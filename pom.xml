@@ -34,10 +34,10 @@
     <jboss-logging-processor.version>1.0.3.Final</jboss-logging-processor.version>
     <wsdl4j.version>1.6.2</wsdl4j.version>
     <jaxrpc.api.version>1.0.1.Final</jaxrpc.api.version>
-    <jms.api.version>1.0.0.Final</jms.api.version>
-    <jaxws.api.version>2.0.0.Final</jaxws.api.version>
+    <jms.api.version>1.0.1.Final</jms.api.version>
+    <jaxws.api.version>2.0.2.Final</jaxws.api.version>
     <junit.version>3.8.2</junit.version>
-    <servlet.api.version>1.0.0.Final</servlet.api.version>
+    <servlet.api.version>1.0.2.Final</servlet.api.version>
   </properties>
 
   <!-- Dependencies -->
