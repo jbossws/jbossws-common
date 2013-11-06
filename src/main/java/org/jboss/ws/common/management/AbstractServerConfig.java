@@ -47,7 +47,13 @@ import org.jboss.wsf.spi.metadata.config.ClientConfig;
 import org.jboss.wsf.spi.metadata.config.EndpointConfig;
 
 /**
- * Basic implementation of a ServerConfig 
+ * Basic implementation of a ServerConfig.
+ * 
+ * Instances of AbstractServerConfig allow concurrent read and write access to their
+ * member attributes using getter and setter methods.
+ * A DisabledOperationException is thrown if attribute updates are temporarly or
+ * permanentely disabled. The isModifiable() method can be overwridden to enable / disable
+ * the attribute update.
  *
  * @author Thomas.Diesler@jboss.org
  * @author darran.lofthouse@jboss.com
@@ -64,16 +70,23 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
 
    // The MBeanServer
    private volatile MBeanServer mbeanServer;
+   
    // The webservice host name that will be used when updating the wsdl
    private volatile String webServiceHost = UNDEFINED_HOSTNAME;
+   private final Object webServiceHostLock = new Object();
+   
    // The webservice port that will be used when updating the wsdl
    private int webServicePort;
    private final Object webServicePortLock = new Object();
+   
    // The webservice port that will be used when updating the wsdl
    private int webServiceSecurePort;
    private final Object webServiceSecurePortLock = new Object();
+   
    // Whether we should always modify the soap address to the deployed endpoint location
    private volatile boolean modifySOAPAddress;
+   private final Object modifySOAPAddressLock = new Object();
+   
    //The stack config
    protected StackConfig stackConfig;
    // The default endpoint configs, if any
@@ -83,7 +96,7 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
    
    // The server integration classloader' ServerConfig instance reference
    private static ServerConfig serverConfig;
-
+   
    public MBeanServer getMbeanServer()
    {
       return mbeanServer;
@@ -101,6 +114,11 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
 
    public void setWebServiceHost(String host) throws UnknownHostException
    {
+      setWebServiceHost(host, null);
+   }
+   
+   protected void setWebServiceHost(String host, UpdateCallbackHandler uch) throws UnknownHostException
+   {
       if (host == null || host.trim().length() == 0)
       {
          MANAGEMENT_LOGGER.usingUndefinedWebServicesHost(UNDEFINED_HOSTNAME);
@@ -112,7 +130,14 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
          if (MANAGEMENT_LOGGER.isDebugEnabled()) MANAGEMENT_LOGGER.usingLocalHostWebServicesHost(localHost.getHostName());
          host = localHost.getHostName();
       }
-      this.webServiceHost = toIPv6URLFormat("127.0.0.1".equals(host) ? "localhost" : host); // TCK workaround
+      final String wsh = toIPv6URLFormat("127.0.0.1".equals(host) ? "localhost" : host); // TCK workaround
+      synchronized (webServiceHostLock)
+      {
+         if (uch != null) {
+            uch.onBeforeUpdate();
+         }
+         this.webServiceHost = wsh;
+      }
    }
 
    private String toIPv6URLFormat(final String host)
@@ -138,16 +163,32 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
 
    public void setWebServicePort(int port)
    {
+      setWebServicePort(port, null);
+   }
+   
+   protected void setWebServicePort(int port, UpdateCallbackHandler uch)
+   {
       synchronized (webServicePortLock)
       {
+         if (uch != null) {
+            uch.onBeforeUpdate();
+         }
          this.webServicePort = port;
       }
    }
 
    public void setWebServiceSecurePort(int port)
    {
+      setWebServiceSecurePort(port, null);
+   }
+   
+   protected void setWebServiceSecurePort(int port, UpdateCallbackHandler uch)
+   {
       synchronized (webServiceSecurePortLock)
       {
+         if (uch != null) {
+            uch.onBeforeUpdate();
+         }
          this.webServiceSecurePort = port;
       }
    }
@@ -160,6 +201,17 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
    public void setModifySOAPAddress(boolean modify)
    {
       this.modifySOAPAddress = modify;
+   }
+   
+   protected void setModifySOAPAddress(boolean modify, UpdateCallbackHandler uch)
+   {
+      synchronized (modifySOAPAddressLock)
+      {
+         if (uch != null) {
+            uch.onBeforeUpdate();
+         }
+         this.modifySOAPAddress = modify;
+      }
    }
 
    public int getWebServicePort()
@@ -282,5 +334,9 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
    public List<ClientConfig> getClientConfigs()
    {
       return this.clientConfigs;
+   }
+   
+   public interface UpdateCallbackHandler {
+      public void onBeforeUpdate();
    }
 }
