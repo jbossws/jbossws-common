@@ -51,12 +51,7 @@ public class HostFilter implements RecordFilter
 
    public HostFilter(Collection<String> hosts, boolean source)
    {
-      if (hosts instanceof List) {
-         this.hosts = Collections.unmodifiableList((List<String>)hosts);
-      } else {
-         final List<String> l = new LinkedList<String>(hosts);
-         this.hosts = Collections.unmodifiableList(l);
-      }
+      this.hosts = Collections.unmodifiableList(new LinkedList<String>(hosts));
       this.source = source;
    }
 
