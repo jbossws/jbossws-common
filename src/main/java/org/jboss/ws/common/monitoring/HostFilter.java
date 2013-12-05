@@ -57,7 +57,6 @@ public class HostFilter implements RecordFilter
          final List<String> l = new LinkedList<String>(hosts);
          this.hosts = Collections.unmodifiableList(l);
       }
-      this.hosts.addAll(hosts);
       this.source = source;
    }
 
