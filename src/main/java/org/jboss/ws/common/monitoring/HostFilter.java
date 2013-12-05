@@ -22,6 +22,7 @@
 package org.jboss.ws.common.monitoring;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -39,17 +40,23 @@ public class HostFilter implements RecordFilter
 {
    private static final long serialVersionUID = -5935962601380315102L;
    
-   private List<String> hosts = new LinkedList<String>();
-   private boolean source;
+   private final List<String> hosts;
+   private final boolean source;
 
    public HostFilter(String host, boolean source)
    {
-      this.hosts.add(host);
+      this.hosts = Collections.singletonList(host);
       this.source = source;
    }
 
    public HostFilter(Collection<String> hosts, boolean source)
    {
+      if (hosts instanceof List) {
+         this.hosts = Collections.unmodifiableList((List<String>)hosts);
+      } else {
+         final List<String> l = new LinkedList<String>(hosts);
+         this.hosts = Collections.unmodifiableList(l);
+      }
       this.hosts.addAll(hosts);
       this.source = source;
    }
@@ -79,9 +86,6 @@ public class HostFilter implements RecordFilter
    @Override
    public Object clone() throws CloneNotSupportedException
    {
-      HostFilter retObj = (HostFilter)super.clone();
-      retObj.hosts = new LinkedList<String>(this.hosts);
-      retObj.source = this.source;
-      return retObj;
+      return new HostFilter(this.hosts, this.source);
    }
 }

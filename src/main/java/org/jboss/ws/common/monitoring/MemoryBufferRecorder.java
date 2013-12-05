@@ -51,7 +51,7 @@ public class MemoryBufferRecorder extends AbstractRecordProcessor implements Mem
    
    private Map<String, List<Record>> recentRecords = Collections.synchronizedMap(new HashMap<String, List<Record>>());
    private ConcurrentLinkedQueue<String> recentRecordGroups = new ConcurrentLinkedQueue<String>();
-   private int size = 0;
+   private volatile int size = 0;
    private volatile int maxSize = 50;
 
    public MemoryBufferRecorder()
@@ -273,19 +273,22 @@ public class MemoryBufferRecorder extends AbstractRecordProcessor implements Mem
    {
       MemoryBufferRecorder cl = (MemoryBufferRecorder)super.clone();
       cl.recentRecords = Collections.synchronizedMap(new HashMap<String, List<Record>>());
-      for (String key : this.recentRecords.keySet())
+      synchronized (this.recentRecords)
       {
-         List<Record> list = new LinkedList<Record>();
-         for (Record record : this.recentRecords.get(key))
+         for (String key : this.recentRecords.keySet())
          {
-            list.add(record);
+            List<Record> list = new LinkedList<Record>();
+            for (Record record : this.recentRecords.get(key))
+            {
+               list.add(record);
+            }
+            cl.recentRecords.put(key, list);
          }
-         cl.recentRecords.put(key, list);
-      }
-      cl.recentRecordGroups = new ConcurrentLinkedQueue<String>();
-      for (String id : this.recentRecordGroups)
-      {
-         cl.recentRecordGroups.add(id);
+         cl.recentRecordGroups = new ConcurrentLinkedQueue<String>();
+         for (String id : this.recentRecordGroups)
+         {
+            cl.recentRecordGroups.add(id);
+         }
       }
       cl.maxSize = this.maxSize;
       cl.size = this.size;

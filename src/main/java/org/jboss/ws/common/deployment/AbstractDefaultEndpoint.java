@@ -23,7 +23,7 @@ package org.jboss.ws.common.deployment;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
@@ -67,7 +67,7 @@ public class AbstractDefaultEndpoint extends AbstractExtensible
    protected LifecycleHandler lifecycleHandler;
    protected EndpointMetrics metrics;
    protected String address;
-   protected List<RecordProcessor> recordProcessors = new Vector<RecordProcessor>(2);
+   protected List<RecordProcessor> recordProcessors = new CopyOnWriteArrayList<RecordProcessor>();
    protected SecurityDomainContext securityDomainContext;
    protected InstanceProvider instanceProvider;
    
@@ -262,7 +262,7 @@ public class AbstractDefaultEndpoint extends AbstractExtensible
    
    public void setRecordProcessors(List<RecordProcessor> recordProcessors)
    {
-      this.recordProcessors = new Vector<RecordProcessor>(recordProcessors);
+      this.recordProcessors = new CopyOnWriteArrayList<RecordProcessor>(recordProcessors);
    }
    
    public void processRecord(Record record)

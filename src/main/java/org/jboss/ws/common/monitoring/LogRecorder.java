@@ -48,6 +48,9 @@ public class LogRecorder extends AbstractRecordProcessor implements Serializable
    @Override
    public void processRecord(Record record)
    {
+      if (!Loggers.MONITORING_LOGGER.isDebugEnabled()) {
+         return;
+      }
       StringBuilder sb = new StringBuilder();
       if (this.isProcessMessageType())
       {

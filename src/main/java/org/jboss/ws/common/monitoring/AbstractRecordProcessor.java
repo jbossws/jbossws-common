@@ -22,7 +22,7 @@
 package org.jboss.ws.common.monitoring;
 
 import java.util.List;
-import java.util.Vector;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.jboss.ws.api.monitoring.Record;
 import org.jboss.ws.api.monitoring.RecordFilter;
@@ -37,7 +37,9 @@ import org.jboss.ws.api.monitoring.RecordProcessor;
  */
 public abstract class AbstractRecordProcessor implements RecordProcessor
 {
-   protected List<RecordFilter> filters = new Vector<RecordFilter>(1);
+   private static final long serialVersionUID = -1825185742740851152L;
+   
+   protected List<RecordFilter> filters = new CopyOnWriteArrayList<RecordFilter>();
    protected boolean processDestinationHost = true;
    protected boolean processSourceHost = true;
    protected boolean processHeaders = true;
@@ -72,7 +74,7 @@ public abstract class AbstractRecordProcessor implements RecordProcessor
 
    public void setFilters(List<RecordFilter> filters)
    {
-      this.filters = new Vector<RecordFilter>(filters);
+      this.filters = new CopyOnWriteArrayList<RecordFilter>(filters);
    }
 
    public boolean isProcessDestinationHost()
@@ -159,7 +161,7 @@ public abstract class AbstractRecordProcessor implements RecordProcessor
    public Object clone() throws CloneNotSupportedException
    {
       AbstractRecordProcessor retObj = (AbstractRecordProcessor)super.clone();
-      retObj.filters = new Vector<RecordFilter>();
+      retObj.filters = new CopyOnWriteArrayList<RecordFilter>();
       for (RecordFilter fil : this.filters)
       {
          RecordFilter clFil = (RecordFilter)fil.clone();

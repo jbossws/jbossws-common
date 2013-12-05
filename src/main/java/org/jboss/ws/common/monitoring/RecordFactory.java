@@ -40,8 +40,8 @@ public class RecordFactory
       synchronized (RecordFactory.class)
       {
          count++;
+         sb.append(count);
       }
-      sb.append(count);
       sb.append("-");
       sb.append(time);
       return sb.toString();

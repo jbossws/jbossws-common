@@ -88,7 +88,7 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
    private final Object modifySOAPAddressLock = new Object();
    
    //The stack config
-   protected StackConfig stackConfig;
+   protected volatile StackConfig stackConfig;
    // The default endpoint configs, if any
    private final List<ClientConfig> clientConfigs = new CopyOnWriteArrayList<ClientConfig>();
    // The default endpoint configs, if any
