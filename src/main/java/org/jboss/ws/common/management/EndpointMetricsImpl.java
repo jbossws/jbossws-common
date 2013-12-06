@@ -144,7 +144,8 @@ public class EndpointMetricsImpl implements EndpointMetrics
    {
       w.lock();
       try {
-         return totalProcessingTime.get() / (responseCount.get() + faultCount.get());
+         final long totResponses = responseCount.get() + faultCount.get();
+         return totResponses != 0 ? totalProcessingTime.get() / totResponses : 0;
       } finally {
          w.unlock();
       }
