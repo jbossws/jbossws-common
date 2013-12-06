@@ -42,7 +42,7 @@ import java.util.List;
 public class DefaultService extends AbstractExtensible implements Service
 {
    private Deployment dep;
-   private List<Endpoint> endpoints = new LinkedList<Endpoint>();
+   private final List<Endpoint> endpoints = new LinkedList<Endpoint>();
    private String contextRoot;
    private String virtualHost;
 

@@ -45,9 +45,9 @@ import org.jboss.wsf.spi.deployment.UnifiedVirtualFile;
  */
 public class ResourceResolverImpl implements ResourceResolver
 {
-   private UnifiedVirtualFile rootFile;
-   private Collection<UnifiedVirtualFile> metadataFiles;
-   private ArchiveDeployment deployment; 
+   private final UnifiedVirtualFile rootFile;
+   private final Collection<UnifiedVirtualFile> metadataFiles;
+   private final ArchiveDeployment deployment; 
    
    public ResourceResolverImpl(final ArchiveDeployment deployment)
    {
