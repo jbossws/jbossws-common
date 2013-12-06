@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source.
- * Copyright 2006, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2013, Red Hat Middleware LLC, and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -21,149 +21,163 @@
  */
 package org.jboss.ws.common.management;
 
-import java.util.Date;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import org.jboss.wsf.spi.deployment.Endpoint;
 import org.jboss.wsf.spi.management.EndpointMetrics;
 
 /**
  * Service Endpoint Metrics
  *
+ * @author alessio.soldano@jboss.com
  * @author Thomas.Diesler@jboss.org
  * @since 14-Dec-2005
  */
 public class EndpointMetricsImpl implements EndpointMetrics
 {
-   private Endpoint endpoint;
-
-   private Date startTime;
-   private Date stopTime;
-   private long requestCount;
-   private long responseCount;
-   private long faultCount;
-   private long maxProcessingTime;
-   private long minProcessingTime;
-   private long avgProcessingTime;
-   private long totalProcessingTime;
-
-   public Endpoint getEndpoint()
-   {
-      return endpoint;
-   }
-
-   public void setEndpoint(Endpoint endpoint)
-   {
-      this.endpoint = endpoint;
-   }
+   private volatile boolean started = false;
+   
+   //read-write lock for average calculation (there's no CAS function for
+   //atomically computing the average, so we do that on-demand within a
+   //write lock; the updates to sum and response/fault counts, which are
+   //used to compute the average, are updated within read locks)
+   private final ReadWriteLock lock = new ReentrantReadWriteLock();
+   private final Lock r = lock.readLock();
+   private final Lock w = lock.writeLock();
+   
+   private final AtomicLong requestCount = new AtomicLong(0);
+   private final AtomicLong responseCount = new AtomicLong(0);
+   private final AtomicLong faultCount = new AtomicLong(0);
+   private final AtomicLong maxProcessingTime = new AtomicLong(0);
+   private final AtomicLong minProcessingTime = new AtomicLong(0);
+   private final AtomicLong totalProcessingTime = new AtomicLong(0);
 
    public void start()
    {
-      startTime = new Date();
-      stopTime = null;
-      requestCount = 0;
-      responseCount = 0;
-      faultCount = 0;
-      maxProcessingTime = 0;
-      minProcessingTime = 0;
-      avgProcessingTime = 0;
-      totalProcessingTime = 0;
+      started = true;
    }
 
    public void stop()
    {
-      stopTime = new Date();
+      started = false;
    }
 
    public long processRequestMessage()
    {
-      requestCount++;
+      if (!started)
+      {
+         return 0;
+      }
+      requestCount.incrementAndGet();
       return System.currentTimeMillis();
    }
 
    public void processResponseMessage(long beginTime)
    {
-      responseCount++;
-      processAnyMessage(beginTime);
+      if (beginTime > 0) {
+         final long procTime = System.currentTimeMillis() - beginTime;
+         r.lock();
+         try {
+            responseCount.incrementAndGet();
+            totalProcessingTime.addAndGet(procTime);
+         } finally {
+            r.unlock();
+         }
+         minProcessingTime.compareAndSet(0, procTime);
+         updateMax(maxProcessingTime, procTime);
+         updateMin(minProcessingTime, procTime);
+      }
    }
 
    public void processFaultMessage(long beginTime)
    {
-      faultCount++;
-      processAnyMessage(beginTime);
-   }
-
-   private void processAnyMessage(long beginTime)
-   {
-      if (beginTime > 0)
-      {
-         long procTime = System.currentTimeMillis() - beginTime;
-
-         if (minProcessingTime == 0)
-            minProcessingTime = procTime;
-
-         maxProcessingTime = Math.max(maxProcessingTime, procTime);
-         minProcessingTime = Math.min(minProcessingTime, procTime);
-         totalProcessingTime = totalProcessingTime + procTime;
-         avgProcessingTime = totalProcessingTime / (responseCount + faultCount);
+      if (beginTime > 0) {
+         final long procTime = System.currentTimeMillis() - beginTime;
+         r.lock();
+         try {
+            faultCount.incrementAndGet();
+            totalProcessingTime.addAndGet(procTime);
+         } finally {
+            r.unlock();
+         }
+         minProcessingTime.compareAndSet(0, procTime);
+         updateMax(maxProcessingTime, procTime);
+         updateMin(minProcessingTime, procTime);
       }
    }
 
-   public Date getStartTime()
+   private void updateMin(AtomicLong min, long value)
    {
-      return startTime;
+      long oldValue = min.get();
+      while (value < oldValue)
+      {
+         if (min.compareAndSet(oldValue, value))
+            break;
+         oldValue = min.get();
+      }
    }
 
-   public Date getStopTime()
+   private void updateMax(AtomicLong max, long value)
    {
-      return stopTime;
+      long oldValue = max.get();
+      while (value > oldValue)
+      {
+         if (max.compareAndSet(oldValue, value))
+            break;
+         oldValue = max.get();
+      }
    }
 
    public long getMinProcessingTime()
    {
-      return minProcessingTime;
+      return minProcessingTime.longValue();
    }
 
    public long getMaxProcessingTime()
    {
-      return maxProcessingTime;
+      return maxProcessingTime.longValue();
    }
 
    public long getAverageProcessingTime()
    {
-      return avgProcessingTime;
+      w.lock();
+      try {
+         return totalProcessingTime.get() / (responseCount.get() + faultCount.get());
+      } finally {
+         w.unlock();
+      }
    }
 
    public long getTotalProcessingTime()
    {
-      return totalProcessingTime;
+      return totalProcessingTime.get();
    }
 
    public long getRequestCount()
    {
-      return requestCount;
+      return requestCount.get();
    }
 
    public long getFaultCount()
    {
-      return faultCount;
+      return faultCount.get();
    }
 
    public long getResponseCount()
    {
-      return responseCount;
+      return responseCount.get();
    }
 
    public String toString()
    {
-      StringBuilder buffer = new StringBuilder("\nEndpoint Metrics: " + endpoint.getName());
-      buffer.append("\n  startTime=" + startTime);
-      buffer.append("\n  stopTime=" + stopTime);
-      buffer.append("\n  requestCount=" + requestCount);
+      StringBuilder buffer = new StringBuilder("requestCount=" + requestCount);
       buffer.append("\n  responseCount=" + responseCount);
       buffer.append("\n  faultCount=" + faultCount);
       buffer.append("\n  maxProcessingTime=" + maxProcessingTime);
       buffer.append("\n  minProcessingTime=" + minProcessingTime);
-      buffer.append("\n  avgProcessingTime=" + avgProcessingTime);
+      buffer.append("\n  avgProcessingTime=" + getAverageProcessingTime());
       buffer.append("\n  totalProcessingTime=" + totalProcessingTime);
       return buffer.toString();
    }

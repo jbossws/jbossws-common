@@ -21,7 +21,6 @@
  */
 package org.jboss.ws.common.management;
 
-import java.util.Date;
 import java.util.List;
 
 import org.jboss.ws.api.monitoring.Record;
@@ -38,10 +37,6 @@ public interface ManagedEndpointMBean
    void stop();
    
    String getAddress();
-
-   Date getStartTime();
-
-   Date getStopTime();
 
    long getMinProcessingTime();
 

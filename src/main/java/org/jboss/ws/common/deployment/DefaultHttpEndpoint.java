@@ -45,7 +45,6 @@ public class DefaultHttpEndpoint extends AbstractDefaultEndpoint implements Http
    public void setEndpointMetrics(EndpointMetrics metrics)
    {
       assertEndpointSetterAccess();
-      metrics.setEndpoint(this);
       this.metrics = metrics;
 
    }

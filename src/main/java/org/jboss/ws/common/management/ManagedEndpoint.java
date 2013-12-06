@@ -23,7 +23,6 @@ package org.jboss.ws.common.management;
 
 import static org.jboss.ws.common.Loggers.MANAGEMENT_LOGGER;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.management.JMException;
@@ -45,8 +44,8 @@ import org.jboss.wsf.spi.management.EndpointMetrics;
  */
 public class ManagedEndpoint implements ManagedEndpointMBean
 {
-   private Endpoint endpoint;
-   private MBeanServer mbeanServer;
+   private final Endpoint endpoint;
+   private final MBeanServer mbeanServer;
 
    public ManagedEndpoint(Endpoint endpoint, MBeanServer mbeanServer)
    {
@@ -93,18 +92,6 @@ public class ManagedEndpoint implements ManagedEndpointMBean
    {
       EndpointMetrics metrics = endpoint.getEndpointMetrics();
       return metrics != null ? metrics.getResponseCount() : 0;
-   }
-
-   public Date getStartTime()
-   {
-      EndpointMetrics metrics = endpoint.getEndpointMetrics();
-      return metrics != null ? metrics.getStartTime() : null;
-   }
-
-   public Date getStopTime()
-   {
-      EndpointMetrics metrics = endpoint.getEndpointMetrics();
-      return metrics != null ? metrics.getStopTime() : null;
    }
 
    public long getTotalProcessingTime()
