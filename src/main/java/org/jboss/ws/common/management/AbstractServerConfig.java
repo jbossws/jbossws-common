@@ -30,9 +30,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.management.MBeanServer;
-import javax.management.ObjectName;
 
-import org.jboss.ws.common.ObjectNameFactory;
 import org.jboss.ws.common.utils.AddressUtils;
 import org.jboss.wsf.spi.SPIProvider;
 import org.jboss.wsf.spi.WSFException;
@@ -62,12 +60,6 @@ import org.jboss.wsf.spi.metadata.config.EndpointConfig;
  */
 public abstract class AbstractServerConfig implements AbstractServerConfigMBean, ServerConfig
 {
-   protected static final ObjectName OBJECT_NAME_SERVER_CONFIG;
-   static
-   {
-      OBJECT_NAME_SERVER_CONFIG = ObjectNameFactory.create("jboss.system:type=ServerConfig");
-   }
-
    // The MBeanServer
    private volatile MBeanServer mbeanServer;
    

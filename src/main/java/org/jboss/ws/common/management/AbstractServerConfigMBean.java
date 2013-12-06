@@ -21,13 +21,41 @@
  */
 package org.jboss.ws.common.management;
 
+import java.io.File;
+import java.net.UnknownHostException;
+
 import javax.management.ObjectName;
 
 import org.jboss.ws.common.ObjectNameFactory;
-import org.jboss.wsf.spi.management.ServerConfig;
 
-public interface AbstractServerConfigMBean extends ServerConfig
+public interface AbstractServerConfigMBean
 {
    /** The object name in the MBean server */
    ObjectName OBJECT_NAME = ObjectNameFactory.create("jboss.ws:service=ServerConfig");
+   
+   String getImplementationTitle();
+
+   String getImplementationVersion();
+   
+   File getHomeDir();
+   
+   File getServerTempDir();
+
+   File getServerDataDir();
+
+   String getWebServiceHost();
+   
+   void setWebServiceHost(String host) throws UnknownHostException;
+   
+   int getWebServicePort();
+   
+   void setWebServicePort(int port);
+   
+   int getWebServiceSecurePort();
+
+   void setWebServiceSecurePort(int port);
+   
+   boolean isModifySOAPAddress();
+   
+   void setModifySOAPAddress(boolean flag);
 }
