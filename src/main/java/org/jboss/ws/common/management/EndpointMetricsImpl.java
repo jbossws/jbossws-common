@@ -71,13 +71,13 @@ public class EndpointMetricsImpl implements EndpointMetrics
          return 0;
       }
       requestCount.incrementAndGet();
-      return System.currentTimeMillis();
+      return System.nanoTime();
    }
 
    public void processResponseMessage(long beginTime)
    {
       if (beginTime > 0) {
-         final long procTime = System.currentTimeMillis() - beginTime;
+         final long procTime = System.nanoTime() - beginTime;
          r.lock();
          try {
             responseCount.incrementAndGet();
@@ -94,7 +94,7 @@ public class EndpointMetricsImpl implements EndpointMetrics
    public void processFaultMessage(long beginTime)
    {
       if (beginTime > 0) {
-         final long procTime = System.currentTimeMillis() - beginTime;
+         final long procTime = System.nanoTime() - beginTime;
          r.lock();
          try {
             faultCount.incrementAndGet();
@@ -132,12 +132,12 @@ public class EndpointMetricsImpl implements EndpointMetrics
 
    public long getMinProcessingTime()
    {
-      return minProcessingTime.longValue();
+      return minProcessingTime.longValue() / 1000000;
    }
 
    public long getMaxProcessingTime()
    {
-      return maxProcessingTime.longValue();
+      return maxProcessingTime.longValue() / 1000000;
    }
 
    public long getAverageProcessingTime()
@@ -145,7 +145,7 @@ public class EndpointMetricsImpl implements EndpointMetrics
       w.lock();
       try {
          final long totResponses = responseCount.get() + faultCount.get();
-         return totResponses != 0 ? totalProcessingTime.get() / totResponses : 0;
+         return totResponses != 0 ? totalProcessingTime.get() / (totResponses * 1000000) : 0;
       } finally {
          w.unlock();
       }
@@ -153,7 +153,7 @@ public class EndpointMetricsImpl implements EndpointMetrics
 
    public long getTotalProcessingTime()
    {
-      return totalProcessingTime.get();
+      return totalProcessingTime.get() / 1000000;
    }
 
    public long getRequestCount()
