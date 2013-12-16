@@ -24,6 +24,7 @@ package org.jboss.ws.core.utils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.net.URLEncoder;
 
 /**
  * A wrapper around an URL that can handle input streams for resources in nested jars.
@@ -52,7 +53,16 @@ public class ResourceURL
    public InputStream openStream() throws IOException
    {
       boolean isJarUrl = "jar".equals(targetURL.getProtocol());
-      return isJarUrl ? new JarUrlConnection(targetURL).getInputStream() : targetURL.openStream();
+
+      //- JBPAPP-10417 handling of spaces in path.
+      URL tmpTargetURL = this.targetURL;
+      if (System.getProperty("os.name").toLowerCase().startsWith("mac os x")){
+          tmpTargetURL = new URL(targetURL.getProtocol(), targetURL.getHost(),
+              targetURL.getPort(), URLEncoder.encode(targetURL.getFile(), "UTF-8"));
+      }
+
+      return isJarUrl ? new JarUrlConnection(tmpTargetURL).getInputStream() : tmpTargetURL.openStream();
+
    }
 
    public int hashCode()
