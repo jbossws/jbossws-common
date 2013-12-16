@@ -39,6 +39,8 @@ import java.net.URLEncoder;
 public class ResourceURL
 {
    private URL targetURL;
+   //- JBPAPP-10417 handling of spaces in path.
+   private boolean isMacOs = System.getProperty("os.name").toLowerCase().startsWith("mac os x");
 
    public ResourceURL(URL targetURL)
    {
@@ -54,9 +56,8 @@ public class ResourceURL
    {
       boolean isJarUrl = "jar".equals(targetURL.getProtocol());
 
-      //- JBPAPP-10417 handling of spaces in path.
       URL tmpTargetURL = this.targetURL;
-      if (System.getProperty("os.name").toLowerCase().startsWith("mac os x")){
+      if (isMacOs){
           tmpTargetURL = new URL(targetURL.getProtocol(), targetURL.getHost(),
               targetURL.getPort(), URLEncoder.encode(targetURL.getFile(), "UTF-8"));
       }
