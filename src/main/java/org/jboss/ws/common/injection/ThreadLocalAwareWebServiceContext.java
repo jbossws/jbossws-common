@@ -56,35 +56,30 @@ public final class ThreadLocalAwareWebServiceContext implements WebServiceContex
 
    public EndpointReference getEndpointReference(final Element... referenceParameters)
    {
-      return getWebServiceContextInternal().getEndpointReference(referenceParameters);
+      return getWebServiceContext().getEndpointReference(referenceParameters);
    }
 
    public <T extends EndpointReference> T getEndpointReference(final Class<T> clazz, final Element... referenceParameters)
    {
-      return getWebServiceContextInternal().getEndpointReference(clazz, referenceParameters);
+      return getWebServiceContext().getEndpointReference(clazz, referenceParameters);
    }
 
    public MessageContext getMessageContext()
    {
-      return getWebServiceContextInternal().getMessageContext();
+      return getWebServiceContext().getMessageContext();
    }
 
    public Principal getUserPrincipal()
    {
-      return getWebServiceContextInternal().getUserPrincipal();
+      return getWebServiceContext().getUserPrincipal();
    }
 
    public boolean isUserInRole(String role)
    {
-      return getWebServiceContextInternal().isUserInRole(role);
+      return getWebServiceContext().isUserInRole(role);
    }
    
-   public WebServiceContext getWebServiceContext()
-   {
-       return contexts.get();
-   }
-
-   private WebServiceContext getWebServiceContextInternal()
+   private WebServiceContext getWebServiceContext()
    {
        final WebServiceContext delegate = contexts.get();
 
