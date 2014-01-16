@@ -113,11 +113,9 @@ public class ConfigHelper implements ClientConfigurer
       } else {
          ServerConfig sc = getServerConfig();
          if (sc != null) {
-            for (ClientConfig config : sc.getClientConfigs()) {
-               if (config.getConfigName().equals(configName))
-               {
-                  return config;
-               }
+            ClientConfig cf = sc.getClientConfig(configName);
+            if (cf != null) {
+               return cf;
             }
          }
       }

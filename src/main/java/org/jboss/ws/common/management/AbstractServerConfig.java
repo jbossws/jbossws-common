@@ -26,8 +26,6 @@ import static org.jboss.ws.common.Messages.MESSAGES;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.management.MBeanServer;
 
@@ -35,6 +33,7 @@ import org.jboss.ws.common.utils.AddressUtils;
 import org.jboss.wsf.spi.SPIProvider;
 import org.jboss.wsf.spi.WSFException;
 import org.jboss.wsf.spi.classloading.ClassLoaderProvider;
+import org.jboss.wsf.spi.management.CommonConfigStore;
 import org.jboss.wsf.spi.management.ServerConfig;
 import org.jboss.wsf.spi.management.ServerConfigFactory;
 import org.jboss.wsf.spi.management.StackConfig;
@@ -81,10 +80,9 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
    
    //The stack config
    protected volatile StackConfig stackConfig;
-   // The default endpoint configs, if any
-   private final List<ClientConfig> clientConfigs = new CopyOnWriteArrayList<ClientConfig>();
-   // The default endpoint configs, if any
-   private final List<EndpointConfig> endpointConfigs = new CopyOnWriteArrayList<EndpointConfig>();
+   
+   protected final CommonConfigStore<ClientConfig> clientConfigStore = new CommonConfigStoreImpl<ClientConfig>();
+   protected final CommonConfigStore<EndpointConfig> endpointConfigStore = new CommonConfigStoreImpl<EndpointConfig>();
    
    // The server integration classloader' ServerConfig instance reference
    private static ServerConfig serverConfig;
@@ -269,6 +267,9 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
          mbeanServer.registerMBean(this, AbstractServerConfigMBean.OBJECT_NAME);
       }
       
+      clientConfigStore.reload();
+      endpointConfigStore.reload();
+      
       //cleanup the server integration classloader' service config reference as
       //a new server config can be created due to a server reload.
       synchronized (AbstractServerConfig.class) //synchronization to ensure visibility
@@ -283,6 +284,9 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
       if (mbeanServer != null) {
          mbeanServer.unregisterMBean(AbstractServerConfigMBean.OBJECT_NAME);
       }
+      
+      clientConfigStore.unload();
+      endpointConfigStore.unload();
    }
    
    public static ServerConfig getServerIntegrationServerConfig()
@@ -307,25 +311,45 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
    {
       return stackConfig.getImplementationVersion();
    }
-
-   public void addEndpointConfig(EndpointConfig config)
+   
+   public void registerClientConfig(ClientConfig config)
    {
-      this.endpointConfigs.add(config);
+      clientConfigStore.register(config);
    }
-
-   public void addClientConfig(ClientConfig config)
+   
+   public void unregisterClientConfig(ClientConfig config)
    {
-      this.clientConfigs.add(config);
+      clientConfigStore.unregister(config);
    }
-
-   public List<EndpointConfig> getEndpointConfigs()
+   
+   public void reloadClientConfigs()
    {
-      return this.endpointConfigs;
+      clientConfigStore.reload();
    }
-
-   public List<ClientConfig> getClientConfigs()
+   
+   public ClientConfig getClientConfig(String name)
    {
-      return this.clientConfigs;
+      return clientConfigStore.getConfig(name);
+   }
+   
+   public void registerEndpointConfig(EndpointConfig config)
+   {
+      endpointConfigStore.register(config);
+   }
+   
+   public void unregisterEndpointConfig(EndpointConfig config)
+   {
+      endpointConfigStore.unregister(config);
+   }
+   
+   public void reloadEndpointConfigs()
+   {
+      endpointConfigStore.reload();
+   }
+   
+   public EndpointConfig getEndpointConfig(String name)
+   {
+      return endpointConfigStore.getConfig(name);
    }
    
    public interface UpdateCallbackHandler {
