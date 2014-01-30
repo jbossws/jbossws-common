@@ -291,6 +291,9 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
    
    public static ServerConfig getServerIntegrationServerConfig()
    {
+      if (!ClassLoaderProvider.isSet()) {
+         return null;
+      }
       synchronized (AbstractServerConfig.class) //ensure both atomicity and visibility
       {
          if (serverConfig == null)
