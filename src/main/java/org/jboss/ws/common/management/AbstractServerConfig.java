@@ -35,7 +35,6 @@ import org.jboss.wsf.spi.WSFException;
 import org.jboss.wsf.spi.classloading.ClassLoaderProvider;
 import org.jboss.wsf.spi.management.CommonConfigStore;
 import org.jboss.wsf.spi.management.ServerConfig;
-import org.jboss.wsf.spi.management.ServerConfigFactory;
 import org.jboss.wsf.spi.management.StackConfig;
 import org.jboss.wsf.spi.management.StackConfigFactory;
 import org.jboss.wsf.spi.management.WebServerInfo;
@@ -85,7 +84,7 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
    protected final CommonConfigStore<EndpointConfig> endpointConfigStore = new CommonConfigStoreImpl<EndpointConfig>();
    
    // The server integration classloader' ServerConfig instance reference
-   private static ServerConfig serverConfig;
+   private static volatile ServerConfig serverConfig;
    
    public MBeanServer getMbeanServer()
    {
@@ -270,11 +269,8 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
       clientConfigStore.reload();
       endpointConfigStore.reload();
       
-      //cleanup the server integration classloader' service config reference as
-      //a new server config can be created due to a server reload.
-      synchronized (AbstractServerConfig.class) //synchronization to ensure visibility
-      {
-         serverConfig = null;
+      if (ClassLoaderProvider.isSet()) {
+         serverConfig = this;
       }
    }
 
@@ -294,15 +290,7 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
       if (!ClassLoaderProvider.isSet()) {
          return null;
       }
-      synchronized (AbstractServerConfig.class) //ensure both atomicity and visibility
-      {
-         if (serverConfig == null)
-         {
-            final ClassLoader cl = ClassLoaderProvider.getDefaultProvider().getServerIntegrationClassLoader();
-            serverConfig = SPIProvider.getInstance().getSPI(ServerConfigFactory.class, cl).getServerConfig();
-         }
-         return serverConfig;
-      }
+      return serverConfig;
    }
    
    public String getImplementationTitle()
