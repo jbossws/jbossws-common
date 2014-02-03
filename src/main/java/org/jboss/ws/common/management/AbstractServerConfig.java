@@ -26,6 +26,9 @@ import static org.jboss.ws.common.Messages.MESSAGES;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.security.AccessController;
+import java.security.Permission;
+import java.security.PrivilegedAction;
 
 import javax.management.MBeanServer;
 
@@ -51,13 +54,15 @@ import org.jboss.wsf.spi.metadata.config.EndpointConfig;
  * permanentely disabled. The isModifiable() method can be overwridden to enable / disable
  * the attribute update.
  *
+ * @author alessio.soldano@jboss.com
  * @author Thomas.Diesler@jboss.org
  * @author darran.lofthouse@jboss.com
- * @author alessio.soldano@jboss.com
  * @since 08-May-2006
  */
 public abstract class AbstractServerConfig implements AbstractServerConfigMBean, ServerConfig
 {
+   private static final RuntimePermission LOOKUP_SERVER_INTEGRATION_SERVER_CONFIG = new RuntimePermission("org.jboss.ws.LOOKUP_SERVER_INTEGRATION_SERVER_CONFIG");
+   
    // The MBeanServer
    private volatile MBeanServer mbeanServer;
    
@@ -290,9 +295,19 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
       if (!ClassLoaderProvider.isSet()) {
          return null;
       }
+      checkPermission(LOOKUP_SERVER_INTEGRATION_SERVER_CONFIG);
       return serverConfig;
    }
    
+   public static final PrivilegedAction<ServerConfig> GET_SERVER_INTEGRATION_SERVER_CONFIG = new PrivilegedAction<ServerConfig>()
+   {
+      @Override
+      public ServerConfig run()
+      {
+         return getServerIntegrationServerConfig();
+      }
+   };
+
    public String getImplementationTitle()
    {
       return stackConfig.getImplementationTitle();
@@ -342,7 +357,16 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
    {
       return endpointConfigStore.getConfig(name);
    }
-   
+
+   private static void checkPermission(final Permission permission)
+   {
+      SecurityManager securityManager = System.getSecurityManager();
+      if (securityManager != null)
+      {
+         AccessController.checkPermission(permission);
+      }
+   }
+
    public interface UpdateCallbackHandler {
       public void onBeforeUpdate();
    }

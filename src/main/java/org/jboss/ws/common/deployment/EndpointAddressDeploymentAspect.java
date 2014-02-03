@@ -25,6 +25,7 @@ import static org.jboss.ws.common.integration.WSHelper.isJaxrpcDeployment;
 import static org.jboss.ws.common.integration.WSHelper.isJaxwsEjbEndpoint;
 import static org.jboss.ws.common.integration.WSHelper.isJaxwsJseEndpoint;
 
+import java.security.AccessController;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -64,7 +65,7 @@ public class EndpointAddressDeploymentAspect extends AbstractDeploymentAspect
          throw Messages.MESSAGES.cannotObtainContextRoot(dep.getSimpleName());
       
       PortValue port = new PortValue((Integer)service.getProperty("port"), null);
-      ServerConfig serverConfig = AbstractServerConfig.getServerIntegrationServerConfig();
+      ServerConfig serverConfig = getServerConfig();
       port.setServerConfig(serverConfig);
       String host = serverConfig.getWebServiceHost();
       Map<String, Endpoint> endpointsMap = new HashMap<String, Endpoint>();
@@ -108,6 +109,12 @@ public class EndpointAddressDeploymentAspect extends AbstractDeploymentAspect
       }
    }
    
+   private static ServerConfig getServerConfig() {
+      if(System.getSecurityManager() == null) {
+         return AbstractServerConfig.getServerIntegrationServerConfig();
+      }
+      return AccessController.doPrivileged(AbstractServerConfig.GET_SERVER_INTEGRATION_SERVER_CONFIG);
+   }
    
    protected boolean isConfidentialTransportGuarantee(final Deployment dep, final Endpoint ep)
    {

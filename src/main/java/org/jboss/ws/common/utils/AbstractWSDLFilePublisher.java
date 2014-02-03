@@ -32,6 +32,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.security.AccessController;
 import java.util.Iterator;
 import java.util.List;
 
@@ -77,7 +78,7 @@ public abstract class AbstractWSDLFilePublisher
       serverConfig = dep.getAttachment(ServerConfig.class);
       if (serverConfig == null)
       {
-         serverConfig = AbstractServerConfig.getServerIntegrationServerConfig();
+         serverConfig = getServerConfig();
       }
       
       if (isJseDeployment(dep) || isWarArchive(dep))
@@ -88,6 +89,13 @@ public abstract class AbstractWSDLFilePublisher
       {
          expLocation = "META-INF/wsdl/";
       }
+   }
+   
+   private static ServerConfig getServerConfig() {
+      if(System.getSecurityManager() == null) {
+         return AbstractServerConfig.getServerIntegrationServerConfig();
+      }
+      return AccessController.doPrivileged(AbstractServerConfig.GET_SERVER_INTEGRATION_SERVER_CONFIG);
    }
    
    private static synchronized DocumentBuilder getDocumentBuilder()
@@ -130,6 +138,7 @@ public abstract class AbstractWSDLFilePublisher
    @SuppressWarnings("unchecked")
    protected void publishWsdlImports(URL parentURL, Definition parentDefinition, List<String> published, String expLocation) throws Exception
    {
+      @SuppressWarnings("rawtypes")
       Iterator it = parentDefinition.getImports().values().iterator();
       while (it.hasNext())
       {
