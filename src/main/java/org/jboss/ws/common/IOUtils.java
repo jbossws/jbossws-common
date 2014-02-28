@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source.
- * Copyright 2006, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2014, Red Hat Middleware LLC, and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -21,11 +21,13 @@
  */
 package org.jboss.ws.common;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
@@ -52,6 +54,30 @@ public final class IOUtils
    public static Writer getCharsetFileWriter(File file, String charset) throws IOException
    {
       return new OutputStreamWriter(new FileOutputStream(file), charset);
+   }
+   
+   public static String readAndCloseStream(InputStream is) throws IOException
+   {
+      return readAndCloseStream(is, "UTF-8");
+   }
+   
+   public static String readAndCloseStream(InputStream is, String charsetName) throws IOException
+   {
+      final StringBuilder sb = new StringBuilder();
+      final BufferedReader br = new BufferedReader(new InputStreamReader(is, charsetName));
+      String line;
+      try
+      {
+         while ((line = br.readLine()) != null)
+         {
+            sb.append(line);
+         }
+      }
+      finally
+      {
+         br.close();
+      }
+      return sb.toString();
    }
 
    /** Copy the input stream to the output stream
