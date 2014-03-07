@@ -63,21 +63,9 @@ public final class IOUtils
    
    public static String readAndCloseStream(InputStream is, String charsetName) throws IOException
    {
-      final StringBuilder sb = new StringBuilder();
-      final BufferedReader br = new BufferedReader(new InputStreamReader(is, charsetName));
-      String line;
-      try
-      {
-         while ((line = br.readLine()) != null)
-         {
-            sb.append(line);
-         }
-      }
-      finally
-      {
-         br.close();
-      }
-      return sb.toString();
+      final ByteArrayOutputStream bos = new ByteArrayOutputStream();
+      copyStream(bos, is);
+      return bos.toString(charsetName);
    }
 
    /** Copy the input stream to the output stream
