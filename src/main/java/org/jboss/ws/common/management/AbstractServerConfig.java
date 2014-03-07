@@ -231,8 +231,14 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
       synchronized (webServiceSecurePortLock)
       {
          if (webServiceSecurePort <= 0)
-            webServiceSecurePort = getConnectorPort(true);
-   
+         {
+            final int connectorPort = getConnectorPort(true);
+            //check if the returned port is valid (Undertow service returns plain HTTP port if no HTTPS connector is installed)
+            if (connectorPort > 0 && connectorPort != getConnectorPort(false))
+            {
+               webServiceSecurePort = connectorPort;
+            }
+         }
          int localPort = webServiceSecurePort;
          if (localPort <= 0)
          {
