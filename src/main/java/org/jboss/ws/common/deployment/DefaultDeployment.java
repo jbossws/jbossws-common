@@ -24,7 +24,6 @@ package org.jboss.ws.common.deployment;
 import org.jboss.wsf.spi.deployment.AbstractExtensible;
 import org.jboss.wsf.spi.deployment.Deployment;
 import org.jboss.wsf.spi.deployment.DeploymentState;
-import org.jboss.wsf.spi.deployment.DeploymentType;
 import org.jboss.wsf.spi.deployment.Service;
 
 /**
@@ -41,8 +40,6 @@ public class DefaultDeployment extends AbstractExtensible implements Deployment
    private String simpleName;
    // A deployment has one service
    private Service service;
-   // The type of this deployment
-   private DeploymentType type;
    // The state for this deployment
    private DeploymentState state;
    // The deployment class loader
@@ -108,15 +105,5 @@ public class DefaultDeployment extends AbstractExtensible implements Deployment
    public void setState(DeploymentState deploymentState)
    {
       this.state = deploymentState;
-   }
-
-   public DeploymentType getType()
-   {
-      return type;
-   }
-
-   public void setType(DeploymentType deploymentType)
-   {
-      this.type = deploymentType;
    }
 }

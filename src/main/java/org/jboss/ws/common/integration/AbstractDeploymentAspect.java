@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source.
- * Copyright 2010, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2014, Red Hat Middleware LLC, and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -42,8 +42,6 @@ public class AbstractDeploymentAspect implements DeploymentAspect
    private String requires;
    private int relativeOrder;
    private boolean isLast;
-   private boolean isForJaxWs = true;
-   private boolean isForJaxRpc = true;
    private WeakReference<ClassLoader> loader;
 
    public AbstractDeploymentAspect()
@@ -126,31 +124,5 @@ public class AbstractDeploymentAspect implements DeploymentAspect
             condset.add(st.nextToken());
       }
       return condset;
-   }
-
-   public boolean canHandle(Deployment dep)
-   {
-      return (this.isForJaxWs && WSHelper.isJaxwsDeployment(dep) ||
-            this.isForJaxRpc && WSHelper.isJaxrpcDeployment(dep));
-   }
-
-   public boolean isForJaxWs()
-   {
-      return isForJaxWs;
-   }
-
-   public void setForJaxWs(boolean isForJaxWs)
-   {
-      this.isForJaxWs = isForJaxWs;
-   }
-
-   public boolean isForJaxRpc()
-   {
-      return isForJaxRpc;
-   }
-
-   public void setForJaxRpc(boolean isForJaxRpc)
-   {
-      this.isForJaxRpc = isForJaxRpc;
    }
 }

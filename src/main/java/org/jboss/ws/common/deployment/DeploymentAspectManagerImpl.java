@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source.
- * Copyright 2006, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2014, Red Hat Middleware LLC, and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -43,8 +43,7 @@ import org.jboss.wsf.spi.deployment.WSFDeploymentException;
 public class DeploymentAspectManagerImpl implements DeploymentAspectManager
 {
    private String name;
-   private DeploymentAspectManager parent;
-   private List<DeploymentAspect> depAspects = new ArrayList<DeploymentAspect>();
+   private final List<DeploymentAspect> depAspects = new ArrayList<DeploymentAspect>();
 
    public String getName()
    {
@@ -54,16 +53,6 @@ public class DeploymentAspectManagerImpl implements DeploymentAspectManager
    public void setName(String name)
    {
       this.name = name;
-   }
-
-   public DeploymentAspectManager getParent()
-   {
-      return parent;
-   }
-
-   public void setParent(DeploymentAspectManager parent)
-   {
-      this.parent = parent;
    }
 
    public List<DeploymentAspect> getDeploymentAspects()
@@ -122,18 +111,16 @@ public class DeploymentAspectManagerImpl implements DeploymentAspectManager
          DeploymentAspect aspect = deploymentAspects.get(i);
          try
          {
-            if (aspect.canHandle(dep)) {
-               logInvocation(aspect, "Start");
-               ClassLoader origClassLoader = SecurityActions.getContextClassLoader();
-               try
-               {
-                  SecurityActions.setContextClassLoader(aspect.getLoader());
-                  aspect.start(dep);
-               }
-               finally
-               {
-                  SecurityActions.setContextClassLoader(origClassLoader);
-               }
+            logInvocation(aspect, "Start");
+            ClassLoader origClassLoader = SecurityActions.getContextClassLoader();
+            try
+            {
+               SecurityActions.setContextClassLoader(aspect.getLoader());
+               aspect.start(dep);
+            }
+            finally
+            {
+               SecurityActions.setContextClassLoader(origClassLoader);
             }
          }
          catch (RuntimeException rte)

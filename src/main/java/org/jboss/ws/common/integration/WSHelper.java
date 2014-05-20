@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source.
- * Copyright 2009, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2014, Red Hat Middleware LLC, and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -21,10 +21,6 @@
  */
 package org.jboss.ws.common.integration;
 
-import static org.jboss.wsf.spi.deployment.DeploymentType.JAXRPC;
-import static org.jboss.wsf.spi.deployment.DeploymentType.JAXWS;
-import static org.jboss.wsf.spi.deployment.EndpointType.JAXRPC_EJB21;
-import static org.jboss.wsf.spi.deployment.EndpointType.JAXRPC_JSE;
 import static org.jboss.wsf.spi.deployment.EndpointType.JAXWS_EJB3;
 import static org.jboss.wsf.spi.deployment.EndpointType.JAXWS_JSE;
 
@@ -40,8 +36,6 @@ import org.jboss.wsf.spi.deployment.EndpointTypeFilter;
  */
 public final class WSHelper {
 
-   private static final EndpointTypeFilter JAXRPC_EJB_ENDPOINT_FILTER = new EndpointTypeFilterImpl( JAXRPC_EJB21 );
-   private static final EndpointTypeFilter JAXRPC_JSE_ENDPOINT_FILTER = new EndpointTypeFilterImpl( JAXRPC_JSE );
    private static final EndpointTypeFilter JAXWS_EJB_ENDPOINT_FILTER = new EndpointTypeFilterImpl( JAXWS_EJB3 );
    private static final EndpointTypeFilter JAXWS_JSE_ENDPOINT_FILTER = new EndpointTypeFilterImpl( JAXWS_JSE );
    private static final String WAR_EXTENSION = ".war";
@@ -108,7 +102,7 @@ public final class WSHelper {
     */
    public static boolean isJaxwsJseDeployment( final Deployment dep )
    {
-      return isJaxwsDeployment( dep ) && dep.getService().getEndpoints( JAXWS_JSE_ENDPOINT_FILTER ).size() > 0;
+      return dep.getService().getEndpoints( JAXWS_JSE_ENDPOINT_FILTER ).size() > 0;
    }
 
    /**
@@ -119,73 +113,29 @@ public final class WSHelper {
     */
    public static boolean isJaxwsEjbDeployment( final Deployment dep )
    {
-     return isJaxwsDeployment( dep ) && dep.getService().getEndpoints( JAXWS_EJB_ENDPOINT_FILTER ).size() > 0;
+     return dep.getService().getEndpoints( JAXWS_EJB_ENDPOINT_FILTER ).size() > 0;
    }
 
    /**
-    * Returns true if deployment represents JAXRPC JSE deployment.
+    * Returns true if deployment represents a JSE deployment.
     *
     * @param dep webservice deployment
-    * @return true if JAXRPC JSE deployment, false otherwise
-    */
-   public static boolean isJaxrpcJseDeployment( final Deployment dep )
-   {
-      return isJaxrpcDeployment( dep ) && dep.getService().getEndpoints( JAXRPC_JSE_ENDPOINT_FILTER ).size() > 0;
-   }
-
-   /**
-    * Returns true if deployment represents JAXRPC EJB deployment.
-    *
-    * @param dep webservice deployment
-    * @return true if JAXRPC EJB deployment, false otherwise
-    */
-   public static boolean isJaxrpcEjbDeployment( final Deployment dep )
-   {
-      return isJaxrpcDeployment( dep ) && dep.getService().getEndpoints( JAXRPC_EJB_ENDPOINT_FILTER ).size() > 0;
-   }
-
-   /**
-    * Returns true if deployment represents either JAXWS JSE or JAXRPC JSE deployment.
-    *
-    * @param dep webservice deployment
-    * @return true if either JAXWS JSE or JAXRPC JSE deployment, false otherwise.
+    * @return true if JSE deployment, false otherwise.
     */
    public static boolean isJseDeployment( final Deployment dep )
    {
-      return isJaxwsJseDeployment( dep ) || isJaxrpcJseDeployment( dep );
+      return isJaxwsJseDeployment( dep );
    }
 
    /**
-    * Returns true if deployment represents either JAXWS EJB or JAXRPC EJB deployment.
+    * Returns true if deployment represents an EJB deployment.
     *
     * @param dep webservice deployment
-    * @return true if either JAXWS EJB or JAXRPC EJB deployment, false otherwise
+    * @return true if either EJB deployment, false otherwise
     */
    public static boolean isEjbDeployment( final Deployment dep )
    {
-      return isJaxwsEjbDeployment( dep ) || isJaxrpcEjbDeployment( dep );
-   }
-
-   /**
-    * Returns true if deployment represents either JAXWS EJB or JAXWS JSE deployment.
-    *
-    * @param dep webservice deployment
-    * @return true if either JAXWS EJB or JAXWS JSE deployment, false otherwise
-    */
-   public static boolean isJaxwsDeployment( final Deployment dep )
-   {
-      return JAXWS == dep.getType();
-   }
-
-   /**
-    * Returns true if deployment represents either JAXRPC EJB or JAXRPC JSE deployment.
-    *
-    * @param dep webservice deployment
-    * @return true if either JAXRPC EJB or JAXRPC JSE deployment, false otherwise
-    */
-   public static boolean isJaxrpcDeployment( final Deployment dep )
-   {
-      return JAXRPC == dep.getType();
+      return isJaxwsEjbDeployment( dep );
    }
 
    /**
@@ -244,69 +194,36 @@ public final class WSHelper {
    }
 
    /**
-    * Returns true if endpoint represents JAXRPC JSE endpoint.
+    * Returns true if endpoint represents a JSE endpoint.
     *
     * @param ep webservice endpoint
-    * @return true if JAXRPC JSE endpoint, false otherwise
-    */
-   public static boolean isJaxrpcJseEndpoint( final Endpoint ep )
-   {
-      return JAXRPC_JSE == ep.getType();
-   }
-
-   /**
-    * Returns true if endpoint represents JAXRPC EJB21 endpoint.
-    *
-    * @param ep webservice endpoint
-    * @return true if JAXRPC EJB21 endpoint, false otherwise
-    */
-   public static boolean isJaxrpcEjbEndpoint( final Endpoint ep )
-   {
-      return JAXRPC_EJB21 == ep.getType();
-   }
-
-   /**
-    * Returns true if endpoint represents either JAXWS JSE or JAXRPC JSE endpoint.
-    *
-    * @param ep webservice endpoint
-    * @return true if either JAXWS JSE or JAXRPC JSE endpoint, false otherwise
+    * @return true if JSE endpoint, false otherwise
     */
    public static boolean isJseEndpoint( final Endpoint ep )
    {
-      return isJaxwsJseEndpoint( ep ) || isJaxrpcJseEndpoint( ep );
+      return isJaxwsJseEndpoint( ep );
    }
 
    /**
-    * Returns true if endpoint represents either JAXWS EJB3 or JAXRPC EJB21 endpoint.
+    * Returns true if endpoint represents either an EJB endpoint.
     *
     * @param ep webservice endpoint
-    * @return true if either JAXWS EJB3 or JAXRPC EJB21 endpoint, false otherwise
+    * @return true if EJB endpoint, false otherwise
     */
    public static boolean isEjbEndpoint( final Endpoint ep )
    {
-      return isJaxwsEjbEndpoint( ep ) || isJaxrpcEjbEndpoint( ep );
+      return isJaxwsEjbEndpoint( ep );
    }
 
    /**
-    * Returns true if endpoint represents either JAXWS JSE or JAXWS EJB3 endpoint.
+    * Returns true if endpoint represents a JAXWS endpoint.
     *
     * @param ep webservice endpoint
-    * @return true if either JAXWS JSE or JAXWS EJB3 endpoint, false otherwise
+    * @return true if either JAXWS endpoint, false otherwise
     */
    public static boolean isJaxwsEndpoint( final Endpoint ep )
    {
-      return isJaxwsJseEndpoint( ep ) || isJaxwsEjbEndpoint( ep );
-   }
-
-   /**
-    * Returns true if endpoint represents either JAXRPC JSE or JAXRPC EJB21 endpoint.
-    *
-    * @param ep webservice endpoint
-    * @return true if either JAXRPC JSE or JAXRPC EJB21 endpoint, false otherwise
-    */
-   public static boolean isJaxrpcEndpoint( final Endpoint ep )
-   {
-      return isJaxrpcJseEndpoint( ep ) || isJaxrpcEjbEndpoint( ep );
+      return isJaxwsJseEndpoint( ep );
    }
 
 }

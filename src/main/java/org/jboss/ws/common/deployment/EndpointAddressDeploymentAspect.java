@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source.
- * Copyright 2006, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2014, Red Hat Middleware LLC, and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -21,7 +21,6 @@
  */
 package org.jboss.ws.common.deployment;
 
-import static org.jboss.ws.common.integration.WSHelper.isJaxrpcDeployment;
 import static org.jboss.ws.common.integration.WSHelper.isJaxwsEjbEndpoint;
 import static org.jboss.ws.common.integration.WSHelper.isJaxwsJseEndpoint;
 
@@ -118,8 +117,6 @@ public class EndpointAddressDeploymentAspect extends AbstractDeploymentAspect
    
    protected boolean isConfidentialTransportGuarantee(final Deployment dep, final Endpoint ep)
    {
-      if (isJaxrpcDeployment(dep)) return false;
-
       String transportGuarantee = null;
       if (isJaxwsJseEndpoint(ep))
       {
