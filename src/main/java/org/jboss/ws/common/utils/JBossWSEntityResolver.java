@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source.
- * Copyright 2006, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2014, Red Hat Middleware LLC, and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -54,9 +54,9 @@ public class JBossWSEntityResolver extends JBossEntityResolver
     * A synchronized weak hash map that keeps entities' properties for each classloader.
     * Weak keys are used to remove entries when classloaders are garbage collected; values are filenames -> properties.
     */
-   private static Map<ClassLoader, Map<String, Properties>> propertiesMap = Collections.synchronizedMap(new WeakHashMap<ClassLoader, Map<String, Properties>>());
+   private static final Map<ClassLoader, Map<String, Properties>> propertiesMap = Collections.synchronizedMap(new WeakHashMap<ClassLoader, Map<String, Properties>>());
    
-   private ClassLoader additionalClassLoader;
+   private final ClassLoader additionalClassLoader;
 
    public JBossWSEntityResolver()
    {

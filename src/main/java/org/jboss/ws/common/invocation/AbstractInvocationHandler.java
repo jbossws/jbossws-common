@@ -26,7 +26,6 @@ import java.lang.reflect.Method;
 import javax.naming.Context;
 import javax.naming.NamingException;
 
-import org.jboss.logging.Logger;
 import org.jboss.wsf.spi.deployment.Endpoint;
 import org.jboss.wsf.spi.invocation.Invocation;
 import org.jboss.wsf.spi.invocation.InvocationHandler;
@@ -39,9 +38,6 @@ import org.jboss.wsf.spi.invocation.InvocationHandler;
  */
 public abstract class AbstractInvocationHandler extends InvocationHandler
 {
-
-   protected final Logger log = Logger.getLogger(this.getClass()); //TODO! remove after having refactored the AbstractInvocationHandlerEJB3 in ASIL
-   
    /**
     * Constructor.
     */

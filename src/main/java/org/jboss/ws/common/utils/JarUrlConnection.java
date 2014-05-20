@@ -47,10 +47,10 @@ public class JarUrlConnection extends JarURLConnection
    // ----------------------------------------------------------------------
 
    /** Base resource. */
-   private URL baseResource;
+   private final URL baseResource;
 
    /** Additional nested segments. */
-   private String[] segments;
+   private final String[] segments;
 
    /** Terminal input-stream. */
    private InputStream in;

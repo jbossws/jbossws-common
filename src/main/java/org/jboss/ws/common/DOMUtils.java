@@ -71,8 +71,8 @@ public final class DOMUtils extends org.jboss.ws.api.util.DOMUtils
    private static final String ENABLE_DOCTYPE_DECL = "org.jboss.ws.enable_doctype_decl";
    private static final String DISALLOW_DOCTYPE_DECL_FEATURE = "http://apache.org/xml/features/disallow-doctype-decl";
    
-   private static String documentBuilderFactoryName;
-   private static DocumentBuilderFactory documentBuilderFactory;
+   private static final String documentBuilderFactoryName;
+   private static final DocumentBuilderFactory documentBuilderFactory;
    
    private static final boolean alwaysResolveFactoryName = Boolean.getBoolean(Constants.ALWAYS_RESOLVE_DOCUMENT_BUILDER_FACTORY);
    private static final boolean disableDeferedNodeExpansion = Boolean.getBoolean(DISABLE_DEFERRED_NODE_EXPANSION);

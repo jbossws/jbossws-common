@@ -63,11 +63,11 @@ import org.w3c.dom.Node;
 public abstract class AbstractWSDLFilePublisher
 {
    // The deployment info for the web service archive
-   protected ArchiveDeployment dep;
+   protected final ArchiveDeployment dep;
    // The expected wsdl location in the deployment
-   protected String expLocation;
+   protected final String expLocation;
    // The server config
-   protected ServerConfig serverConfig;
+   protected final ServerConfig serverConfig;
    
    private static DocumentBuilder builder;
    
@@ -75,11 +75,8 @@ public abstract class AbstractWSDLFilePublisher
    {
       this.dep = dep;
       
-      serverConfig = dep.getAttachment(ServerConfig.class);
-      if (serverConfig == null)
-      {
-         serverConfig = getServerConfig();
-      }
+      ServerConfig sc = dep.getAttachment(ServerConfig.class);
+      serverConfig = sc != null ? sc : getServerConfig();
       
       if (isJseDeployment(dep) || isWarArchive(dep))
       {

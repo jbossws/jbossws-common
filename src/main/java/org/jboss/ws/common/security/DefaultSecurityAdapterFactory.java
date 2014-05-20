@@ -23,8 +23,6 @@ package org.jboss.ws.common.security;
 
 import java.security.Principal;
 
-import javax.security.auth.Subject;
-
 import org.jboss.wsf.spi.invocation.SecurityAdaptor;
 import org.jboss.wsf.spi.invocation.SecurityAdaptorFactory;
 
@@ -36,7 +34,7 @@ import org.jboss.wsf.spi.invocation.SecurityAdaptorFactory;
 public final class DefaultSecurityAdapterFactory extends SecurityAdaptorFactory
 {
 
-   private static SecurityAdaptor SECURITY_ADAPTOR = new DefaultSecurityAdaptor();
+   private static final SecurityAdaptor SECURITY_ADAPTOR = new DefaultSecurityAdaptor();
    
    /**
     * Constructor.
@@ -59,8 +57,8 @@ public final class DefaultSecurityAdapterFactory extends SecurityAdaptorFactory
    private static class DefaultSecurityAdaptor implements SecurityAdaptor
    {
       
-      private static ThreadLocal<Principal> principal = new ThreadLocal<Principal>();
-      private static ThreadLocal<Object> credential = new ThreadLocal<Object>();
+      private static final ThreadLocal<Principal> principal = new ThreadLocal<Principal>();
+      private static final ThreadLocal<Object> credential = new ThreadLocal<Object>();
 
       public Object getCredential()
       {
@@ -70,11 +68,6 @@ public final class DefaultSecurityAdapterFactory extends SecurityAdaptorFactory
       public Principal getPrincipal()
       {
          return DefaultSecurityAdaptor.principal.get();
-      }
-
-      public void pushSubjectContext(Subject subject, Principal principal, Object credential)
-      {
-         // does nothing
       }
 
       public void setCredential(Object credential)

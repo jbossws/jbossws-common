@@ -37,7 +37,7 @@ import org.jboss.wsf.spi.deployment.Endpoint;
 public class ManagedEndpointRegistry extends DefaultEndpointRegistry implements ManagedEndpointRegistryMBean
 {
    // The MBeanServer
-   private MBeanServer mbeanServer;
+   private volatile MBeanServer mbeanServer;
 
    public MBeanServer getMbeanServer()
    {

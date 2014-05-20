@@ -48,8 +48,10 @@ import org.jboss.wsf.spi.deployment.UnifiedVirtualFile;
  */
 public class ResourceLoaderAdapter implements UnifiedVirtualFile
 {
-   private URL resourceURL;
-   private ClassLoader loader;
+   private static final long serialVersionUID = -8567810932195204615L;
+   
+   private final URL resourceURL;
+   private final ClassLoader loader;
    private static final String jarFileSeparator = "/";
 
    public ResourceLoaderAdapter()
@@ -59,6 +61,7 @@ public class ResourceLoaderAdapter implements UnifiedVirtualFile
 
    public ResourceLoaderAdapter(ClassLoader loader)
    {
+      this.resourceURL = null;
       this.loader = loader;
    }
 

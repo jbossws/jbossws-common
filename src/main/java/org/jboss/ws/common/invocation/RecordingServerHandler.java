@@ -55,10 +55,10 @@ import org.jboss.wsf.spi.invocation.EndpointAssociation;
  * @author alessio.soldano@jboss.com
  * @since 8-Dec-2007
  */
-public class RecordingServerHandler extends GenericSOAPHandler
+public class RecordingServerHandler extends GenericSOAPHandler<SOAPMessageContext>
 {
    @SuppressWarnings("unchecked")
-   protected boolean handleInbound(MessageContext ctx)
+   protected boolean handleInbound(SOAPMessageContext ctx)
    {
       Endpoint endpoint = EndpointAssociation.getEndpoint();
       if (endpoint != null && isRecording(endpoint))
@@ -89,10 +89,9 @@ public class RecordingServerHandler extends GenericSOAPHandler
          }
          if (processEnvelope) //skip message processing if not required since it's very time-consuming
          {
-            SOAPMessageContext soapCtx = (SOAPMessageContext)ctx;
             try
             {
-               SOAPEnvelope soapEnv = soapCtx.getMessage().getSOAPPart().getEnvelope();
+               SOAPEnvelope soapEnv = ctx.getMessage().getSOAPPart().getEnvelope();
                if (soapEnv != null)
                {
                   record.setEnvelope(DOMWriter.printNode(soapEnv, true));
@@ -109,7 +108,7 @@ public class RecordingServerHandler extends GenericSOAPHandler
    }
 
    @SuppressWarnings("unchecked")
-   protected boolean handleOutbound(MessageContext ctx)
+   protected boolean handleOutbound(SOAPMessageContext ctx)
    {
       Endpoint endpoint = EndpointAssociation.getEndpoint();
       if (endpoint != null && isRecording(endpoint))
@@ -127,10 +126,9 @@ public class RecordingServerHandler extends GenericSOAPHandler
          }
          if (processEnvelope) //skip message processing if not required since it's very time-consuming
          {
-            SOAPMessageContext soapCtx = (SOAPMessageContext)ctx;
             try
             {
-               SOAPEnvelope soapEnv = soapCtx.getMessage().getSOAPPart().getEnvelope();
+               SOAPEnvelope soapEnv = ctx.getMessage().getSOAPPart().getEnvelope();
                if (soapEnv != null)
                {
                   record.setEnvelope(DOMWriter.printNode(soapEnv, true));
@@ -146,7 +144,7 @@ public class RecordingServerHandler extends GenericSOAPHandler
       return true;
    }
 
-   public boolean handleFault(MessageContext ctx)
+   public boolean handleFault(SOAPMessageContext ctx)
    {
       return handleOutbound(ctx);
    }

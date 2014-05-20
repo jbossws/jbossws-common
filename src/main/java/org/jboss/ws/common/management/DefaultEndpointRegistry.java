@@ -44,7 +44,7 @@ import org.jboss.wsf.spi.management.EndpointResolver;
  */
 public class DefaultEndpointRegistry implements EndpointRegistry
 {
-   private Map<ObjectName, Endpoint> endpoints = new ConcurrentHashMap<ObjectName, Endpoint>();
+   private final Map<ObjectName, Endpoint> endpoints = new ConcurrentHashMap<ObjectName, Endpoint>();
 
    public Endpoint getEndpoint(ObjectName epName)
    {

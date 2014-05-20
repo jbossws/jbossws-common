@@ -32,7 +32,7 @@ import java.util.HashMap;
  */
 public class XMLPredefinedEntityReferenceResolver
 {
-   private static HashMap<String, Character> entities = new HashMap<String, Character>(8);
+   private static final HashMap<String, Character> entities = new HashMap<String, Character>(8);
 
    static
    {

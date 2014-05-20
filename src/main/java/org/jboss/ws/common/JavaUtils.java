@@ -43,9 +43,9 @@ import java.util.HashSet;
  */
 public class JavaUtils
 {
-   private static HashMap<String, Class<?>> primitiveNames = new HashMap<String, Class<?>>();
-   private static HashMap<String, String> primitiveNameDescriptors = new HashMap<String, String>();
-   private static HashSet<String> reservedKeywords = new HashSet<String>(64,0.8f);
+   private static final HashMap<String, Class<?>> primitiveNames = new HashMap<String, Class<?>>();
+   private static final HashMap<String, String> primitiveNameDescriptors = new HashMap<String, String>();
+   private static final HashSet<String> reservedKeywords = new HashSet<String>(64,0.8f);
 
    static
    {

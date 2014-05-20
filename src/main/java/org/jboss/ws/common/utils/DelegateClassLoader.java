@@ -37,9 +37,9 @@ import java.util.NoSuchElementException;
  */
 public class DelegateClassLoader extends SecureClassLoader
 {
-   private ClassLoader delegate;
+   private final ClassLoader delegate;
 
-   private ClassLoader parent;
+   private final ClassLoader parent;
 
    public DelegateClassLoader(final ClassLoader delegate, final ClassLoader parent)
    {

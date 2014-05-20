@@ -58,7 +58,7 @@ public class ObjectNameFactory
       }
    }
 
-   public static ObjectName create(String domain, Hashtable table)
+   public static ObjectName create(String domain, Hashtable<String, String> table)
    {
       try
       {

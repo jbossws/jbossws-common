@@ -32,8 +32,7 @@ import org.jboss.ws.common.Messages;
  * @author ropalka@redhat.com
  */
 public abstract class AbstractAnnotatedClassProcessor<AO extends AccessibleObject, A extends Annotation>
-extends AbstractClassProcessor<AO>
-implements AnnotationAware<A>
+      extends AbstractClassProcessor<AO> implements AnnotationAware<A>
 {
    /**
     * Annotation class.

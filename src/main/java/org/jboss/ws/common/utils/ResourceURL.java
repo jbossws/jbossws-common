@@ -37,7 +37,7 @@ import java.net.URL;
  */
 public class ResourceURL
 {
-   private URL targetURL;
+   private final URL targetURL;
 
    public ResourceURL(URL targetURL)
    {
