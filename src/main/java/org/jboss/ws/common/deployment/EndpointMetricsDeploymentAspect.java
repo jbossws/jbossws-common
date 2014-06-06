@@ -21,12 +21,16 @@
  */
 package org.jboss.ws.common.deployment;
 
+import org.jboss.ws.common.configuration.ConfigHelper;
 import org.jboss.ws.common.integration.AbstractDeploymentAspect;
 import org.jboss.wsf.spi.SPIProvider;
 import org.jboss.wsf.spi.deployment.Deployment;
 import org.jboss.wsf.spi.deployment.Endpoint;
 import org.jboss.wsf.spi.management.EndpointMetrics;
 import org.jboss.wsf.spi.management.EndpointMetricsFactory;
+import org.jboss.wsf.spi.management.ServerConfig;
+import org.jboss.wsf.spi.management.ServerConfigFactory;
+import org.jboss.wsf.spi.metadata.config.EndpointConfig;
 
 /**
  * A deployer that assigns the metrics to the Endpoint 
@@ -40,10 +44,17 @@ public class EndpointMetricsDeploymentAspect extends AbstractDeploymentAspect
    public void start(Deployment dep)
    {
       EndpointMetricsFactory factory = SPIProvider.getInstance().getSPI(EndpointMetricsFactory.class);
-      for (Endpoint ep : dep.getService().getEndpoints())
+      ServerConfigFactory scf = SPIProvider.getInstance().getSPI(ServerConfigFactory.class);
+      EndpointConfig defaultConfig = scf.getServerConfig().getEndpointConfig(EndpointConfig.STANDARD_ENDPOINT_CONFIG);
+      boolean enabled = Boolean.valueOf(defaultConfig.getProperty(EndpointConfig.STATISTICS_ENABLED));
+      if (enabled)
       {
-         EndpointMetrics metrics = factory.newEndpointMetrics();
-         ep.setEndpointMetrics(metrics);
+         for (Endpoint ep : dep.getService().getEndpoints())
+         {
+
+            EndpointMetrics metrics = factory.newEndpointMetrics();
+            ep.setEndpointMetrics(metrics);
+         }
       }
    }
 }
