@@ -33,10 +33,9 @@ import org.jboss.wsf.spi.management.EndpointMetrics;
  */
 public class DefaultJMSEndpoint extends AbstractDefaultEndpoint implements JMSEndpoint
 {
-   
-   private String targetDestination;
-   private String replyDestination;
-   private URI requestURI;
+   private volatile String targetDestination;
+   private volatile String replyDestination;
+   private volatile URI requestURI;
    
    DefaultJMSEndpoint(String targetBean)
    {

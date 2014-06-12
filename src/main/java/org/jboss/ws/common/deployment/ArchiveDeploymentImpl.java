@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source.
- * Copyright 2006, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2014, Red Hat Middleware LLC, and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -21,6 +21,8 @@
  */
 package org.jboss.ws.common.deployment;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.jboss.wsf.spi.deployment.ArchiveDeployment;
@@ -37,15 +39,24 @@ import org.jboss.wsf.spi.deployment.UnifiedVirtualFile;
 public class ArchiveDeploymentImpl extends DefaultDeployment implements ArchiveDeployment
 {
    // The optional parent
-   private ArchiveDeployment parent;
+   private final ArchiveDeployment parent;
    // The root file for this deployment
-   private UnifiedVirtualFile rootFile;
+   private final UnifiedVirtualFile rootFile;
    
    private List<UnifiedVirtualFile> metadataFiles;
 
-   ArchiveDeploymentImpl(String simpleName, ClassLoader classLoader)
+   ArchiveDeploymentImpl(String simpleName, ClassLoader classLoader, UnifiedVirtualFile rootFile)
    {
       super(simpleName, classLoader);
+      this.parent = null;
+      this.rootFile = rootFile;
+   }
+
+   ArchiveDeploymentImpl(ArchiveDeployment parent, String simpleName, ClassLoader classLoader, UnifiedVirtualFile rootFile)
+   {
+      super(simpleName, classLoader);
+      this.parent = parent;
+      this.rootFile = rootFile;
    }
 
    public ArchiveDeployment getParent()
@@ -53,19 +64,9 @@ public class ArchiveDeploymentImpl extends DefaultDeployment implements ArchiveD
       return parent;
    }
 
-   public void setParent(ArchiveDeployment parent)
-   {
-      this.parent = parent;
-   }
-
    public UnifiedVirtualFile getRootFile()
    {
       return rootFile;
-   }
-
-   public void setRootFile(UnifiedVirtualFile rootFile)
-   {
-      this.rootFile = rootFile;
    }
 
    public String getCanonicalName()
@@ -76,14 +77,21 @@ public class ArchiveDeploymentImpl extends DefaultDeployment implements ArchiveD
       return name;
    }
 
-   public List<UnifiedVirtualFile> getMetadataFiles()
+   public synchronized List<UnifiedVirtualFile> getMetadataFiles()
    {
-      return metadataFiles;
+      if (metadataFiles == null) {
+         return Collections.emptyList();
+      } else {
+         return Collections.unmodifiableList(metadataFiles);
+      }
    }
    
-   public void setMetadataFiles(List<UnifiedVirtualFile> metadataFiles)
+   public synchronized void addMetadataFile(UnifiedVirtualFile file)
    {
-      this.metadataFiles = metadataFiles;
+      if (metadataFiles == null) {
+         metadataFiles = new ArrayList<UnifiedVirtualFile>();
+      }
+      metadataFiles.add(file);
    }
    
    public ResourceResolver getResourceResolver()

@@ -32,7 +32,6 @@ import java.util.Set;
 import org.jboss.wsf.spi.deployment.Deployment;
 import org.jboss.wsf.spi.deployment.DeploymentAspect;
 import org.jboss.wsf.spi.deployment.DeploymentAspectManager;
-import org.jboss.wsf.spi.deployment.DeploymentState;
 import org.jboss.wsf.spi.deployment.WSFDeploymentException;
 
 /**
@@ -143,8 +142,6 @@ public class DeploymentAspectManagerImpl implements DeploymentAspectManager
             throw rte;
          }
       }
-
-      dep.setState(DeploymentState.STARTED);
    }
 
    public void undeploy(Deployment dep)
@@ -155,8 +152,6 @@ public class DeploymentAspectManagerImpl implements DeploymentAspectManager
          DeploymentAspect aspect = deploymentAspects.get(i - 1);
          failsafeStop(aspect, dep);
       }
-
-      dep.setState(DeploymentState.STOPPED);
    }
 
    private void failsafeStop(DeploymentAspect aspect, Deployment dep)

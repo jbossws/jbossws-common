@@ -104,7 +104,7 @@ public class EndpointAddressDeploymentAspect extends AbstractDeploymentAspect
       //Remove endpoints with duplicated address
       for (Endpoint ep : deleteList)
       {
-         service.getEndpoints().remove(ep);
+         service.removeEndpoint(ep);
       }
    }
    

@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source.
- * Copyright 2012, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2014, Red Hat Middleware LLC, and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -27,28 +27,29 @@ import org.jboss.wsf.spi.deployment.Service;
 import org.jboss.wsf.spi.deployment.Deployment;
 import org.jboss.wsf.spi.deployment.Endpoint;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
 
 /**
- * A general service.
- * 
- * Maintains a named set of Endpoints 
+ * A service collecting endpoints belonging to the same deployment. 
  * 
  * @author Thomas.Diesler@jboss.com
+ * @author alessio.soldano@jboss.com
  * @since 20-Apr-2007 
  */
 public class DefaultService extends AbstractExtensible implements Service
 {
-   private Deployment dep;
+   private final Deployment dep;
    private final List<Endpoint> endpoints = new LinkedList<Endpoint>();
-   private String contextRoot;
-   private String virtualHost;
+   private volatile String contextRoot;
+   private volatile String virtualHost;
 
-   DefaultService()
+   DefaultService(Deployment dep)
    {
       super(4, 4);
+      this.dep = dep;
    }
 
    public Deployment getDeployment()
@@ -56,20 +57,24 @@ public class DefaultService extends AbstractExtensible implements Service
       return dep;
    }
 
-   public void setDeployment(Deployment dep)
-   {
-      this.dep = dep;
-   }
-   
    public void addEndpoint(Endpoint endpoint)
    {
       endpoint.setService(this);
       endpoints.add(endpoint);
    }
+   
+   public boolean removeEndpoint(Endpoint endpoint)
+   {
+      boolean done = endpoints.remove(endpoint);
+      if (done) {
+         endpoint.setService(null);
+      }
+      return done;
+   }
 
    public List<Endpoint> getEndpoints()
    {
-      return endpoints;
+      return Collections.unmodifiableList(endpoints);
    }
 
    @Override
@@ -83,7 +88,7 @@ public class DefaultService extends AbstractExtensible implements Service
             result.add(endpoint);
          }
       }
-      return result;
+      return Collections.unmodifiableList(result);
    }      
 
    public Endpoint getEndpointByName(String shortName)

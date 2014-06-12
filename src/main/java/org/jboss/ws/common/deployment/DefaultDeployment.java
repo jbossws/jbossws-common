@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source.
- * Copyright 2006, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2014, Red Hat Middleware LLC, and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -23,7 +23,6 @@ package org.jboss.ws.common.deployment;
 
 import org.jboss.wsf.spi.deployment.AbstractExtensible;
 import org.jboss.wsf.spi.deployment.Deployment;
-import org.jboss.wsf.spi.deployment.DeploymentState;
 import org.jboss.wsf.spi.deployment.Service;
 
 /**
@@ -37,23 +36,18 @@ import org.jboss.wsf.spi.deployment.Service;
 public class DefaultDeployment extends AbstractExtensible implements Deployment
 {
    // The name for this deployment
-   private String simpleName;
+   private final String simpleName;
    // A deployment has one service
-   private Service service;
-   // The state for this deployment
-   private DeploymentState state;
-   // The deployment class loader
-   private ClassLoader initialLoader;
+   private final Service service;
    // The runtime class loader
-   private ClassLoader runtimeLoader;
+   private final ClassLoader classLoader;
 
    DefaultDeployment(String name, ClassLoader classLoader)
    {
       super(12, 4);
-      simpleName = name;
-      state = DeploymentState.UNDEFINED;
-      initialLoader = classLoader;
-      setService(new DefaultService());
+      this.simpleName = name;
+      this.classLoader = classLoader;
+      this.service = new DefaultService(this);
    }
 
    public String getSimpleName()
@@ -61,49 +55,13 @@ public class DefaultDeployment extends AbstractExtensible implements Deployment
       return simpleName;
    }
 
-   public void setSimpleName(String name)
+   public ClassLoader getClassLoader()
    {
-      this.simpleName = name;
-   }
-
-   public void setInitialClassLoader(ClassLoader classLoader)
-   {
-      this.initialLoader = classLoader;
-   }
-
-   public ClassLoader getInitialClassLoader()
-   {
-      return initialLoader;
-   }
-
-   public void setRuntimeClassLoader(ClassLoader classLoader)
-   {
-      this.runtimeLoader = classLoader;
-   }
-
-   public ClassLoader getRuntimeClassLoader()
-   {
-      return runtimeLoader;
+      return classLoader;
    }
 
    public Service getService()
    {
       return service;
-   }
-
-   public void setService(Service service)
-   {
-      service.setDeployment(this);
-      this.service = service;
-   }
-
-   public DeploymentState getState()
-   {
-      return state;
-   }
-
-   public void setState(DeploymentState deploymentState)
-   {
-      this.state = deploymentState;
    }
 }

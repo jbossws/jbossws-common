@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source.
- * Copyright 2006, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2014, Red Hat Middleware LLC, and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -54,22 +54,22 @@ import org.jboss.wsf.spi.security.SecurityDomainContext;
  */
 public class AbstractDefaultEndpoint extends AbstractExtensible
 {
-   protected Service service;
-   protected ObjectName name;
-   protected String shortName;
-   protected String urlPattern;
-   protected String targetBean;
-   protected Class<?> targetBeanClass;
-   protected EndpointState state;
-   protected EndpointType type;
-   protected RequestHandler requestHandler;
-   protected InvocationHandler invocationHandler;
-   protected LifecycleHandler lifecycleHandler;
-   protected EndpointMetrics metrics;
-   protected String address;
-   protected List<RecordProcessor> recordProcessors = new CopyOnWriteArrayList<RecordProcessor>();
-   protected SecurityDomainContext securityDomainContext;
-   protected InstanceProvider instanceProvider;
+   protected volatile Service service;
+   protected volatile ObjectName name;
+   protected volatile String shortName;
+   protected volatile String urlPattern;
+   protected volatile String targetBean;
+   protected volatile Class<?> targetBeanClass;
+   protected volatile EndpointState state;
+   protected volatile EndpointType type;
+   protected volatile RequestHandler requestHandler;
+   protected volatile InvocationHandler invocationHandler;
+   protected volatile LifecycleHandler lifecycleHandler;
+   protected volatile EndpointMetrics metrics;
+   protected volatile String address;
+   protected volatile List<RecordProcessor> recordProcessors = new CopyOnWriteArrayList<RecordProcessor>();
+   protected volatile SecurityDomainContext securityDomainContext;
+   protected volatile InstanceProvider instanceProvider;
    
    AbstractDefaultEndpoint(String targetBean)
    {
@@ -105,7 +105,7 @@ public class AbstractDefaultEndpoint extends AbstractExtensible
       if (targetBeanClass != null)
          return targetBeanClass;
 
-      ClassLoader classLoader = service.getDeployment().getRuntimeClassLoader();
+      ClassLoader classLoader = service.getDeployment().getClassLoader();
 
       try
       {
@@ -158,12 +158,12 @@ public class AbstractDefaultEndpoint extends AbstractExtensible
    }
 
 
-   public synchronized EndpointState getState()
+   public EndpointState getState()
    {
       return state;
    }
 
-   public synchronized void setState(EndpointState state)
+   public void setState(EndpointState state)
    {
       this.state = state;
    }
@@ -249,7 +249,7 @@ public class AbstractDefaultEndpoint extends AbstractExtensible
       super.setProperty(key, value);
    }
 
-   protected synchronized void assertEndpointSetterAccess()
+   protected void assertEndpointSetterAccess()
    {
       if (state == EndpointState.STARTED)
          throw Messages.MESSAGES.cannotModifyEndpointInState(state, getName());

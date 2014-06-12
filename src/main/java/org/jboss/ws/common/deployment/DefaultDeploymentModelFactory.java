@@ -21,10 +21,11 @@
  */
 package org.jboss.ws.common.deployment;
 
-import org.jboss.wsf.spi.deployment.DeploymentModelFactory;
+import org.jboss.wsf.spi.deployment.ArchiveDeployment;
 import org.jboss.wsf.spi.deployment.Deployment;
-import org.jboss.wsf.spi.deployment.Service;
+import org.jboss.wsf.spi.deployment.DeploymentModelFactory;
 import org.jboss.wsf.spi.deployment.Endpoint;
+import org.jboss.wsf.spi.deployment.UnifiedVirtualFile;
 
 /**
  * @author Heiko.Braun@jboss.com
@@ -32,14 +33,9 @@ import org.jboss.wsf.spi.deployment.Endpoint;
  */
 public class DefaultDeploymentModelFactory extends DeploymentModelFactory
 {
-   public Deployment newDeployment(String simpleName, ClassLoader initialLoader)
+   public Deployment newDeployment(String simpleName, ClassLoader classLoader, UnifiedVirtualFile rootFile)
    {
-      return new DefaultDeployment(simpleName, initialLoader);
-   }
-
-   public Service newService()
-   {
-      return new DefaultService();
+      return new DefaultDeployment(simpleName, classLoader);
    }
 
    public Endpoint newHttpEndpoint(String targetBean)
@@ -50,5 +46,10 @@ public class DefaultDeploymentModelFactory extends DeploymentModelFactory
    public Endpoint newJMSEndpoint(String targetBean) 
    {
       return new DefaultJMSEndpoint(targetBean);
+   }
+
+   public Deployment newDeployment(ArchiveDeployment parent, String simpleName, ClassLoader classLoader, UnifiedVirtualFile rootFile)
+   {
+      throw new UnsupportedOperationException();
    }
 }

@@ -37,11 +37,13 @@ public class DefaultHttpEndpoint extends AbstractDefaultEndpoint implements Http
       super(targetBean);
    }
 
+   @Override
    public EndpointMetrics getEndpointMetrics()
    {
       return metrics;
    }
 
+   @Override
    public void setEndpointMetrics(EndpointMetrics metrics)
    {
       assertEndpointSetterAccess();

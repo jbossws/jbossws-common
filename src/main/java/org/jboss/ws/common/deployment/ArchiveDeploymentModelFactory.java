@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source.
- * Copyright 2011, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2014, Red Hat Middleware LLC, and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -21,10 +21,11 @@
  */
 package org.jboss.ws.common.deployment;
 
-import org.jboss.wsf.spi.deployment.DeploymentModelFactory;
+import org.jboss.wsf.spi.deployment.ArchiveDeployment;
 import org.jboss.wsf.spi.deployment.Deployment;
-import org.jboss.wsf.spi.deployment.Service;
+import org.jboss.wsf.spi.deployment.DeploymentModelFactory;
 import org.jboss.wsf.spi.deployment.Endpoint;
+import org.jboss.wsf.spi.deployment.UnifiedVirtualFile;
 
 /**
  * @author Thomas.Diesler@jboss.com
@@ -32,14 +33,14 @@ import org.jboss.wsf.spi.deployment.Endpoint;
  */
 public class ArchiveDeploymentModelFactory extends DeploymentModelFactory
 {
-   public Deployment newDeployment(String simpleName, ClassLoader initialLoader)
+   public Deployment newDeployment(String simpleName, ClassLoader classLoader, UnifiedVirtualFile rootFile)
    {
-      return new ArchiveDeploymentImpl(simpleName, initialLoader);
+      return new ArchiveDeploymentImpl(simpleName, classLoader, rootFile);
    }
 
-   public Service newService()
+   public Deployment newDeployment(ArchiveDeployment parent, String simpleName, ClassLoader classLoader, UnifiedVirtualFile rootFile)
    {
-      return new DefaultService();
+      return new ArchiveDeploymentImpl(parent, simpleName, classLoader, rootFile);
    }
 
    public Endpoint newHttpEndpoint(String targetBean)
