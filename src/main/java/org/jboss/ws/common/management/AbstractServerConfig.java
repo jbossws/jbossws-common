@@ -82,6 +82,8 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
    private volatile boolean modifySOAPAddress;
    private final Object modifySOAPAddressLock = new Object();
    
+   private volatile boolean statisticsEnabled;
+   
    //The stack config
    protected volatile StackConfig stackConfig;
    
@@ -195,6 +197,17 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
    public void setModifySOAPAddress(boolean modify)
    {
       this.modifySOAPAddress = modify;
+   }
+   
+   
+   public boolean isStatisticsEnabled()
+   {
+      return statisticsEnabled;
+   }
+
+   public void setStatisticsEnabled(boolean enabled)
+   {
+      this.statisticsEnabled = enabled;
    }
    
    protected void setModifySOAPAddress(boolean modify, UpdateCallbackHandler uch)
