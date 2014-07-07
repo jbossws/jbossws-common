@@ -56,9 +56,6 @@ public class DefaultLifecycleHandler implements LifecycleHandler
       }
       else
       {
-         if (ep.getEndpointMetrics() != null)
-            ep.getEndpointMetrics().start();
-
          InvocationHandler invHandler = ep.getInvocationHandler();
          if (invHandler == null)
             throw Messages.MESSAGES.invocationHandlerNotAvailable(ep.getName());
@@ -81,9 +78,6 @@ public class DefaultLifecycleHandler implements LifecycleHandler
       }
       else
       {
-         if (ep.getEndpointMetrics() != null)
-            ep.getEndpointMetrics().stop();
-
          ep.setState(EndpointState.STOPPED);
       }
    }
