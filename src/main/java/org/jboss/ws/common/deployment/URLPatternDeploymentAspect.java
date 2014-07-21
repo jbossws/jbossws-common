@@ -24,13 +24,9 @@ package org.jboss.ws.common.deployment;
 import static org.jboss.ws.common.integration.WSHelper.isEjbEndpoint;
 import static org.jboss.ws.common.integration.WSHelper.isJseEndpoint;
 
-import java.util.StringTokenizer;
-
-import javax.jws.WebService;
-
-import org.jboss.ws.api.annotation.WebContext;
 import org.jboss.ws.common.Messages;
 import org.jboss.ws.common.integration.AbstractDeploymentAspect;
+import org.jboss.ws.common.utils.UrlPatternUtils;
 import org.jboss.wsf.spi.deployment.Deployment;
 import org.jboss.wsf.spi.deployment.Endpoint;
 import org.jboss.wsf.spi.deployment.HttpEndpoint;
@@ -58,14 +54,11 @@ public class URLPatternDeploymentAspect extends AbstractDeploymentAspect
             if (urlPattern == null)
             {
                urlPattern = getExplicitPattern(dep, ep);
-               if (urlPattern == null)
+               if (urlPattern == null) {
                   urlPattern = ep.getShortName();
-   
+               }
                // Always prefix with '/'
-               if (urlPattern.startsWith("/") == false)
-                  urlPattern = "/" + urlPattern;
-   
-               httpEp.setURLPattern(urlPattern);
+               httpEp.setURLPattern(UrlPatternUtils.getUrlPattern(urlPattern));
             }
          }
       }
@@ -90,64 +83,30 @@ public class URLPatternDeploymentAspect extends AbstractDeploymentAspect
       if (appMetaData != null && appMetaData.getBeanByEjbName(ep.getShortName()) != null && isEjbEndpoint(ep))
       {
          EJBMetaData bmd = appMetaData.getBeanByEjbName(ep.getShortName());
-         urlPattern = bmd.getPortComponentURI();
-         if (urlPattern != null)
-         {
-            String contextRoot = dep.getService().getContextRoot();
-
-            if (urlPattern.startsWith("/") == false)
-               urlPattern = "/" + urlPattern;
-
-            StringTokenizer st = new StringTokenizer(urlPattern, "/");
-            if (st.countTokens() > 1 && urlPattern.startsWith(contextRoot + "/"))
-            {
-               urlPattern = urlPattern.substring(contextRoot.length());
-            }
-         }
+         urlPattern = UrlPatternUtils.getUrlPatternByPortComponentURI(bmd.getPortComponentURI(),
+             dep.getService().getContextRoot());
       }
 
       // #3 For EJB use @WebContext.urlPattern
       if (urlPattern == null)
       {
-         Class<?> beanClass = ep.getTargetBeanClass();
-         WebContext anWebContext = (WebContext)beanClass.getAnnotation(WebContext.class);
-         if (anWebContext != null && anWebContext.urlPattern().length() > 0)
-         {
-            urlPattern = anWebContext.urlPattern();
-         }
-
+         urlPattern = UrlPatternUtils.getUrlPatternByWebContext(ep.getTargetBeanClass());
       }
       
       // #4 Use @WebService
       if (urlPattern == null)
       {
-          Class<?> beanClass = ep.getTargetBeanClass();
-          WebService webServiceAnnotation = (WebService)beanClass.getAnnotation(WebService.class);
-          if (webServiceAnnotation != null)
-          {
-              String name = webServiceAnnotation.name();
-              urlPattern = !isEmpty(name) ? name : beanClass.getSimpleName();
-              String serviceName = webServiceAnnotation.serviceName();
-              if (!isEmpty(serviceName))
-              {
-                  urlPattern = serviceName + "/" + urlPattern;
-              }
-          }
+          urlPattern = UrlPatternUtils.getUrlPatternByWebService(ep.getTargetBeanClass());
       }
       // TODO: WebServiceProvider ???
       
       // #5 Use simple class name
       if (urlPattern == null) 
       {
-          Class<?> beanClass = ep.getTargetBeanClass();
-          urlPattern = beanClass.getSimpleName();
+          urlPattern = UrlPatternUtils.getUrlPatternByClassname(ep.getTargetBeanClass());
       }
 
       return urlPattern;
-   }
-
-   private static boolean isEmpty(final String s) {
-       return s == null || s.length() == 0;
    }
 
 }
