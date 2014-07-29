@@ -58,4 +58,8 @@ public interface AbstractServerConfigMBean
    boolean isModifySOAPAddress();
    
    void setModifySOAPAddress(boolean flag);
+
+   String getWebServicePathRewriteRule();
+
+   void setWebServicePathRewriteRule(String path);
 }

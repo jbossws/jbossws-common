@@ -81,7 +81,11 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
    // Whether we should always modify the soap address to the deployed endpoint location
    private volatile boolean modifySOAPAddress;
    private final Object modifySOAPAddressLock = new Object();
-   
+
+   // The SOAP address path component for substitution in the existing SOAP address.
+   private volatile String webServicePathRewriteRule;
+   private final Object webServicePathRewriteRuleLock = new Object();
+
    private volatile boolean statisticsEnabled;
    
    //The stack config
@@ -262,7 +266,28 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
          return localPort;
       }
    }
-   
+
+   public String getWebServicePathRewriteRule()
+   {
+        return webServicePathRewriteRule;
+   }
+
+   public void setWebServicePathRewriteRule(String path)
+   {
+       setWebServicePathRewriteRule(path, null);
+   }
+
+   public void setWebServicePathRewriteRule(String path, UpdateCallbackHandler uch)
+   {
+        synchronized (webServicePathRewriteRuleLock) {
+            if (uch != null)
+            {
+                uch.onBeforeUpdate();
+            }
+            this.webServicePathRewriteRule = path;
+        }
+   }
+
    private int getConnectorPort(boolean secure) {
       final ClassLoader cl = ClassLoaderProvider.getDefaultProvider().getServerIntegrationClassLoader();
       int port = 0;
