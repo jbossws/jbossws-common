@@ -85,7 +85,10 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
    // The SOAP address path component for substitution in the existing SOAP address.
    private volatile String webServicePathRewriteRule;
    private final Object webServicePathRewriteRuleLock = new Object();
-
+   
+   //The SOAP address uri schema, http is the default value
+   private volatile String webServiceUriScheme;
+   private final Object webServiceUriSchemeLock = new Object();
    private volatile boolean statisticsEnabled;
    
    //The stack config
@@ -287,6 +290,28 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
             this.webServicePathRewriteRule = path;
         }
    }
+   
+   public String getWebServiceUriScheme()
+   {
+        return this.webServiceUriScheme;
+   }
+
+   public void setWebServiceUriScheme(String scheme)
+   {
+      setWebServiceUriScheme(scheme, null);
+   }
+
+   public void setWebServiceUriScheme(String scheme, UpdateCallbackHandler uch)
+   {
+        synchronized (webServiceUriSchemeLock) {
+            if (uch != null)
+            {
+                uch.onBeforeUpdate();
+            }
+            this.webServiceUriScheme = scheme;
+        }
+   }
+   
 
    private int getConnectorPort(boolean secure) {
       final ClassLoader cl = ClassLoaderProvider.getDefaultProvider().getServerIntegrationClassLoader();

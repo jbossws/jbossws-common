@@ -69,6 +69,7 @@ public class EndpointAddressDeploymentAspect extends AbstractDeploymentAspect
       String host = serverConfig.getWebServiceHost();
       Map<String, Endpoint> endpointsMap = new HashMap<String, Endpoint>();
       List<Endpoint> deleteList = new LinkedList<Endpoint>();
+      String uriSchema = serverConfig.getWebServiceUriScheme();
       for (Endpoint ep : service.getEndpoints())
       {
          if (ep instanceof HttpEndpoint)
@@ -84,8 +85,12 @@ public class EndpointAddressDeploymentAspect extends AbstractDeploymentAspect
    
             if (urlPattern.endsWith("/*"))
                urlPattern = urlPattern.substring(0, urlPattern.length() - 2);
-   
+               
             String protocol = confidential ? "https://" : "http://";
+            //force address protocol
+            if (uriSchema != null) {
+               protocol = uriSchema + "://";
+            }
             String address = protocol + hostAndPort + (contextRoot.equals("/") && urlPattern.startsWith("/") ? "" : contextRoot) + urlPattern;
             httpEp.setAddress(address);
             //JBWS-2957: EJB3 binds the same endpoint class to multiple beans at multiple JNDI locations;
