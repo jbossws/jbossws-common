@@ -31,6 +31,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.jboss.ws.api.annotation.WebContext;
+import org.jboss.ws.common.Constants;
+import org.jboss.ws.common.Loggers;
 import org.jboss.ws.common.Messages;
 import org.jboss.ws.common.integration.AbstractDeploymentAspect;
 import org.jboss.ws.common.management.AbstractServerConfig;
@@ -45,6 +47,7 @@ import org.jboss.wsf.spi.metadata.j2ee.EJBSecurityMetaData;
 import org.jboss.wsf.spi.metadata.j2ee.JSEArchiveMetaData;
 import org.jboss.wsf.spi.metadata.j2ee.JSESecurityMetaData;
 import org.jboss.wsf.spi.metadata.j2ee.JSESecurityMetaData.JSEResourceCollection;
+import org.jboss.wsf.spi.metadata.webservices.JBossWebservicesMetaData;
 
 /**
  * A deployer that assigns the endpoint address. 
@@ -70,11 +73,32 @@ public class EndpointAddressDeploymentAspect extends AbstractDeploymentAspect
       Map<String, Endpoint> endpointsMap = new HashMap<String, Endpoint>();
       List<Endpoint> deleteList = new LinkedList<Endpoint>();
       String uriSchema = serverConfig.getWebServiceUriScheme();
+      JBossWebservicesMetaData wsmd = dep.getAttachment(JBossWebservicesMetaData.class);
+      if (uriSchema == null && wsmd != null && wsmd.getProperty(Constants.FORCE_URI_SCHEME) != null)
+      {
+         String wsmdScheme = wsmd.getProperty(Constants.FORCE_URI_SCHEME);
+         if ("http".equals(wsmdScheme) || "https".equals(wsmdScheme))
+         {
+            uriSchema = wsmdScheme;
+            dep.getService().setProperty(Constants.FORCE_URI_SCHEME, uriSchema);
+         } else {
+            Loggers.DEPLOYMENT_LOGGER.invalidUriSchemeValue(wsmdScheme);
+         }
+      }
       for (Endpoint ep : service.getEndpoints())
       {
          if (ep instanceof HttpEndpoint)
          {
-            boolean confidential = isConfidentialTransportGuarantee(dep, ep);
+            boolean confidential = false;
+            if ("https".equals(uriSchema)) {
+               confidential = true;
+            }
+            if ("http".equals(uriSchema)) {
+               confidential = false;
+            }
+            if (uriSchema == null) {
+               confidential = isConfidentialTransportGuarantee(dep, ep);
+            }
             int currentPort = port.getValue(confidential);
             String hostAndPort = host + (currentPort > 0 ? ":" + currentPort : ""); 
             
@@ -87,10 +111,6 @@ public class EndpointAddressDeploymentAspect extends AbstractDeploymentAspect
                urlPattern = urlPattern.substring(0, urlPattern.length() - 2);
                
             String protocol = confidential ? "https://" : "http://";
-            //force address protocol
-            if (uriSchema != null) {
-               protocol = uriSchema + "://";
-            }
             String address = protocol + hostAndPort + (contextRoot.equals("/") && urlPattern.startsWith("/") ? "" : contextRoot) + urlPattern;
             httpEp.setAddress(address);
             //JBWS-2957: EJB3 binds the same endpoint class to multiple beans at multiple JNDI locations;

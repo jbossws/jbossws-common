@@ -320,4 +320,6 @@ public interface Constants
    static final String HTTP_MAX_CONNECTIONS = "org.jboss.ws.http.maxConnections";
 
    static final String NETTY_MESSAGE = "org.jboss.ws.http.netty.Message";
+   
+   static final String FORCE_URI_SCHEME = "org.jboss.ws.address.forceUriScheme";
 }

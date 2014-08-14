@@ -222,4 +222,9 @@ public interface Loggers extends BasicLogger
     @LogMessage(level = TRACE)
     @Message(id = 22116, value = "Could not find %s in the additional metadatafiles")
     void cannotFindInAdditionalMetaData(String resourcePath);
+    
+    
+    @LogMessage(level = WARN)
+    @Message(id = 22118, value = "Invalid uri schema value %s")
+    void invalidUriSchemeValue(String scheme);
 }
