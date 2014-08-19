@@ -89,6 +89,7 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
    //The SOAP address uri schema, http is the default value
    private volatile String webServiceUriScheme;
    private final Object webServiceUriSchemeLock = new Object();
+
    private volatile boolean statisticsEnabled;
    
    //The stack config
@@ -293,7 +294,7 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
    
    public String getWebServiceUriScheme()
    {
-        return this.webServiceUriScheme;
+      return this.webServiceUriScheme;
    }
 
    public void setWebServiceUriScheme(String scheme)
@@ -303,16 +304,16 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
 
    public void setWebServiceUriScheme(String scheme, UpdateCallbackHandler uch)
    {
-        synchronized (webServiceUriSchemeLock) {
-            if (uch != null)
-            {
-                uch.onBeforeUpdate();
-            }
-            this.webServiceUriScheme = scheme;
-        }
+      synchronized (webServiceUriSchemeLock)
+      {
+         if (uch != null)
+         {
+            uch.onBeforeUpdate();
+         }
+         this.webServiceUriScheme = scheme;
+      }
    }
-   
-
+      
    private int getConnectorPort(boolean secure) {
       final ClassLoader cl = ClassLoaderProvider.getDefaultProvider().getServerIntegrationClassLoader();
       int port = 0;
