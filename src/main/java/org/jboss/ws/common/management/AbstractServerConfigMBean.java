@@ -62,4 +62,8 @@ public interface AbstractServerConfigMBean
    String getWebServicePathRewriteRule();
 
    void setWebServicePathRewriteRule(String path);
+   
+   String getWebServiceUriScheme();
+   
+   void setWebServiceUriScheme(String scheme);
 }
