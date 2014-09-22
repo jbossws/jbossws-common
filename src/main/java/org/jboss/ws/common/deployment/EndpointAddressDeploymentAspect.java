@@ -39,12 +39,14 @@ import org.jboss.wsf.spi.deployment.Endpoint;
 import org.jboss.wsf.spi.deployment.HttpEndpoint;
 import org.jboss.wsf.spi.deployment.Service;
 import org.jboss.wsf.spi.management.ServerConfig;
+import org.jboss.wsf.spi.metadata.config.SOAPAddressRewriteMetadata;
 import org.jboss.wsf.spi.metadata.j2ee.EJBArchiveMetaData;
 import org.jboss.wsf.spi.metadata.j2ee.EJBMetaData;
 import org.jboss.wsf.spi.metadata.j2ee.EJBSecurityMetaData;
 import org.jboss.wsf.spi.metadata.j2ee.JSEArchiveMetaData;
 import org.jboss.wsf.spi.metadata.j2ee.JSESecurityMetaData;
 import org.jboss.wsf.spi.metadata.j2ee.JSESecurityMetaData.JSEResourceCollection;
+import org.jboss.wsf.spi.metadata.webservices.JBossWebservicesMetaData;
 
 /**
  * A deployer that assigns the endpoint address. 
@@ -58,15 +60,19 @@ public class EndpointAddressDeploymentAspect extends AbstractDeploymentAspect
    @Override
    public void start(Deployment dep)
    {
+      // prepare the WSDL soap:address metadata and attach it to the deployment for later usage
+      final SOAPAddressRewriteMetadata sarm = new SOAPAddressRewriteMetadata(getServerConfig(),
+            dep.getAttachment(JBossWebservicesMetaData.class));
+      dep.addAttachment(SOAPAddressRewriteMetadata.class, sarm);
+      
       final Service service = dep.getService();
       String contextRoot = service.getContextRoot();
       if (contextRoot == null)
          throw Messages.MESSAGES.cannotObtainContextRoot(dep.getSimpleName());
       
       PortValue port = new PortValue((Integer)service.getProperty("port"), null);
-      ServerConfig serverConfig = getServerConfig();
-      port.setServerConfig(serverConfig);
-      String host = serverConfig.getWebServiceHost();
+      port.setSOAPAddressRewriteMetadata(sarm);
+      String host = sarm.getWebServiceHost();
       Map<String, Endpoint> endpointsMap = new HashMap<String, Endpoint>();
       List<Endpoint> deleteList = new LinkedList<Endpoint>();
       for (Endpoint ep : service.getEndpoints())
@@ -175,7 +181,7 @@ public class EndpointAddressDeploymentAspect extends AbstractDeploymentAspect
    }
    
    private static class PortValue {
-      private ServerConfig config;
+      private SOAPAddressRewriteMetadata sarm;
       private Integer port;
       private Integer securePort;
       
@@ -184,11 +190,11 @@ public class EndpointAddressDeploymentAspect extends AbstractDeploymentAspect
          this.securePort = securePort;
       }
       
-      public void setServerConfig(ServerConfig config)
+      public void setSOAPAddressRewriteMetadata(SOAPAddressRewriteMetadata sarm)
       {
          this.port = null;
          this.securePort = null;
-         this.config = config;
+         this.sarm = sarm;
       }
       
       public Integer getValue(boolean confidential) {
@@ -197,18 +203,18 @@ public class EndpointAddressDeploymentAspect extends AbstractDeploymentAspect
       
       public Integer getPortValue()
       {
-         if (this.port == null && this.config != null)
+         if (this.port == null && this.sarm != null)
          {
-            this.port = this.config.getWebServicePort();
+            this.port = this.sarm.getWebServicePort();
          }
          return this.port;
       }
       
       public Integer getSecurePortValue()
       {
-         if (this.securePort == null && this.config != null)
+         if (this.securePort == null && this.sarm != null)
          {
-            this.securePort = this.config.getWebServiceSecurePort();
+            this.securePort = this.sarm.getWebServiceSecurePort();
          }
          return this.securePort;
       }
