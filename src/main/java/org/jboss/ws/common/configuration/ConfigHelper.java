@@ -34,6 +34,7 @@ import java.util.StringTokenizer;
 
 import javax.xml.ws.Binding;
 import javax.xml.ws.BindingProvider;
+import javax.xml.ws.Dispatch;
 import javax.xml.ws.handler.Handler;
 import javax.xml.ws.handler.LogicalHandler;
 import javax.xml.ws.handler.soap.SOAPHandler;
@@ -74,7 +75,8 @@ public class ConfigHelper implements ClientConfigurer
    @Override
    public void setConfigHandlers(BindingProvider port, String configFile, String configName)
    {
-      ClientConfig config = readConfig(configFile, configName);
+      Class<?> clazz = !(port instanceof Dispatch) ? port.getClass() : null;
+      ClientConfig config = readConfig(configFile, configName, clazz);
       setupConfigHandlers(port.getBinding(), config);
    }
 
@@ -84,7 +86,7 @@ public class ConfigHelper implements ClientConfigurer
       throw MESSAGES.operationNotSupportedBy("setConfigProperties", this.getClass());
    }
    
-   protected ClientConfig readConfig(String configFile, String configName) {
+   protected ClientConfig readConfig(String configFile, String configName, Class<?> clientProxyClass) {
       if (configFile != null) {
          InputStream is = null;
          try
@@ -92,9 +94,20 @@ public class ConfigHelper implements ClientConfigurer
             is = SecurityActions.getContextClassLoader().getResourceAsStream(configFile);
             if (is != null) {
                ConfigRoot config = ConfigMetaDataParser.parse(is);
-               ClientConfig cc = config != null ? config.getClientConfigByName(configName) : null;
-               if (cc != null) {
-                  return cc;
+               if (config != null) {
+                  if (configName == null) {
+                     for (Class<?> itf : clientProxyClass.getInterfaces()) {
+                        ClientConfig cc = config.getClientConfigByName(itf.getName());
+                        if (cc != null) {
+                           return cc;
+                        }
+                     }
+                  } else {
+                     ClientConfig cc = config.getClientConfigByName(configName);
+                     if (cc != null) {
+                        return cc;
+                     }
+                  }
                }
             }
          }
@@ -111,12 +124,42 @@ public class ConfigHelper implements ClientConfigurer
             }
          }
       } else {
-         ServerConfig sc = getServerConfig();
-         if (sc != null) {
-            ClientConfig cf = sc.getClientConfig(configName);
-            if (cf != null) {
-               return cf;
+         if (configName != null) {
+            InputStream is = null;
+            try
+            {
+               is = SecurityActions.getContextClassLoader().getResourceAsStream(ClientConfig.DEFAULT_CLIENT_CONFIG_FILE);
+               if (is != null) {
+                  ConfigRoot config = ConfigMetaDataParser.parse(is);
+                  ClientConfig cc = config != null ? config.getClientConfigByName(configName) : null;
+                  if (cc != null) {
+                     return cc;
+                  }
+               }
             }
+            catch (Exception e)
+            {
+               throw MESSAGES.couldNotReadConfiguration(configFile, e);
+            }
+            finally
+            {
+               if (is != null) {
+                  try {
+                     is.close();
+                  } catch (IOException e) { } //ignore
+               }
+            }
+         }
+         try {
+            ServerConfig sc = getServerConfig();
+            if (sc != null) {
+               ClientConfig cf = sc.getClientConfig(configName);
+               if (cf != null) {
+                  return cf;
+               }
+            }
+         } catch (Exception e) {
+            throw MESSAGES.configurationNotFound(configName);
          }
       }
       throw MESSAGES.configurationNotFound(configName);
