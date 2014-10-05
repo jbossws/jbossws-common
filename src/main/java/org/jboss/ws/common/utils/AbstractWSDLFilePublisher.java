@@ -143,7 +143,7 @@ public abstract class AbstractWSDLFilePublisher
          {
             String locationURI = wsdlImport.getLocationURI();
             // its an external import, don't publish locally
-            if (locationURI.startsWith("http://") == false)
+            if (locationURI.startsWith("http://") == false && locationURI.startsWith("https://") == false)
             {
                // infinity loops prevention
                if (published.contains(locationURI))
