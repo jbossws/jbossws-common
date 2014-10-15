@@ -210,10 +210,13 @@ public final class SOAPAddressWSDLParser
                }
                else if (match(reader, WSDL_NS, IMPORT)) {
                   final String location = reader.getAttributeValue(null, LOCATION);
-                  final String url = wsdlUrl.toString();
-                  final String newUrl = url.substring(0, url.lastIndexOf("/") + (location.startsWith("/") ? 0 : 1)) + location;
-                  if (!metadata.getImports().containsKey(newUrl)) {
-                     metadata.getImports().put(newUrl, false);
+                  try {
+                     final String newUrl = new URL(wsdlUrl, location).toExternalForm();
+                     if (!metadata.getImports().containsKey(newUrl)) {
+                        metadata.getImports().put(newUrl, false);
+                     }
+                  } catch (MalformedURLException e) {
+                     throw MESSAGES.failedToRead(wsdlUrl.toExternalForm(), e.getMessage(), e);
                   }
                }
                continue;
