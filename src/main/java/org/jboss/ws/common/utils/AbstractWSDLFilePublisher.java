@@ -207,7 +207,7 @@ public abstract class AbstractWSDLFilePublisher
             final String ln = childElement.getLocalName();
             if ("import".equals(ln) || "include".equals(ln)) {
                String schemaLocation = childElement.getAttribute("schemaLocation");
-               if (schemaLocation.length() > 0 && schemaLocation.startsWith("http://") == false)
+               if (schemaLocation.length() > 0 && schemaLocation.startsWith("http://") == false  && schemaLocation.startsWith("https://") == false)
                {
                   // infinity loops prevention
                   if (!published.contains(schemaLocation))
