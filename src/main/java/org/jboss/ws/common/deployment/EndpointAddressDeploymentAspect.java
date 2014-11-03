@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jboss.ws.api.annotation.WebContext;
+import org.jboss.ws.common.Loggers;
 import org.jboss.ws.common.Messages;
 import org.jboss.ws.common.integration.AbstractDeploymentAspect;
 import org.jboss.ws.common.management.AbstractServerConfig;
@@ -82,7 +83,20 @@ public class EndpointAddressDeploymentAspect extends AbstractDeploymentAspect
             boolean confidential = isConfidentialTransportGuarantee(dep, ep);
             int currentPort = port.getValue(confidential);
             String hostAndPort = host + (currentPort > 0 ? ":" + currentPort : ""); 
-            
+            if (ep.getService().getVirtualHost() != null)
+            {
+               String hostName = getServerConfig().getHostAlias(ep.getService().getVirtualHost());
+               if (hostName == null) {
+                  Loggers.DEPLOYMENT_LOGGER.cannotObtainHost(ep.getService().getVirtualHost());
+                  hostName = host;
+               }
+               Integer hostPort = getServerConfig().getVirtualHostPort(ep.getService().getVirtualHost(), confidential); 
+               if (hostPort == null) {
+                  Loggers.DEPLOYMENT_LOGGER.cannotObtainPort(ep.getService().getVirtualHost());
+                  hostPort = currentPort;
+               }
+               hostAndPort = hostName + ":" + hostPort;
+            } 
             HttpEndpoint httpEp = (HttpEndpoint)ep;
             String urlPattern = httpEp.getURLPattern();
             if (urlPattern == null)

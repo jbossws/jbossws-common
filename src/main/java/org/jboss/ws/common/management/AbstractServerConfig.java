@@ -428,6 +428,15 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
       return endpointConfigStore.getConfig(name);
    }
 
+   public Integer getVirtualHostPort(String hostname, boolean secure)
+   {
+      return null;
+   }
+
+   public String getHostAlias(String virtualHost)
+   {
+      return virtualHost;
+   }
    private static void checkPermission(final Permission permission)
    {
       SecurityManager securityManager = System.getSecurityManager();

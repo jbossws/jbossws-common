@@ -222,4 +222,12 @@ public interface Loggers extends BasicLogger
     @LogMessage(level = TRACE)
     @Message(id = 22116, value = "Could not find %s in the additional metadatafiles")
     void cannotFindInAdditionalMetaData(String resourcePath);
+    
+    @LogMessage(level = WARN)
+    @Message(id = 22118, value = "Cannot obtain host for vituralHost %s, use default host")
+    void cannotObtainHost(String host);
+    
+    @LogMessage(level = WARN)
+    @Message(id = 22119, value = "Cannot obtain port for vituralHost %s, use default port")
+    void cannotObtainPort(String host);
 }

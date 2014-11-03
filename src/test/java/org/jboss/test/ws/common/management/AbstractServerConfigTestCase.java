@@ -57,6 +57,15 @@ public class AbstractServerConfigTestCase extends TestCase
          {
             return null;
          }
+         public Integer getVirtualHostPort(String virtualHost, boolean secure)
+         {
+            return null;
+         }
+
+         public String getHostAlias(String host)
+         {
+            return host;
+         }
       };
       
       //test default value
