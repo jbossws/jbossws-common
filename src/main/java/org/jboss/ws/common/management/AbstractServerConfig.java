@@ -435,7 +435,7 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
 
    public String getHostAlias(String virtualHost)
    {
-      return virtualHost;
+      return "localhost";
    }
    private static void checkPermission(final Permission permission)
    {
