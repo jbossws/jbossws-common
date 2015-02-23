@@ -37,7 +37,6 @@ import java.util.Properties;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.jboss.util.xml.JBossEntityResolver;
 import org.jboss.wsf.spi.classloading.ClassLoaderProvider;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
