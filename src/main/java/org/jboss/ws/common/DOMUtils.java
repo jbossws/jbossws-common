@@ -47,12 +47,10 @@ import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.jboss.ws.common.utils.JBossWSEntityResolver;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.Text;
-import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -130,7 +128,6 @@ public final class DOMUtils extends org.jboss.ws.api.util.DOMUtils
             }
 
             DocumentBuilder builder = threadFactory.newDocumentBuilder();
-            setEntityResolver(builder);
             return builder;
          }
          catch (Exception e)
@@ -140,40 +137,6 @@ public final class DOMUtils extends org.jboss.ws.api.util.DOMUtils
       }
       
    };
-   
-   @SuppressWarnings("deprecation")
-   private static void setEntityResolver(DocumentBuilder builder)
-   {
-      EntityResolver entityResolver = null;
-      try
-      {
-         entityResolver = new JBossWSEntityResolver();
-      }
-      catch (Throwable t)
-      {
-         boolean debugEnabled = ROOT_LOGGER.isDebugEnabled();
-         if (debugEnabled)
-            ROOT_LOGGER.couldNotLoad("JBossWSEntityResolver");
-         String[] resolvers = new String[] { "org.jboss.util.xml.JBossEntityResolver" };
-         ClassLoader loader = SecurityActions.getContextClassLoader();
-         for (String resolver : resolvers)
-         {
-            try
-            {
-               Class<?> resolverClass = SecurityActions.loadClass(loader, resolver);
-               entityResolver = (EntityResolver)resolverClass.newInstance();
-               break;
-            }
-            catch (Exception ex)
-            {
-               if (debugEnabled)
-                  ROOT_LOGGER.couldNotLoad(resolver);
-            }
-         }
-      }
-      if (entityResolver != null)
-         builder.setEntityResolver(entityResolver);
-   }
    
    private static void initializeFactory(final DocumentBuilderFactory factory)
    {
@@ -221,7 +184,6 @@ public final class DOMUtils extends org.jboss.ws.api.util.DOMUtils
       try
       {
          final DocumentBuilder builder = factory.newDocumentBuilder();
-         setEntityResolver(builder);
          return builder;
       }
       catch (Exception e)
