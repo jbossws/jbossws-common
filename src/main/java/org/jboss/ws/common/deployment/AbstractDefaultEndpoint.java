@@ -44,6 +44,7 @@ import org.jboss.wsf.spi.deployment.WSFDeploymentException;
 import org.jboss.wsf.spi.invocation.InvocationHandler;
 import org.jboss.wsf.spi.invocation.RequestHandler;
 import org.jboss.wsf.spi.management.EndpointMetrics;
+import org.jboss.wsf.spi.metadata.config.EndpointConfig;
 import org.jboss.wsf.spi.security.SecurityDomainContext;
 
 /**
@@ -70,6 +71,7 @@ public class AbstractDefaultEndpoint extends AbstractExtensible
    protected volatile List<RecordProcessor> recordProcessors = new CopyOnWriteArrayList<RecordProcessor>();
    protected volatile SecurityDomainContext securityDomainContext;
    protected volatile InstanceProvider instanceProvider;
+   protected volatile EndpointConfig endpointConfig;
    
    AbstractDefaultEndpoint(String targetBean)
    {
@@ -318,4 +320,14 @@ public class AbstractDefaultEndpoint extends AbstractExtensible
       this.instanceProvider = instanceProvider;
    }
 
+   public void setEndpointConfig(final EndpointConfig endpointConfig)
+   {
+      assertEndpointSetterAccess();
+      this.endpointConfig = endpointConfig;
+   }
+   
+   public EndpointConfig getEndpointConfig()
+   {
+      return endpointConfig;
+   }
 }

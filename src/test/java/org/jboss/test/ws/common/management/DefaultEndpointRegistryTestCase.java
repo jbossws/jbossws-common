@@ -48,6 +48,7 @@ import org.jboss.wsf.spi.invocation.InvocationHandler;
 import org.jboss.wsf.spi.invocation.RequestHandler;
 import org.jboss.wsf.spi.management.EndpointMetrics;
 import org.jboss.wsf.spi.management.EndpointRegistry;
+import org.jboss.wsf.spi.metadata.config.EndpointConfig;
 import org.jboss.wsf.spi.security.SecurityDomainContext;
 
 import junit.framework.TestCase;
@@ -402,6 +403,19 @@ public class DefaultEndpointRegistryTestCase extends TestCase
          public String getAddress()
          {
             return null;
+         }
+
+         @Override
+         public EndpointConfig getEndpointConfig()
+         {
+            return null;
+         }
+
+         @Override
+         public void setEndpointConfig(EndpointConfig config)
+         {
+            // TODO Auto-generated method stub
+            
          }
       };
    }

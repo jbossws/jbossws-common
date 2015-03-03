@@ -37,6 +37,7 @@ import org.jboss.logging.MessageBundle;
 import org.jboss.ws.common.injection.InjectionException;
 import org.jboss.wsf.spi.WSFException;
 import org.jboss.wsf.spi.deployment.EndpointState;
+import org.jboss.wsf.spi.deployment.WSFDeploymentException;
 import org.jboss.wsf.spi.metadata.j2ee.serviceref.UnifiedServiceRefMetaData;
 
 /**
@@ -264,4 +265,10 @@ public interface Messages {
     
     @Message(id = 22117, value = "Invalid address provided: %s")
     IllegalArgumentException invalidAddressProvided(String address);
+    
+    @Message(id = 22120, value = "Could not read from config file: %s")
+    RuntimeException couldNotReadConfigFile(String file);
+    
+    @Message(id = 22121, value = "Could not find endpoint config name: %s")
+    WSFDeploymentException couldNotFindEndpointConfigName(String name);
 }

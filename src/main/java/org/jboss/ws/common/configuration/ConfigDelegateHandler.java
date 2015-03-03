@@ -64,4 +64,9 @@ public class ConfigDelegateHandler<T extends MessageContext> implements Handler<
    {
       return isPre;
    }
+   
+   public Handler<T> getDelegate()
+   {
+      return delegate;
+   }
 }
