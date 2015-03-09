@@ -95,21 +95,21 @@ public interface Loggers extends BasicLogger
     @Message(id = 22027, value = "Cannot delete published wsdl document: %s")
     void cannotDeletePublishedWsdlDoc(URL url);
     
-    @LogMessage(level = ERROR)
-    @Message(id = 22038, value = "Cannot register endpoint %s with JMX server")
-    void cannotRegisterEndpointWithJmxServer(ObjectName endpointName, @Cause Throwable cause);
-    
-    @LogMessage(level = ERROR)
-    @Message(id = 22039, value = "Cannot unregister endpoint %s with JMX server")
-    void cannotUnregisterEndpointWithJmxServer(ObjectName endpointName, @Cause Throwable cause);
-    
-    @LogMessage(level = WARN)
-    @Message(id = 22040, value = "MBeanServer not available, cannot unregister endpoint with JMX server")
-    void cannotUnregisterDueToMBeanServerUnavailable();
-    
-    @LogMessage(level = DEBUG)
-    @Message(id = 22041, value = "Destroying service endpoint manager")
-    void destroyingServiceEndpointManager();
+//    @LogMessage(level = ERROR)
+//    @Message(id = 22038, value = "Cannot register endpoint %s with JMX server")
+//    void cannotRegisterEndpointWithJmxServer(ObjectName endpointName, @Cause Throwable cause);
+//    
+//    @LogMessage(level = ERROR)
+//    @Message(id = 22039, value = "Cannot unregister endpoint %s with JMX server")
+//    void cannotUnregisterEndpointWithJmxServer(ObjectName endpointName, @Cause Throwable cause);
+//    
+//    @LogMessage(level = WARN)
+//    @Message(id = 22040, value = "MBeanServer not available, cannot unregister endpoint with JMX server")
+//    void cannotUnregisterDueToMBeanServerUnavailable();
+//    
+//    @LogMessage(level = DEBUG)
+//    @Message(id = 22041, value = "Destroying service endpoint manager")
+//    void destroyingServiceEndpointManager();
     
     @LogMessage(level = DEBUG)
     @Message(id = 22042, value = "Cannot register processor %s with JMX server, will be trying using the default managed implementation. ")
@@ -123,13 +123,13 @@ public interface Loggers extends BasicLogger
     @Message(id = 22044, value = "Cannot unregister processor %s with JMX server")
     void cannotUnregisterProcessorWithJmxServer(ObjectName processorName, @Cause Throwable cause);
         
-    @LogMessage(level = INFO)
-    @Message(id = 22050, value = "Endpoint registered: %s")
-    void endpointRegistered(ObjectName epName);
-        
-    @LogMessage(level = INFO)
-    @Message(id = 22051, value = "Endpoint unregistered: %s")
-    void endpointUnregistered(ObjectName epName);
+//    @LogMessage(level = INFO)
+//    @Message(id = 22050, value = "Endpoint registered: %s")
+//    void endpointRegistered(ObjectName epName);
+//        
+//    @LogMessage(level = INFO)
+//    @Message(id = 22051, value = "Endpoint unregistered: %s")
+//    void endpointUnregistered(ObjectName epName);
         
     @LogMessage(level = INFO)
     @Message(id = 22052, value = "Starting %s %s")

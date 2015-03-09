@@ -125,20 +125,20 @@ public interface Messages {
     @Message(id = 22037, value = "Annotation class cannot be null")
     IllegalArgumentException annotationClassCannotBeNull();
     
-    @Message(id = 22045, value = "Cannot register / unregister null endpoint")
-    IllegalArgumentException cannotRegisterUnregisterNullEndpoint();
-    
-    @Message(id = 22046, value = "Looking for endpoints with null name in the endpoint registry is not supported")
-    IllegalArgumentException endpointNameCannotBeNull();
-    
-    @Message(id = 22047, value = "Cannot register endpoint with null name: %s")
-    IllegalArgumentException cannotRegisterEndpointWithNullName(ObjectName epName);
-    
-    @Message(id = 22048, value = "Endpoint already registered: %s")
-    IllegalStateException endpointAlreadyRegistered(ObjectName endpointName);
-    
-    @Message(id = 22049, value = "Endpoint not registered: %s")
-    IllegalStateException endpointNotRegistered(ObjectName endpointName);
+//    @Message(id = 22045, value = "Cannot register / unregister null endpoint")
+//    IllegalArgumentException cannotRegisterUnregisterNullEndpoint();
+//    
+//    @Message(id = 22046, value = "Looking for endpoints with null name in the endpoint registry is not supported")
+//    IllegalArgumentException endpointNameCannotBeNull();
+//    
+//    @Message(id = 22047, value = "Cannot register endpoint with null name: %s")
+//    IllegalArgumentException cannotRegisterEndpointWithNullName(ObjectName epName);
+//    
+//    @Message(id = 22048, value = "Endpoint already registered: %s")
+//    IllegalStateException endpointAlreadyRegistered(ObjectName endpointName);
+//    
+//    @Message(id = 22049, value = "Endpoint not registered: %s")
+//    IllegalStateException endpointNotRegistered(ObjectName endpointName);
     
     @Message(id = 22062, value = "Cannot find attachment %s in webservice deployment %s")
     IllegalStateException cannotFindAttachmentInDeployment(Class<?> attachmentClass, String dep);

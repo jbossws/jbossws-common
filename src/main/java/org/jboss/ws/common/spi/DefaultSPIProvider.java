@@ -26,7 +26,6 @@ import org.jboss.ws.common.Messages;
 import org.jboss.ws.common.deployment.DefaultDeploymentModelFactory;
 import org.jboss.ws.common.deployment.DefaultLifecycleHandlerFactory;
 import org.jboss.ws.common.management.DefaultEndpointMetricsFactory;
-import org.jboss.ws.common.management.DefaultEndpointRegistryFactory;
 import org.jboss.ws.common.management.DefaultJMSEndpointResolver;
 import org.jboss.ws.common.security.DefaultSecurityAdapterFactory;
 import org.jboss.wsf.spi.SPIProvider;
@@ -34,7 +33,6 @@ import org.jboss.wsf.spi.deployment.DeploymentModelFactory;
 import org.jboss.wsf.spi.deployment.LifecycleHandlerFactory;
 import org.jboss.wsf.spi.invocation.SecurityAdaptorFactory;
 import org.jboss.wsf.spi.management.EndpointMetricsFactory;
-import org.jboss.wsf.spi.management.EndpointRegistryFactory;
 import org.jboss.wsf.spi.management.JMSEndpointResolver;
 
 /**
@@ -67,10 +65,6 @@ class DefaultSPIProvider extends SPIProvider
       else if (SecurityAdaptorFactory.class.equals(spiType))
       {
          returnType = loadService(spiType, DefaultSecurityAdapterFactory.class, loader);
-      }
-      else if (EndpointRegistryFactory.class.equals(spiType))
-      {
-         returnType = loadService(spiType, DefaultEndpointRegistryFactory.class, loader);
       }
       else if (JMSEndpointResolver.class.equals(spiType))
       {
