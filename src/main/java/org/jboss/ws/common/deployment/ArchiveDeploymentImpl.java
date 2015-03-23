@@ -28,6 +28,7 @@ import java.util.List;
 import org.jboss.wsf.spi.deployment.ArchiveDeployment;
 import org.jboss.wsf.spi.deployment.ResourceResolver;
 import org.jboss.wsf.spi.deployment.UnifiedVirtualFile;
+import org.jboss.wsf.spi.deployment.DeploymentType;
 
 /**
  * A general web service deployment that is based on an archive. 
@@ -44,6 +45,7 @@ public class ArchiveDeploymentImpl extends DefaultDeployment implements ArchiveD
    private final UnifiedVirtualFile rootFile;
    
    private List<UnifiedVirtualFile> metadataFiles;
+   private DeploymentType deploymentType;
 
    ArchiveDeploymentImpl(String simpleName, ClassLoader classLoader, UnifiedVirtualFile rootFile)
    {
@@ -97,5 +99,13 @@ public class ArchiveDeploymentImpl extends DefaultDeployment implements ArchiveD
    public ResourceResolver getResourceResolver()
    {
       return new ResourceResolverImpl(this);
+   }
+
+   public void setType(DeploymentType deploymentType) {
+      this.deploymentType = deploymentType;
+   }
+
+   public DeploymentType getType() {
+      return deploymentType;
    }
 }

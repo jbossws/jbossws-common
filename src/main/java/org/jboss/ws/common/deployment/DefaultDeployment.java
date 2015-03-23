@@ -24,6 +24,7 @@ package org.jboss.ws.common.deployment;
 import org.jboss.wsf.spi.deployment.AbstractExtensible;
 import org.jboss.wsf.spi.deployment.Deployment;
 import org.jboss.wsf.spi.deployment.Service;
+import org.jboss.wsf.spi.deployment.DeploymentType;
 
 /**
  * A general web service deployment dep. 
@@ -41,6 +42,7 @@ public class DefaultDeployment extends AbstractExtensible implements Deployment
    private final Service service;
    // The runtime class loader
    private final ClassLoader classLoader;
+   private DeploymentType deploymentType;
 
    DefaultDeployment(String name, ClassLoader classLoader)
    {
@@ -63,5 +65,13 @@ public class DefaultDeployment extends AbstractExtensible implements Deployment
    public Service getService()
    {
       return service;
+   }
+
+   public void setType(DeploymentType deploymentType) {
+      this.deploymentType = deploymentType;
+   }
+
+   public DeploymentType getType() {
+      return deploymentType;
    }
 }
