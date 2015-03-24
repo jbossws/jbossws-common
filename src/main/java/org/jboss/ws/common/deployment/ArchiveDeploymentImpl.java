@@ -45,7 +45,6 @@ public class ArchiveDeploymentImpl extends DefaultDeployment implements ArchiveD
    private final UnifiedVirtualFile rootFile;
    
    private List<UnifiedVirtualFile> metadataFiles;
-   private DeploymentType deploymentType;
 
    ArchiveDeploymentImpl(String simpleName, ClassLoader classLoader, UnifiedVirtualFile rootFile)
    {
@@ -99,13 +98,5 @@ public class ArchiveDeploymentImpl extends DefaultDeployment implements ArchiveD
    public ResourceResolver getResourceResolver()
    {
       return new ResourceResolverImpl(this);
-   }
-
-   public void setType(DeploymentType deploymentType) {
-      this.deploymentType = deploymentType;
-   }
-
-   public DeploymentType getType() {
-      return deploymentType;
    }
 }

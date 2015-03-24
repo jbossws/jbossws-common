@@ -42,7 +42,6 @@ public class DefaultDeployment extends AbstractExtensible implements Deployment
    private final Service service;
    // The runtime class loader
    private final ClassLoader classLoader;
-   private DeploymentType deploymentType;
 
    DefaultDeployment(String name, ClassLoader classLoader)
    {
@@ -65,13 +64,5 @@ public class DefaultDeployment extends AbstractExtensible implements Deployment
    public Service getService()
    {
       return service;
-   }
-
-   public void setType(DeploymentType deploymentType) {
-      this.deploymentType = deploymentType;
-   }
-
-   public DeploymentType getType() {
-      return deploymentType;
    }
 }
