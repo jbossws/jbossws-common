@@ -24,7 +24,6 @@ package org.jboss.ws.common.deployment;
 import org.jboss.wsf.spi.deployment.AbstractExtensible;
 import org.jboss.wsf.spi.deployment.Deployment;
 import org.jboss.wsf.spi.deployment.Service;
-import org.jboss.wsf.spi.deployment.DeploymentType;
 
 /**
  * A general web service deployment dep. 

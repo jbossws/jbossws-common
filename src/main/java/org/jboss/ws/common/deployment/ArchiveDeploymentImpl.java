@@ -28,7 +28,6 @@ import java.util.List;
 import org.jboss.wsf.spi.deployment.ArchiveDeployment;
 import org.jboss.wsf.spi.deployment.ResourceResolver;
 import org.jboss.wsf.spi.deployment.UnifiedVirtualFile;
-import org.jboss.wsf.spi.deployment.DeploymentType;
 
 /**
  * A general web service deployment that is based on an archive. 
