@@ -201,6 +201,10 @@ public class ResourceResolverImpl implements ResourceResolver
                resourceURL = vfResource.toURL();
             }
          }
+         if (resourceURL == null && deployment.getClassLoader() != null)
+         {
+            resourceURL = deployment.getClassLoader().getResource(resourcePath);
+         }
       }
       return resourceURL;
    }
