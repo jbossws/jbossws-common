@@ -273,23 +273,24 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
 
    public String getWebServicePathRewriteRule()
    {
-        return webServicePathRewriteRule;
+      return webServicePathRewriteRule;
    }
 
    public void setWebServicePathRewriteRule(String path)
    {
-       setWebServicePathRewriteRule(path, null);
+      setWebServicePathRewriteRule(path, null);
    }
 
    public void setWebServicePathRewriteRule(String path, UpdateCallbackHandler uch)
    {
-        synchronized (webServicePathRewriteRuleLock) {
-            if (uch != null)
-            {
-                uch.onBeforeUpdate();
-            }
-            this.webServicePathRewriteRule = path;
-        }
+      synchronized (webServicePathRewriteRuleLock)
+      {
+         if (uch != null)
+         {
+            uch.onBeforeUpdate();
+         }
+         this.webServicePathRewriteRule = path;
+      }
    }
    
    public String getWebServiceUriScheme()
