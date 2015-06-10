@@ -283,6 +283,10 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
 
    public void setWebServicePathRewriteRule(String path, UpdateCallbackHandler uch)
    {
+      if (path != null) {
+         setStackConfig();
+         stackConfig.validatePathRewriteRule(path);
+      }
       synchronized (webServicePathRewriteRuleLock)
       {
          if (uch != null)
@@ -332,10 +336,7 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
 
    public void create() throws Exception
    {
-      //Retrieve the stackConfig using SPIProvider
-      final ClassLoader cl = ClassLoaderProvider.getDefaultProvider().getServerIntegrationClassLoader();
-      this.stackConfig = SPIProvider.getInstance().getSPI(StackConfigFactory.class, cl).getStackConfig();
-
+      setStackConfig();
       MANAGEMENT_LOGGER.startingWSServerConfig(getImplementationTitle(), getImplementationVersion());
       MBeanServer mbeanServer = getMbeanServer();
       if (mbeanServer != null) {
@@ -347,6 +348,19 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
       
       if (ClassLoaderProvider.isSet()) {
          serverConfig = this;
+      }
+   }
+   
+   private void setStackConfig() {
+      if (stackConfig == null) {
+         synchronized (this)
+         {
+            if (stackConfig == null) {
+               //Retrieve the stackConfig using SPIProvider
+               final ClassLoader cl = ClassLoaderProvider.getDefaultProvider().getServerIntegrationClassLoader();
+               this.stackConfig = SPIProvider.getInstance().getSPI(StackConfigFactory.class, cl).getStackConfig();
+            }
+         }
       }
    }
 
