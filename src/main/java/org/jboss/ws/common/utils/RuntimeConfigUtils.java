@@ -50,7 +50,7 @@ public class RuntimeConfigUtils
       return false;
    }
 
-   private static ServerConfig getServerConfig()
+   public static ServerConfig getServerConfig()
    {
       if (System.getSecurityManager() == null)
       {

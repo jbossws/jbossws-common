@@ -21,6 +21,8 @@
  */
 package org.jboss.ws.common.management;
 
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -53,6 +55,8 @@ public class EndpointMetricsImpl implements EndpointMetrics
    private final AtomicLong maxProcessingTime = new AtomicLong(0);
    private final AtomicLong minProcessingTime = new AtomicLong(0);
    private final AtomicLong totalProcessingTime = new AtomicLong(0);
+   private final AtomicLong concurrentCount = new AtomicLong(0);
+   private final ConcurrentHashMap<String, AtomicLong> methodsRequestMap = new ConcurrentHashMap<String, AtomicLong>( );
 
    public void start()
    {
@@ -70,8 +74,10 @@ public class EndpointMetricsImpl implements EndpointMetrics
       {
          return 0;
       }
+      long result = System.nanoTime();
       requestCount.incrementAndGet();
-      return System.nanoTime();
+      concurrentCount.incrementAndGet();
+      return result;
    }
 
    public void processResponseMessage(long beginTime)
@@ -88,6 +94,7 @@ public class EndpointMetricsImpl implements EndpointMetrics
          minProcessingTime.compareAndSet(0, procTime);
          updateMax(maxProcessingTime, procTime);
          updateMin(minProcessingTime, procTime);
+         concurrentCount.decrementAndGet();
       }
    }
 
@@ -105,6 +112,7 @@ public class EndpointMetricsImpl implements EndpointMetrics
          minProcessingTime.compareAndSet(0, procTime);
          updateMax(maxProcessingTime, procTime);
          updateMin(minProcessingTime, procTime);
+         concurrentCount.decrementAndGet();
       }
    }
 
@@ -180,6 +188,37 @@ public class EndpointMetricsImpl implements EndpointMetrics
       buffer.append("\n  minProcessingTime=" + minProcessingTime);
       buffer.append("\n  avgProcessingTime=" + getAverageProcessingTime());
       buffer.append("\n  totalProcessingTime=" + totalProcessingTime);
+      buffer.append("\n  concurrentCount=" + getConcurrentCount());
       return buffer.toString();
    }
+
+   @Override
+   public long getConcurrentCount()
+   {
+      return concurrentCount.get();
+   }
+
+   //To avoid throw a NPE : if method is not found in map, it returns -1
+   public long getInvocationCountByMethod(String method)
+   {
+      if (!methodsRequestMap.containsKey(method)) {
+         return -1;
+      }
+      return methodsRequestMap.get(method).get();
+   }
+
+   @Override
+   public void processInvocation(String method)
+   {
+      methodsRequestMap.putIfAbsent(method, new AtomicLong(0));
+      methodsRequestMap.get(method).incrementAndGet();
+   }
+
+   @Override
+   public Set<String> getRequestMethods()
+   {
+      return methodsRequestMap.keySet();
+   }
+
+
 }
