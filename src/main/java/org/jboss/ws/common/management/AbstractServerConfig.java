@@ -29,6 +29,8 @@ import java.net.UnknownHostException;
 import java.security.AccessController;
 import java.security.Permission;
 import java.security.PrivilegedAction;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.management.MBeanServer;
 
@@ -37,6 +39,7 @@ import org.jboss.wsf.spi.SPIProvider;
 import org.jboss.wsf.spi.WSFException;
 import org.jboss.wsf.spi.classloading.ClassLoaderProvider;
 import org.jboss.wsf.spi.deployment.AbstractExtensible;
+import org.jboss.wsf.spi.deployment.RuntimeConfig;
 import org.jboss.wsf.spi.management.CommonConfigStore;
 import org.jboss.wsf.spi.management.ServerConfig;
 import org.jboss.wsf.spi.management.StackConfig;
@@ -63,6 +66,7 @@ import org.jboss.wsf.spi.metadata.config.EndpointConfig;
  */
 public abstract class AbstractServerConfig extends AbstractExtensible implements AbstractServerConfigMBean, ServerConfig
 {
+   private static final Set<String> RUNTIME_CONFIG_FLAGS = new HashSet<String>();
    private static final RuntimePermission LOOKUP_SERVER_INTEGRATION_SERVER_CONFIG = new RuntimePermission("org.jboss.ws.LOOKUP_SERVER_INTEGRATION_SERVER_CONFIG");
    
    // The MBeanServer
@@ -103,6 +107,9 @@ public abstract class AbstractServerConfig extends AbstractExtensible implements
    // The server integration classloader' ServerConfig instance reference
    private static volatile ServerConfig serverConfig;
    
+   static {
+      RUNTIME_CONFIG_FLAGS.add(RuntimeConfig.STATISTICS_ENABLED);
+   }
    public MBeanServer getMbeanServer()
    {
       return mbeanServer;
@@ -465,5 +472,10 @@ public abstract class AbstractServerConfig extends AbstractExtensible implements
 
    public interface UpdateCallbackHandler {
       public void onBeforeUpdate();
+   }
+   @Override
+   public Set<String> getRuntimeConfigFlags()
+   {
+      return RUNTIME_CONFIG_FLAGS;
    }
 }

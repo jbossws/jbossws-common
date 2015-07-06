@@ -30,6 +30,7 @@ import org.jboss.wsf.spi.deployment.Endpoint;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -123,6 +124,12 @@ public class DefaultService extends AbstractExtensible implements Service
    public void setVirtualHost(String virtualHost)
    {
       this.virtualHost = virtualHost;      
+   }
+
+   @Override
+   public Set<String> getRuntimeConfigFlags()
+   {
+      return dep.getRuntimeConfigFlags();
    }
 
 }

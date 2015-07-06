@@ -21,8 +21,12 @@
  */
 package org.jboss.ws.common.deployment;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.jboss.wsf.spi.deployment.AbstractExtensible;
 import org.jboss.wsf.spi.deployment.Deployment;
+import org.jboss.wsf.spi.deployment.RuntimeConfig;
 import org.jboss.wsf.spi.deployment.Service;
 
 /**
@@ -34,14 +38,17 @@ import org.jboss.wsf.spi.deployment.Service;
  * @since 20-Apr-2007 
  */
 public class DefaultDeployment extends AbstractExtensible implements Deployment
-{
+{  
+   private static final Set<String> RUNTIME_CONFIG_FLAGS = new HashSet<String>();
    // The name for this deployment
    private final String simpleName;
    // A deployment has one service
    private final Service service;
    // The runtime class loader
    private final ClassLoader classLoader;
-
+   static {
+      RUNTIME_CONFIG_FLAGS.add(RuntimeConfig.STATISTICS_ENABLED);
+   }
    DefaultDeployment(String name, ClassLoader classLoader)
    {
       super(12, 4);
@@ -63,5 +70,11 @@ public class DefaultDeployment extends AbstractExtensible implements Deployment
    public Service getService()
    {
       return service;
+   }
+
+   @Override
+   public Set<String> getRuntimeConfigFlags()
+   {
+      return RUNTIME_CONFIG_FLAGS;
    }
 }

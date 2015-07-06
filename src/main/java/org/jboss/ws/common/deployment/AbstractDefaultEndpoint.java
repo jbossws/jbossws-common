@@ -22,9 +22,11 @@
 package org.jboss.ws.common.deployment;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.management.MalformedObjectNameException;
@@ -41,6 +43,7 @@ import org.jboss.wsf.spi.deployment.EndpointState;
 import org.jboss.wsf.spi.deployment.EndpointType;
 import org.jboss.wsf.spi.deployment.InstanceProvider;
 import org.jboss.wsf.spi.deployment.LifecycleHandler;
+import org.jboss.wsf.spi.deployment.RuntimeConfig;
 import org.jboss.wsf.spi.deployment.Service;
 import org.jboss.wsf.spi.deployment.WSFDeploymentException;
 import org.jboss.wsf.spi.invocation.InvocationHandler;
@@ -60,6 +63,7 @@ import org.jboss.wsf.spi.security.SecurityDomainContext;
  */
 public class AbstractDefaultEndpoint extends AbstractExtensible
 {
+   private static final Set<String> RUNTIME_CONFIG_FLAGS = new HashSet<String>();
    protected volatile Service service;
    protected volatile ObjectName name;
    protected volatile String shortName;
@@ -78,6 +82,9 @@ public class AbstractDefaultEndpoint extends AbstractExtensible
    protected volatile InstanceProvider instanceProvider;
    protected volatile EndpointConfig endpointConfig;
    protected Map<String, String> configsMap = new HashMap<String, String>(64);
+   static {
+      RUNTIME_CONFIG_FLAGS.add(RuntimeConfig.STATISTICS_ENABLED);
+   }
    
    AbstractDefaultEndpoint(String targetBean)
    {
@@ -367,5 +374,11 @@ public class AbstractDefaultEndpoint extends AbstractExtensible
 	   configsMap.put(Endpoint.ADDRESS, this.getAddress());
 	   configsMap.putAll(this.getRuntimeProperties());
 	   return configsMap;
+   }
+
+   @Override
+   public Set<String> getRuntimeConfigFlags()
+   {
+      return RUNTIME_CONFIG_FLAGS;
    }
 }
