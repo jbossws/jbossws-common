@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source.
- * Copyright 2012, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2015, Red Hat Middleware LLC, and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -36,6 +36,7 @@ import org.jboss.ws.common.utils.AddressUtils;
 import org.jboss.wsf.spi.SPIProvider;
 import org.jboss.wsf.spi.WSFException;
 import org.jboss.wsf.spi.classloading.ClassLoaderProvider;
+import org.jboss.wsf.spi.deployment.AbstractExtensible;
 import org.jboss.wsf.spi.management.CommonConfigStore;
 import org.jboss.wsf.spi.management.ServerConfig;
 import org.jboss.wsf.spi.management.StackConfig;
@@ -57,9 +58,10 @@ import org.jboss.wsf.spi.metadata.config.EndpointConfig;
  * @author alessio.soldano@jboss.com
  * @author Thomas.Diesler@jboss.org
  * @author darran.lofthouse@jboss.com
+ * @author <a href="mailto:ema@redhat.com">Jim Ma</a>
  * @since 08-May-2006
  */
-public abstract class AbstractServerConfig implements AbstractServerConfigMBean, ServerConfig
+public abstract class AbstractServerConfig extends AbstractExtensible implements AbstractServerConfigMBean, ServerConfig
 {
    private static final RuntimePermission LOOKUP_SERVER_INTEGRATION_SERVER_CONFIG = new RuntimePermission("org.jboss.ws.LOOKUP_SERVER_INTEGRATION_SERVER_CONFIG");
    

@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source.
- * Copyright 2014, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2015, Red Hat Middleware LLC, and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -21,8 +21,10 @@
  */
 package org.jboss.ws.common.deployment;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.management.MalformedObjectNameException;
@@ -45,12 +47,15 @@ import org.jboss.wsf.spi.invocation.InvocationHandler;
 import org.jboss.wsf.spi.invocation.RequestHandler;
 import org.jboss.wsf.spi.management.EndpointMetrics;
 import org.jboss.wsf.spi.metadata.config.EndpointConfig;
+import org.jboss.wsf.spi.metadata.j2ee.serviceref.UnifiedHandlerChainMetaData;
+import org.jboss.wsf.spi.metadata.j2ee.serviceref.UnifiedHandlerMetaData;
 import org.jboss.wsf.spi.security.SecurityDomainContext;
 
 /**
  * A general abstract JAXWS endpoint.
  * 
  * @author Thomas.Diesler@jboss.com
+ * @author <a href="mailto:ema@redhat.com">Jim Ma</a>
  * @since 20-Apr-2007 
  */
 public class AbstractDefaultEndpoint extends AbstractExtensible
@@ -72,6 +77,7 @@ public class AbstractDefaultEndpoint extends AbstractExtensible
    protected volatile SecurityDomainContext securityDomainContext;
    protected volatile InstanceProvider instanceProvider;
    protected volatile EndpointConfig endpointConfig;
+   protected Map<String, String> configsMap = new HashMap<String, String>(64);
    
    AbstractDefaultEndpoint(String targetBean)
    {
@@ -100,6 +106,7 @@ public class AbstractDefaultEndpoint extends AbstractExtensible
    {
       assertEndpointSetterAccess();
       this.targetBean = targetBean;
+      configsMap.put(Endpoint.TARGETBEAN, targetBean);
    }
 
    public synchronized Class<?> getTargetBeanClass()
@@ -146,6 +153,7 @@ public class AbstractDefaultEndpoint extends AbstractExtensible
    {
       assertEndpointSetterAccess();
       this.name = name;
+      configsMap.put(Endpoint.NAME, name.toString());
    }
 
    public String getShortName()
@@ -157,6 +165,7 @@ public class AbstractDefaultEndpoint extends AbstractExtensible
    {
       assertEndpointSetterAccess();
       this.shortName = shortName;
+      configsMap.put(Endpoint.SHORTNAME, shortName);
    }
 
 
@@ -178,6 +187,7 @@ public class AbstractDefaultEndpoint extends AbstractExtensible
    public void setType(EndpointType type)
    {
       this.type = type;
+      configsMap.put(Endpoint.TYPE, type.name());
    }
 
    public RequestHandler getRequestHandler()
@@ -189,6 +199,7 @@ public class AbstractDefaultEndpoint extends AbstractExtensible
    {
       assertEndpointSetterAccess();
       this.requestHandler = handler;
+      configsMap.put(Endpoint.REQUESTHANDLER, handler.getClass().getName());
    }
 
    public LifecycleHandler getLifecycleHandler()
@@ -200,6 +211,7 @@ public class AbstractDefaultEndpoint extends AbstractExtensible
    {
       assertEndpointSetterAccess();
       this.lifecycleHandler = handler;
+      configsMap.put(Endpoint.LIFECYCLEHANDLER, handler.getClass().getName());
    }
 
    public InvocationHandler getInvocationHandler()
@@ -211,6 +223,7 @@ public class AbstractDefaultEndpoint extends AbstractExtensible
    {
       assertEndpointSetterAccess();
       this.invocationHandler = handler;
+      configsMap.put(Endpoint.INVOCATIONHANDLER, handler.getClass().getName());
    }
 
    @Override
@@ -307,6 +320,7 @@ public class AbstractDefaultEndpoint extends AbstractExtensible
    public void setSecurityDomainContext(SecurityDomainContext securityDomainContext)
    {
       this.securityDomainContext = securityDomainContext;
+      this.configsMap.put(Endpoint.SECURITY_DOMAIN, securityDomainContext.getSecurityDomain());
    }
 
    public InstanceProvider getInstanceProvider()
@@ -324,10 +338,31 @@ public class AbstractDefaultEndpoint extends AbstractExtensible
    {
       assertEndpointSetterAccess();
       this.endpointConfig = endpointConfig;
+      StringBuffer preHandlerChains = new StringBuffer();
+      for (UnifiedHandlerChainMetaData uhcmd : endpointConfig.getPreHandlerChains()) {
+          for (UnifiedHandlerMetaData uhmd : uhcmd.getHandlers()) {
+        	  preHandlerChains.append(uhmd.getHandlerClass()).append(" ");
+          }
+       }
+      configsMap.put(Endpoint.PRE_HANDLERCHAIN, preHandlerChains.toString());
+      StringBuffer postHandlerChains = new StringBuffer();
+       for (UnifiedHandlerChainMetaData uhcmd : endpointConfig.getPostHandlerChains()) {
+          for (UnifiedHandlerMetaData uhmd : uhcmd.getHandlers()) {
+        	  postHandlerChains.append(uhmd.getHandlerClass()).append(" ");
+          }
+       }
+      configsMap.put(Endpoint.POST_HANDLERCHAIN, postHandlerChains.toString());
+      configsMap.putAll(endpointConfig.getProperties());
    }
    
    public EndpointConfig getEndpointConfig()
    {
       return endpointConfig;
+   }
+   
+   public Map<String, String> getAllConfigsMap() {
+	   configsMap.put(Endpoint.ADDRESS, this.getAddress());
+	   configsMap.putAll(this.getRuntimeProperties());
+	   return configsMap;
    }
 }

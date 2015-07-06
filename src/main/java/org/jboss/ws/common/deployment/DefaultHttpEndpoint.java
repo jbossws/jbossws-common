@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source.
- * Copyright 2010, Red Hat Middleware LLC, and individual contributors
+ * Copyright 2015, Red Hat Middleware LLC, and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -31,7 +31,7 @@ import org.jboss.wsf.spi.management.EndpointMetrics;
  */
 public class DefaultHttpEndpoint extends AbstractDefaultEndpoint implements HttpEndpoint
 {
-
+   protected static final String URL_PATTEN = "urlPattern";
    DefaultHttpEndpoint(String targetBean)
    {
       super(targetBean);
@@ -60,6 +60,7 @@ public class DefaultHttpEndpoint extends AbstractDefaultEndpoint implements Http
    {
       assertEndpointSetterAccess();
       this.urlPattern = urlPattern;
+      this.configsMap.put(URL_PATTEN, urlPattern);
    }
 
 }
