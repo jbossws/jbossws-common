@@ -44,6 +44,7 @@ import org.jboss.ws.api.monitoring.RecordProcessor;
 import org.jboss.ws.common.DOMWriter;
 import org.jboss.ws.common.monitoring.RecordFactory;
 import org.jboss.wsf.spi.deployment.Endpoint;
+import org.jboss.wsf.spi.deployment.RuntimeConfig;
 import org.jboss.wsf.spi.invocation.EndpointAssociation;
 
 /**
@@ -162,9 +163,12 @@ public class RecordingServerHandler extends GenericSOAPHandler<SOAPMessageContex
       {
          return false;
       }
+
       for (RecordProcessor processor : processors)
       {
-         if (processor.isRecording())
+         if (processor.isRecording()
+               || ("true".equals(endpoint.getRuntimeProperty(RuntimeConfig.RECORD_ENABLED)) && processor.getName().equals(
+                     endpoint.getRuntimeProperty(RuntimeConfig.PROCESSOR))))
          {
             return true;
          }

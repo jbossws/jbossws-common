@@ -37,7 +37,13 @@ public class OperationFilter implements RecordFilter
    private static final long serialVersionUID = -726794729964445956L;
    
    private QName operation;
+   
+   private String opeationName;
 
+   public OperationFilter(String operation) {
+      opeationName = operation;
+   }  
+   
    public OperationFilter(QName operation)
    {
       this.operation = operation;
@@ -51,7 +57,7 @@ public class OperationFilter implements RecordFilter
          {
             return true;
          }
-         else if (operation != null && operation.equals(record.getOperation()))
+         else if ((operation != null && operation.equals(record.getOperation())) || (opeationName != null && opeationName.equalsIgnoreCase(record.getOperation().getLocalPart())))
          {
             return true;
          }

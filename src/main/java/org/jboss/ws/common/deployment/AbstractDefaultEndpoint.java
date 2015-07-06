@@ -23,7 +23,6 @@ package org.jboss.ws.common.deployment;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -33,7 +32,6 @@ import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 
 import org.jboss.ws.api.monitoring.Record;
-import org.jboss.ws.api.monitoring.RecordFilter;
 import org.jboss.ws.api.monitoring.RecordProcessor;
 import org.jboss.ws.common.Messages;
 import org.jboss.ws.common.injection.PreDestroyHolder;
@@ -84,6 +82,7 @@ public class AbstractDefaultEndpoint extends AbstractExtensible
    protected Map<String, String> configsMap = new HashMap<String, String>(64);
    static {
       RUNTIME_CONFIG_FLAGS.add(RuntimeConfig.STATISTICS_ENABLED);
+      RUNTIME_CONFIG_FLAGS.add(RuntimeConfig.RECORD_ENABLED);
    }
    
    AbstractDefaultEndpoint(String targetBean)
@@ -291,20 +290,9 @@ public class AbstractDefaultEndpoint extends AbstractExtensible
    {
       for (RecordProcessor processor : recordProcessors)
       {
-         if (processor.isRecording())
+         if (processor.isRecording() || ("true".equals(getRuntimeProperty(RuntimeConfig.RECORD_ENABLED)) && processor.getName().equals(getRuntimeProperty(RuntimeConfig.PROCESSOR))))
          {
-            boolean match = true;
-            if (processor.getFilters() != null)
-            {
-               for (Iterator<RecordFilter> it = processor.getFilters().iterator(); it.hasNext() && match;)
-               {
-                  match = it.next().match(record);
-               }
-            }
-            if (match)
-            {
-               processor.processRecord(record);
-            }
+            processor.processRecord(record);
          }
       }
    }
@@ -370,10 +358,11 @@ public class AbstractDefaultEndpoint extends AbstractExtensible
       return endpointConfig;
    }
    
-   public Map<String, String> getAllConfigsMap() {
-	   configsMap.put(Endpoint.ADDRESS, this.getAddress());
-	   configsMap.putAll(this.getRuntimeProperties());
-	   return configsMap;
+   public Map<String, String> getAllConfigsMap()
+   {
+      configsMap.put(Endpoint.ADDRESS, this.getAddress());
+      configsMap.putAll(this.getRuntimeProperties());
+      return configsMap;
    }
 
    @Override
