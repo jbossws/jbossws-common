@@ -320,7 +320,10 @@ public class AbstractDefaultEndpoint extends AbstractExtensible
    public void setSecurityDomainContext(SecurityDomainContext securityDomainContext)
    {
       this.securityDomainContext = securityDomainContext;
-      this.configsMap.put(Endpoint.SECURITY_DOMAIN, securityDomainContext.getSecurityDomain());
+      if (securityDomainContext != null)
+      {
+         this.configsMap.put(Endpoint.SECURITY_DOMAIN, securityDomainContext.getSecurityDomain());
+      }
    }
 
    public InstanceProvider getInstanceProvider()
