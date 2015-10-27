@@ -53,25 +53,25 @@ import org.jboss.wsf.spi.security.SecurityDomainContext;
  * @author Thomas.Diesler@jboss.com
  * @since 20-Apr-2007 
  */
-public class AbstractDefaultEndpoint extends AbstractExtensible
+public abstract class AbstractDefaultEndpoint extends AbstractExtensible implements Endpoint
 {
-   protected volatile Service service;
-   protected volatile ObjectName name;
-   protected volatile String shortName;
+   private volatile Service service;
+   private volatile ObjectName name;
+   private volatile String shortName;
    protected volatile String urlPattern;
-   protected volatile String targetBean;
-   protected volatile Class<?> targetBeanClass;
-   protected volatile EndpointState state;
-   protected volatile EndpointType type;
-   protected volatile RequestHandler requestHandler;
-   protected volatile InvocationHandler invocationHandler;
-   protected volatile LifecycleHandler lifecycleHandler;
+   private volatile String targetBean;
+   private volatile Class<?> targetBeanClass;
+   private volatile EndpointState state;
+   private volatile EndpointType type;
+   private volatile RequestHandler requestHandler;
+   private volatile InvocationHandler invocationHandler;
+   private volatile LifecycleHandler lifecycleHandler;
    protected volatile EndpointMetrics metrics;
-   protected volatile String address;
-   protected volatile List<RecordProcessor> recordProcessors = new CopyOnWriteArrayList<RecordProcessor>();
-   protected volatile SecurityDomainContext securityDomainContext;
-   protected volatile InstanceProvider instanceProvider;
-   protected volatile EndpointConfig endpointConfig;
+   private volatile String address;
+   private volatile List<RecordProcessor> recordProcessors = new CopyOnWriteArrayList<RecordProcessor>();
+   private volatile SecurityDomainContext securityDomainContext;
+   private volatile InstanceProvider instanceProvider;
+   private volatile EndpointConfig endpointConfig;
    
    AbstractDefaultEndpoint(String targetBean)
    {
@@ -102,23 +102,28 @@ public class AbstractDefaultEndpoint extends AbstractExtensible
       this.targetBean = targetBean;
    }
 
-   public synchronized Class<?> getTargetBeanClass()
+   public Class<?> getTargetBeanClass()
    {
-      if (targetBeanClass != null)
-         return targetBeanClass;
-
-      ClassLoader classLoader = service.getDeployment().getClassLoader();
-
-      try
-      {
-         targetBeanClass = classLoader.loadClass(targetBean);
+      Class<?> result = targetBeanClass;
+      if (result == null) {
+         synchronized (this)
+         {
+            result = targetBeanClass;
+            if (result == null) {
+               ClassLoader classLoader = service.getDeployment().getClassLoader();
+               try
+               {
+                  targetBeanClass = classLoader.loadClass(targetBean);
+                  result = targetBeanClass;
+               }
+               catch (ClassNotFoundException ex)
+               {
+                  throw new WSFDeploymentException(ex);
+               }
+            }
+         }
       }
-      catch (ClassNotFoundException ex)
-      {
-         throw new WSFDeploymentException(ex);
-      }
-      
-      return targetBeanClass;
+      return result;
    }
 
    public ObjectName getName()
