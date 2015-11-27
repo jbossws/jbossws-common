@@ -26,11 +26,13 @@ import static org.jboss.ws.common.Messages.MESSAGES;
 import static org.jboss.ws.common.integration.WSHelper.isJseDeployment;
 import static org.jboss.ws.common.integration.WSHelper.isWarArchive;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.security.AccessController;
 import java.util.Iterator;
@@ -163,9 +165,13 @@ public abstract class AbstractWSDLFilePublisher
                Definition subdef = wsdlImport.getDefinition();
                WSDLFactory wsdlFactory = WSDLFactory.newInstance();
                javax.wsdl.xml.WSDLWriter wsdlWriter = wsdlFactory.newWSDLWriter();
-               FileWriter fw = new FileWriter(targetFile);
-               wsdlWriter.writeWSDL(subdef, fw);
-               fw.close();
+               BufferedOutputStream bfos = new BufferedOutputStream(new FileOutputStream(targetFile));
+               OutputStreamWriter osw = new OutputStreamWriter(bfos, "UTF-8");
+               try {
+                  wsdlWriter.writeWSDL(subdef, osw);
+               } finally {
+                  osw.close();
+               }
 
                DEPLOYMENT_LOGGER.wsdlImportPublishedTo(targetURL);
 
