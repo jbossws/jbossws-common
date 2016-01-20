@@ -457,7 +457,7 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
       SecurityManager securityManager = System.getSecurityManager();
       if (securityManager != null)
       {
-         AccessController.checkPermission(permission);
+    	  securityManager.checkPermission(permission);
       }
    }
 
