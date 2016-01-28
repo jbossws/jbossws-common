@@ -174,21 +174,23 @@ public class EndpointAddressDeploymentAspect extends AbstractDeploymentAspect
          //TODO Unify annotation scans
          Class<?> implClass = ep.getTargetBeanClass();
          WebContext anWebContext = (WebContext)implClass.getAnnotation(WebContext.class);
-         if (anWebContext != null)
-         {
-            transportGuarantee = anWebContext.transportGuarantee();
-         }
-         if (anWebContext == null || transportGuarantee == null || transportGuarantee.length() == 0)
-         {
-            String ejbName = ep.getShortName();
-            EJBArchiveMetaData ejbArchiveMD = dep.getAttachment(EJBArchiveMetaData.class);
-            EJBMetaData ejbMD = ejbArchiveMD != null ? ejbArchiveMD.getBeanByEjbName(ejbName) : null;
-            EJBSecurityMetaData ejbSecurityMD = ejbMD != null ? ejbMD.getSecurityMetaData() : null;
+
+         String ejbName = ep.getShortName();
+         EJBArchiveMetaData ejbArchiveMD = dep.getAttachment(EJBArchiveMetaData.class);
+         EJBMetaData ejbMD = ejbArchiveMD != null ? ejbArchiveMD.getBeanByEjbName(ejbName) : null;
+         EJBSecurityMetaData ejbSecurityMD = ejbMD != null ? ejbMD.getSecurityMetaData() : null;
             
-            if (ejbSecurityMD != null)
-            {
-               transportGuarantee = ejbSecurityMD.getTransportGuarantee();
-            }
+         if (ejbSecurityMD != null )
+         {
+           transportGuarantee = ejbSecurityMD.getTransportGuarantee();
+           if(transportGuarantee == null || transportGuarantee.length() == 0)
+           {
+              return "CONFIDENTIAL".equals(transportGuarantee);
+           }
+         }
+         else if (anWebContext != null)
+         {
+           transportGuarantee = anWebContext.transportGuarantee();
          }
       }
       return "CONFIDENTIAL".equals(transportGuarantee);
