@@ -260,17 +260,45 @@ public class ConfigHelper implements ClientConfigurer
    
    private static Object newInstance(String className)
    {
+      ClassLoader orig = null;
       try
       {
-         ClassLoader loader = new DelegateClassLoader(ClassLoaderProvider.getDefaultProvider()
-               .getServerIntegrationClassLoader(), SecurityActions.getContextClassLoader());
-         Class<?> clazz = SecurityActions.loadClass(loader, className);
+         Class<?> clazz = null;
+         //first try using the defining classloader (for out-of-container client scenarios)
+         try {
+            clazz = Class.forName(className);
+         } catch (Throwable e) {
+            //ignore
+         }
+         //otherwise create a DelegateClassloader with the ASIL classloader + TCCL
+         //and wipe out the TCCL just before loading the handler class to prevent
+         //code in static blocks of the user handler from having access to our
+         //integration classes
+         if (clazz == null) {
+            ClassLoader loader = null;
+            orig = SecurityActions.getContextClassLoader();
+            if (orig != null)
+            {
+               loader = new DelegateClassLoader(ClassLoaderProvider.getDefaultProvider().getServerIntegrationClassLoader(), orig);
+               SecurityActions.setContextClassLoader(null);
+            } else {
+               loader = ClassLoaderProvider.getDefaultProvider().getServerIntegrationClassLoader();
+            }
+            clazz = SecurityActions.loadClass(loader, className);
+         }
          return clazz.newInstance();
       }
       catch (Exception e)
       {
          ROOT_LOGGER.cannotAddHandler(className, e);
          return null;
+      }
+      finally
+      {
+         if (orig != null)
+         {
+            SecurityActions.setContextClassLoader(orig);
+         }
       }
    }
    
