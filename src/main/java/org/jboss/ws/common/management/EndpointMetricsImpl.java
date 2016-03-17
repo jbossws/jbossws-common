@@ -53,6 +53,8 @@ public class EndpointMetricsImpl implements EndpointMetrics
    private final AtomicLong maxProcessingTime = new AtomicLong(0);
    private final AtomicLong minProcessingTime = new AtomicLong(0);
    private final AtomicLong totalProcessingTime = new AtomicLong(0);
+   
+   private volatile long updateTime = 0;
 
    public void start()
    {
@@ -71,7 +73,8 @@ public class EndpointMetricsImpl implements EndpointMetrics
          return 0;
       }
       requestCount.incrementAndGet();
-      return System.nanoTime();
+      updateTime = System.nanoTime();
+      return updateTime;
    }
 
    public void processResponseMessage(long beginTime)
@@ -82,6 +85,7 @@ public class EndpointMetricsImpl implements EndpointMetrics
          try {
             responseCount.incrementAndGet();
             totalProcessingTime.addAndGet(procTime);
+            updateTime = System.nanoTime();
          } finally {
             r.unlock();
          }
@@ -99,6 +103,7 @@ public class EndpointMetricsImpl implements EndpointMetrics
          try {
             faultCount.incrementAndGet();
             totalProcessingTime.addAndGet(procTime);
+            updateTime = System.nanoTime();
          } finally {
             r.unlock();
          }
@@ -181,5 +186,11 @@ public class EndpointMetricsImpl implements EndpointMetrics
       buffer.append("\n  avgProcessingTime=" + getAverageProcessingTime());
       buffer.append("\n  totalProcessingTime=" + totalProcessingTime);
       return buffer.toString();
+   }
+
+   @Override
+   public long getUpdateTime()
+   {
+      return this.updateTime;
    }
 }

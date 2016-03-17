@@ -99,7 +99,12 @@ public class ManagedEndpoint implements ManagedEndpointMBean
       EndpointMetrics metrics = endpoint.getEndpointMetrics();
       return metrics != null ? metrics.getTotalProcessingTime() : 0;
    }
-
+   @Override
+   public long getUpdateTime()
+   {
+      EndpointMetrics metrics = endpoint.getEndpointMetrics();
+      return metrics != null ? metrics.getUpdateTime() : 0;
+   }
    public void start()
    {
       endpoint.getLifecycleHandler().start(endpoint);
@@ -180,4 +185,6 @@ public class ManagedEndpoint implements ManagedEndpointMBean
          }
       }
    }
+
+
 }
