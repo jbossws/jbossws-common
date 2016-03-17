@@ -52,6 +52,8 @@ public interface ManagedEndpointMBean
 
    long getResponseCount();
    
+   long getUpdateTime();
+   
    void processRecord(Record record);
    
    void addRecordProcessor(RecordProcessor processor);
