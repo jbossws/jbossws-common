@@ -21,6 +21,8 @@
  */
 package org.jboss.ws.common.concurrent;
 
+import org.jboss.logging.Logger;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -46,6 +48,7 @@ import java.io.OutputStream;
  */
 public final class CopyJob implements Runnable
 {
+   private static Logger log = Logger.getLogger(CopyJob.class);
 
    /**
     * Input stream to data read from.
@@ -104,7 +107,7 @@ public final class CopyJob implements Runnable
       }
       catch ( IOException ioe )
       {
-         ioe.printStackTrace(System.err);
+         log.error(ioe);
       }
       finally
       {
@@ -114,7 +117,7 @@ public final class CopyJob implements Runnable
          }
          catch (IOException ioe)
          {
-            ioe.printStackTrace(System.err);
+            log.error(ioe);
          }
          if (this.closeOsOnExit)
          {
@@ -125,7 +128,7 @@ public final class CopyJob implements Runnable
             }
             catch (IOException ioe)
             {
-               ioe.printStackTrace(System.err);
+               log.error(ioe);
             }
          }
       }
@@ -155,7 +158,7 @@ public final class CopyJob implements Runnable
                }
                catch ( InterruptedException ie )
                {
-                  ie.printStackTrace( System.err );
+                  log.error(ie);
                }
             }
          }
