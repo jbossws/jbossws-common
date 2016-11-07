@@ -1,14 +1,18 @@
-
-# /
-/ant.properties
-/version.properties.md5
-/output*
-/profiles.xml
-/thirdparty
-/target
-/.settings
-/.project
-/.classpath
+# ignore Maven generated target folders
+~
+target
+# ignore eclipse files
+.project
+.classpath
+.settings
+.metadata
+# ignore IDEA files
 *.iml
+*.ipr
+*.iws
 .idea
-
+# ignore NetBeans files
+nbactions.xml
+nb-configuration.xml
+catalog.xml
+nbproject

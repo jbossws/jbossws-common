@@ -31,9 +31,9 @@ import java.util.Collection;
 import javax.management.ObjectName;
 import javax.xml.ws.WebServiceException;
 
-import org.jboss.logging.Cause;
-import org.jboss.logging.Message;
-import org.jboss.logging.MessageBundle;
+import org.jboss.logging.annotations.Cause;
+import org.jboss.logging.annotations.Message;
+import org.jboss.logging.annotations.MessageBundle;
 import org.jboss.ws.common.injection.InjectionException;
 import org.jboss.wsf.spi.WSFException;
 import org.jboss.wsf.spi.deployment.EndpointState;
