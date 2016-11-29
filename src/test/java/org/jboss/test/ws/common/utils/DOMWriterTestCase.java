@@ -23,6 +23,7 @@ package org.jboss.test.ws.common.utils;
 
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 
 import javax.xml.namespace.QName;
 import javax.xml.transform.OutputKeys;
@@ -245,7 +246,7 @@ public class DOMWriterTestCase extends TestCase
    public void testElementNamespaceURITransformer() throws Exception
    {
       String xmlIn = "<Hello xmlns='http://somens'><Sub>World</Sub></Hello>";
-      StreamSource source = new StreamSource(new ByteArrayInputStream(xmlIn.getBytes()));
+      StreamSource source = new StreamSource(new ByteArrayInputStream(xmlIn.getBytes(StandardCharsets.UTF_8)));
 
       Transformer transformer = TransformerFactory.newInstance().newTransformer();
       transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
