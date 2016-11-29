@@ -30,6 +30,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 
 import javax.activation.DataHandler;
 
@@ -95,7 +96,7 @@ public final class IOUtils
    {
       try
       {
-         OutputStreamWriter writer = new OutputStreamWriter(outs);
+         OutputStreamWriter writer = new OutputStreamWriter(outs, StandardCharsets.UTF_8);
          char[] bytes = new char[1024];
          int r = reader.read(bytes);
          while (r > 0)
