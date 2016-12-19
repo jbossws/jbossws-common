@@ -38,7 +38,7 @@ import org.jboss.wsf.spi.management.EndpointMetrics;
 public class EndpointMetricsImpl implements EndpointMetrics
 {
    private volatile boolean started = false;
-   
+
    //read-write lock for average calculation (there's no CAS function for
    //atomically computing the average, so we do that on-demand within a
    //write lock; the updates to sum and response/fault counts, which are
@@ -46,18 +46,29 @@ public class EndpointMetricsImpl implements EndpointMetrics
    private final ReadWriteLock lock = new ReentrantReadWriteLock();
    private final Lock r = lock.readLock();
    private final Lock w = lock.writeLock();
-   
+
    private final AtomicLong requestCount = new AtomicLong(0);
    private final AtomicLong responseCount = new AtomicLong(0);
    private final AtomicLong faultCount = new AtomicLong(0);
    private final AtomicLong maxProcessingTime = new AtomicLong(0);
    private final AtomicLong minProcessingTime = new AtomicLong(0);
    private final AtomicLong totalProcessingTime = new AtomicLong(0);
-   
+
+   @Override
+   public void resetMetrics() {
+      requestCount.set(0);
+      responseCount.set(0);
+      faultCount.set(0);
+      maxProcessingTime.set(0);
+      minProcessingTime.set(0);
+      totalProcessingTime.set(0);
+   }
+
    private volatile long updateTime = 0;
 
    public void start()
    {
+      resetMetrics();
       started = true;
    }
 
