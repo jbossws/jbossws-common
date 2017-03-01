@@ -132,7 +132,7 @@ public abstract class AbstractServerConfig implements AbstractServerConfigMBean,
       {
          InetAddress localHost = InetAddress.getLocalHost();
          if (MANAGEMENT_LOGGER.isDebugEnabled()) MANAGEMENT_LOGGER.usingLocalHostWebServicesHost(localHost.getHostName());
-         host = localHost.getHostName();
+         host=localHost.getHostAddress();
       }
       final String wsh = toIPv6URLFormat("127.0.0.1".equals(host) ? "localhost" : host); // TCK workaround
       synchronized (webServiceHostLock)

@@ -77,9 +77,11 @@ public class AbstractServerConfigTestCase extends TestCase
       conf.setWebServiceHost("");
       assertEquals(ServerConfig.UNDEFINED_HOSTNAME, conf.getWebServiceHost());
 
+      String tHost = InetAddress.getLocalHost().getHostAddress();
+      String expectedResult = "127.0.0.1".equals(tHost) ? "localhost" : tHost;
       //test 0.0.0.0
       conf.setWebServiceHost("0.0.0.0");
-      assertEquals(InetAddress.getLocalHost().getHostName(), conf.getWebServiceHost());
+      assertEquals(expectedResult, conf.getWebServiceHost());
       
       //test jbossws.undefined.host
       conf.setWebServiceHost(ServerConfig.UNDEFINED_HOSTNAME);
