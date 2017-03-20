@@ -26,6 +26,8 @@ import static org.jboss.ws.common.Messages.MESSAGES;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -279,7 +281,18 @@ public class ConfigHelper implements ClientConfigurer
             orig = SecurityActions.getContextClassLoader();
             if (orig != null)
             {
-               loader = new DelegateClassLoader(ClassLoaderProvider.getDefaultProvider().getServerIntegrationClassLoader(), orig);
+               final ClassLoader serverIntegrationClassLoader = ClassLoaderProvider.getDefaultProvider().getServerIntegrationClassLoader();
+               final SecurityManager sm = System.getSecurityManager();
+               if (sm != null) {
+                  final ClassLoader origCL = orig;
+                  loader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+                     public ClassLoader run() {
+                        return new DelegateClassLoader(serverIntegrationClassLoader, origCL);
+                     }
+                  });
+               } else {
+                  loader = new DelegateClassLoader(serverIntegrationClassLoader, orig);
+               }
                SecurityActions.setContextClassLoader(null);
             } else {
                loader = ClassLoaderProvider.getDefaultProvider().getServerIntegrationClassLoader();
