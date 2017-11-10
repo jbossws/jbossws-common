@@ -15,7 +15,7 @@
   <parent>
     <groupId>org.jboss.ws</groupId>
     <artifactId>jbossws-parent</artifactId>
-    <version>1.4.0-SNAPSHOT</version>
+    <version>1.4.0.Final</version>
   </parent>
 
   <!-- Source Control Management -->
@@ -27,7 +27,7 @@
 
   <!-- Properties -->
   <properties>
-    <jbossws.spi.version>3.2.0-SNAPSHOT</jbossws.spi.version>
+    <jbossws.spi.version>3.2.0.Final</jbossws.spi.version>
     <jboss.jaxbintros.version>1.0.2.GA</jboss.jaxbintros.version>
     <jboss.common.core.version>2.2.17.GA</jboss.common.core.version>
     <jboss-logging.version>3.3.0.Final</jboss-logging.version>
