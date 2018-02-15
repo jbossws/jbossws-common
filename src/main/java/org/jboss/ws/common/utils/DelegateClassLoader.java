@@ -129,7 +129,11 @@ public class DelegateClassLoader extends SecureClassLoader
    @Override
    public InputStream getResourceAsStream(final String name)
    {
-      InputStream is = parent.getResourceAsStream(name);
+      InputStream is = null;
+      if (parent != null)
+      {
+        is = parent.getResourceAsStream(name);
+      }
       return (is == null) ? delegate.getResourceAsStream(name) : is;
    }
 }
