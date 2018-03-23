@@ -15,7 +15,7 @@
   <parent>
     <groupId>org.jboss.ws</groupId>
     <artifactId>jbossws-parent</artifactId>
-    <version>1.4.0.Final</version>
+    <version>1.4.1-SNAPSHOT</version>
   </parent>
 
   <!-- Source Control Management -->
@@ -31,8 +31,8 @@
     <jbossws.spi.version>3.2.0.Final</jbossws.spi.version>
     <jboss.jaxbintros.version>1.0.2.GA</jboss.jaxbintros.version>
     <jboss.common.core.version>2.2.17.GA</jboss.common.core.version>
-    <jboss-logging.version>3.3.0.Final</jboss-logging.version>
-    <jboss-logging-processor.version>2.0.1.Final</jboss-logging-processor.version>
+    <jboss-logging.version>3.3.1.Final</jboss-logging.version>
+    <jboss-logging-processor.version>2.1.0.Final</jboss-logging-processor.version>
     <wsdl4j.version>1.6.2</wsdl4j.version>
     <jaxrpc.api.version>1.0.1.Final</jaxrpc.api.version>
     <jms.api.version>1.0.1.Final</jms.api.version>
