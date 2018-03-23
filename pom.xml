@@ -28,7 +28,7 @@
 
   <!-- Properties -->
   <properties>
-    <jbossws.spi.version>3.2.0.Final</jbossws.spi.version>
+    <jbossws.spi.version>3.2.1-SNAPSHOT</jbossws.spi.version>
     <jboss.jaxbintros.version>1.0.2.GA</jboss.jaxbintros.version>
     <jboss.common.core.version>2.2.17.GA</jboss.common.core.version>
     <jboss-logging.version>3.3.1.Final</jboss-logging.version>
@@ -36,7 +36,7 @@
     <wsdl4j.version>1.6.2</wsdl4j.version>
     <jaxrpc.api.version>1.0.1.Final</jaxrpc.api.version>
     <jms.api.version>1.0.1.Final</jms.api.version>
-    <jaxws.api.version>2.0.2.Final</jaxws.api.version>
+    <jaxws.api.version>2.0.4.Final</jaxws.api.version>
     <junit.version>3.8.2</junit.version>
     <servlet.api.version>1.0.2.Final</servlet.api.version>
   </properties>
