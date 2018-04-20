@@ -73,8 +73,7 @@ public final class DOMUtils extends org.jboss.ws.api.util.DOMUtils
    
    private static final String documentBuilderFactoryName;
    private static final DocumentBuilderFactory documentBuilderFactory;
-   
-   private static final boolean alwaysResolveFactoryName = Boolean.getBoolean(Constants.ALWAYS_RESOLVE_DOCUMENT_BUILDER_FACTORY);
+
    private static final boolean disableDeferedNodeExpansion = Boolean.getBoolean(DISABLE_DEFERRED_NODE_EXPANSION);
    private static final boolean enableDoctypeDeclaration = Boolean.getBoolean(ENABLE_DOCTYPE_DECL);
    
@@ -104,22 +103,13 @@ public final class DOMUtils extends org.jboss.ws.api.util.DOMUtils
       {
          try
          {
-            DocumentBuilderFactory factory = null;
-            if (alwaysResolveFactoryName)
-            {
-               factory = DocumentBuilderFactory.newInstance();
-            }
-            else
-            {
-               //this is faster then DocumentBuilderFactory.newInstance(); but requires JDK6 or greater
-               factory = DocumentBuilderFactory.newInstance(documentBuilderFactoryName, SecurityActions.getContextClassLoader());
-            }
-            
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+
             //check if the factory we'd get for this thread is equivalent to the default one;
             //in that case re-use the default one and skip the initialization, which is time-consuming
             final DocumentBuilderFactory threadFactory ;
             if (factory.getClass().getClassLoader() == documentBuilderFactory.getClass().getClassLoader() &&
-               (!alwaysResolveFactoryName || documentBuilderFactoryName.equals(factory.getClass().getCanonicalName())))
+                documentBuilderFactoryName.equals(factory.getClass().getCanonicalName()))
             {
                threadFactory = documentBuilderFactory ;
             }
