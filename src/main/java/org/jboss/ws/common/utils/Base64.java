@@ -22,7 +22,7 @@
 package org.jboss.ws.common.utils;
 
 import java.io.IOException;
-
+import java.lang.Deprecated;
 import org.jboss.logging.Logger;
 
 /**
@@ -72,6 +72,7 @@ import org.jboss.logging.Logger;
  * @author rob@iharder.net
  * @version 2.1
  */
+@Deprecated
 public class Base64
 {
    // provide logging
