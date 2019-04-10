@@ -26,6 +26,8 @@ import static org.jboss.ws.common.Messages.MESSAGES;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.HashMap;
@@ -33,6 +35,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.ServiceLoader;
 
 import javax.xml.ws.Binding;
 import javax.xml.ws.BindingProvider;
@@ -55,6 +58,7 @@ import org.jboss.wsf.spi.metadata.config.ConfigMetaDataParser;
 import org.jboss.wsf.spi.metadata.config.ConfigRoot;
 import org.jboss.wsf.spi.metadata.j2ee.serviceref.UnifiedHandlerChainMetaData;
 import org.jboss.wsf.spi.metadata.j2ee.serviceref.UnifiedHandlerMetaData;
+import org.jboss.wsf.spi.security.ClientConfigProvider;
 
 /**
  * Facility class for setting Client config
@@ -87,12 +91,16 @@ public class ConfigHelper implements ClientConfigurer
    {
       throw MESSAGES.operationNotSupportedBy("setConfigProperties", this.getClass());
    }
-   
+
    protected ClientConfig readConfig(String configFile, String configName, Class<?> clientProxyClass) {
+      return readConfig(configFile, configName, clientProxyClass, null);
+   }
+
+   protected ClientConfig readConfig(String configFile, String configName, Class<?> clientProxyClass, BindingProvider bindingProvider) {
+      ClientConfig clientConfig = null;
       if (configFile != null) {
          InputStream is = null;
-         try
-         {
+         try {
             is = SecurityActions.getContextClassLoader().getResourceAsStream(configFile);
             if (is != null) {
                ConfigRoot config = ConfigMetaDataParser.parse(is);
@@ -101,68 +109,75 @@ public class ConfigHelper implements ClientConfigurer
                      for (Class<?> itf : clientProxyClass.getInterfaces()) {
                         ClientConfig cc = config.getClientConfigByName(itf.getName());
                         if (cc != null) {
-                           return cc;
+                           clientConfig = cc;
+                           break;
                         }
                      }
                   } else {
                      ClientConfig cc = config.getClientConfigByName(configName);
                      if (cc != null) {
-                        return cc;
+                        clientConfig = cc;
                      }
                   }
                }
             }
-         }
-         catch (Exception e)
-         {
+         } catch (Exception e) {
             throw MESSAGES.couldNotReadConfiguration(configFile, e);
-         }
-         finally
-         {
+         } finally {
             if (is != null) {
                try {
                   is.close();
-               } catch (IOException e) { } //ignore
+               } catch (IOException e) {
+               } //ignore
             }
          }
-      } else {
-         if (configName != null) {
-            InputStream is = null;
-            try
-            {
-               is = SecurityActions.getContextClassLoader().getResourceAsStream(ClientConfig.DEFAULT_CLIENT_CONFIG_FILE);
-               if (is != null) {
-                  ConfigRoot config = ConfigMetaDataParser.parse(is);
-                  ClientConfig cc = config != null ? config.getClientConfigByName(configName) : null;
-                  if (cc != null) {
-                     return cc;
-                  }
-               }
-            }
-            catch (Exception e)
-            {
-               throw MESSAGES.couldNotReadConfiguration(configFile, e);
-            }
-            finally
-            {
-               if (is != null) {
-                  try {
-                     is.close();
-                  } catch (IOException e) { } //ignore
-               }
-            }
-         }
+      } else if (configName != null) {
+         InputStream is = null;
          try {
-            ServerConfig sc = getServerConfig();
-            if (sc != null) {
-               ClientConfig cf = sc.getClientConfig(configName);
-               if (cf != null) {
-                  return cf;
+            is = SecurityActions.getContextClassLoader().getResourceAsStream(ClientConfig.DEFAULT_CLIENT_CONFIG_FILE);
+            if (is != null) {
+               ConfigRoot config = ConfigMetaDataParser.parse(is);
+               ClientConfig cc = config != null ? config.getClientConfigByName(configName) : null;
+               if (cc != null) {
+                  clientConfig = cc;
                }
             }
          } catch (Exception e) {
-            throw MESSAGES.configurationNotFound(configName);
+            throw MESSAGES.couldNotReadConfiguration(configFile, e);
+         } finally {
+            if (is != null) {
+               try {
+                  is.close();
+               } catch (IOException e) {
+               } //ignore
+            }
          }
+         if (clientConfig == null) {
+            try {
+               ServerConfig sc = getServerConfig();
+               if (sc != null) {
+                  ClientConfig cf = sc.getClientConfig(configName);
+                  if (cf != null) {
+                     return cf;
+                  }
+               }
+            } catch (Exception e) {
+               throw MESSAGES.configurationNotFound(configName);
+            }
+         }
+      }
+      if (bindingProvider != null && ServiceLoader.load(ClientConfigProvider.class).iterator().hasNext()) {
+         if (configName == null || clientConfig != null) {
+            //use client configuration provider
+            ClientConfigProvider configProvider = (ClientConfigProvider) org.jboss.ws.api.util.ServiceLoader.loadService(
+                    ClientConfigProvider.class.getName(), null, ClassLoaderProvider.getDefaultProvider().getServerIntegrationClassLoader());
+            ClientConfig cc = configProvider.configure(clientConfig, bindingProvider);
+            if (cc != null) {
+               return cc;
+            }
+         }
+      } else if (clientConfig != null) {
+         return clientConfig;
       }
       throw MESSAGES.configurationNotFound(configName);
    }
