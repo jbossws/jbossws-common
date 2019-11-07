@@ -50,7 +50,7 @@ import org.jboss.wsf.spi.metadata.j2ee.JSESecurityMetaData.JSEResourceCollection
 import org.jboss.wsf.spi.metadata.webservices.JBossWebservicesMetaData;
 
 /**
- * A deployer that assigns the endpoint address. 
+ * A deployer that assigns the endpoint address.
  *
  * @author Thomas.Diesler@jboss.org
  * @author alessio.soldano@jboss.com
@@ -65,12 +65,12 @@ public class EndpointAddressDeploymentAspect extends AbstractDeploymentAspect
       final SOAPAddressRewriteMetadata sarm = new SOAPAddressRewriteMetadata(getServerConfig(),
             dep.getAttachment(JBossWebservicesMetaData.class));
       dep.addAttachment(SOAPAddressRewriteMetadata.class, sarm);
-      
+
       final Service service = dep.getService();
       String contextRoot = service.getContextRoot();
       if (contextRoot == null)
          throw Messages.MESSAGES.cannotObtainContextRoot(dep.getSimpleName());
-      
+
       PortValue port = new PortValue((Integer)service.getProperty("port"), null);
       port.setSOAPAddressRewriteMetadata(sarm);
       String host = sarm.getWebServiceHost();
@@ -82,7 +82,7 @@ public class EndpointAddressDeploymentAspect extends AbstractDeploymentAspect
          {
             boolean confidential = isConfidentialTransportGuarantee(dep, ep);
             int currentPort = port.getValue(confidential);
-            String hostAndPort = host + (currentPort > 0 ? ":" + currentPort : ""); 
+            String hostAndPort = host + (currentPort > 0 ? ":" + currentPort : "");
             if (ep.getService().getVirtualHost() != null)
             {
                String hostName = getServerConfig().getHostAlias(ep.getService().getVirtualHost());
@@ -90,21 +90,21 @@ public class EndpointAddressDeploymentAspect extends AbstractDeploymentAspect
                   Loggers.DEPLOYMENT_LOGGER.cannotObtainHost(ep.getService().getVirtualHost());
                   hostName = host;
                }
-               Integer hostPort = getServerConfig().getVirtualHostPort(ep.getService().getVirtualHost(), confidential); 
+               Integer hostPort = getServerConfig().getVirtualHostPort(ep.getService().getVirtualHost(), confidential);
                if (hostPort == null) {
                   Loggers.DEPLOYMENT_LOGGER.cannotObtainPort(ep.getService().getVirtualHost());
                   hostPort = currentPort;
                }
                hostAndPort = hostName + ":" + hostPort;
-            } 
+            }
             HttpEndpoint httpEp = (HttpEndpoint)ep;
             String urlPattern = httpEp.getURLPattern();
             if (urlPattern == null)
                throw Messages.MESSAGES.cannotObtainUrlPattern(ep.getName());
-   
+
             if (urlPattern.endsWith("/*"))
                urlPattern = urlPattern.substring(0, urlPattern.length() - 2);
-   
+
             String protocol = confidential ? "https://" : "http://";
             String address = protocol + hostAndPort + (contextRoot.equals("/") && urlPattern.startsWith("/") ? "" : contextRoot) + urlPattern;
             httpEp.setAddress(address);
@@ -127,16 +127,20 @@ public class EndpointAddressDeploymentAspect extends AbstractDeploymentAspect
          service.removeEndpoint(ep);
       }
    }
-   
+
    private static ServerConfig getServerConfig() {
       if(System.getSecurityManager() == null) {
          return AbstractServerConfig.getServerIntegrationServerConfig();
       }
       return AccessController.doPrivileged(AbstractServerConfig.GET_SERVER_INTEGRATION_SERVER_CONFIG);
    }
-   
+
    protected boolean isConfidentialTransportGuarantee(final Deployment dep, final Endpoint ep)
    {
+      // Fix for JBWS-4196/WFLY-12135. We pick up the attached boolean. If it's true then isConfidentialTransportGuarantee is true
+      boolean isHttps = (boolean) dep.getProperty("isHttpsOnly");
+      if (isHttps) return true;
+
       String transportGuarantee = null;
       if (isJaxwsJseEndpoint(ep))
       {
@@ -146,10 +150,10 @@ public class EndpointAddressDeploymentAspect extends AbstractDeploymentAspect
             String servletLink = ep.getShortName();
             Map<String, String> servletMappings = webMetaData.getServletMappings();
             String urlPattern = servletMappings.get(servletLink);
-   
+
             if (urlPattern == null)
                throw Messages.MESSAGES.cannotFindUrlPatternForServletName(servletLink);
-   
+
             List<JSESecurityMetaData> securityList = webMetaData.getSecurityMetaData();
             for (JSESecurityMetaData currentSecurity : securityList)
             {
@@ -179,7 +183,7 @@ public class EndpointAddressDeploymentAspect extends AbstractDeploymentAspect
          EJBArchiveMetaData ejbArchiveMD = dep.getAttachment(EJBArchiveMetaData.class);
          EJBMetaData ejbMD = ejbArchiveMD != null ? ejbArchiveMD.getBeanByEjbName(ejbName) : null;
          EJBSecurityMetaData ejbSecurityMD = ejbMD != null ? ejbMD.getSecurityMetaData() : null;
-            
+
          if (ejbSecurityMD != null )
          {
            transportGuarantee = ejbSecurityMD.getTransportGuarantee();
@@ -195,28 +199,28 @@ public class EndpointAddressDeploymentAspect extends AbstractDeploymentAspect
       }
       return "CONFIDENTIAL".equals(transportGuarantee);
    }
-   
+
    private static class PortValue {
       private SOAPAddressRewriteMetadata sarm;
       private Integer port;
       private Integer securePort;
-      
+
       public PortValue(Integer port, Integer securePort) {
          this.port = port;
          this.securePort = securePort;
       }
-      
+
       public void setSOAPAddressRewriteMetadata(SOAPAddressRewriteMetadata sarm)
       {
          this.port = null;
          this.securePort = null;
          this.sarm = sarm;
       }
-      
+
       public Integer getValue(boolean confidential) {
          return confidential ? getSecurePortValue() : getPortValue();
       }
-      
+
       public Integer getPortValue()
       {
          if (this.port == null && this.sarm != null)
@@ -225,7 +229,7 @@ public class EndpointAddressDeploymentAspect extends AbstractDeploymentAspect
          }
          return this.port;
       }
-      
+
       public Integer getSecurePortValue()
       {
          if (this.securePort == null && this.sarm != null)
