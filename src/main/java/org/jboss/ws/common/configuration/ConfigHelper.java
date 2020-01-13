@@ -35,7 +35,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
-import java.util.ServiceLoader;
 
 import javax.xml.ws.Binding;
 import javax.xml.ws.BindingProvider;
@@ -47,6 +46,7 @@ import javax.xml.ws.http.HTTPBinding;
 import javax.xml.ws.soap.SOAPBinding;
 
 import org.jboss.ws.api.configuration.ClientConfigurer;
+import org.jboss.ws.api.util.ServiceLoader;
 import org.jboss.ws.common.utils.DelegateClassLoader;
 import org.jboss.wsf.spi.SPIProvider;
 import org.jboss.wsf.spi.classloading.ClassLoaderProvider;
@@ -166,17 +166,15 @@ public class ConfigHelper implements ClientConfigurer
             }
          }
       }
-      if (bindingProvider != null && ServiceLoader.load(ClientConfigProvider.class).iterator().hasNext()) {
-         if (configName == null || clientConfig != null) {
-            //use client configuration provider
-            ClientConfigProvider configProvider = (ClientConfigProvider) org.jboss.ws.api.util.ServiceLoader.loadService(
-                    ClientConfigProvider.class.getName(), null, ClassLoaderProvider.getDefaultProvider().getServerIntegrationClassLoader());
-            ClientConfig cc = configProvider.configure(clientConfig, bindingProvider);
-            if (cc != null) {
-               return cc;
-            }
+      if (bindingProvider != null && (configName == null || clientConfig != null)) {
+         //use client configuration provider
+         ClientConfigProvider configProvider = (ClientConfigProvider) ServiceLoader.loadService(
+                 ClientConfigProvider.class.getName(), null, ClassLoaderProvider.getDefaultProvider().getServerIntegrationClassLoader());
+         if (configProvider != null) {
+            clientConfig = configProvider.configure(clientConfig, bindingProvider);
          }
-      } else if (clientConfig != null) {
+      }
+      if (clientConfig != null) {
          return clientConfig;
       }
       throw MESSAGES.configurationNotFound(configName);
