@@ -169,8 +169,7 @@ public class ConfigHelper implements ClientConfigurer
       if (bindingProvider != null && ServiceLoader.load(ClientConfigProvider.class).iterator().hasNext()) {
          if (configName == null || clientConfig != null) {
             //use client configuration provider
-            ClientConfigProvider configProvider = (ClientConfigProvider) org.jboss.ws.api.util.ServiceLoader.loadService(
-                    ClientConfigProvider.class.getName(), null, ClassLoaderProvider.getDefaultProvider().getServerIntegrationClassLoader());
+            ClientConfigProvider configProvider = ServiceLoader.load(ClientConfigProvider.class).iterator().next();
             ClientConfig cc = configProvider.configure(clientConfig, bindingProvider);
             if (cc != null) {
                return cc;
