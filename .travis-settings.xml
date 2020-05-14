@@ -31,7 +31,7 @@
         <repository>
           <id>specific central</id>
           <name>specific Central repository proxy</name>
-          <url>http://repo1.maven.org/maven2/</url>
+          <url>https://repo1.maven.org/maven2/</url>
           <layout>default</layout>
           <releases>
             <enabled>true</enabled>
@@ -44,20 +44,11 @@
       </repositories>
 
       <pluginRepositories>
-        <pluginRepository>
+       <pluginRepository> 
           <id>central</id>
-          <url>http://central</url>
-          <releases>
-            <enabled>true</enabled>
-          </releases>
-          <snapshots>
-            <enabled>true</enabled>
-          </snapshots>
-        </pluginRepository>
-        <pluginRepository>
-          <id>central-maven2</id>
-          <name>Central maven2 repository proxy</name>
-          <url>http://central.maven.org/maven2</url>
+          <name>Maven Central repository</name>
+          <url>https://repo1.maven.org/maven2/</url>
+          <layout>default</layout>
           <releases>
             <enabled>true</enabled>
           </releases>
