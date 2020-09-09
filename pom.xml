@@ -9,7 +9,7 @@
   <packaging>jar</packaging>
   <description>JBossWS Common</description>
 
-  <version>3.3.2-SNAPSHOT</version>
+  <version>3.3.2.Final</version>
 
   <!-- Parent -->
   <parent>
@@ -23,7 +23,7 @@
     <connection>scm:git:https://github.com/jbossws/jbossws-common.git</connection>
     <developerConnection>scm:git:https://github.com/jbossws/jbossws-common.git</developerConnection>
     <url>https://github.com/jbossws/jbossws-common</url>
-    <tag>HEAD</tag>
+    <tag>jbossws-common-3.3.2.Final</tag>
   </scm>
 
   <!-- Properties -->
