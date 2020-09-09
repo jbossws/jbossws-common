@@ -138,9 +138,9 @@ public class EndpointAddressDeploymentAspect extends AbstractDeploymentAspect
    protected boolean isConfidentialTransportGuarantee(final Deployment dep, final Endpoint ep)
    {
       // Fix for JBWS-4196/WFLY-12135. We pick up the attached boolean. If it's true then isConfidentialTransportGuarantee is true
-      boolean isHttps = (boolean) dep.getProperty("isHttpsOnly");
-      if (isHttps) return true;
-
+      if (dep.getProperty("isHttpsOnly") != null && (boolean)dep.getProperty("isHttpsOnly")) {
+         return true;
+      }
       String transportGuarantee = null;
       if (isJaxwsJseEndpoint(ep))
       {
