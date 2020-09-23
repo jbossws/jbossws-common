@@ -271,6 +271,4 @@ public interface Messages {
     
     @Message(id = 22121, value = "Could not find endpoint config name: %s")
     WSFDeploymentException couldNotFindEndpointConfigName(String name);
-    @Message(id = 22122, value = "SecurityContext is not set for Endpoint: %s. A jaas security domain is required")
-    IllegalStateException cannotGetJBossSecurityContext(String endpointName);
 }

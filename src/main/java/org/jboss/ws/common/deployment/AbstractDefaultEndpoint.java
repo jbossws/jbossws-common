@@ -306,10 +306,6 @@ public abstract class AbstractDefaultEndpoint extends AbstractExtensible impleme
    
    public SecurityDomainContext getSecurityDomainContext()
    {
-      if (securityDomainContext == null)
-      {
-         throw Messages.MESSAGES.cannotGetJBossSecurityContext(this.getName().toString());
-      }
       return securityDomainContext;
    }
 
