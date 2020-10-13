@@ -40,7 +40,7 @@
     <jms.api.version>1.0.1.Final</jms.api.version>
     <jsr181.api.version>1.0-MR1</jsr181.api.version>
     <jaxws.api.version>2.0.4.Final</jaxws.api.version>
-    <junit.version>3.8.2</junit.version>
+    <junit.version>4.13.1</junit.version>
     <saaj.api.version>1.0.4.Final</saaj.api.version>
     <servlet.api.version>1.0.2.Final</servlet.api.version>
   </properties>
