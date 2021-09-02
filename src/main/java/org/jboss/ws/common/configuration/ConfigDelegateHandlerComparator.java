@@ -24,7 +24,7 @@ package org.jboss.ws.common.configuration;
 import java.io.Serializable;
 import java.util.Comparator;
 
-import javax.xml.ws.handler.Handler;
+import jakarta.xml.ws.handler.Handler;
 
 /**
  * A Handler comparator properly dealing with PRE/POST ConfigDelegateHandler instances

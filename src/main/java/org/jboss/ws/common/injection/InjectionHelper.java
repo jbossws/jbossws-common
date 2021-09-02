@@ -25,7 +25,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collection;
 
-import javax.xml.ws.WebServiceContext;
+import jakarta.xml.ws.WebServiceContext;
 
 import org.jboss.ws.common.injection.finders.PostConstructMethodFinder;
 import org.jboss.ws.common.injection.finders.PreDestroyMethodFinder;
@@ -99,7 +99,7 @@ public final class InjectionHelper
     *
     * @param instance to invoke @PostConstruct annotated method on
     * @see org.jboss.ws.common.injection.finders.PostConstructMethodFinder
-    * @see javax.annotation.PostConstruct
+    * @see jakarta.annotation.PostConstruct
     */
    public static void callPostConstructMethod(final Object instance)
    {
@@ -128,7 +128,7 @@ public final class InjectionHelper
     *
     * @param instance to invoke @PreDestroy annotated method on
     * @see org.jboss.ws.common.injection.finders.PreDestroyMethodFinder
-    * @see javax.annotation.PreDestroy
+    * @see jakarta.annotation.PreDestroy
     */
    public static void callPreDestroyMethod(final Object instance)
    {

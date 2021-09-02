@@ -23,10 +23,10 @@ package org.jboss.ws.common.management;
 
 import java.util.Iterator;
 
-import javax.jms.Destination;
-import javax.jms.JMSException;
-import javax.jms.Queue;
-import javax.jms.Topic;
+import jakarta.jms.Destination;
+import jakarta.jms.JMSException;
+import jakarta.jms.Queue;
+import jakarta.jms.Topic;
 
 import org.jboss.wsf.spi.deployment.Endpoint;
 import org.jboss.wsf.spi.management.JMSEndpointResolver;

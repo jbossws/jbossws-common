@@ -37,14 +37,14 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.ServiceLoader;
 
-import javax.xml.ws.Binding;
-import javax.xml.ws.BindingProvider;
-import javax.xml.ws.Dispatch;
-import javax.xml.ws.handler.Handler;
-import javax.xml.ws.handler.LogicalHandler;
-import javax.xml.ws.handler.soap.SOAPHandler;
-import javax.xml.ws.http.HTTPBinding;
-import javax.xml.ws.soap.SOAPBinding;
+import jakarta.xml.ws.Binding;
+import jakarta.xml.ws.BindingProvider;
+import jakarta.xml.ws.Dispatch;
+import jakarta.xml.ws.handler.Handler;
+import jakarta.xml.ws.handler.LogicalHandler;
+import jakarta.xml.ws.handler.soap.SOAPHandler;
+import jakarta.xml.ws.http.HTTPBinding;
+import jakarta.xml.ws.soap.SOAPBinding;
 
 import org.jboss.ws.api.configuration.ClientConfigurer;
 import org.jboss.ws.common.utils.DelegateClassLoader;

@@ -28,21 +28,16 @@
 
   <!-- Properties -->
   <properties>
-    <annotation.api.version>1.0.0.Final</annotation.api.version>
-    <activation.version>1.1</activation.version>
     <jbossws.spi.version>4.0.0-SNAPSHOT</jbossws.spi.version>
     <jboss.jaxbintros.version>1.0.2.GA</jboss.jaxbintros.version>
-    <jboss.common.core.version>2.2.17.GA</jboss.common.core.version>
     <jboss-logging.version>3.3.1.Final</jboss-logging.version>
     <jboss-logging-processor.version>2.1.0.Final</jboss-logging-processor.version>
     <wsdl4j.version>1.6.2</wsdl4j.version>
-    <jaxrpc.api.version>1.0.1.Final</jaxrpc.api.version>
-    <jms.api.version>1.0.1.Final</jms.api.version>
-    <jsr181.api.version>1.0-MR1</jsr181.api.version>
-    <jaxws.api.version>2.0.4.Final</jaxws.api.version>
     <junit.version>3.8.2</junit.version>
-    <saaj.api.version>1.0.4.Final</saaj.api.version>
-    <servlet.api.version>1.0.2.Final</servlet.api.version>
+    <jakarta.annotation-api.version>2.0.0</jakarta.annotation-api.version>
+    <jakarta.jws-api.version>3.0.0</jakarta.jws-api.version>
+    <jakarta.xml.ws-api.version>3.0.1</jakarta.xml.ws-api.version>
+    <jakarta.jakartaee-api.version>9.1.0</jakarta.jakartaee-api.version>
   </properties>
 
   <!-- licenses -->
@@ -78,15 +73,9 @@
     </dependency>
     <!-- Non transient dependencies -->
     <dependency>
-      <groupId>org.jboss.spec.javax.xml.ws</groupId>
-      <artifactId>jboss-jaxws-api_2.2_spec</artifactId>
-      <version>${jaxws.api.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.spec.javax.xml.rpc</groupId>
-      <artifactId>jboss-jaxrpc-api_1.1_spec</artifactId>
-      <version>${jaxrpc.api.version}</version>
+      <groupId>jakarta.xml.ws</groupId>
+      <artifactId>jakarta.xml.ws-api</artifactId>
+      <version>${jakarta.xml.ws-api.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -102,40 +91,22 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.jboss.spec.javax.servlet</groupId>
-      <artifactId>jboss-servlet-api_3.0_spec</artifactId>
-      <version>${servlet.api.version}</version>
+      <groupId>jakarta.annotation</groupId>
+      <artifactId>jakarta.annotation-api</artifactId>
+      <version>${jakarta.annotation-api.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.jboss.spec.javax.jms</groupId>
-      <artifactId>jboss-jms-api_1.1_spec</artifactId>
-      <version>${jms.api.version}</version>
+      <groupId>jakarta.platform</groupId>
+      <artifactId>jakarta.jakartaee-api</artifactId>
+      <version>${jakarta.jakartaee-api.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.jboss.spec.javax.annotation</groupId>
-      <artifactId>jboss-annotations-api_1.2_spec</artifactId>
-      <version>${annotation.api.version}</version>
+      <groupId>jakarta.jws</groupId>
+      <artifactId>jakarta.jws-api</artifactId>
+      <version>${jakarta.jws-api.version}</version>
       <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.spec.javax.xml.soap</groupId>
-      <artifactId>jboss-saaj-api_1.3_spec</artifactId>
-      <version>${saaj.api.version}</version>
-       <scope>provided</scope>
-    </dependency>
-    <dependency>
-       <groupId>javax.jws</groupId>
-       <artifactId>jsr181-api</artifactId>
-       <version>${jsr181.api.version}</version>
-       <scope>provided</scope>
-    </dependency>
-    <dependency>
-       <groupId>javax.activation</groupId>
-       <artifactId>activation</artifactId>
-       <version>${activation.version}</version>
-       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>wsdl4j</groupId>

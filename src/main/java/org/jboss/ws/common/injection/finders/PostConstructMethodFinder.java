@@ -21,7 +21,7 @@
  */
 package org.jboss.ws.common.injection.finders;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 
 /**
  * @PostConstruct method finder.

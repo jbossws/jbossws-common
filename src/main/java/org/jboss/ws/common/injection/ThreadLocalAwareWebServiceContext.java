@@ -24,9 +24,9 @@ package org.jboss.ws.common.injection;
 import java.io.Serializable;
 import java.security.Principal;
 
-import javax.xml.ws.EndpointReference;
-import javax.xml.ws.WebServiceContext;
-import javax.xml.ws.handler.MessageContext;
+import jakarta.xml.ws.EndpointReference;
+import jakarta.xml.ws.WebServiceContext;
+import jakarta.xml.ws.handler.MessageContext;
 
 import org.w3c.dom.Element;
 
