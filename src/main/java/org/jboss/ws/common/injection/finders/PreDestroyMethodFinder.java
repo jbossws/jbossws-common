@@ -21,7 +21,7 @@
  */
 package org.jboss.ws.common.injection.finders;
 
-import javax.annotation.PreDestroy;
+import jakarta.annotation.PreDestroy;
 
 /**
  * @PreDestroy method finder.

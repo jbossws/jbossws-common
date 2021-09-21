@@ -24,7 +24,7 @@ package org.jboss.ws.common.injection.resolvers;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 /**
  * JNDI reference resolver for @Resource annotated methods and fields.

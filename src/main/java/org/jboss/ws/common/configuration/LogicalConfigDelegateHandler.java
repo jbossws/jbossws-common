@@ -21,8 +21,8 @@
  */
 package org.jboss.ws.common.configuration;
 
-import javax.xml.ws.handler.LogicalHandler;
-import javax.xml.ws.handler.LogicalMessageContext;
+import jakarta.xml.ws.handler.LogicalHandler;
+import jakarta.xml.ws.handler.LogicalMessageContext;
 
 
 /**

@@ -23,7 +23,7 @@ package org.jboss.ws.common.injection.finders;
 
 import java.lang.reflect.Method;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 import org.jboss.ws.common.reflection.AnnotatedMethodFinder;
 

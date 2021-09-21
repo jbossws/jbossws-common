@@ -32,7 +32,7 @@ import java.io.Reader;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 
-import javax.activation.DataHandler;
+import jakarta.activation.DataHandler;
 
 import org.jboss.wsf.spi.SPIProvider;
 import org.jboss.wsf.spi.management.ServerConfig;

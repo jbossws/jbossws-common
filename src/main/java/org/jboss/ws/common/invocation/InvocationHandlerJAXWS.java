@@ -21,7 +21,7 @@
  */
 package org.jboss.ws.common.invocation;
 
-import javax.xml.ws.WebServiceContext;
+import jakarta.xml.ws.WebServiceContext;
 
 import org.jboss.ws.common.injection.InjectionHelper;
 import org.jboss.ws.common.injection.PreDestroyHolder;

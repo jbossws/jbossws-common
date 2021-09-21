@@ -29,7 +29,7 @@ import java.net.MalformedURLException;
 import java.util.Collection;
 
 import javax.management.ObjectName;
-import javax.xml.ws.WebServiceException;
+import jakarta.xml.ws.WebServiceException;
 
 import org.jboss.logging.annotations.Cause;
 import org.jboss.logging.annotations.Message;
@@ -119,7 +119,7 @@ public interface Messages {
     @Message(id = 22035, value = "Missing service reference type for service-ref: %s")
     IllegalStateException missingServiceRefTypeInServiceRef(String serviceRefName);
     
-    @Message(id = 22036, value = "Cannot create generic javax.xml.ws.Service without wsdlLocation; service-ref metadata = '%s'")
+    @Message(id = 22036, value = "Cannot create generic jakarta.xml.ws.Service without wsdlLocation; service-ref metadata = '%s'")
     IllegalArgumentException cannotCreateServiceWithoutWsdlLocation(UnifiedServiceRefMetaData serviceRefMD);
     
     @Message(id = 22037, value = "Annotation class cannot be null")

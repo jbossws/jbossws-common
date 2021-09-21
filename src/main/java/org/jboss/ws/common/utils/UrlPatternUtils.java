@@ -24,7 +24,7 @@ package org.jboss.ws.common.utils;
 import org.jboss.ws.api.annotation.WebContext;
 import org.jboss.wsf.spi.metadata.webservices.JBossPortComponentMetaData;
 
-import javax.jws.WebService;
+import jakarta.jws.WebService;
 import java.util.StringTokenizer;
 
 /**
