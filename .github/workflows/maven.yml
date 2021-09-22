@@ -35,7 +35,7 @@ jobs:
         with:
           java-version: ${{ matrix.java }}
       - name: Build with Maven Java ${{ matrix.java }}
-        run: mvn -s .travis-settings.xml -B -fae clean install
+        run: mvn -s .m2-settings.xml -B -fae clean install
       - uses: actions/upload-artifact@v2
         if: failure()
         with:
