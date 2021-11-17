@@ -28,16 +28,16 @@
 
   <!-- Properties -->
   <properties>
-    <jbossws.spi.version>4.0.0-SNAPSHOT</jbossws.spi.version>
+    <jbossws.spi.version>4.0.0.Final</jbossws.spi.version>
     <jboss.jaxbintros.version>1.0.2.GA</jboss.jaxbintros.version>
     <jboss-logging.version>3.3.1.Final</jboss-logging.version>
     <jboss-logging-processor.version>2.1.0.Final</jboss-logging-processor.version>
     <wsdl4j.version>1.6.2</wsdl4j.version>
     <junit.version>3.8.2</junit.version>
     <jakarta.annotation-api.version>2.0.0</jakarta.annotation-api.version>
-    <jakarta.jws-api.version>3.0.0</jakarta.jws-api.version>
-    <jakarta.xml.ws-api.version>3.0.1</jakarta.xml.ws-api.version>
-    <jakarta.jakartaee-api.version>9.1.0</jakarta.jakartaee-api.version>
+    <jboss-jakarta-xml-ws-api.version>1.0.0.Final</jboss-jakarta-xml-ws-api.version>
+    <jakarta.servlet.jakarta-servlet-api.version>5.0.0</jakarta.servlet.jakarta-servlet-api.version>
+    <jakarta.jms.jakarta-jms-api.version>3.0.0</jakarta.jms.jakarta-jms-api.version>
   </properties>
 
   <!-- licenses -->
@@ -62,20 +62,16 @@
        <version>${jboss.jaxbintros.version}</version>
        <exclusions>
          <exclusion>
-           <groupId>com.sun.xml.bind</groupId>
-           <artifactId>jaxb-impl</artifactId>
-         </exclusion>
-         <exclusion>
-           <groupId>javax.xml.bind</groupId>
-           <artifactId>jaxb-api</artifactId>
+           <groupId>*</groupId>
+           <artifactId>*</artifactId>
          </exclusion>
        </exclusions>
     </dependency>
     <!-- Non transient dependencies -->
     <dependency>
-      <groupId>jakarta.xml.ws</groupId>
-      <artifactId>jakarta.xml.ws-api</artifactId>
-      <version>${jakarta.xml.ws-api.version}</version>
+      <groupId>org.jboss.spec.jakarta.xml.ws</groupId>
+      <artifactId>jboss-jakarta-xml-ws-api_3.0_spec</artifactId>
+      <version>${jboss-jakarta-xml-ws-api.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -97,15 +93,15 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>jakarta.platform</groupId>
-      <artifactId>jakarta.jakartaee-api</artifactId>
-      <version>${jakarta.jakartaee-api.version}</version>
+      <groupId>jakarta.servlet</groupId>
+      <artifactId>jakarta.servlet-api</artifactId>
+      <version>${jakarta.servlet.jakarta-servlet-api.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>jakarta.jws</groupId>
-      <artifactId>jakarta.jws-api</artifactId>
-      <version>${jakarta.jws-api.version}</version>
+      <groupId>jakarta.jms</groupId>
+      <artifactId>jakarta.jms-api</artifactId>
+      <version>${jakarta.jms.jakarta-jms-api.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -191,5 +187,4 @@
       </build>
     </profile>
   </profiles>
-
 </project>
