@@ -29,7 +29,7 @@
   <!-- Properties -->
   <properties>
     <jbossws.spi.version>4.0.0.Final</jbossws.spi.version>
-    <jboss.jaxbintros.version>1.0.2.GA</jboss.jaxbintros.version>
+    <jboss.jaxbintros.version>2.0.0-SNAPSHOT</jboss.jaxbintros.version>
     <jboss-logging.version>3.3.1.Final</jboss-logging.version>
     <jboss-logging-processor.version>2.1.0.Final</jboss-logging-processor.version>
     <wsdl4j.version>1.6.2</wsdl4j.version>
