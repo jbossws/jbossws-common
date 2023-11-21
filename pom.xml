@@ -32,7 +32,7 @@
     <jboss.jaxbintros.version>2.0.0</jboss.jaxbintros.version>
     <jboss-logging.version>3.5.1.Final</jboss-logging.version>
     <jboss-logging-processor.version>2.2.1.Final</jboss-logging-processor.version>
-    <wsdl4j.version>1.6.2</wsdl4j.version>
+    <wsdl4j.version>1.6.3</wsdl4j.version>
     <junit.version>4.13.2</junit.version>
     <jakarta.annotation-api.version>2.1.0</jakarta.annotation-api.version>
     <jboss-jakarta-xml-ws-api.version>1.0.1.Final</jboss-jakarta-xml-ws-api.version>
