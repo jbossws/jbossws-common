@@ -34,7 +34,7 @@
     <jboss-logging-processor.version>2.2.1.Final</jboss-logging-processor.version>
     <wsdl4j.version>1.6.2</wsdl4j.version>
     <junit.version>4.13.2</junit.version>
-    <jakarta.annotation-api.version>2.1.0</jakarta.annotation-api.version>
+    <jakarta.annotation-api.version>2.1.1</jakarta.annotation-api.version>
     <jboss-jakarta-xml-ws-api.version>1.0.1.Final</jboss-jakarta-xml-ws-api.version>
     <jakarta.servlet.jakarta-servlet-api.version>5.0.0</jakarta.servlet.jakarta-servlet-api.version>
     <jakarta.jms.jakarta-jms-api.version>3.1.0</jakarta.jms.jakarta-jms-api.version>
