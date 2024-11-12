@@ -37,6 +37,7 @@ import java.util.NoSuchElementException;
  */
 public class DelegateClassLoader extends SecureClassLoader
 {
+
    private final ClassLoader delegate;
 
    private final ClassLoader parent;
@@ -136,4 +137,9 @@ public class DelegateClassLoader extends SecureClassLoader
       }
       return (is == null) ? delegate.getResourceAsStream(name) : is;
    }
+
+   public ClassLoader getDelegate() {
+      return delegate;
+   }
+
 }
