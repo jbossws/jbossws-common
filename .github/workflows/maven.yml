@@ -36,7 +36,7 @@ jobs:
           java-version: ${{ matrix.java }}
       - name: Build with Maven Java ${{ matrix.java }}
         run: mvn -s .m2-settings.xml -B -fae clean install
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v5
         if: failure()
         with:
           name: surefire-reports-${{ matrix.os }}-${{ matrix.java }}
