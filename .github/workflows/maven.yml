@@ -13,7 +13,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ${{ matrix.os }}
     timeout-minutes: 60
     strategy:
@@ -21,10 +20,8 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest ]
         jdk-distribution: [temurin, adopt-openj9]
-        jdk-version: ['11', '17']
-
+        jdk-version: [17, 21, 25]
     steps:
-
       - name: Checkout jbossws-common
         uses: actions/checkout@v5
       - uses: actions/cache@v4

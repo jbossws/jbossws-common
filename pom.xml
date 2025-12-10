@@ -28,6 +28,9 @@
 
   <!-- Properties -->
   <properties>
+    <!-- maven-compiler-plugin -->
+    <maven.compiler.release>17</maven.compiler.release>
+    <!-- Dependency versions -->
     <jbossws.spi.version>5.0.0.Final</jbossws.spi.version>
     <jboss.jaxbintros.version>2.0.1</jboss.jaxbintros.version>
     <jboss-logging.version>3.5.3.Final</jboss-logging.version>
@@ -184,6 +187,26 @@
             </plugin>
           </plugins>
         </pluginManagement>
+      </build>
+    </profile>
+    <profile>
+      <id>jdk23</id>
+      <activation>
+        <jdk>[23,)</jdk>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+              <compilerArgs combine.children="append">
+                <!-- SE 23+ requires explicit config to turn on annotation processing -->
+                <arg>-proc:full</arg>
+              </compilerArgs>
+            </configuration>
+          </plugin>
+        </plugins>
       </build>
     </profile>
   </profiles>
