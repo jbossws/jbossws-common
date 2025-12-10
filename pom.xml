@@ -28,6 +28,9 @@
 
   <!-- Properties -->
   <properties>
+    <!-- maven-compiler-plugin -->
+    <maven.compiler.release>17</maven.compiler.release>
+    <!-- Dependency versions -->
     <jbossws.spi.version>5.0.0.Final</jbossws.spi.version>
     <jboss.jaxbintros.version>2.0.1</jboss.jaxbintros.version>
     <jboss-logging.version>3.5.3.Final</jboss-logging.version>
