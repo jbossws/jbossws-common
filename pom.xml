@@ -39,7 +39,7 @@
     <wsdl4j.version>1.6.3</wsdl4j.version>
     <junit.version>4.13.2</junit.version>
     <jakarta.annotation-api.version>2.1.1</jakarta.annotation-api.version>
-    <jboss-jakarta-xml-ws-api.version>1.0.1.Final</jboss-jakarta-xml-ws-api.version>
+    <jboss-jakarta-xml-ws-api.version>1.0.0.Final</jboss-jakarta-xml-ws-api.version>
     <jakarta.servlet.jakarta-servlet-api.version>5.0.0</jakarta.servlet.jakarta-servlet-api.version>
     <jakarta.jms.jakarta-jms-api.version>3.1.0</jakarta.jms.jakarta-jms-api.version>
   </properties>
@@ -74,7 +74,7 @@
     <!-- Non transient dependencies -->
     <dependency>
       <groupId>org.jboss.spec.jakarta.xml.ws</groupId>
-      <artifactId>jboss-jakarta-xml-ws-api_3.0_spec</artifactId>
+      <artifactId>jboss-jakarta-xml-ws-api_4.0_spec</artifactId>
       <version>${jboss-jakarta-xml-ws-api.version}</version>
       <scope>provided</scope>
     </dependency>
