@@ -32,7 +32,7 @@
     <!-- Repository Deployment Settings -->
     <nexus.staging.tag>jbossws-common-${project.version}</nexus.staging.tag>
     <!-- Dependency versions -->
-    <jbossws.spi.version>5.0.0.Final</jbossws.spi.version>
+    <jbossws.spi.version>5.1.0.Beta1</jbossws.spi.version>
     <jboss.jaxbintros.version>2.1.0.Beta1</jboss.jaxbintros.version>
     <jboss-logging.version>3.6.3.Final</jboss-logging.version>
     <jboss-logging-processor.version>3.0.4.Final</jboss-logging-processor.version>
