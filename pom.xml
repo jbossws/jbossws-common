@@ -10,7 +10,7 @@
   <description>JBoss Web Services - JBossWS Common Jakarta Version</description>
   <url>https://github.com/jbossws/jbossws-common</url>
 
-  <version>5.2.0-SNAPSHOT</version>
+  <version>5.2.0.Beta1</version>
 
   <!-- Parent -->
   <parent>
@@ -24,7 +24,7 @@
     <connection>scm:git:https://github.com/jbossws/jbossws-common.git</connection>
     <developerConnection>scm:git:https://github.com/jbossws/jbossws-common.git</developerConnection>
     <url>https://github.com/jbossws/jbossws-common</url>
-    <tag>${nexus.staging.tag}</tag>
+    <tag>jbossws-common-5.2.0.Beta1</tag>
   </scm>
 
   <!-- Properties -->
