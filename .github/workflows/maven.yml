@@ -23,7 +23,7 @@ jobs:
         jdk-version: [17, 21, 25]
     steps:
       - name: Checkout jbossws-common
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - uses: actions/cache@v5
         with:
           path: ~/.m2/repository
